@@ -1,1 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+.fullscreen .modal-dialog {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0;
+  top: 0;
+  left: 0;
+}

@@ -1,0 +1,516 @@
+<!-- HEADER -->
+<div class="header pt-4">
+  <div class="container-fluid">
+
+    <!-- Body -->
+    <div class="header-body border-0 p-0">
+      <div class="row align-items-end">
+        <div class="col">
+          <h1 class="mb-2">Lend your cryptocurrency assets at a fixed interest rate. Earn liquidity mining and system
+            rewards.</h1>
+          <p class="text-muted font-weight-bold mb-5">Get started by adding your crypto assets to the pools below.</p>
+          <div class="card-deck my-4">
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Deposits balance
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" data-toggle="tooltip"
+                    data-placement="top" title="Current total deposits in USD">
+                    [i]
+                  </button>
+                </h5>
+
+                <!-- Heading -->
+                <h2 class="mb-3 glowing pl-3">
+                  $0.0000
+                </h2>
+                <!-- Button -->
+                <button type="button" class="card-link small px-1 ml-3" (click)="openDepositModal()">
+                  <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
+                </button>
+              </div>
+            </div>
+
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Interest earned
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" data-toggle="tooltip"
+                    data-placement="top" title="Total fixed-rate interest earned">
+                    [i]
+                  </button>
+                </h5>
+
+                <!-- Heading -->
+                <h2 class="mb-0 glowing pl-3">
+                  $0.0000
+                </h2>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  MPH earned
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" data-toggle="tooltip"
+                    data-placement="top"
+                    title="Liquidty providers get rewarded with MPH tokens that can be staked to earn rewards (protocol fees, harvested incentives, etc)">
+                    [i]
+                  </button>
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-1 glowing pl-3">
+                  0.0000 MPH
+                </h2>
+                <h5 class="mb-3 text-white pl-3">$0.00</h5>
+                <!-- Button -->
+                <button type="button" class="card-link small px-1 ml-3" (click)="openDepositModal()">
+                  <i class="fe fe-arrow-down mr-2 align-bottom"></i>Claim
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .header-body -->
+
+  </div>
+</div> <!-- / .header -->
+
+<!-- CARDS -->
+<div class="container-fluid mb-6">
+  <div class="row">
+    <div class="col-12">
+      <!-- Current deposits -->
+      <div class="card mb-6">
+        <h2 class="mt-n3 bg-dark mb-0 mx-3 pl-3">Current deposits</h2>
+        <div class="table-responsive mb-0">
+          <table class="table table-sm table-nowrap card-table">
+            <thead>
+              <tr>
+                <th class="text-dark">
+                  Pools
+                </th>
+                <th class="text-dark">
+                  Deposits
+                </th>
+                <th class="text-dark">
+                  Interest earned
+                </th>
+                <th class="text-dark">
+                  MPH rewards
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" data-toggle="tooltip"
+                    data-placement="top"
+                    title="Liquidty providers get rewarded with upfront MPH tokens that can be staked to earn liquidity mining and system rewards.">
+                    [i]
+                  </button>
+                </th>
+                <th class="text-dark" colspan="2">
+                  MPH APY
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" data-toggle="tooltip"
+                    data-placement="top" title="MPH LP rewards annualized and compounded based on the last week">
+                    [i]
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <div class="avatar avatar-xs">
+                      <img class="avatar-img rounded-circle mr-3" src="assets/img/usdc.svg" alt="...">
+                    </div>
+
+                    <div class="ml-3">
+
+                      <!-- Heading -->
+                      <h4 class="font-weight-normal mb-1">aUSDC</h4>
+
+                      <!-- Text -->
+                      <small class="text-muted">Aave</small>
+
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal()">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
+                  </button>
+                </td>
+                <td>
+
+                </td>
+                <td>
+
+                </td>
+                <td>
+
+                </td>
+                <td class="text-right">
+
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <h4 class="mb-0">#2</h4>
+
+                    <div class="ml-3">
+
+                      <!-- badge -->
+                      <span class="badge badge-soft-danger mb-1">Locked</span>
+
+                      <!-- Text -->
+                      <small class="text-white d-block">1d 22h 24m 4s left</small>
+
+                    </div>
+                  </div>
+
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <div class="text-white d-block">0.0000 tokens</div>
+                  <div class="text-white">@ 0.00% fixed APY</div>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.0000 tokens</span>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.000000 MPH</span>
+                </td>
+                <td class="glowing">
+                  +0.0000%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openWithdrawModal()">
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Withdraw early
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <h4 class="mb-0">#1</h4>
+
+                    <div class="ml-3">
+
+                      <!-- badge -->
+                      <span class="badge badge-soft-success mb-1">Unlocked</span>
+
+                      <!-- Text -->
+                      <small class="text-white d-block">0d 0h 0m 0s left</small>
+
+                    </div>
+                  </div>
+
+                </td>
+                <td>
+                  <div class="text-white d-block">0.0000 tokens</div>
+                  <div class="text-white">@ 0.00% fixed APY</div>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.0000 tokens</span>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.000000 MPH</span>
+                </td>
+                <td class="glowing">
+                  +0.0000%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openWithdrawModal()">
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Withdraw
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <div class="avatar avatar-xs">
+                      <img class="avatar-img rounded-circle mr-3" src="assets/img/dai.svg" alt="...">
+                    </div>
+
+                    <div class="ml-3">
+
+                      <!-- Heading -->
+                      <h4 class="font-weight-normal mb-1">aDAI</h4>
+
+                      <!-- Text -->
+                      <small class="text-muted">Aave</small>
+
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal()">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
+                  </button>
+                </td>
+                <td>
+
+                </td>
+                <td>
+
+                </td>
+                <td>
+
+                </td>
+                <td class="text-right">
+
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <h4 class="mb-0">#2</h4>
+
+                    <div class="ml-3">
+
+                      <!-- badge -->
+                      <span class="badge badge-soft-danger mb-1">Locked</span>
+
+                      <!-- Text -->
+                      <small class="text-white d-block">1d 22h 24m 4s left</small>
+
+                    </div>
+                  </div>
+
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <div class="text-white d-block">0.0000 tokens</div>
+                  <div class="text-white">@ 0.00% fixed APY</div>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.0000 tokens</span>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.000000 MPH</span>
+                </td>
+                <td class="glowing">
+                  +0.0000%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openWithdrawModal()">
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Withdraw early
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <h4 class="mb-0">#1</h4>
+
+                    <div class="ml-3">
+
+                      <!-- badge -->
+                      <span class="badge badge-soft-success mb-1">Unlocked</span>
+
+                      <!-- Text -->
+                      <small class="text-white d-block">0d 0h 0m 0s left</small>
+
+                    </div>
+                  </div>
+
+                </td>
+                <td>
+                  <div class="text-white d-block">0.0000 tokens</div>
+                  <div class="text-white">@ 0.00% fixed APY</div>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.0000 tokens</span>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.000000 MPH</span>
+                </td>
+                <td class="glowing">
+                  +0.0000%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openWithdrawModal()">
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Withdraw
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Explore fixed rate opportunities -->
+      <div class="card" id="fixedRateOpportunities">
+        <h2 class="mt-n3 bg-dark mb-0 mx-3 pl-3">Explore fixed rate opportunities</h2>
+        <div class="table-responsive mb-0">
+          <table class="table table-sm table-nowrap card-table">
+            <thead>
+              <tr>
+                <th class="text-dark">
+                  Pools
+                </th>
+                <th class="text-dark">
+                  Liquidity
+                </th>
+                <th class="text-dark">
+                  Fixed APY
+                </th>
+                <th class="text-dark" colspan="2">
+                  MPH APY
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" data-toggle="tooltip"
+                    data-placement="top" title="MPH LP rewards annualized and compounded based on the last week">
+                    [i]
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              <tr class="border-left border-2 border-amber">
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <div class="avatar avatar-xs">
+                      <img class="avatar-img rounded-circle mr-3" src="assets/img/usdc.svg" alt="...">
+                    </div>
+
+                    <div class="ml-3">
+
+                      <!-- Heading -->
+                      <h4 class="font-weight-normal mb-1">aUSDC</h4>
+
+                      <!-- Text -->
+                      <small class="text-muted">Aave</small>
+
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.00</h4>
+                  <span class="text-white">0.00 tokens</span>
+                </td>
+                <td class="glowing">
+                  0.0000%
+                </td>
+                <td class="glowing">
+                  +0.0000%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal()">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
+                  </button>
+                </td>
+              </tr>
+              <tr class="border-left border-2 border-amber">
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <div class="avatar avatar-xs">
+                      <img class="avatar-img rounded-circle mr-3" src="assets/img/dai.svg" alt="...">
+                    </div>
+
+                    <div class="ml-3">
+
+                      <!-- Heading -->
+                      <h4 class="font-weight-normal mb-1">aDAI</h4>
+
+                      <!-- Text -->
+                      <small class="text-muted">Aave</small>
+
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.00</h4>
+                  <span class="text-white">0.00 tokens</span>
+                </td>
+                <td class="glowing">
+                  0.0000%
+                </td>
+                <td class="glowing">
+                  +0.0000%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal()">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
+                  </button>
+                </td>
+              </tr>
+              <tr class="border-left border-2 border-amber">
+                <td>
+                  <div class="d-flex align-items-center">
+
+                    <!-- Image -->
+                    <div class="avatar avatar-xs">
+                      <img class="avatar-img rounded-circle mr-3" src="assets/img/susd.svg" alt="...">
+                    </div>
+
+                    <div class="ml-3">
+
+                      <!-- Heading -->
+                      <h4 class="font-weight-normal mb-1">aSUSD</h4>
+
+                      <!-- Text -->
+                      <small class="text-muted">Aave</small>
+
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.00</h4>
+                  <span class="text-white">0.00 tokens</span>
+                </td>
+                <td class="glowing">
+                  0.0000%
+                </td>
+                <td class="glowing">
+                  +0.0000%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal()">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div> <!-- / .row -->
+  <p class="mb-5 text-muted text-center small font-weight-bold">88mph smart contracts are audited and secured by <a
+      class="text-purple" href="https://certificate.quantstamp.com/full/88-mph" target="_blank">QuantStamp</a>.</p>
+
+</div>
