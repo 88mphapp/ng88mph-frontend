@@ -28,6 +28,7 @@
     "bnc-onboard": "^1.14.0",
     "bootstrap": "^4.5.0",
     "chart.js": "^2.9.4",
+    "coingecko-api": "^1.0.10",
     "graphql": "^15.0.0",
     "jquery": "^3.5.1",
     "list.js": "^1.5.0",
