@@ -9,10 +9,15 @@
   <div class="navbar-user d-md-none">
     <div class="d-block">
       <div class="btn btn-sm btn-white mr-3">
-        0.0000<img src="./assets/img/icon-default.png" class="ml-2" alt="..." width="20px">
+        {{mphBalance.toFormat(4)}} <img src="./assets/img/icon-default.png" class="ml-2" alt="..." width="20px">
       </div>
-      <button type="button" name="web3Connect" class="btn btn-sm btn-white">
-        0x000..0000
+      <button type="button" name="web3Connect" class="btn btn-sm btn-white" (click)="connectWallet()">
+        <div *ngIf="wallet.connected">
+          {{wallet.userAddress.substring(0, 14)}}
+        </div>
+        <div *ngIf="!wallet.connected">
+          Connect Wallet
+        </div>
       </button>
     </div>
   </div>
