@@ -77,9 +77,7 @@ export class DepositComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.wallet.connected) {
-      this.loadData();
-    }
+    this.loadData();
     this.wallet.connectedEvent.subscribe(() => {
       this.loadData();
     });
@@ -89,7 +87,7 @@ export class DepositComponent implements OnInit {
   }
 
   loadData(): void {
-    const userID = this.wallet.userAddress.toLowerCase();
+    const userID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
     const queryString = gql`
       {
         user(id: "${userID}") {
@@ -220,8 +218,24 @@ export class DepositComponent implements OnInit {
     this.totalDepositUSD = new BigNumber(0);
     this.totalInterestUSD = new BigNumber(0);
     this.totalMPHEarned = new BigNumber(0);
-    this.allPoolList = [];
     this.userPools = [];
+
+    const allPoolList = new Array<DPool>(0);
+    const poolInfoList = this.contract.getPoolInfoList();
+    for (const poolInfo of poolInfoList) {
+      const dpoolObj: DPool = {
+        name: poolInfo.name,
+        protocol: poolInfo.protocol,
+        stablecoin: poolInfo.stablecoin,
+        stablecoinSymbol: poolInfo.stablecoinSymbol,
+        iconPath: poolInfo.iconPath,
+        totalDepositToken: new BigNumber(0),
+        totalDepositUSD: new BigNumber(0),
+        oneYearInterestRate: new BigNumber(0),
+      };
+      allPoolList.push(dpoolObj);
+    }
+    this.allPoolList = allPoolList;
   }
 
   openDepositModal() {
