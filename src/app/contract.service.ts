@@ -20,10 +20,14 @@ export class ContractService {
     return require('../assets/json/pools.json')[name];
   }
 
-  getPoolInfoFromAddress(address: string): PoolInfo {
+  getPoolInfoList(): PoolInfo[] {
     return Object.keys(require('../assets/json/pools.json'))
-            .map(pool => this.getPoolInfo(pool))
-            .find(poolInfo => poolInfo.address.toLowerCase() === address.toLowerCase())
+      .map(pool => this.getPoolInfo(pool));
+  }
+
+  getPoolInfoFromAddress(address: string): PoolInfo {
+    return this.getPoolInfoList()
+      .find(poolInfo => poolInfo.address.toLowerCase() === address.toLowerCase());
   }
 
   getPool(name: string) {
