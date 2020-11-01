@@ -158,11 +158,11 @@
 
                           <!-- badge -->
                           <span class="badge mb-1"
-                            [ngClass]="{'badge-soft-danger': deposit.countdownTimer.running, 'badge-soft-success': !deposit.countdownTimer.running}">
-                            <ng-container *ngIf="deposit.countdownTimer.running">
+                            [ngClass]="{'badge-soft-danger': deposit.locked, 'badge-soft-success': !deposit.locked}">
+                            <ng-container *ngIf="deposit.locked">
                               Locked
                             </ng-container>
-                            <ng-container *ngIf="!deposit.countdownTimer.running">
+                            <ng-container *ngIf="!deposit.locked">
                               Unlocked
                             </ng-container>
                           </span>
@@ -179,7 +179,7 @@
                       <h4 class="mb-1 font-weight-normal glowing">${{deposit.amountUSD.toFormat(4)}}</h4>
                       <div class="text-white d-block">{{deposit.amountToken.toFormat(4)}}
                         {{userPool.poolInfo.stablecoinSymbol}}</div>
-                      <div class="text-white">@ 0.00% fixed APY</div>
+                      <div class="text-white">@ {{deposit.apy.toFormat(4)}}% fixed APY</div>
                     </td>
                     <td>
                       <h4 class="mb-1 font-weight-normal glowing">${{deposit.interestEarnedUSD.toFormat(4)}}</h4>
@@ -195,12 +195,13 @@
                     </td>
                     <td class="text-right">
                       <!-- Button -->
-                      <button type="button" class="card-link small small px-1" (click)="openWithdrawModal()">
+                      <button type="button" class="card-link small small px-1"
+                        (click)="openWithdrawModal(deposit, userPool.poolInfo)">
                         <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                        <ng-container *ngIf="deposit.countdownTimer.running">
+                        <ng-container *ngIf="deposit.locked">
                           Withdraw early
                         </ng-container>
-                        <ng-container *ngIf="!deposit.countdownTimer.running">
+                        <ng-container *ngIf="!deposit.locked">
                           Withdraw
                         </ng-container>
                       </button>
