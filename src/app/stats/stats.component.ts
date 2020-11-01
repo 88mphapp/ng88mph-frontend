@@ -83,7 +83,7 @@ export class StatsComponent implements OnInit {
 
       if (mph) {
         this.mphTotalSupply = new BigNumber(mph.totalSupply);
-        this.mphStakedPercentage = new BigNumber(mph.totalStakedMPHBalance).div(this.mphTotalSupply).times(100);
+        this.mphStakedPercentage = this.mphTotalSupply.isZero() ? new BigNumber(0) : new BigNumber(mph.totalStakedMPHBalance).div(this.mphTotalSupply).times(100);
         this.mphTotalHistoricalReward = new BigNumber(mph.totalHistoricalReward);
       }
     }
