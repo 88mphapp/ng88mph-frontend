@@ -4,6 +4,7 @@
     "address": "0x6bA0251940E6c22c1FF5270198a134E3779B2f93",
     "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     "stablecoinSymbol": "USDC",
+    "stablecoinDecimals": 6,
     "protocol": "Aave",
     "iconPath": "assets/img/token-icons/ausdc.png"
   },
@@ -12,6 +13,7 @@
     "address": "0xB23cCBcf22D2e6096046493Ae65EdA2590923347",
     "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     "stablecoinSymbol": "USDC",
+    "stablecoinDecimals": 6,
     "protocol": "Compound",
     "iconPath": "assets/img/token-icons/cusdc.svg"
   },
@@ -20,14 +22,16 @@
     "address": "0xF44AfBA5a8F55D54d4509db4baC51a9961B7aA05",
     "stablecoin": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
     "stablecoinSymbol": "UNI",
+    "stablecoinDecimals": 18,
     "protocol": "Compound",
     "iconPath": "assets/img/token-icons/uni.svg"
   },
-  "yyCRV": {
+  "yUSD": {
     "name": "yUSD",
     "address": "0xda6602774ef3Bd0a79103BAd6777d06A638D8402",
     "stablecoin": "0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8",
     "stablecoinSymbol": "yCRV",
+    "stablecoinDecimals": 18,
     "protocol": "yEarn",
     "iconPath": "assets/img/token-icons/yusd.webp"
   },
@@ -36,6 +40,7 @@
     "address": "0x998290144d13C05fcEA2890A9f9e2f433c27CE9d",
     "stablecoin": "0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3",
     "stablecoinSymbol": "crvRenWSBTC",
+    "stablecoinDecimals": 18,
     "protocol": "yEarn",
     "iconPath": "assets/img/token-icons/btc.svg"
   }

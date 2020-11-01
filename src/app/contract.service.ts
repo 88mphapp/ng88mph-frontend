@@ -37,8 +37,14 @@ export class ContractService {
   }
 
   getPoolStablecoin(name: string) {
-    const abi = require(`../assets/abis/DInterest.json`);
+    const abi = require(`../assets/abis/ERC20.json`);
     const address = this.getPoolStablecoinAddress(name);
+    return new this.wallet.web3.eth.Contract(abi, address);
+  }
+
+  getNamedContract(name: string) {
+    const abi = require(`../assets/abis/${name}.json`);
+    const address = require('../assets/json/contracts.json')[name];
     return new this.wallet.web3.eth.Contract(abi, address);
   }
 }
@@ -48,6 +54,7 @@ export interface PoolInfo {
   address: string;
   stablecoin: string;
   stablecoinSymbol: string;
+  stablecoinDecimals: number;
   protocol: string;
   iconPath: string;
 }

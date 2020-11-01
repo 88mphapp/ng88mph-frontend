@@ -22,4 +22,8 @@ export class HelpersService {
       return 0;
     }
   }
+
+  processWeb3Number(number): string {
+    return new BigNumber(number).integerValue().toFixed();
+  }
 }
