@@ -104,7 +104,7 @@ export class ModalDepositComponent implements OnInit {
     // get MPH reward amount
     const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(this.selectedPoolInfo.address).call()).div(this.PRECISION);
     const poolDepositorRewardMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(this.selectedPoolInfo.address).call()).div(this.PRECISION);
-    this.mphRewardAmount = poolMintingMultiplier.times(this.depositAmount);
+    this.mphRewardAmount = poolMintingMultiplier.times(this.interestAmountToken).times(stablecoinPrecision).div(this.PRECISION);
     this.mphTakeBackAmount = new BigNumber(1).minus(poolDepositorRewardMultiplier).times(this.mphRewardAmount);
   }
 
