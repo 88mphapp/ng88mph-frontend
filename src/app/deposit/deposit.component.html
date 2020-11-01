@@ -135,7 +135,8 @@
                   </td>
                   <td>
                     <!-- Button -->
-                    <button type="button" class="card-link small small px-1" (click)="openDepositModal()">
+                    <button type="button" class="card-link small small px-1"
+                      (click)="openDepositModal(userPool.poolInfo.name)">
                       <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                     </button>
                   </td>
@@ -270,7 +271,7 @@
                 </td>
                 <td class="text-right">
                   <!-- Button -->
-                  <button type="button" class="card-link small small px-1" (click)="openDepositModal()">
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)">
                     <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                   </button>
                 </td>

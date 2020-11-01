@@ -238,14 +238,14 @@ export class DepositComponent implements OnInit {
     this.allPoolList = allPoolList;
   }
 
-  openDepositModal() {
+  openDepositModal(poolName?: string) {
     const modalRef = this.modalService.open(ModalDepositComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.defaultPoolName = poolName;
   }
 
   openWithdrawModal() {
     const modalRef = this.modalService.open(ModalWithdrawComponent, { windowClass: 'fullscreen' });
   }
-
 }
 
 interface QueryResult {
