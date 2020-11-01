@@ -9,6 +9,7 @@ import { ModalWithdrawComponent } from './modal-withdraw/modal-withdraw.componen
 import { Router } from '@angular/router';
 import { WalletService } from '../wallet.service';
 import { ContractService, PoolInfo } from '../contract.service';
+import { DPool, UserPool, UserDeposit } from './types';
 import { HelpersService } from '../helpers.service';
 import { Timer } from '../timer';
 
@@ -59,6 +60,8 @@ const mockUser = {
   styleUrls: ['./deposit.component.css']
 })
 export class DepositComponent implements OnInit {
+  YEAR_IN_SEC = 31556952; // Number of seconds in a year
+
   totalDepositUSD: BigNumber;
   totalInterestUSD: BigNumber;
   totalMPHEarned: BigNumber;
@@ -94,8 +97,9 @@ export class DepositComponent implements OnInit {
           totalMPHEarned
           pools {
             address
-            deposits(where: { user: "${userID}", active: true, orderBy: nftID }) {
+            deposits(where: { user: "${userID}", active: true }, orderBy: nftID) {
               nftID
+              fundingID
               amount
               maturationTimestamp
               depositTimestamp
@@ -147,8 +151,11 @@ export class DepositComponent implements OnInit {
           for (const deposit of pool.deposits) {
             const userPoolDeposit: UserDeposit = {
               nftID: deposit.nftID,
+              fundingID: deposit.fundingID,
+              locked: deposit.maturationTimestamp >= (Date.now() / 1e3),
               amountToken: new BigNumber(deposit.amount),
               amountUSD: new BigNumber(deposit.amount).times(stablecoinPrice),
+              apy: new BigNumber(deposit.interestEarned).div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.YEAR_IN_SEC).times(100),
               countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
               interestEarnedToken: new BigNumber(deposit.interestEarned),
               interestEarnedUSD: new BigNumber(deposit.interestEarned).times(stablecoinPrice),
@@ -243,8 +250,10 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.defaultPoolName = poolName;
   }
 
-  openWithdrawModal() {
+  openWithdrawModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
     const modalRef = this.modalService.open(ModalWithdrawComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.userDeposit = userDeposit;
+    modalRef.componentInstance.poolInfo = poolInfo;
   }
 }
 
@@ -255,11 +264,11 @@ interface QueryResult {
       address: string;
       deposits: {
         nftID: number;
+        fundingID: number;
         amount: number;
         maturationTimestamp: number;
         depositTimestamp: number;
         interestEarned: number;
-        fundingID: number;
         mintMPHAmount: number;
         takeBackMPHAmount: number;
       }[];
@@ -278,30 +287,4 @@ interface QueryResult {
     totalActiveDeposit: number;
     oneYearInterestRate: number;
   }[];
-}
-
-interface DPool {
-  name: string;
-  protocol: string;
-  stablecoin: string;
-  stablecoinSymbol: string;
-  iconPath: string;
-  totalDepositToken: BigNumber;
-  totalDepositUSD: BigNumber;
-  oneYearInterestRate: BigNumber;
-}
-
-interface UserPool {
-  poolInfo: PoolInfo;
-  deposits: UserDeposit[];
-}
-
-interface UserDeposit {
-  nftID: number;
-  amountToken: BigNumber;
-  amountUSD: BigNumber;
-  countdownTimer: Timer;
-  interestEarnedToken: BigNumber;
-  interestEarnedUSD: BigNumber;
-  mintMPHAmount: BigNumber;
 }
