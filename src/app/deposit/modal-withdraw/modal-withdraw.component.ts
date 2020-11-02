@@ -53,13 +53,13 @@ export class ModalWithdrawComponent implements OnInit {
     const pool = this.contract.getPool(this.poolInfo.name);
     const func = pool.methods.withdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
 
-    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, console.log);
+    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 
   earlyWithdraw() {
     const pool = this.contract.getPool(this.poolInfo.name);
     const func = pool.methods.earlyWithdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
 
-    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, console.log);
+    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 }
