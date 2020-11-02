@@ -116,6 +116,6 @@ export class ModalDepositComponent implements OnInit {
     const maturationTimestamp = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.DAY).plus(Date.now() / 1e3).plus(this.DEPOSIT_DELAY));
     const func = pool.methods.deposit(depositAmount, maturationTimestamp);
 
-    this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, console.log);
+    this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 }
