@@ -35,6 +35,7 @@ export class SidebarComponent implements OnInit {
     const queryString = gql`
       {
         mphholder(id: "${mphHolderID}") {
+          id
           mphBalance
           stakedMPHBalance
         }
@@ -65,6 +66,7 @@ export class SidebarComponent implements OnInit {
 
 interface QueryResult {
   mphholder: {
+    id: string;
     mphBalance: number;
     stakedMPHBalance: number;
   };
