@@ -8,8 +8,7 @@
         <div class="col">
           <h1 class="mb-2">Stake your MPH tokens to earn your rewards</h1>
           <p class="text-muted font-weight-bold mb-5">If you stake your MPH, you are eligible to collect two kinds of
-            rewards: 88mph fees, and incentives like governance tokens or LP rewards harvested by the 88mph pools on
-            external protocols (COMP, CRV, etc). <a class="text-purple" href="https://88mph.app/docs/" target="_blank"
+            rewards: 88mph protocol fees, and yield-farmed tokens earned from the protocols 88mph is connected to (COMP, CRV, etc.). <a class="text-purple" href="https://88mph.app/docs/" target="_blank"
               rel="noopener noreferrer">See how it works</a>.</p>
           <div class="card-deck my-4">
             <div class="card mb-4 mb-lg-0">
@@ -17,20 +16,21 @@
                 <!-- Title -->
                 <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
                   Staked MPH
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white"
-                    placement="top" ngbTooltip="Your staked MPH tokens currently earning rewards">
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                    ngbTooltip="Stake MPH tokens to earn rewards">
                     [i]
                   </button>
                 </h5>
                 <!-- Heading -->
                 <h2 class="mb-1 glowing pl-3">
-                  0.0000 MPH <small>(0% of the pool)</small>
+                  {{stakedMPHBalance.toFormat(4)}} MPH <small>({{stakedMPHPoolProportion.toFormat(4)}}% of the
+                    pool)</small>
                 </h2>
-                <h5 class="mb-3 text-white pl-3">$0.00 @ 0.00% APY (unstable)</h5>
+                <h5 class="mb-3 text-white pl-3 d-none">$0.00 @ 0.00% APY (unstable)</h5>
                 <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()">
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
                 </button>
-                <button type="button" class="card-link small ml-3 px-1">
+                <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
                 </button>
               </div>
@@ -40,16 +40,16 @@
                 <!-- Title -->
                 <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
                   Claimable rewards
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white"
-                    placement="top" ngbTooltip="Amount of claimable rewards in USD (unstable)">
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                    ngbTooltip="Amount of claimable rewards in DAI">
                     [i]
                   </button>
                 </h5>
                 <!-- Heading -->
                 <h2 class="mb-3 glowing pl-3">
-                  $0.0000
+                  {{claimableRewards.toFormat(4)}} DAI
                 </h2>
-                <button type="button" class="card-link small ml-3 px-1">
+                <button type="button" class="card-link small ml-3 px-1" (click)="claim()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                 </button>
               </div>
@@ -57,8 +57,6 @@
           </div>
         </div>
       </div> <!-- / .row -->
-      <p class="mb-5 text-white text-center small">88mph smart contracts are audited and secured by <a
-          class="text-purple" href="https://certificate.quantstamp.com/full/88-mph" target="_blank">QuantStamp</a>.</p>
 
     </div> <!-- / .header-body -->
 
