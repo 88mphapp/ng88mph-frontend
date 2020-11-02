@@ -25,7 +25,7 @@
                       <label>Amount</label>
                       <div class="input-group mb-2">
                         <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
-                          aria-describedby="" [value]="depositAmount.toString()"
+                          aria-describedby="" [value]="depositAmount.toFixed()"
                           (input)="setDepositAmount($event.target.value)">
                         <div class="input-group-append">
                           <button class="card-link small px-1" type="button"
@@ -139,7 +139,7 @@
                           <td class="px-0 text-white border-0">
                             <strong>MPH to repay upon withdraw</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Depositors need to repay most of their MPH tokens when they want to withdraw. Relax! Keep them warm by staking them to earn rewards (protocol fees, harvested incentives on external protocols, etc).">
+                              ngbTooltip="Depositors need to repay 90% of their MPH tokens when they want to withdraw. Relax! Keep them warm by staking them to earn rewards (protocol fees, harvested incentives on external protocols, etc).">
                               [i]
                             </button>
                           </td>
@@ -256,7 +256,7 @@
                       <p class="mb-0 font-weight-bold">
                         When your lending period is over, you withdraw your principal together with the fixed-rate
                         interest
-                        earned. When you withdraw, you need to repay most of the
+                        earned. When you withdraw, you need to return 90% of the
                         MPH tokens received at the time of deposit.
                       </p>
 

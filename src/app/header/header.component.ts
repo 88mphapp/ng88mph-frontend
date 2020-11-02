@@ -34,6 +34,7 @@ export class HeaderComponent implements OnInit {
     const queryString = gql`
       {
         mphholder(id: "${mphHolderID}") {
+          id
           mphBalance
           stakedMPHBalance
         }
@@ -64,6 +65,7 @@ export class HeaderComponent implements OnInit {
 
 interface QueryResult {
   mphholder: {
+    id: string;
     mphBalance: number;
     stakedMPHBalance: number;
   };
