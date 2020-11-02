@@ -8,8 +8,9 @@
         <div class="col">
           <h1 class="mb-2">Stake your MPH tokens to earn your rewards</h1>
           <p class="text-muted font-weight-bold mb-5">If you stake your MPH, you are eligible to collect two kinds of
-            rewards: 88mph protocol fees, and yield-farmed tokens earned from the protocols 88mph is connected to (COMP, CRV, etc.). <a class="text-purple" href="https://88mph.app/docs/" target="_blank"
-              rel="noopener noreferrer">See how it works</a>.</p>
+            rewards: 88mph protocol fees, and yield-farmed tokens earned from the protocols 88mph is connected to (COMP,
+            CRV, etc.). Rewards are distributed in DAI. <a class="text-purple" href="https://88mph.app/docs/"
+              target="_blank" rel="noopener noreferrer">See how it works</a>.</p>
           <div class="card-deck my-4">
             <div class="card mb-4 mb-lg-0">
               <div class="card-body pt-0">
@@ -47,7 +48,7 @@
                 </h5>
                 <!-- Heading -->
                 <h2 class="mb-3 glowing pl-3">
-                  {{claimableRewards.toFormat(4)}} DAI
+                  {{claimableRewards.toFormat(4)}} DAI <small>({{rewardPerWeek.toFormat(4)}} DAI/week)</small>
                 </h2>
                 <button type="button" class="card-link small ml-3 px-1" (click)="claim()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
