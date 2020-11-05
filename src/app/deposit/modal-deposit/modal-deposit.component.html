@@ -36,7 +36,7 @@
                     <div class="form-group col-12 col-lg-6 mb-0">
                       <label>Lending pool</label>
                       <div class="input-group input-group-lg mb-2">
-                        <select class="custom-select custom-select" (change)="selectPool($event.target.value)">
+                        <select class="custom-select" (change)="selectPool($event.target.value)">
                           <option value={{pool.name}} *ngFor="let pool of poolList"
                             [selected]="pool.name === selectedPoolInfo.name">{{pool.name}}</option>
                         </select>
@@ -64,8 +64,6 @@
                       (click)="setDepositTime(180)">180d</button>
                     <button class="card-link small px-1 ml-2" type="button" name="365d"
                       (click)="setDepositTime(365)">365d</button>
-                    <button class="card-link small px-1 ml-2" type="button" name="730d"
-                      (click)="setDepositTime(730)">730d</button>
                   </div>
                   <div class="table-responsive">
                     <table class="table mb-0">
