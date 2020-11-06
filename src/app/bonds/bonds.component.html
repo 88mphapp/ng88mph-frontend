@@ -230,7 +230,7 @@
                 </select>
               </div>
 
-              <ng-container *ngIf="numFundableDeposits > 0">
+              <ng-container *ngIf="selectedPoolHasDebt()">
                 <div class="row pl-4 pr-4 mt-3">
                   <h4>
                     Your floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(4)}}%</strong>
@@ -277,12 +277,12 @@
 
             </div>
             <div class="col-12 col-lg-6">
-              <ng-container *ngIf="!(debtToFundToken.gte(0) && numFundableDeposits > 0)">
+              <ng-container *ngIf="!(debtToFundToken.gte(0) && selectedPoolHasDebt())">
                 <h2 class="display-2 mb-4 glowing">
                   No debt available
                 </h2>
               </ng-container>
-              <ng-container *ngIf="debtToFundToken.gte(0) && numFundableDeposits > 0">
+              <ng-container *ngIf="debtToFundToken.gte(0) && selectedPoolHasDebt()">
                 <h5 class="text-uppercase text-white">
                   Estimated ROI
                 </h5>
@@ -337,7 +337,8 @@
               </ng-container>
             </div>
 
-            <button class="card-link btn-block m-3" [disabled]="debtToFundToken.lt(0)" *ngIf="numDepositsToFund > 0">
+            <button class="card-link btn-block m-3" [disabled]="debtToFundToken.lt(0)"
+              *ngIf="selectedPoolHasDebt()" (click)="buyBond()">
               Continue
             </button>
           </div>
