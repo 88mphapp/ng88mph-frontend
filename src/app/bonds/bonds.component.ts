@@ -58,6 +58,7 @@ export class BondsComponent implements OnInit {
   estimatedProfitToken: BigNumber;
   estimatedROI: BigNumber;
   estimatedProfitUSD: BigNumber;
+  loadingCalculator: boolean;
 
   constructor(
     private apollo: Apollo,
@@ -208,7 +209,7 @@ export class BondsComponent implements OnInit {
           // get MPH reward amount
           const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
           const poolFunderRewardMultiplier = new BigNumber(await mphMinter.methods.poolFunderRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
-          const mphRewardPerToken = poolMintingMultiplier.times(stablecoinPrecision).div(this.constants.PRECISION).times(poolFunderRewardMultiplier).div(this.constants.PRECISION);
+          const mphRewardPerToken = poolMintingMultiplier.times(stablecoinPrecision).div(this.constants.PRECISION).times(poolFunderRewardMultiplier);
 
           const latestFundedDeposit = pool.latestFundedDeposit.length ? pool.latestFundedDeposit[0].nftID : 0;
           const latestDeposit = pool.latestDeposit.length ? pool.latestDeposit[0].nftID : 0;
@@ -255,6 +256,7 @@ export class BondsComponent implements OnInit {
     this.estimatedProfitToken = new BigNumber(0);
     this.estimatedProfitUSD = new BigNumber(0);
     this.estimatedROI = new BigNumber(0);
+    this.loadingCalculator = true;
   }
 
   selectPool(poolIdx: number) {
@@ -345,7 +347,8 @@ export class BondsComponent implements OnInit {
     const estimatedFloatingRate = this.floatingRatePrediction.div(100);
     let estimatedInterest = new BigNumber(0);
     const now = Date.now() / 1e3;
-    for (const deposit of this.fundableDeposits) {
+    const numDepositsToFund = isNaN(+this.numDepositsToFund) ? this.fundableDeposits.length : +this.numDepositsToFund;
+    for (const deposit of this.fundableDeposits.slice(0, numDepositsToFund)) {
       if (!deposit.active || deposit.maturationTimestamp < now) continue;
       const depositInterest = deposit.amount.times(estimatedFloatingRate).times(deposit.maturationTimestamp - now).div(this.constants.YEAR_IN_SEC);
       estimatedInterest = estimatedInterest.plus(depositInterest);
@@ -353,6 +356,8 @@ export class BondsComponent implements OnInit {
     this.estimatedProfitToken = estimatedInterest.minus(this.debtToFundToken);
     this.estimatedProfitUSD = this.estimatedProfitToken.times(await this.helpers.getTokenPriceUSD(this.selectedPool.stablecoin.toLowerCase()));
     this.estimatedROI = this.estimatedProfitToken.div(this.debtToFundToken).times(100);
+
+    this.loadingCalculator = false;
   }
 
   buyBond() {

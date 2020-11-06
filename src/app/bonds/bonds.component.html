@@ -215,10 +215,10 @@
       <div class="card">
         <h2 class="mt-n3 bg-dark mb-4 mx-3 pl-3">Buy floating-rate bonds</h2>
         <div class="card-body p-0">
-          <h2 class="display-2 glowing text-center" *ngIf="!allPoolList.length">
+          <h2 class="display-2 glowing text-center" *ngIf="loadingCalculator">
             Loading...
           </h2>
-          <div class="row p-4" *ngIf="allPoolList.length">
+          <div class="row p-4" *ngIf="!loadingCalculator">
             <div class="col-12 col-lg-6">
               <div class="row pl-4 pr-4 pb-2">
                 <label for="pool-select">Pool:</label>
@@ -233,13 +233,13 @@
               <ng-container *ngIf="selectedPoolHasDebt()">
                 <div class="row pl-4 pr-4 mt-3">
                   <h4>
-                    Your floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(4)}}%</strong>
+                    Your avg. floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(4)}}%</strong>
                   </h4>
                 </div>
 
                 <div class="pb-2 mt-3 pl-3 pr-3">
                   <input type="range" class="custom-range" min="0"
-                    max={{selectedPool?.oneYearInterestRate.times(2).toFixed(4)}} step="0.0001"
+                    max={{selectedPool?.oneYearInterestRate.div(0.75).times(2).toFixed(4)}} step="0.0001"
                     [value]="floatingRatePrediction.toFixed(4)"
                     (input)="updateFloatingRatePrediction($event.target.value)">
                   <div class="row justify-content-between text-white px-4">
@@ -247,10 +247,10 @@
                       <small>0%</small>
                     </div>
                     <div class="col text-center">
-                      <small>{{selectedPool?.oneYearInterestRate.toFormat(4)}}% (Current fixed-rate APY)</small>
+                      <small>{{selectedPool?.oneYearInterestRate.div(0.75).toFormat(4)}}% <br> (Current floating-rate APY)</small>
                     </div>
                     <div class="col text-right">
-                      <small>{{selectedPool?.oneYearInterestRate.times(2).toFormat(4)}}%</small>
+                      <small>{{selectedPool?.oneYearInterestRate.div(0.75).times(2).toFormat(4)}}%</small>
                     </div>
                   </div>
                 </div>
