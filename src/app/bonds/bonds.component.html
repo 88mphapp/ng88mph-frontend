@@ -84,7 +84,7 @@
                 <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
                   MPH earned
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="Bond buyers earn MPH tokens that can be staked to earn rewards (protocol fees, harvested incentives, etc)">
+                    ngbTooltip="Bond buyers earn MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
                     [i]
                   </button>
                 </h5>
@@ -140,7 +140,7 @@
                 <th class="text-dark">
                   MPH rewards
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="Bond buyers earn upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested incentives, etc)">
+                    ngbTooltip="Bond buyers earn upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
                     [i]
                   </button>
                 </th>
@@ -214,120 +214,132 @@
       <!-- Deficit funding opportunities -->
       <div class="card">
         <h2 class="mt-n3 bg-dark mb-4 mx-3 pl-3">Buy floating-rate bonds</h2>
-        <div class="card-header pb-6 pb-lg-5">
-          <div class="row justify-content-between">
-            <div class="col-auto mb-3 mb-lg-0 pt-4 pt-lg-0">
-              <select class="custom-select" data-toggle="select" (change)="selectPool($event.target.value)">
-                <option value={{pool.name}} *ngFor="let pool of allPoolList">
-                  {{pool.name}}
-                </option>
-              </select>
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <h4 class="card-header-title">
-                Avg variable APY prediction: <strong>5.3%</strong>
-              </h4>
-            </div>
-          </div>
-        </div>
         <div class="card-body p-0">
-          <div class="px-0 pb-2 mt-n3">
-            <input type="range" class="custom-range" min="0" max="100" step="0.1">
-            <div class="row justify-content-between text-white px-4">
-              <div class="col">
-                <small>0%</small>
-              </div>
-              <div class="col text-center">
-                <small>5.3% (current pool APY)</small>
-              </div>
-              <div class="col text-right">
-                <small>10.0%</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="row p-4">
+          <h2 class="display-2 glowing text-center" *ngIf="!allPoolList.length">
+            Loading...
+          </h2>
+          <div class="row p-4" *ngIf="allPoolList.length">
             <div class="col-12 col-lg-6">
-              <form>
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Number of deposits to fund</label>
-                  <select class="form-control mb-2" id="exampleFormControlSelect1">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                  </select>
-                  <small id="customDeficitSelectHelp" class="form-text text-muted">Up to 20 deposits</small>
+              <div class="row pl-4 pr-4 pb-2">
+                <label for="pool-select">Pool:</label>
+                <select class="custom-select" id="pool-select" data-toggle="select"
+                  (change)="selectPool($event.target.value)">
+                  <option value={{i}} *ngFor="let pool of allPoolList; index as i;">
+                    {{pool.name}}
+                  </option>
+                </select>
+              </div>
+
+              <ng-container *ngIf="numFundableDeposits > 0">
+                <div class="row pl-4 pr-4 mt-3">
+                  <h4>
+                    Your floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(4)}}%</strong>
+                  </h4>
                 </div>
-                <div class="form-group">
-                  <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">All pool deposits</label>
+
+                <div class="pb-2 mt-3 pl-3 pr-3">
+                  <input type="range" class="custom-range" min="0"
+                    max={{selectedPool?.oneYearInterestRate.times(2).toFixed(4)}} step="0.0001"
+                    [value]="floatingRatePrediction.toFixed(4)"
+                    (input)="updateFloatingRatePrediction($event.target.value)">
+                  <div class="row justify-content-between text-white px-4">
+                    <div class="col">
+                      <small>0%</small>
+                    </div>
+                    <div class="col text-center">
+                      <small>{{selectedPool?.oneYearInterestRate.toFormat(4)}}% (Current fixed-rate APY)</small>
+                    </div>
+                    <div class="col text-right">
+                      <small>{{selectedPool?.oneYearInterestRate.times(2).toFormat(4)}}%</small>
+                    </div>
                   </div>
                 </div>
 
-                <button class="card-link small px-1" type="submit">
-                  Continue
-                </button>
-              </form>
+                <div class="row pl-4 pr-4">
+                  <h4>
+                    Number of deposit debts to fund: <strong>{{numDepositsToFund}}</strong>
+                  </h4>
+                </div>
+
+                <div class="pb-2 mt-3 pl-3 pr-3">
+                  <input type="range" class="custom-range" min="1" [max]="numFundableDeposits + 1" step="1"
+                    [value]="numFundableDeposits + 1" (input)="updateNumDepositsToFund($event.target.value)">
+                  <div class="row justify-content-between text-white px-4">
+                    <div class="col">
+                      <small>1</small>
+                    </div>
+                    <div class="col text-right">
+                      <small>All</small>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
             </div>
             <div class="col-12 col-lg-6">
-              <h5 class="text-uppercase text-white">
-                Estimated ROI
-              </h5>
-              <h2 class="display-2 mb-4 glowing">
-                0.00%
-              </h2>
-              <div class="row mb-4">
-                <div class="col-auto">
-                  <h5 class="text-uppercase text-white">
-                    You pay
-                  </h5>
-                  <h2 class="mb-1 glowing">
-                    $0.0000
-                  </h2>
-                  <h5 class="mb-3 text-white">0.0000 tokens</h5>
+              <ng-container *ngIf="!(debtToFundToken.gte(0) && numFundableDeposits > 0)">
+                <h2 class="display-2 mb-4 glowing">
+                  No debt available
+                </h2>
+              </ng-container>
+              <ng-container *ngIf="debtToFundToken.gte(0) && numFundableDeposits > 0">
+                <h5 class="text-uppercase text-white">
+                  Estimated ROI
+                </h5>
+                <h2 class="display-2 mb-4 glowing">
+                  {{estimatedROI.toFormat(4)}}%
+                </h2>
+                <div class="row mb-4">
+                  <div class="col-auto">
+                    <h5 class="text-uppercase text-white">
+                      You pay
+                    </h5>
+                    <h2 class="mb-1 glowing">
+                      ${{debtToFundUSD.toFormat(4)}}
+                    </h2>
+                    <h5 class="mb-3 text-white">{{debtToFundToken.toFormat()}} {{selectedPool?.stablecoinSymbol}}</h5>
+                  </div>
+                  <div class="col-auto">
+                    <h5 class="text-uppercase text-white">
+                      You earn interest on
+                    </h5>
+                    <h2 class="mb-1 glowing">
+                      ${{amountToEarnOnUSD.toFormat(4)}}
+                    </h2>
+                    <h5 class="mb-3 text-white">{{amountToEarnOnToken.toFormat(4)}} {{selectedPool?.stablecoinSymbol}}
+                    </h5>
+                  </div>
                 </div>
-                <div class="col-auto">
-                  <h5 class="text-uppercase text-white">
-                    You earn interest on
-                  </h5>
-                  <h2 class="mb-1 glowing">
-                    $0.0000
-                  </h2>
-                  <h5 class="mb-3 text-white">0.0000 tokens</h5>
+                <div class="row">
+                  <div class="col-auto">
+                    <h5 class="text-uppercase text-white">
+                      Estimated profit
+                    </h5>
+                    <h2 class="mb-1 glowing">
+                      ${{estimatedProfitUSD.toFormat(4)}}
+                    </h2>
+                    <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat()}} {{selectedPool?.stablecoinSymbol}}
+                    </h5>
+                  </div>
+                  <div class="col-auto">
+                    <h5 class="text-uppercase text-white">
+                      MPH rewards
+                      <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                        ngbTooltip="Bond buyers get rewarded with upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
+                        [i]
+                      </button>
+                    </h5>
+                    <h2 class="mb-1 glowing">
+                      {{mphRewardAmount.toFormat(4)}} MPH
+                    </h2>
+                  </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-auto">
-                  <h5 class="text-uppercase text-white">
-                    MPH rewards
-                    <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                      ngbTooltip="Deficit funders get rewarded with upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested incentives, etc)">
-                      [i]
-                    </button>
-                  </h5>
-                  <h2 class="mb-1 glowing">
-                    $0.0000
-                  </h2>
-                  <h5 class="mb-3 text-white">0.0000 tokens</h5>
-                </div>
-                <div class="col-auto">
-                  <h5 class="text-uppercase text-white">
-                    MPH APY
-                    <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                      ngbTooltip="MPH LP rewards annualized and compounded based on the last week">
-                      [i]
-                    </button>
-                  </h5>
-                  <h2 class="mb-1 glowing">
-                    $0.0000
-                  </h2>
-                  <h5 class="mb-3 text-white">0.0000 tokens</h5>
-                </div>
-              </div>
+              </ng-container>
             </div>
+
+            <button class="card-link btn-block m-3" [disabled]="debtToFundToken.lt(0)" *ngIf="numDepositsToFund > 0">
+              Continue
+            </button>
           </div>
 
         </div>
