@@ -127,7 +127,7 @@ export class BondsComponent implements OnInit {
 
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
     if (!queryResult.loading) {
-      const funder = mockFunder;//queryResult.data.funder;
+      const funder = queryResult.data.funder;
       const dpools = queryResult.data.dpools;
       let stablecoinPriceCache = {};
 
@@ -301,6 +301,13 @@ export class BondsComponent implements OnInit {
     });
   }
 
+  selectedPoolHasDebt(): boolean {
+    if (!this.selectedPool) {
+      return false;
+    }
+    return this.selectedPool.surplus.lt(0) && this.numFundableDeposits > 0;
+  }
+
   updateFloatingRatePrediction(newPrediction: number) {
     this.floatingRatePrediction = new BigNumber(newPrediction);
     this.updateEstimatedROI();
@@ -339,19 +346,29 @@ export class BondsComponent implements OnInit {
     let estimatedInterest = new BigNumber(0);
     const now = Date.now() / 1e3;
     for (const deposit of this.fundableDeposits) {
-      if (!deposit.active) continue;
-      if (deposit.maturationTimestamp < now) {
-        // Deposit unlocked but not withdrawn
-        // Add surplus
-        estimatedInterest = estimatedInterest.plus(BigNumber.max(deposit.surplus, 0));
-      } else {
-        const depositInterest = deposit.amount.times(estimatedFloatingRate).times(deposit.maturationTimestamp - now).div(this.constants.YEAR_IN_SEC);
-        estimatedInterest = estimatedInterest.plus(depositInterest);
-      }
+      if (!deposit.active || deposit.maturationTimestamp < now) continue;
+      const depositInterest = deposit.amount.times(estimatedFloatingRate).times(deposit.maturationTimestamp - now).div(this.constants.YEAR_IN_SEC);
+      estimatedInterest = estimatedInterest.plus(depositInterest);
     }
     this.estimatedProfitToken = estimatedInterest.minus(this.debtToFundToken);
     this.estimatedProfitUSD = this.estimatedProfitToken.times(await this.helpers.getTokenPriceUSD(this.selectedPool.stablecoin.toLowerCase()));
     this.estimatedROI = this.estimatedProfitToken.div(this.debtToFundToken).times(100);
+  }
+
+  buyBond() {
+    const pool = this.contract.getPool(this.selectedPool.name);
+    const stablecoin = this.contract.getPoolStablecoin(this.selectedPool.name);
+    const stablecoinPrecision = Math.pow(10, this.selectedPool.stablecoinDecimals);
+    const debtToFund = this.helpers.processWeb3Number(this.debtToFundToken.times(stablecoinPrecision));
+    let func;
+    if (this.numDepositsToFund === 'All') {
+      // Fund all deposits
+      func = pool.methods.fundAll();
+    } else {
+      // Fund a selection of deposits
+      func = pool.methods.fundMultiple(this.selectedPool.latestFundedDeposit + (+this.numDepositsToFund));
+    }
+    this.wallet.sendTxWithToken(func, stablecoin, this.selectedPool.address, debtToFund, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) })
   }
 }
 
