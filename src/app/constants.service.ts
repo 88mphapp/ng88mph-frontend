@@ -6,4 +6,5 @@ import BigNumber from 'bignumber.js';
 })
 export class ConstantsService {
   PRECISION = 1e18;
+  YEAR_IN_SEC = 31556952;
 }

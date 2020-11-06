@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
 import { ModalDepositComponent } from './modal-deposit/modal-deposit.component';
 import { ModalWithdrawComponent } from './modal-withdraw/modal-withdraw.component';
-import { Router } from '@angular/router';
 import { WalletService } from '../wallet.service';
 import { ContractService, PoolInfo } from '../contract.service';
 import { DPool, UserPool, UserDeposit } from './types';
@@ -17,7 +16,7 @@ const mockUser = {
   totalMPHEarned: 1e3,
   pools: [
     {
-      address: '0x6bA0251940E6c22c1FF5270198a134E3779B2f93',
+      address: '0xb5EE8910A93F8A450E97BE0436F36B9458106682',
       deposits: [
         {
           nftID: 1,
@@ -31,7 +30,7 @@ const mockUser = {
       ]
     },
     {
-      address: '0xF44AfBA5a8F55D54d4509db4baC51a9961B7aA05',
+      address: '0xEB2F0A3045db12366A9f6A8e922D725D86a117EB',
       deposits: [
         {
           nftID: 1,
@@ -71,7 +70,6 @@ export class DepositComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private apollo: Apollo,
-    public route: Router,
     public wallet: WalletService,
     public contract: ContractService,
     public helpers: HelpersService
@@ -108,7 +106,7 @@ export class DepositComponent implements OnInit {
               takeBackMPHAmount
             }
           }
-          totalDeposits {
+          totalDepositByPool {
             pool {
               stablecoin
             }
@@ -176,7 +174,7 @@ export class DepositComponent implements OnInit {
         // compute total deposit & interest in USD
         let totalDepositUSD = new BigNumber(0);
         let totalInterestUSD = new BigNumber(0);
-        for (const totalDepositEntity of user.totalDeposits) {
+        for (const totalDepositEntity of user.totalDepositByPool) {
           let stablecoinPrice = stablecoinPriceCache[totalDepositEntity.pool.stablecoin];
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(totalDepositEntity.pool.stablecoin);
@@ -273,7 +271,7 @@ interface QueryResult {
         takeBackMPHAmount: number;
       }[];
     }[];
-    totalDeposits: {
+    totalDepositByPool: {
       pool: {
         stablecoin: string;
       };
