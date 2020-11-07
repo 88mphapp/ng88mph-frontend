@@ -16,6 +16,7 @@ export class ModalDepositComponent implements OnInit {
   PRECISION = 1e18;
   DAY = 24 * 60 * 60;
   DEPOSIT_DELAY = 60 * 60; // 1 hour
+  DEPOSIT_PERIOD_PRESETS = [7, 14, 30, 60, 90, 180, 365];
 
   @Input() defaultPoolName: string;
 
@@ -68,7 +69,7 @@ export class ModalDepositComponent implements OnInit {
     this.minDepositAmount = new BigNumber(0);
     this.maxDepositAmount = new BigNumber(0);
     this.minDepositPeriod = 0;
-    this.maxDepositPeriod = 1;
+    this.maxDepositPeriod = 1e4;
   }
 
   async selectPool(poolName: string) {
@@ -106,6 +107,11 @@ export class ModalDepositComponent implements OnInit {
 
   setDepositAmount(amount: string): void {
     this.depositAmount = new BigNumber(+amount);
+    this.updateAPY();
+  }
+
+  setMaxDepositAmount(): void {
+    this.depositAmount = BigNumber.min(this.stablecoinBalance, this.maxDepositAmount);
     this.updateAPY();
   }
 
