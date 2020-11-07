@@ -43,15 +43,23 @@
                       </div>
                     </div>
                   </div>
-                  <small class="form-text text-white mb-4">{{stablecoinBalance.toFormat()}}
+                  <small class="form-text text-white">{{stablecoinBalance.toFormat()}}
                     {{selectedPoolInfo.stablecoinSymbol}}
                     available</small>
+                  <small class="form-text text-white mb-4">
+                    Min: {{minDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}}
+                    Max: {{maxDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}}
+                  </small>
                   <div class="form-group row mb-3 mb-lg-2">
-                    <label for="colFormLabel" class="col-sm-7 col-form-label">Lending duration in days (min. 7d)</label>
+                    <label for="colFormLabel" class="col-sm-7 col-form-label">Lending duration in days</label>
                     <div class="col-sm-5">
                       <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
                         class="form-control text-right" [value]="depositTimeInDays"
                         (input)="setDepositTime($event.target.value)">
+                      <small class="form-text text-white mb-4">
+                        Min: {{minDepositPeriod}}d
+                        Max: {{maxDepositPeriod}}d
+                      </small>
                     </div>
                   </div>
                   <div class="mb-4">
