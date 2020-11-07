@@ -112,6 +112,7 @@ export class BondsComponent implements OnInit {
           surplus
           unfundedDepositAmount
           oneYearInterestRate
+          oracleInterestRate
           latestFundedDeposit: deposits(where: { fundingID_gt: 0 }, orderBy: nftID, orderDirection: desc, first: 1) {
             nftID
           }
@@ -226,7 +227,8 @@ export class BondsComponent implements OnInit {
             latestFundedDeposit: latestFundedDeposit,
             latestDeposit: latestDeposit,
             unfundedDepositAmount: new BigNumber(pool.unfundedDepositAmount),
-            mphRewardPerToken: mphRewardPerToken
+            mphRewardPerToken: mphRewardPerToken,
+            oracleInterestRate: new BigNumber(pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100)
           };
           allPoolList.push(dpoolObj);
         }
@@ -406,6 +408,7 @@ interface QueryResult {
     surplus: number;
     unfundedDepositAmount: number;
     oneYearInterestRate: number;
+    oracleInterestRate: number;
     latestFundedDeposit: {
       nftID: number;
     }[];
@@ -467,4 +470,5 @@ interface DPool {
   oneYearInterestRate: BigNumber;
   unfundedDepositAmount: BigNumber;
   mphRewardPerToken: BigNumber;
+  oracleInterestRate: BigNumber;
 }

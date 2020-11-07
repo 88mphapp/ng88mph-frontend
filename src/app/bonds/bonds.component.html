@@ -233,7 +233,7 @@
               <ng-container *ngIf="selectedPoolHasDebt()">
                 <div class="row pl-4 pr-4 mt-3">
                   <h4>
-                    Your avg. floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(4)}}%</strong>
+                    Your avg. floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(1)}}%</strong>
                   </h4>
                   <h4>
                     (Does not affect the bond, only for estimation)
@@ -242,18 +242,18 @@
 
                 <div class="pb-2 mt-3 pl-3 pr-3">
                   <input type="range" class="custom-range" min="0"
-                    max={{selectedPool?.oneYearInterestRate.div(0.75).times(2).toFixed(4)}} step="0.0001"
-                    [value]="floatingRatePrediction.toFixed(4)"
+                    max={{selectedPool?.oracleInterestRate.times(2).toFixed(1)}} step="0.1"
+                    [value]="floatingRatePrediction.toFixed(1)"
                     (input)="updateFloatingRatePrediction($event.target.value)">
                   <div class="row justify-content-between text-white px-4">
                     <div class="col">
                       <small>0%</small>
                     </div>
                     <div class="col text-center">
-                      <small>{{selectedPool?.oneYearInterestRate.div(0.75).toFormat(4)}}% <br> (Current floating-rate APY)</small>
+                      <small>{{selectedPool?.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate APY)</small>
                     </div>
                     <div class="col text-right">
-                      <small>{{selectedPool?.oneYearInterestRate.div(0.75).times(2).toFormat(4)}}%</small>
+                      <small>{{selectedPool?.oracleInterestRate.times(2).toFormat(1)}}%</small>
                     </div>
                   </div>
                 </div>
