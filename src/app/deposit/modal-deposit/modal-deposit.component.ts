@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { gql } from '@apollo/client';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
@@ -28,8 +30,13 @@ export class ModalDepositComponent implements OnInit {
   apy: BigNumber;
   mphRewardAmount: BigNumber;
   mphTakeBackAmount: BigNumber;
+  minDepositAmount: BigNumber;
+  maxDepositAmount: BigNumber;
+  minDepositPeriod: number;
+  maxDepositPeriod: number;
 
   constructor(
+    private apollo: Apollo,
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
@@ -58,15 +65,42 @@ export class ModalDepositComponent implements OnInit {
     this.apy = new BigNumber(0);
     this.mphRewardAmount = new BigNumber(0);
     this.mphTakeBackAmount = new BigNumber(0);
+    this.minDepositAmount = new BigNumber(0);
+    this.maxDepositAmount = new BigNumber(0);
+    this.minDepositPeriod = 0;
+    this.maxDepositPeriod = 1;
   }
 
   async selectPool(poolName: string) {
     this.selectedPoolInfo = this.contract.getPoolInfo(poolName);
+
+    const queryString = gql`
+      {
+        dpool(id: "${this.selectedPoolInfo.address.toLowerCase()}") {
+          MinDepositAmount
+          MaxDepositAmount
+          MinDepositPeriod
+          MaxDepositPeriod
+        }
+      }
+    `;
+    this.apollo.query<QueryResult>({
+      query: queryString
+    }).subscribe((x) => {
+      const pool = x.data.dpool;
+      const dayInSeconds = 24 * 60 * 60;
+      this.minDepositAmount = new BigNumber(pool.MinDepositAmount);
+      this.maxDepositAmount = new BigNumber(pool.MaxDepositAmount);
+      this.minDepositPeriod = Math.ceil(pool.MinDepositPeriod / dayInSeconds);
+      this.maxDepositPeriod = Math.floor(pool.MaxDepositPeriod / dayInSeconds);
+    });
+
     if (this.wallet.connected) {
       const stablecoin = this.contract.getPoolStablecoin(poolName);
       const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
       this.stablecoinBalance = new BigNumber(await stablecoin.methods.balanceOf(this.wallet.userAddress).call()).div(stablecoinPrecision);
     }
+
     this.updateAPY();
   }
 
@@ -118,4 +152,13 @@ export class ModalDepositComponent implements OnInit {
 
     this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
+}
+
+interface QueryResult {
+  dpool: {
+    MinDepositAmount: number;
+    MaxDepositAmount: number;
+    MinDepositPeriod: number;
+    MaxDepositPeriod: number;
+  };
 }
