@@ -16,6 +16,8 @@ import { BondsComponent } from './bonds/bonds.component';
 import { StatsComponent } from './stats/stats.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
+import { FarmingComponent } from './farming/farming.component';
+import { ModalStakeLPComponent } from './farming/modal-stake-lp/modal-stake-lp.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { HeaderComponent } from './header/header.component';
     BondsComponent,
     StatsComponent,
     SidebarComponent,
-    HeaderComponent
+    HeaderComponent,
+    FarmingComponent,
+    ModalStakeLPComponent
   ],
   imports: [
     BrowserModule,

@@ -47,6 +47,11 @@ export class ContractService {
     const address = require('../assets/json/contracts.json')[name];
     return new this.wallet.web3.eth.Contract(abi, address);
   }
+
+  getERC20(address: string) {
+    const abi = require(`../assets/abis/ERC20.json`);
+    return new this.wallet.web3.eth.Contract(abi, address);
+  }
 }
 
 export interface PoolInfo {

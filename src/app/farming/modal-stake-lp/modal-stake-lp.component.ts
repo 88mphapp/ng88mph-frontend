@@ -1,7 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApolloQueryResult } from '@apollo/client';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Apollo, gql } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { ContractService } from 'src/app/contract.service';
@@ -9,23 +7,24 @@ import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 
 @Component({
-  selector: 'app-modal-stake',
-  templateUrl: './modal-stake.component.html',
-  styleUrls: ['./modal-stake.component.css']
+  selector: 'app-modal-stake-lp',
+  templateUrl: './modal-stake-lp.component.html',
+  styleUrls: ['./modal-stake-lp.component.css']
 })
-export class ModalStakeComponent implements OnInit {
+export class ModalStakeLPComponent implements OnInit {
+  LPTOKEN_ADDR = '0xfd9aACca3c5F8EF3AAa787E5Cb8AF0c041D8875f';
+
   @Input() stakedMPHPoolProportion: BigNumber;
   @Input() stakedMPHBalance: BigNumber;
   @Input() totalStakedMPHBalance: BigNumber;
   @Input() totalRewardPerSecond: BigNumber;
-  @Input() rewardPerWeek: BigNumber;
+  @Input() rewardPerDay: BigNumber;
   mphBalance: BigNumber;
   stakeAmount: BigNumber;
   newStakedMPHPoolProportion: BigNumber;
-  newRewardPerWeek: BigNumber;
+  newRewardPerDay: BigNumber;
 
   constructor(
-    private apollo: Apollo,
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
@@ -48,35 +47,16 @@ export class ModalStakeComponent implements OnInit {
   }
 
   async loadData() {
-    const mphHolderID = this.wallet.userAddress.toLowerCase();
-    const queryString = gql`
-      {
-        mphholder(id: "${mphHolderID}") {
-          id
-          mphBalance
-        }
-      }
-    `;
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => this.handleData(x));
-  }
-
-  handleData(queryResult: ApolloQueryResult<QueryResult>): void {
-    if (!queryResult.loading) {
-      const mphHolder = queryResult.data.mphholder;
-      if (mphHolder) {
-        this.mphBalance = new BigNumber(mphHolder.mphBalance);
-        this.setStakeAmount(this.mphBalance.toString());
-      }
-    }
+    const lpToken = this.contract.getERC20(this.LPTOKEN_ADDR);
+    this.mphBalance = new BigNumber(await lpToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    this.setStakeAmount(this.mphBalance.toString());
   }
 
   resetData(): void {
     this.mphBalance = new BigNumber(0);
     this.stakeAmount = new BigNumber(0);
     this.newStakedMPHPoolProportion = new BigNumber(0);
-    this.newRewardPerWeek = new BigNumber(0);
+    this.newRewardPerDay = new BigNumber(0);
   }
 
   setStakeAmount(amount: number | string) {
@@ -85,25 +65,18 @@ export class ModalStakeComponent implements OnInit {
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);
     }
-    const weekInSeconds = 7 * 24 * 60 * 60;
-    this.newRewardPerWeek = this.stakedMPHBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.plus(this.stakeAmount))).times(weekInSeconds);
-    if (this.newRewardPerWeek.isNaN()) {
-      this.newRewardPerWeek = new BigNumber(0);
+    const dayInSeconds = 24 * 60 * 60;
+    this.newRewardPerDay = this.stakedMPHBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.plus(this.stakeAmount))).times(dayInSeconds);
+    if (this.newRewardPerDay.isNaN()) {
+      this.newRewardPerDay = new BigNumber(0);
     }
   }
 
   stake() {
-    const rewards = this.contract.getNamedContract('Rewards');
+    const rewards = this.contract.getNamedContract('Farming');
     const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
     const func = rewards.methods.stake(stakeAmount);
 
     this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
-}
-
-interface QueryResult {
-  mphholder: {
-    id: string;
-    mphBalance: number;
-  };
 }

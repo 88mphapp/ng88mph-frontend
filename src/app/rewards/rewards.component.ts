@@ -19,7 +19,7 @@ export class RewardsComponent implements OnInit {
   stakedMPHPoolProportion: BigNumber;
   claimableRewards: BigNumber;
   rewardPerWeek: BigNumber;
-
+  totalRewardPerSecond: BigNumber;
   rewardPerMPHPerSecond: BigNumber;
   totalStakedMPHBalance: BigNumber;
 
@@ -64,6 +64,7 @@ export class RewardsComponent implements OnInit {
     }).subscribe((x) => this.handleData(x));
 
     const rewards = this.contract.getNamedContract('Rewards');
+    this.totalRewardPerSecond = new BigNumber(await rewards.methods.rewardRate().call()).div(this.constants.PRECISION);
     this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
   }
 
@@ -93,6 +94,7 @@ export class RewardsComponent implements OnInit {
     this.totalStakedMPHBalance = new BigNumber(0);
     this.rewardPerMPHPerSecond = new BigNumber(0);
     this.rewardPerWeek = new BigNumber(0);
+    this.totalRewardPerSecond = new BigNumber(0);
   }
 
   openStakeModal() {
@@ -100,7 +102,7 @@ export class RewardsComponent implements OnInit {
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
-    modalRef.componentInstance.rewardPerMPHPerSecond = this.rewardPerMPHPerSecond;
+    modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
   }
 
