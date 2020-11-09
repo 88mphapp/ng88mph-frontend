@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BondsComponent } from './bonds/bonds.component';
 import { DepositComponent } from './deposit/deposit.component';
+import { FarmingComponent } from './farming/farming.component';
 import { RewardsComponent } from './rewards/rewards.component';
 import { StatsComponent } from './stats/stats.component';
 
@@ -27,6 +28,10 @@ const routes: Routes = [
     path: 'stats',
     component: StatsComponent
   },
+  {
+    path: 'farming',
+    component: FarmingComponent
+  }
 ];
 
 @NgModule({
