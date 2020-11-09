@@ -94,10 +94,11 @@ export class ModalStakeComponent implements OnInit {
 
   stake() {
     const rewards = this.contract.getNamedContract('Rewards');
+    const mphToken = this.contract.getNamedContract('MPHToken');
     const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
     const func = rewards.methods.stake(stakeAmount);
 
-    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTxWithToken(func, mphToken, rewards.options.address, stakeAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 }
 
