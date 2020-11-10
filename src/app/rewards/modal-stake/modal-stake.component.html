@@ -79,7 +79,7 @@
                       </tbody>
                     </table>
                   </div>
-                  <button class="card-link btn-block" (click)="stake()">Stake</button>
+                  <button class="card-link btn-block" (click)="stake()" [disabled]="!canContinue()">Stake</button>
                 </div>
               </div>
             </div>

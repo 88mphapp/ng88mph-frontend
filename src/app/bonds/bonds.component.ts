@@ -377,6 +377,10 @@ export class BondsComponent implements OnInit {
     }
     this.wallet.sendTxWithToken(func, stablecoin, this.selectedPool.address, debtToFund, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) })
   }
+
+  canContinue() {
+    return this.wallet.connected && this.selectedPoolHasDebt() && this.debtToFundToken.gt(0);
+  }
 }
 
 interface QueryResult {

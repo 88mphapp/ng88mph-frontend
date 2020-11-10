@@ -80,4 +80,8 @@ export class ModalStakeLPComponent implements OnInit {
 
     this.wallet.sendTxWithToken(func, lpToken, rewards.options.address, stakeAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
+
+  canContinue() {
+    return this.wallet.connected && this.stakeAmount.gt(0);
+  }
 }
