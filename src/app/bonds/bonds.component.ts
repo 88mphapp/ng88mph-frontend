@@ -212,8 +212,8 @@ export class BondsComponent implements OnInit {
           const poolFunderRewardMultiplier = new BigNumber(await mphMinter.methods.poolFunderRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
           const mphRewardPerToken = poolMintingMultiplier.times(stablecoinPrecision).div(this.constants.PRECISION).times(poolFunderRewardMultiplier);
 
-          const latestFundedDeposit = pool.latestFundedDeposit.length ? pool.latestFundedDeposit[0].nftID : 0;
-          const latestDeposit = pool.latestDeposit.length ? pool.latestDeposit[0].nftID : 0;
+          const latestFundedDeposit = pool.latestFundedDeposit.length ? +pool.latestFundedDeposit[0].nftID : 0;
+          const latestDeposit = pool.latestDeposit.length ? +pool.latestDeposit[0].nftID : 0;
           const dpoolObj: DPool = {
             name: poolInfo.name,
             address: poolInfo.address,
@@ -264,7 +264,7 @@ export class BondsComponent implements OnInit {
   selectPool(poolIdx: number) {
     this.selectedPool = this.allPoolList[poolIdx];
     this.floatingRatePrediction = this.selectedPool.oneYearInterestRate.times(4 / 3);
-    this.numFundableDeposits = Math.min(this.selectedPool.latestDeposit - this.selectedPool.latestFundedDeposit - 1, 20);
+    this.numFundableDeposits = Math.min(this.selectedPool.latestDeposit - this.selectedPool.latestFundedDeposit, 20);
 
     const poolID = this.selectedPool.address.toLowerCase();
     const queryString = gql`
@@ -318,7 +318,7 @@ export class BondsComponent implements OnInit {
   }
 
   async updateNumDepositsToFund(newNum: number) {
-    if (newNum > this.numFundableDeposits) {
+    if (newNum >= this.numFundableDeposits) {
       // fund all deposits
       this.numDepositsToFund = 'All';
       this.debtToFundToken = this.selectedPool.surplus.times(-1);
@@ -379,7 +379,7 @@ export class BondsComponent implements OnInit {
   }
 
   canContinue() {
-    return this.wallet.connected && this.selectedPoolHasDebt() && this.debtToFundToken.gt(0);
+    return this.wallet.connected && this.selectedPoolHasDebt() && this.debtToFundToken.gte(0);
   }
 }
 

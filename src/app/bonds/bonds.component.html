@@ -265,8 +265,8 @@
                 </div>
 
                 <div class="pb-2 mt-3 pl-3 pr-3">
-                  <input type="range" class="custom-range" min="1" [max]="numFundableDeposits + 1" step="1"
-                    [value]="numFundableDeposits + 1" (input)="updateNumDepositsToFund($event.target.value)">
+                  <input type="range" class="custom-range" min="1" [max]="numFundableDeposits" step="1"
+                    [value]="numFundableDeposits" (input)="updateNumDepositsToFund($event.target.value)">
                   <div class="row justify-content-between text-white px-4">
                     <div class="col">
                       <small>1</small>
