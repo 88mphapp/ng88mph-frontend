@@ -125,8 +125,17 @@
               "devServerTarget": "ng88mph-frontend:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "repo": "git@github.com:88mphapp/staging.git",
+            "branch": "master",
+            "baseHref": "https://88mph.app/staging/"
+          }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "ng88mph-frontend"
 }
