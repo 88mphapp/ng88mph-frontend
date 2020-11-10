@@ -7,7 +7,9 @@
       <div class="row align-items-end">
         <div class="col">
           <h1 class="mb-2">MPH liquidity mining program</h1>
-          <p class="text-muted font-weight-bold mb-5"><a href="https://uniswap.exchange/add/0x75a1169e51a3c6336ef854f76cde949f999720b1/ETH" target="_blank">Provide liquidity to the Uniswap MPH-ETH pair</a> and earn MPH. Begins
+          <p class="text-muted font-weight-bold mb-5"><a
+              href="https://uniswap.exchange/add/0x75a1169e51a3c6336ef854f76cde949f999720b1/ETH" target="_blank">Provide
+              liquidity to the Uniswap MPH-ETH pair</a> and earn MPH. Begins
             at 10:30am PT 11/16/2020 and lasts 14 days.</p>
           <div class="card-deck my-4">
             <div class="card mb-4 mb-lg-0">
@@ -29,7 +31,8 @@
                 <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()">
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
                 </button>
-                <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()"
+                  [disabled]="!canContinue()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
                 </button>
               </div>
@@ -48,7 +51,7 @@
                 <h2 class="mb-3 glowing pl-3">
                   {{claimableRewards.toFormat(4)}} MPH <small>({{rewardPerDay.toFormat(4)}} MPH/day)</small>
                 </h2>
-                <button type="button" class="card-link small ml-3 px-1" (click)="claim()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                 </button>
               </div>

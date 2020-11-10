@@ -15,7 +15,7 @@ import { ContractService, PoolInfo } from '../../contract.service';
 export class ModalDepositComponent implements OnInit {
   PRECISION = 1e18;
   DAY = 24 * 60 * 60;
-  DEPOSIT_DELAY = 60 * 60; // 1 hour
+  DEPOSIT_DELAY = 20 * 60; // 20 minutes
   DEPOSIT_PERIOD_PRESETS = [7, 14, 30, 60, 90, 180, 365];
 
   @Input() defaultPoolName: string;
@@ -157,6 +157,11 @@ export class ModalDepositComponent implements OnInit {
     const func = pool.methods.deposit(depositAmount, maturationTimestamp);
 
     this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+  }
+
+  canContinue() {
+    return this.wallet.connected && this.depositAmount.gte(this.minDepositAmount) && this.depositAmount.lte(this.maxDepositAmount)
+      && this.depositTimeInDays.gte(this.minDepositPeriod) && this.depositTimeInDays.lte(this.maxDepositPeriod);
   }
 }
 

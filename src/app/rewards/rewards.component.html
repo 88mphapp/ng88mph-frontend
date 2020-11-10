@@ -31,7 +31,8 @@
                 <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()">
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
                 </button>
-                <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()"
+                  [disabled]="!canContinue()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
                 </button>
               </div>
@@ -50,7 +51,7 @@
                 <h2 class="mb-3 glowing pl-3">
                   {{claimableRewards.toFormat(4)}} DAI <small>({{rewardPerWeek.toFormat(4)}} DAI/week)</small>
                 </h2>
-                <button type="button" class="card-link small ml-3 px-1" (click)="claim()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                 </button>
               </div>

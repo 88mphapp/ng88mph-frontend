@@ -100,6 +100,10 @@ export class ModalStakeComponent implements OnInit {
 
     this.wallet.sendTxWithToken(func, mphToken, rewards.options.address, stakeAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
+
+  canContinue() {
+    return this.wallet.connected && this.stakeAmount.gt(0);
+  }
 }
 
 interface QueryResult {

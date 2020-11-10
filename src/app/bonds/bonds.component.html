@@ -340,8 +340,7 @@
               </ng-container>
             </div>
 
-            <button class="card-link btn-block m-3" [disabled]="debtToFundToken.lt(0)"
-              *ngIf="selectedPoolHasDebt()" (click)="buyBond()">
+            <button class="card-link btn-block m-3" [disabled]="!canContinue()" (click)="buyBond()">
               Continue
             </button>
           </div>

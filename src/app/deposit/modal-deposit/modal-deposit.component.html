@@ -156,7 +156,7 @@
                       </tbody>
                     </table>
                   </div>
-                  <button class="card-link btn-block" type="button" (click)="deposit()">
+                  <button class="card-link btn-block" type="button" (click)="deposit()" [disabled]="!canContinue()">
                     Continue
                   </button>
                 </div>

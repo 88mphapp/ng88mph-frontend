@@ -119,6 +119,10 @@ export class RewardsComponent implements OnInit {
 
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
+
+  canContinue() {
+    return this.wallet.connected;
+  }
 }
 
 interface QueryResult {
