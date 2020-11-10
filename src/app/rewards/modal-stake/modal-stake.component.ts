@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApolloQueryResult } from '@apollo/client';
+import { ApolloQueryResult } from '@apollo/client/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Apollo, gql } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
