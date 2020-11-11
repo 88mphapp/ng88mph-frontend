@@ -138,43 +138,9 @@ export class DepositComponent implements OnInit {
     if (!queryResult.loading) {
       const user = queryResult.data.user;
       const dpools = queryResult.data.dpools;
+      const mphMinter = this.contract.getNamedContract('MPHMinter');
       let stablecoinPriceCache = {};
       let mphDepositorMultiplierCache = {};
-      if (dpools) {
-        const allPoolList = new Array<DPool>(0);
-        for (const pool of dpools) {
-          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
-
-          const stablecoin = poolInfo.stablecoin.toLowerCase()
-          let stablecoinPrice = stablecoinPriceCache[stablecoin];
-          if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
-            stablecoinPriceCache[stablecoin] = stablecoinPrice;
-          }
-
-          // get MPH APY
-          const mphMinter = this.contract.getNamedContract('MPHMinter');
-          const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
-          const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
-          const poolDepositorRewardMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
-          mphDepositorMultiplierCache[poolInfo.name] = poolDepositorRewardMultiplier;
-          const mphAPY = poolMintingMultiplier.times(poolDepositorRewardMultiplier).times(stablecoinPrecision).div(this.constants.PRECISION).times(pool.oneYearInterestRate).times(this.mphPriceUSD).div(stablecoinPrice).times(100);
-
-          const dpoolObj: DPool = {
-            name: poolInfo.name,
-            protocol: poolInfo.protocol,
-            stablecoin: poolInfo.stablecoin,
-            stablecoinSymbol: poolInfo.stablecoinSymbol,
-            iconPath: poolInfo.iconPath,
-            totalDepositToken: new BigNumber(pool.totalActiveDeposit),
-            totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice),
-            oneYearInterestRate: new BigNumber(pool.oneYearInterestRate).times(100),
-            mphAPY: mphAPY
-          };
-          allPoolList.push(dpoolObj);
-        }
-        this.allPoolList = allPoolList;
-      }
       if (user) {
         // update totalMPHEarned
         this.totalMPHEarned = new BigNumber(user.totalMPHEarned).minus(user.totalMPHPaidBack);
@@ -191,8 +157,13 @@ export class DepositComponent implements OnInit {
           }
           const userPoolDeposits: Array<UserDeposit> = [];
           for (const deposit of pool.deposits) {
-            const realMPHReward = mphDepositorMultiplierCache[poolInfo.name].times(deposit.mintMPHAmount);
-            const mphAPY = realMPHReward.times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).times(deposit.maturationTimestamp - deposit.depositTimestamp).div(this.constants.YEAR_IN_SEC).times(100);
+            let mphDepositorMultiplier = mphDepositorMultiplierCache[poolInfo.name];
+            if (!mphDepositorMultiplier) {
+              mphDepositorMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
+              mphDepositorMultiplierCache[poolInfo.name] = mphDepositorMultiplier;
+            }
+            const realMPHReward = mphDepositorMultiplier.times(deposit.mintMPHAmount);
+            const mphAPY = realMPHReward.times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
             const userPoolDeposit: UserDeposit = {
               nftID: deposit.nftID,
               fundingID: deposit.fundingID,
@@ -236,6 +207,54 @@ export class DepositComponent implements OnInit {
         }
         this.totalDepositUSD = totalDepositUSD;
         this.totalInterestUSD = totalInterestUSD;
+      }
+      if (dpools) {
+        let allPoolList = new Array<DPool>(0);
+        for (const pool of dpools) {
+          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+
+          const stablecoin = poolInfo.stablecoin.toLowerCase()
+          let stablecoinPrice = stablecoinPriceCache[stablecoin];
+          if (!stablecoinPrice) {
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPriceCache[stablecoin] = stablecoinPrice;
+          }
+
+          // get MPH APY
+          const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
+          const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
+          let mphDepositorMultiplier = mphDepositorMultiplierCache[poolInfo.name];
+          if (!mphDepositorMultiplier) {
+            mphDepositorMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
+            mphDepositorMultiplierCache[poolInfo.name] = mphDepositorMultiplier;
+          }
+          const mphAPY = poolMintingMultiplier.times(mphDepositorMultiplier).times(stablecoinPrecision).div(this.constants.PRECISION).times(pool.oneYearInterestRate).times(this.mphPriceUSD).div(stablecoinPrice).times(100);
+
+          const dpoolObj: DPool = {
+            name: poolInfo.name,
+            protocol: poolInfo.protocol,
+            stablecoin: poolInfo.stablecoin,
+            stablecoinSymbol: poolInfo.stablecoinSymbol,
+            iconPath: poolInfo.iconPath,
+            totalDepositToken: new BigNumber(pool.totalActiveDeposit),
+            totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice),
+            oneYearInterestRate: new BigNumber(pool.oneYearInterestRate).times(100),
+            mphAPY: mphAPY
+          };
+          allPoolList.push(dpoolObj);
+        }
+        allPoolList.sort((a, b) => {
+          const aName = a.name;
+          const bName = b.name;
+          if (aName > bName) {
+            return 1;
+          }
+          if (aName < bName) {
+            return -1;
+          }
+          return 0;
+        });
+        this.allPoolList = allPoolList;
       }
     }
   }
