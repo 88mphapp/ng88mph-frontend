@@ -234,7 +234,7 @@
               </div>
 
               <ng-container *ngIf="selectedPoolHasDebt()">
-                <div class="row mt-3">
+                <div class="row mt-3 mb-4">
                   <div class="col">
                     <h4 class="mb-1">
                       Your avg. floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(1)}}%</strong>
@@ -285,11 +285,11 @@
                 <h5 class="text-uppercase text-white">
                   Estimated ROI
                 </h5>
-                <h2 class="display-2 mb-4 glowing">
-                  {{estimatedROI.toFormat(4)}}% <small>(+{{mphROI.toFormat(4)}}% MPH)</small>
+                <h2 class="display-2 mb-0 mb-md-4 glowing">
+                  {{estimatedROI.toFormat(4)}}%<span class="small align-top">(+{{mphROI.toFormat(4)}}% MPH)</span>
                 </h2>
                 <div class="row">
-                  <div class="col-auto mb-4">
+                  <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
                       You pay
                     </h5>
@@ -298,7 +298,7 @@
                     </h2>
                     <h5 class="mb-3 text-white">{{debtToFundToken.toFormat()}} {{selectedPool?.stablecoinSymbol}}</h5>
                   </div>
-                  <div class="col-auto mb-4">
+                  <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
                       You earn interest on
                     </h5>
@@ -310,7 +310,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-auto mb-4">
+                  <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
                       Estimated profit
                     </h5>
@@ -320,10 +320,10 @@
                     <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat()}} {{selectedPool?.stablecoinSymbol}}
                     </h5>
                   </div>
-                  <div class="col-auto mb-4">
+                  <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
                       MPH rewards
-                      <button type="button" class="btn btn-sm btn-link p-0 text-white mt-n2" placement="top"
+                      <button type="button" class="btn btn-sm btn-link p-0 text-white mt-n3" placement="top"
                         ngbTooltip="Bond buyers get rewarded with upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
                         [i]
                       </button>
