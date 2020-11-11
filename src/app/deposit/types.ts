@@ -11,6 +11,7 @@ export interface DPool {
   totalDepositToken: BigNumber;
   totalDepositUSD: BigNumber;
   oneYearInterestRate: BigNumber;
+  mphAPY: BigNumber;
 }
 
 export interface UserPool {
@@ -29,4 +30,6 @@ export interface UserDeposit {
   interestEarnedToken: BigNumber;
   interestEarnedUSD: BigNumber;
   mintMPHAmount: BigNumber;
+  realMPHReward: BigNumber;
+  mphAPY: BigNumber;
 }

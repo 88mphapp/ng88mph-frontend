@@ -5,6 +5,7 @@ import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
 import { ModalStakeLPComponent } from './modal-stake-lp/modal-stake-lp.component';
 import { ConstantsService } from '../constants.service';
+import { HelpersService } from '../helpers.service';
 
 @Component({
   selector: 'app-farming',
@@ -19,12 +20,14 @@ export class FarmingComponent implements OnInit {
   totalRewardPerSecond: BigNumber;
   rewardPerMPHPerSecond: BigNumber;
   totalStakedMPHBalance: BigNumber;
+  mphPriceUSD: BigNumber;
 
   constructor(
     private modalService: NgbModal,
     public wallet: WalletService,
     public contract: ContractService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    public helpers: HelpersService
   ) {
     this.resetData();
   }
@@ -60,6 +63,10 @@ export class FarmingComponent implements OnInit {
     this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(dayInSeconds);
 
     this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
   }
 
   resetData(): void {
@@ -70,6 +77,7 @@ export class FarmingComponent implements OnInit {
     this.rewardPerMPHPerSecond = new BigNumber(0);
     this.rewardPerDay = new BigNumber(0);
     this.totalRewardPerSecond = new BigNumber(0);
+    this.mphPriceUSD = new BigNumber(0);
   }
 
   openStakeModal() {

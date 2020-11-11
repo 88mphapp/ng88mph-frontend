@@ -7,82 +7,86 @@
       <div class="row align-items-end">
         <div class="col">
           <h1>88mph protocol statistics</h1>
-            <div class="card-deck my-5">
-              <div class="card mb-4 mb-lg-0">
-                <div class="card-body pt-0">
-                  <!-- Title -->
-                  <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                    Total deposit
-                  </h5>
-                  <!-- Heading -->
-                  <h2 class="mb-1 glowing pl-3">
-                    ${{totalDepositUSD.toFormat(4)}}
-                  </h2>
-                </div>
-              </div>
-              <div class="card mb-4 mb-lg-0">
-                <div class="card-body pt-0">
-                  <!-- Title -->
-                  <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                    Historical interest distributed
-                  </h5>
-                  <!-- Heading -->
-                  <h2 class="mb-3 glowing pl-3">
-                    ${{totalInterestUSD.toFormat(4)}}
-                  </h2>
-                </div>
-              </div>
-              <div class="card mb-4 mb-lg-0 d-none">
-                <div class="card-body pt-0">
-                  <!-- Title -->
-                  <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                    MPH price
-                  </h5>
-                  <!-- Heading -->
-                  <h2 class="mb-3 glowing pl-3">
-                    $0.0000
-                  </h2>
-                </div>
+          <div class="card-deck my-5">
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Total deposit
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-1 glowing pl-3">
+                  ${{totalDepositUSD.toFormat(4)}}
+                </h2>
               </div>
             </div>
-            <div class="card-deck mb-5">
-              <div class="card mb-4 mb-lg-0">
-                <div class="card-body pt-0">
-                  <!-- Title -->
-                  <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                    MPH total supply
-                  </h5>
-                  <!-- Heading -->
-                  <h2 class="mb-3 glowing pl-3">
-                    {{mphTotalSupply.toFormat(4)}} MPH
-                  </h2>
-                </div>
-              </div>
-              <div class="card mb-4 mb-lg-0">
-                <div class="card-body pt-0">
-                  <!-- Title -->
-                  <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                    MPH staked
-                  </h5>
-                  <!-- Heading -->
-                  <h2 class="mb-3 glowing pl-3">
-                    {{mphStakedPercentage.toFormat(4)}}%
-                  </h2>
-                </div>
-              </div>
-              <div class="card mb-4 mb-lg-0">
-                <div class="card-body pt-0">
-                  <!-- Title -->
-                  <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                    Historical MPH staking rewards distributed
-                  </h5>
-                  <!-- Heading -->
-                  <h2 class="mb-3 glowing pl-3">
-                    {{mphTotalHistoricalReward.toFormat(4)}} DAI
-                  </h2>
-                </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Historical interest distributed
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-3 glowing pl-3">
+                  ${{totalInterestUSD.toFormat(4)}}
+                </h2>
               </div>
             </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  MPH price
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-3 glowing pl-3">
+                  ${{mphPriceUSD.toFormat(4)}}
+                </h2>
+              </div>
+            </div>
+          </div>
+          <div class="card-deck mb-5">
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  MPH total supply
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-3 glowing pl-3">
+                  {{mphTotalSupply.toFormat(4)}} MPH
+                </h2>
+                <h5 class="text-white pl-3">${{mphTotalSupply.times(mphPriceUSD).toFormat(4)}}</h5>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  MPH staked
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-3 glowing pl-3">
+                  {{mphStakedPercentage.toFormat(4)}}%
+                </h2>
+                <h5 class="text-white pl-3">
+                  ${{mphStakedPercentage.div(100).times(mphTotalSupply).times(mphPriceUSD).toFormat(4)}}
+                </h5>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Historical MPH staking rewards distributed
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-3 glowing pl-3">
+                  {{mphTotalHistoricalReward.toFormat(4)}} DAI
+                </h2>
+              </div>
+            </div>
+          </div>
         </div>
       </div> <!-- / .row -->
 
