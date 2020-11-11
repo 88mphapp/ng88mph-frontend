@@ -93,7 +93,7 @@
                 <h2 class="mb-1 glowing pl-3">
                   {{totalMPHEarned.toFormat(4)}} MPH
                 </h2>
-                <h5 class="mb-0 text-white pl-3 d-none">$0.00</h5>
+                <h5 class="mb-0 text-white pl-3">${{totalMPHEarned.times(mphPriceUSD).toFormat(4)}}</h5>
               </div>
             </div>
           </div>
@@ -201,7 +201,10 @@
                         {{funderPool.poolInfo.stablecoinSymbol}}</span>
                     </td>
                     <td>
-                      <h4 class="mb-1 font-weight-normal glowing">{{funding.mintMPHAmount.toFormat(4)}} MPH</h4>
+                      <h4 class="mb-1 font-weight-normal glowing">
+                        ${{funding.mintMPHAmount.times(mphPriceUSD).toFormat(4)}}
+                      </h4>
+                      <span class="text-white">{{funding.mintMPHAmount.toFormat(4)}} MPH</span>
                     </td>
                   </tr>
                 </ng-container>
@@ -240,15 +243,16 @@
                       (Does not affect the bond, only for estimation)
                     </p>
                     <input type="range" class="custom-range" min="0"
-                    max={{selectedPool?.oracleInterestRate.times(2).toFixed(1)}} step="0.1"
-                    [value]="floatingRatePrediction.toFixed(1)"
-                    (input)="updateFloatingRatePrediction($event.target.value)">
+                      max={{selectedPool?.oracleInterestRate.times(2).toFixed(1)}} step="0.1"
+                      [value]="floatingRatePrediction.toFixed(1)"
+                      (input)="updateFloatingRatePrediction($event.target.value)">
                     <div class="row justify-content-between text-white px-4 mb-4">
                       <div class="col">
                         <small>0%</small>
                       </div>
                       <div class="col text-center">
-                        <small>{{selectedPool?.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate APY)</small>
+                        <small>{{selectedPool?.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate
+                          APY)</small>
                       </div>
                       <div class="col text-right">
                         <small>{{selectedPool?.oracleInterestRate.times(2).toFormat(1)}}%</small>
@@ -258,7 +262,7 @@
                       Number of deposit debts to fund: <strong>{{numDepositsToFund}}</strong>
                     </h4>
                     <input type="range" class="custom-range" min="1" [max]="numFundableDeposits" step="1"
-                    [value]="numFundableDeposits" (input)="updateNumDepositsToFund($event.target.value)">
+                      [value]="numFundableDeposits" (input)="updateNumDepositsToFund($event.target.value)">
                     <div class="row justify-content-between text-white px-4">
                       <div class="col">
                         <small>1</small>
@@ -282,7 +286,7 @@
                   Estimated ROI
                 </h5>
                 <h2 class="display-2 mb-4 glowing">
-                  {{estimatedROI.toFormat(4)}}%
+                  {{estimatedROI.toFormat(4)}}% <small>(+{{mphROI.toFormat(4)}}% MPH)</small>
                 </h2>
                 <div class="row">
                   <div class="col-auto mb-4">
@@ -325,8 +329,10 @@
                       </button>
                     </h5>
                     <h2 class="mb-1 glowing">
-                      {{mphRewardAmount.toFormat(4)}} MPH
+                      ${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}
                     </h2>
+                    <h5 class="mb-3 text-white">{{mphRewardAmount.toFormat()}} MPH
+                    </h5>
                   </div>
                 </div>
               </ng-container>

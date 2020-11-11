@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { ContractService, PoolInfo } from 'src/app/contract.service';
+import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 import { UserDeposit } from '../types';
 
@@ -17,18 +18,23 @@ export class ModalWithdrawComponent implements OnInit {
   mphRewardAmount: BigNumber;
   mphTakeBackAmount: BigNumber;
   mphBalance: BigNumber;
+  mphPriceUSD: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    public helpers: HelpersService
   ) {
     this.resetData();
   }
 
   ngOnInit(): void {
     this.loadData();
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
   }
 
   async loadData() {
@@ -47,6 +53,7 @@ export class ModalWithdrawComponent implements OnInit {
     this.mphRewardAmount = new BigNumber(0);
     this.mphTakeBackAmount = new BigNumber(0);
     this.mphBalance = new BigNumber(0);
+    this.mphPriceUSD = new BigNumber(0);
   }
 
   withdraw() {

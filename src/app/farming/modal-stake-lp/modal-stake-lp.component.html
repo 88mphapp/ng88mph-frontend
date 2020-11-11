@@ -64,16 +64,17 @@
                             <span class="text-white">Current: {{rewardPerDay.toFormat(4)}} MPH/day</span>
                           </td>
                         </tr>
-                        <tr class="d-none">
+                        <tr>
                           <td class="px-0 text-white border-0">
-                            <strong>Staking pool APY</strong>
+                            <strong>New reward rate USD</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Staking rewards APY annualized and compounded based on the last week">
+                              ngbTooltip="The reward you earn every week.">
                               [i]
                             </button>
                           </td>
-                          <td class="glowing text-right border-0">
-                            0.0000%
+                          <td class="text-right border-0">
+                            <h4 class="mb-1 font-weight-normal glowing">${{newRewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</h4>
+                            <span class="text-white">Current: ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</span>
                           </td>
                         </tr>
                       </tbody>
