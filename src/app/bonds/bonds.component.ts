@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApolloQueryResult, gql } from '@apollo/client';
+import { ApolloQueryResult, gql } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from '../constants.service';
