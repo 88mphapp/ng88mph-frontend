@@ -35,6 +35,7 @@ export class ModalDepositComponent implements OnInit {
   maxDepositAmount: BigNumber;
   minDepositPeriod: number;
   maxDepositPeriod: number;
+  mphPriceUSD: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -70,6 +71,7 @@ export class ModalDepositComponent implements OnInit {
     this.maxDepositAmount = new BigNumber(0);
     this.minDepositPeriod = 0;
     this.maxDepositPeriod = 1e4;
+    this.mphPriceUSD = new BigNumber(0);
   }
 
   async selectPool(poolName: string) {
@@ -101,6 +103,10 @@ export class ModalDepositComponent implements OnInit {
       const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
       this.stablecoinBalance = new BigNumber(await stablecoin.methods.balanceOf(this.wallet.userAddress).call()).div(stablecoinPrecision);
     }
+
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
 
     this.updateAPY();
   }
@@ -162,6 +168,14 @@ export class ModalDepositComponent implements OnInit {
   canContinue() {
     return this.wallet.connected && this.depositAmount.gte(this.minDepositAmount) && this.depositAmount.lte(this.maxDepositAmount)
       && this.depositTimeInDays.gte(this.minDepositPeriod) && this.depositTimeInDays.lte(this.maxDepositPeriod);
+  }
+
+  mphAPY() {
+    const result = this.mphRewardAmount.minus(this.mphTakeBackAmount).times(this.mphPriceUSD).div(this.depositAmountUSD).times(this.depositTimeInDays).div(365).times(100);
+    if (result.isNaN()) {
+      return new BigNumber(0);
+    }
+    return result;
   }
 }
 

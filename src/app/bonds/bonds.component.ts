@@ -59,6 +59,8 @@ export class BondsComponent implements OnInit {
   estimatedROI: BigNumber;
   estimatedProfitUSD: BigNumber;
   loadingCalculator: boolean;
+  mphPriceUSD: BigNumber;
+  mphROI: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -125,6 +127,10 @@ export class BondsComponent implements OnInit {
     this.apollo.query<QueryResult>({
       query: queryString
     }).subscribe((x) => this.handleData(x));
+
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
   }
 
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
@@ -259,6 +265,8 @@ export class BondsComponent implements OnInit {
     this.estimatedProfitUSD = new BigNumber(0);
     this.estimatedROI = new BigNumber(0);
     this.loadingCalculator = true;
+    this.mphPriceUSD = new BigNumber(0);
+    this.mphROI = new BigNumber(0);
   }
 
   selectPool(poolIdx: number) {
@@ -340,6 +348,10 @@ export class BondsComponent implements OnInit {
     this.amountToEarnOnUSD = this.amountToEarnOnToken.times(stablecoinPrice);
 
     this.mphRewardAmount = this.selectedPool.mphRewardPerToken.times(this.debtToFundToken);
+    this.mphROI = this.mphRewardAmount.times(this.mphPriceUSD).div(this.debtToFundUSD).times(100);
+    if (this.mphROI.isNaN()) {
+      this.mphROI = new BigNumber(0);
+    }
 
     this.updateEstimatedROI();
   }

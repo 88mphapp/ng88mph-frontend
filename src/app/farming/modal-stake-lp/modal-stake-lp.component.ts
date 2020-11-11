@@ -12,8 +12,6 @@ import { WalletService } from 'src/app/wallet.service';
   styleUrls: ['./modal-stake-lp.component.css']
 })
 export class ModalStakeLPComponent implements OnInit {
-  LPTOKEN_ADDR = '0xfd9aACca3c5F8EF3AAa787E5Cb8AF0c041D8875f';
-
   @Input() stakedMPHPoolProportion: BigNumber;
   @Input() stakedMPHBalance: BigNumber;
   @Input() totalStakedMPHBalance: BigNumber;
@@ -23,6 +21,7 @@ export class ModalStakeLPComponent implements OnInit {
   stakeAmount: BigNumber;
   newStakedMPHPoolProportion: BigNumber;
   newRewardPerDay: BigNumber;
+  mphPriceUSD: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -47,9 +46,12 @@ export class ModalStakeLPComponent implements OnInit {
   }
 
   async loadData() {
-    const lpToken = this.contract.getERC20(this.LPTOKEN_ADDR);
+    const lpToken = this.contract.getNamedContract('MPHLP');
     this.mphBalance = new BigNumber(await lpToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
     this.setStakeAmount(this.mphBalance.toString());
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
   }
 
   resetData(): void {
@@ -57,6 +59,7 @@ export class ModalStakeLPComponent implements OnInit {
     this.stakeAmount = new BigNumber(0);
     this.newStakedMPHPoolProportion = new BigNumber(0);
     this.newRewardPerDay = new BigNumber(0);
+    this.mphPriceUSD = new BigNumber(0);
   }
 
   setStakeAmount(amount: number | string) {
@@ -74,7 +77,7 @@ export class ModalStakeLPComponent implements OnInit {
 
   stake() {
     const rewards = this.contract.getNamedContract('Farming');
-    const lpToken = this.contract.getERC20(this.LPTOKEN_ADDR);
+    const lpToken = this.contract.getNamedContract('MPHLP');
     const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
     const func = rewards.methods.stake(stakeAmount);
 

@@ -63,7 +63,7 @@
                 <h2 class="mb-1 glowing pl-3">
                   {{totalMPHEarned.toFormat(4)}} MPH
                 </h2>
-                <h5 class="mb-3 text-white pl-3 d-none">$0.00</h5>
+                <h5 class="mb-3 text-white pl-3">${{totalMPHEarned.times(mphPriceUSD).toFormat(4)}}</h5>
               </div>
             </div>
           </div>
@@ -95,16 +95,9 @@
                   Interest earned
                 </th>
                 <th class="text-dark">
-                  MPH rewards (temporary)
+                  MPH rewards
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="Depositors get rewarded with upfront MPH tokens that can be staked to earn fee-sharing and yield farming rewards. 90% of the MPH tokens will need to be paid back when the deposit is withdrawn.">
-                    [i]
-                  </button>
-                </th>
-                <th class="text-dark d-none" colspan="2">
-                  MPH APY
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="MPH rewards annualized and compounded based on the last week">
                     [i]
                   </button>
                 </th>
@@ -142,7 +135,6 @@
                   </td>
                   <td></td>
                   <td></td>
-                  <td class="d-none"></td>
                   <td class="text-right"></td>
                 </tr>
                 <!-- Deposit rows -->
@@ -187,11 +179,10 @@
                         {{userPool.poolInfo.stablecoinSymbol}}</span>
                     </td>
                     <td>
-                      <h4 class="mb-1 font-weight-normal glowing">{{deposit.mintMPHAmount.toFormat(4)}} MPH</h4>
-                      <span class="text-white d-none">0.000000 MPH</span>
-                    </td>
-                    <td class="glowing d-none">
-                      +0.0000%
+                      <h4 class="mb-1 font-weight-normal glowing">
+                        ${{deposit.realMPHReward.times(mphPriceUSD).toFormat(4)}}</h4>
+                      <span class="text-white d-block">{{deposit.realMPHReward.toFormat(4)}} MPH</span>
+                      <div class="text-white">@ {{deposit.mphAPY.toFormat(4)}}% APY</div>
                     </td>
                     <td class="text-right">
                       <!-- Button -->
@@ -230,10 +221,10 @@
                 <th class="text-dark">
                   Fixed APY
                 </th>
-                <th class="text-dark d-none" colspan="2">
+                <th class="text-dark" colspan="2">
                   MPH APY
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="MPH LP rewards annualized and compounded based on the last week">
+                    ngbTooltip="Annualized MPH reward rate">
                     [i]
                   </button>
                 </th>
@@ -267,8 +258,8 @@
                 <td class="glowing">
                   {{pool.oneYearInterestRate.toFormat(4)}}%
                 </td>
-                <td class="glowing d-none">
-                  0.0000%
+                <td class="glowing">
+                  +{{pool.mphAPY.toFormat(4)}}%
                 </td>
                 <td class="text-right">
                   <!-- Button -->
