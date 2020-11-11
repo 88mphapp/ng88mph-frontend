@@ -156,6 +156,18 @@
                             +{{mphAPY.toFormat(4)}}%
                           </td>
                         </tr>
+                        <tr>
+                          <td class="px-0 text-white border-0">
+                            <strong>MPH APY (temporary)</strong>
+                            <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                              ngbTooltip="Annualized temporary MPH reward rate. Depositors need to pay back 90% of the temporary MPH reward received when they withdraw.">
+                              [i]
+                            </button>
+                          </td>
+                          <td class="glowing text-right border-0">
+                            +{{tempMPHAPY.toFormat(4)}}%
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>

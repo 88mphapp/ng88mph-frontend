@@ -228,7 +228,8 @@ export class DepositComponent implements OnInit {
             mphDepositorMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
             mphDepositorMultiplierCache[poolInfo.name] = mphDepositorMultiplier;
           }
-          const mphAPY = poolMintingMultiplier.times(mphDepositorMultiplier).times(stablecoinPrecision).div(this.constants.PRECISION).times(pool.oneYearInterestRate).times(this.mphPriceUSD).div(stablecoinPrice).times(100);
+          const tempMPHAPY = poolMintingMultiplier.times(stablecoinPrecision).div(this.constants.PRECISION).times(pool.oneYearInterestRate).times(this.mphPriceUSD).div(stablecoinPrice).times(100);
+          const mphAPY = tempMPHAPY.times(mphDepositorMultiplier);
 
           const dpoolObj: DPool = {
             name: poolInfo.name,
@@ -239,7 +240,8 @@ export class DepositComponent implements OnInit {
             totalDepositToken: new BigNumber(pool.totalActiveDeposit),
             totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice),
             oneYearInterestRate: new BigNumber(pool.oneYearInterestRate).times(100),
-            mphAPY: mphAPY
+            mphAPY: mphAPY,
+            tempMPHAPY: tempMPHAPY
           };
           allPoolList.push(dpoolObj);
         }
@@ -278,7 +280,8 @@ export class DepositComponent implements OnInit {
         totalDepositToken: new BigNumber(0),
         totalDepositUSD: new BigNumber(0),
         oneYearInterestRate: new BigNumber(0),
-        mphAPY: new BigNumber(0)
+        mphAPY: new BigNumber(0),
+        tempMPHAPY: new BigNumber(0)
       };
       allPoolList.push(dpoolObj);
     }

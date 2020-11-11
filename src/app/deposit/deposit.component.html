@@ -221,10 +221,17 @@
                 <th class="text-dark">
                   Fixed APY
                 </th>
-                <th class="text-dark" colspan="2">
+                <th class="text-dark">
                   MPH APY
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="Annualized MPH reward rate">
+                    [i]
+                  </button>
+                </th>
+                <th class="text-dark">
+                  MPH APY (temporary)
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                    ngbTooltip="Annualized temporary MPH reward rate. Depositors need to pay back 90% of the temporary MPH reward received when they withdraw.">
                     [i]
                   </button>
                 </th>
@@ -260,6 +267,9 @@
                 </td>
                 <td class="glowing">
                   +{{pool.mphAPY.toFormat(4)}}%
+                </td>
+                <td class="glowing">
+                  +{{pool.tempMPHAPY.toFormat(4)}}%
                 </td>
                 <td class="text-right">
                   <!-- Button -->

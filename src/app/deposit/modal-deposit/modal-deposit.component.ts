@@ -37,6 +37,7 @@ export class ModalDepositComponent implements OnInit {
   maxDepositPeriod: number;
   mphPriceUSD: BigNumber;
   mphAPY: BigNumber;
+  tempMPHAPY: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -74,6 +75,7 @@ export class ModalDepositComponent implements OnInit {
     this.maxDepositPeriod = 1e4;
     this.mphPriceUSD = new BigNumber(0);
     this.mphAPY = new BigNumber(0);
+    this.tempMPHAPY = new BigNumber(0);
   }
 
   async selectPool(poolName: string) {
@@ -155,11 +157,19 @@ export class ModalDepositComponent implements OnInit {
     this.mphRewardAmount = poolMintingMultiplier.times(this.interestAmountToken).times(stablecoinPrecision).div(this.PRECISION);
     this.mphTakeBackAmount = new BigNumber(1).minus(poolDepositorRewardMultiplier).times(this.mphRewardAmount);
 
-    const result = this.mphRewardAmount.minus(this.mphTakeBackAmount).times(this.mphPriceUSD).div(this.depositAmountUSD).div(this.depositTimeInDays).times(365).times(100);
-    if (result.isNaN()) {
-      return new BigNumber(0);
+    const mphAPY = this.mphRewardAmount.minus(this.mphTakeBackAmount).times(this.mphPriceUSD).div(this.depositAmountUSD).div(this.depositTimeInDays).times(365).times(100);
+    if (mphAPY.isNaN()) {
+      this.mphAPY = new BigNumber(0);
+    } else {
+      this.mphAPY = mphAPY;
     }
-    this.mphAPY = result;
+
+    const tempMPHAPY = this.mphRewardAmount.times(this.mphPriceUSD).div(this.depositAmountUSD).div(this.depositTimeInDays).times(365).times(100);
+    if (tempMPHAPY.isNaN()) {
+      this.tempMPHAPY = new BigNumber(0);
+    } else {
+      this.tempMPHAPY = tempMPHAPY;
+    }
   }
 
   deposit() {
