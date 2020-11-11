@@ -214,14 +214,14 @@
       <!-- Deficit funding opportunities -->
       <div class="card">
         <h2 class="mt-n3 bg-dark mb-4 mx-3 pl-3">Buy floating-rate bonds</h2>
-        <div class="card-body p-0">
+        <div class="card-body">
           <h2 class="display-2 glowing text-center" *ngIf="loadingCalculator">
             Loading...
           </h2>
-          <div class="row p-4" *ngIf="!loadingCalculator">
+          <div class="row" *ngIf="!loadingCalculator">
             <div class="col-12 col-lg-6">
-              <div class="row pl-4 pr-4 pb-2">
-                <label for="pool-select">Pool:</label>
+              <div class="form-group mb-4">
+                <label for="pool-select">Select pool</label>
                 <select class="custom-select" id="pool-select" data-toggle="select"
                   (change)="selectPool($event.target.value)">
                   <option value={{i}} *ngFor="let pool of allPoolList; index as i;">
@@ -231,53 +231,45 @@
               </div>
 
               <ng-container *ngIf="selectedPoolHasDebt()">
-                <div class="row pl-4 pr-4 mt-3">
-                  <h4>
-                    Your avg. floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(1)}}%</strong>
-                  </h4>
-                  <h4>
-                    (Does not affect the bond, only for estimation)
-                  </h4>
-                </div>
-
-                <div class="pb-2 mt-3 pl-3 pr-3">
-                  <input type="range" class="custom-range" min="0"
+                <div class="row mt-3">
+                  <div class="col">
+                    <h4 class="mb-1">
+                      Your avg. floating-rate APY prediction: <strong>{{floatingRatePrediction.toFormat(1)}}%</strong>
+                    </h4>
+                    <p class="text-secondary small">
+                      (Does not affect the bond, only for estimation)
+                    </p>
+                    <input type="range" class="custom-range" min="0"
                     max={{selectedPool?.oracleInterestRate.times(2).toFixed(1)}} step="0.1"
                     [value]="floatingRatePrediction.toFixed(1)"
                     (input)="updateFloatingRatePrediction($event.target.value)">
-                  <div class="row justify-content-between text-white px-4">
-                    <div class="col">
-                      <small>0%</small>
+                    <div class="row justify-content-between text-white px-4 mb-4">
+                      <div class="col">
+                        <small>0%</small>
+                      </div>
+                      <div class="col text-center">
+                        <small>{{selectedPool?.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate APY)</small>
+                      </div>
+                      <div class="col text-right">
+                        <small>{{selectedPool?.oracleInterestRate.times(2).toFormat(1)}}%</small>
+                      </div>
                     </div>
-                    <div class="col text-center">
-                      <small>{{selectedPool?.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate APY)</small>
-                    </div>
-                    <div class="col text-right">
-                      <small>{{selectedPool?.oracleInterestRate.times(2).toFormat(1)}}%</small>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row pl-4 pr-4">
-                  <h4>
-                    Number of deposit debts to fund: <strong>{{numDepositsToFund}}</strong>
-                  </h4>
-                </div>
-
-                <div class="pb-2 mt-3 pl-3 pr-3">
-                  <input type="range" class="custom-range" min="1" [max]="numFundableDeposits" step="1"
+                    <h4>
+                      Number of deposit debts to fund: <strong>{{numDepositsToFund}}</strong>
+                    </h4>
+                    <input type="range" class="custom-range" min="1" [max]="numFundableDeposits" step="1"
                     [value]="numFundableDeposits" (input)="updateNumDepositsToFund($event.target.value)">
-                  <div class="row justify-content-between text-white px-4">
-                    <div class="col">
-                      <small>1</small>
-                    </div>
-                    <div class="col text-right">
-                      <small>All</small>
+                    <div class="row justify-content-between text-white px-4">
+                      <div class="col">
+                        <small>1</small>
+                      </div>
+                      <div class="col text-right">
+                        <small>All</small>
+                      </div>
                     </div>
                   </div>
                 </div>
               </ng-container>
-
             </div>
             <div class="col-12 col-lg-6">
               <ng-container *ngIf="!(debtToFundToken.gte(0) && selectedPoolHasDebt())">
@@ -292,8 +284,8 @@
                 <h2 class="display-2 mb-4 glowing">
                   {{estimatedROI.toFormat(4)}}%
                 </h2>
-                <div class="row mb-4">
-                  <div class="col-auto">
+                <div class="row">
+                  <div class="col-auto mb-4">
                     <h5 class="text-uppercase text-white">
                       You pay
                     </h5>
@@ -302,7 +294,7 @@
                     </h2>
                     <h5 class="mb-3 text-white">{{debtToFundToken.toFormat()}} {{selectedPool?.stablecoinSymbol}}</h5>
                   </div>
-                  <div class="col-auto">
+                  <div class="col-auto mb-4">
                     <h5 class="text-uppercase text-white">
                       You earn interest on
                     </h5>
@@ -314,7 +306,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-auto">
+                  <div class="col-auto mb-4">
                     <h5 class="text-uppercase text-white">
                       Estimated profit
                     </h5>
@@ -324,10 +316,10 @@
                     <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat()}} {{selectedPool?.stablecoinSymbol}}
                     </h5>
                   </div>
-                  <div class="col-auto">
+                  <div class="col-auto mb-4">
                     <h5 class="text-uppercase text-white">
                       MPH rewards
-                      <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                      <button type="button" class="btn btn-sm btn-link p-0 text-white mt-n2" placement="top"
                         ngbTooltip="Bond buyers get rewarded with upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
                         [i]
                       </button>
