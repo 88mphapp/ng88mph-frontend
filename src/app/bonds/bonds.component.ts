@@ -391,7 +391,7 @@ export class BondsComponent implements OnInit {
   }
 
   canContinue() {
-    return this.wallet.connected && this.selectedPoolHasDebt() && this.debtToFundToken.gte(0);
+    return this.wallet.connected && this.selectedPoolHasDebt() && this.debtToFundToken.gt(0);
   }
 }
 

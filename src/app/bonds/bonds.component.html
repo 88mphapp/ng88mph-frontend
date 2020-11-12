@@ -276,12 +276,12 @@
               </ng-container>
             </div>
             <div class="col-12 col-lg-6">
-              <ng-container *ngIf="!(debtToFundToken.gte(0) && selectedPoolHasDebt())">
+              <ng-container *ngIf="!(debtToFundToken.gt(0) && selectedPoolHasDebt())">
                 <h2 class="display-2 mb-4 glowing">
                   No debt available
                 </h2>
               </ng-container>
-              <ng-container *ngIf="debtToFundToken.gte(0) && selectedPoolHasDebt()">
+              <ng-container *ngIf="debtToFundToken.gt(0) && selectedPoolHasDebt()">
                 <h5 class="text-uppercase text-white">
                   Estimated ROI
                 </h5>
