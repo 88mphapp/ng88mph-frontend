@@ -146,6 +146,7 @@ export class BondsComponent implements OnInit {
         // process funding list
         const funderPools: FunderPool[] = [];
         for (const pool of funder.pools) {
+          if (pool.fundings.length == 0) continue;
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
           const stablecoin = poolInfo.stablecoin.toLowerCase()
           let stablecoinPrice = stablecoinPriceCache[stablecoin];

@@ -148,6 +148,7 @@ export class DepositComponent implements OnInit {
         // process user deposit list
         const userPools: UserPool[] = [];
         for (const pool of user.pools) {
+          if (pool.deposits.length == 0) continue;
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
           const stablecoin = poolInfo.stablecoin.toLowerCase()
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
