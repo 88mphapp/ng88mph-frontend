@@ -3,6 +3,7 @@ import { gql } from '@apollo/client/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
+import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 import { ContractService, PoolInfo } from '../../contract.service';
@@ -13,8 +14,6 @@ import { ContractService, PoolInfo } from '../../contract.service';
   styleUrls: ['./modal-deposit.component.css']
 })
 export class ModalDepositComponent implements OnInit {
-  PRECISION = 1e18;
-  DAY = 24 * 60 * 60;
   DEPOSIT_DELAY = 20 * 60; // 20 minutes
   DEPOSIT_PERIOD_PRESETS = [7, 14, 30, 60, 90, 180, 365];
 
@@ -44,7 +43,8 @@ export class ModalDepositComponent implements OnInit {
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
-    public helpers: HelpersService
+    public helpers: HelpersService,
+    public constants: ConstantsService
   ) {
     this.resetData();
   }
@@ -95,11 +95,10 @@ export class ModalDepositComponent implements OnInit {
       query: queryString
     }).subscribe((x) => {
       const pool = x.data.dpool;
-      const dayInSeconds = 24 * 60 * 60;
       this.minDepositAmount = new BigNumber(pool.MinDepositAmount);
       this.maxDepositAmount = new BigNumber(pool.MaxDepositAmount);
-      this.minDepositPeriod = Math.ceil(pool.MinDepositPeriod / dayInSeconds);
-      this.maxDepositPeriod = Math.floor(pool.MaxDepositPeriod / dayInSeconds);
+      this.minDepositPeriod = Math.ceil(pool.MinDepositPeriod / this.constants.DAY_IN_SEC);
+      this.maxDepositPeriod = Math.floor(pool.MaxDepositPeriod / this.constants.DAY_IN_SEC);
     });
 
     if (this.wallet.connected) {
@@ -141,7 +140,7 @@ export class ModalDepositComponent implements OnInit {
     // get interest amount
     const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
     const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(stablecoinPrecision));
-    const depositTime = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.DAY));
+    const depositTime = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC));
     this.interestAmountToken = new BigNumber(await pool.methods.calculateInterestAmount(depositAmount, depositTime).call()).div(stablecoinPrecision);
     this.interestAmountUSD = this.interestAmountToken.times(stablecoinPrice);
 
@@ -152,9 +151,9 @@ export class ModalDepositComponent implements OnInit {
     }
 
     // get MPH reward amount
-    const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(this.selectedPoolInfo.address).call()).div(this.PRECISION);
-    const poolDepositorRewardMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(this.selectedPoolInfo.address).call()).div(this.PRECISION);
-    this.mphRewardAmount = poolMintingMultiplier.times(this.interestAmountToken).times(stablecoinPrecision).div(this.PRECISION);
+    const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(this.selectedPoolInfo.address).call()).div(this.constants.PRECISION);
+    const poolDepositorRewardMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(this.selectedPoolInfo.address).call()).div(this.constants.PRECISION);
+    this.mphRewardAmount = poolMintingMultiplier.times(this.interestAmountToken).times(stablecoinPrecision).div(this.constants.PRECISION);
     this.mphTakeBackAmount = new BigNumber(1).minus(poolDepositorRewardMultiplier).times(this.mphRewardAmount);
 
     const mphAPY = this.mphRewardAmount.minus(this.mphTakeBackAmount).times(this.mphPriceUSD).div(this.depositAmountUSD).div(this.depositTimeInDays).times(365).times(100);
@@ -177,7 +176,7 @@ export class ModalDepositComponent implements OnInit {
     const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
     const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
     const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(stablecoinPrecision));
-    const maturationTimestamp = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.DAY).plus(Date.now() / 1e3).plus(this.DEPOSIT_DELAY));
+    const maturationTimestamp = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC).plus(Date.now() / 1e3).plus(this.DEPOSIT_DELAY));
     const func = pool.methods.deposit(depositAmount, maturationTimestamp);
 
     this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });

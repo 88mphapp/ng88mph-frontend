@@ -66,8 +66,7 @@ export class FarmingComponent implements OnInit {
     if (this.totalStakedMPHBalance.isZero()) {
       this.stakedMPHPoolProportion = new BigNumber(0);
     }
-    const dayInSeconds = 24 * 60 * 60;
-    this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(dayInSeconds);
+    this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
 
     this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
 

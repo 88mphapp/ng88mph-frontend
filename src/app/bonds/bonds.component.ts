@@ -61,7 +61,7 @@ export class BondsComponent implements OnInit {
   loadingCalculator: boolean;
   mphPriceUSD: BigNumber;
   mphROI: BigNumber;
-  weightedAvgMaturationTime: BigNumber;
+  averageMaturationTime: BigNumber;
   medianMaturationTime: BigNumber;
   depositListIsCollapsed: boolean;
 
@@ -271,7 +271,7 @@ export class BondsComponent implements OnInit {
     this.loadingCalculator = true;
     this.mphPriceUSD = new BigNumber(0);
     this.mphROI = new BigNumber(0);
-    this.weightedAvgMaturationTime = new BigNumber(0);
+    this.averageMaturationTime = new BigNumber(0);
     this.medianMaturationTime = new BigNumber(0);
     this.depositListIsCollapsed = true;
   }
@@ -362,17 +362,16 @@ export class BondsComponent implements OnInit {
 
     // compute weighted average maturation time
     const deposits = newNum >= this.numFundableDeposits ? this.fundableDeposits : this.fundableDeposits.slice(0, newNum);
-    let weightedSum = new BigNumber(0);
-    let totalWeights = new BigNumber(0);
+    let totalMaturationTime = new BigNumber(0);
+    let numDepositsWithDebt = 0;
     const now = Math.floor(Date.now() / 1e3);
     for (const deposit of deposits) {
       const timeTillMaturation = deposit.maturationTimestamp - now;
       if (!deposit.active || timeTillMaturation < 0) continue;
-      weightedSum = weightedSum.plus(deposit.amount.times(timeTillMaturation));
-      totalWeights = totalWeights.plus(deposit.amount);
+      totalMaturationTime = totalMaturationTime.plus(timeTillMaturation);
+      numDepositsWithDebt += 1;
     }
-    const dayInSeconds = 24 * 60 * 60;
-    this.weightedAvgMaturationTime = totalWeights.isZero() ? new BigNumber(0) : weightedSum.div(totalWeights).div(dayInSeconds);
+    this.averageMaturationTime = numDepositsWithDebt == 0 ? new BigNumber(0) : totalMaturationTime.div(numDepositsWithDebt).div(this.constants.DAY_IN_SEC);
 
     // compute median maturation time
     const median = (values) => {
@@ -393,7 +392,7 @@ export class BondsComponent implements OnInit {
       deposits
         .filter(x => x.active && (x.maturationTimestamp - now > 0))
         .map(x => x.maturationTimestamp - now)
-    )).div(dayInSeconds);
+    )).div(this.constants.DAY_IN_SEC);
 
     this.updateEstimatedROI();
   }

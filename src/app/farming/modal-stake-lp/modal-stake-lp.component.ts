@@ -68,8 +68,7 @@ export class ModalStakeLPComponent implements OnInit {
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);
     }
-    const dayInSeconds = 24 * 60 * 60;
-    this.newRewardPerDay = this.stakedMPHBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.plus(this.stakeAmount))).times(dayInSeconds);
+    this.newRewardPerDay = this.stakedMPHBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.plus(this.stakeAmount))).times(this.constants.DAY_IN_SEC);
     if (this.newRewardPerDay.isNaN()) {
       this.newRewardPerDay = new BigNumber(0);
     }
