@@ -8,6 +8,7 @@ import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
 import { ModalStakeComponent } from './modal-stake/modal-stake.component';
 import { ConstantsService } from '../constants.service';
+import { HelpersService } from '../helpers.service';
 
 @Component({
   selector: 'app-rewards',
@@ -15,6 +16,8 @@ import { ConstantsService } from '../constants.service';
   styleUrls: ['./rewards.component.css']
 })
 export class RewardsComponent implements OnInit {
+  PERIOD = 7; // 7 days
+
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
   claimableRewards: BigNumber;
@@ -22,13 +25,19 @@ export class RewardsComponent implements OnInit {
   totalRewardPerSecond: BigNumber;
   rewardPerMPHPerSecond: BigNumber;
   totalStakedMPHBalance: BigNumber;
+  yearlyROI: BigNumber;
+  monthlyROI: BigNumber;
+  weeklyROI: BigNumber;
+  dailyROI: BigNumber;
+  mphPriceUSD: BigNumber;
 
   constructor(
     private apollo: Apollo,
     private modalService: NgbModal,
     public wallet: WalletService,
     public contract: ContractService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    public helpers: HelpersService
   ) {
     this.resetData();
   }
@@ -64,11 +73,10 @@ export class RewardsComponent implements OnInit {
     }).subscribe((x) => this.handleData(x));
 
     const rewards = this.contract.getNamedContract('Rewards');
-    this.totalRewardPerSecond = new BigNumber(await rewards.methods.rewardRate().call()).div(this.constants.PRECISION);
     this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
   }
 
-  handleData(queryResult: ApolloQueryResult<QueryResult>): void {
+  async handleData(queryResult: ApolloQueryResult<QueryResult>) {
     if (!queryResult.loading) {
       const mph = queryResult.data.mph;
       this.totalStakedMPHBalance = new BigNumber(mph.totalStakedMPHBalance);
@@ -84,6 +92,15 @@ export class RewardsComponent implements OnInit {
         const weekInSeconds = 7 * 24 * 60 * 60;
         this.rewardPerWeek = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(weekInSeconds);
       }
+
+      const rewards = this.contract.getNamedContract('Rewards');
+      this.totalRewardPerSecond = new BigNumber(await rewards.methods.rewardRate().call()).div(this.constants.PRECISION);
+      this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
+      const secondROI = this.totalRewardPerSecond.div(this.totalStakedMPHBalance.times(this.mphPriceUSD)).times(100);
+      this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+      this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
+      this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
+      this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
     }
   }
 
@@ -95,6 +112,11 @@ export class RewardsComponent implements OnInit {
     this.rewardPerMPHPerSecond = new BigNumber(0);
     this.rewardPerWeek = new BigNumber(0);
     this.totalRewardPerSecond = new BigNumber(0);
+    this.mphPriceUSD = new BigNumber(0);
+    this.yearlyROI = new BigNumber(0);
+    this.monthlyROI = new BigNumber(0);
+    this.weeklyROI = new BigNumber(0);
+    this.dailyROI = new BigNumber(0);
   }
 
   openStakeModal() {
