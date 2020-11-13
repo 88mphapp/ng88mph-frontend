@@ -43,4 +43,13 @@ export class HelpersService {
     const ethPriceInUSD = await this.getTokenPriceUSD(this.constants.WETH_ADDR);
     return priceInETH.times(ethPriceInUSD);
   }
+
+  async getMPHLPPriceUSD(): Promise<BigNumber> {
+    const uniswapPair = this.contract.getNamedContract('MPHLP');
+    const reservesObj = await uniswapPair.methods.getReserves().call();
+    const ethReserve = new BigNumber(reservesObj._reserve1).div(this.constants.PRECISION);
+    const ethPriceInUSD = await this.getTokenPriceUSD(this.constants.WETH_ADDR);
+    const lpTotalSupply = new BigNumber(await uniswapPair.methods.totalSupply().call()).div(this.constants.PRECISION);
+    return lpTotalSupply.isZero() ? new BigNumber(0) : ethReserve.times(ethPriceInUSD).times(2).div(lpTotalSupply);
+  }
 }
