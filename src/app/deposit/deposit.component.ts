@@ -102,7 +102,9 @@ export class DepositComponent implements OnInit {
           totalMPHEarned
           totalMPHPaidBack
           pools {
+            id
             address
+            mphDepositorRewardMultiplier
             deposits(where: { user: "${userID}", active: true }, orderBy: nftID) {
               nftID
               fundingID
@@ -123,9 +125,12 @@ export class DepositComponent implements OnInit {
           }
         }
         dpools {
+          id
           address
           totalActiveDeposit
           oneYearInterestRate
+          mphDepositorRewardMultiplier
+          mphMintingMultiplier
         }
       }
     `;
@@ -140,7 +145,6 @@ export class DepositComponent implements OnInit {
       const dpools = queryResult.data.dpools;
       const mphMinter = this.contract.getNamedContract('MPHMinter');
       let stablecoinPriceCache = {};
-      let mphDepositorMultiplierCache = {};
       if (user) {
         // update totalMPHEarned
         this.totalMPHEarned = new BigNumber(user.totalMPHEarned).minus(user.totalMPHPaidBack);
@@ -158,12 +162,8 @@ export class DepositComponent implements OnInit {
           }
           const userPoolDeposits: Array<UserDeposit> = [];
           for (const deposit of pool.deposits) {
-            let mphDepositorMultiplier = mphDepositorMultiplierCache[poolInfo.name];
-            if (!mphDepositorMultiplier) {
-              mphDepositorMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
-              mphDepositorMultiplierCache[poolInfo.name] = mphDepositorMultiplier;
-            }
-            const realMPHReward = mphDepositorMultiplier.times(deposit.mintMPHAmount);
+            let mphDepositorRewardMultiplier = new BigNumber(pool.mphDepositorRewardMultiplier);
+            const realMPHReward = mphDepositorRewardMultiplier.times(deposit.mintMPHAmount);
             const mphAPY = realMPHReward.times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
             const userPoolDeposit: UserDeposit = {
               nftID: deposit.nftID,
@@ -222,15 +222,10 @@ export class DepositComponent implements OnInit {
           }
 
           // get MPH APY
-          const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
-          const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
-          let mphDepositorMultiplier = mphDepositorMultiplierCache[poolInfo.name];
-          if (!mphDepositorMultiplier) {
-            mphDepositorMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
-            mphDepositorMultiplierCache[poolInfo.name] = mphDepositorMultiplier;
-          }
-          const tempMPHAPY = poolMintingMultiplier.times(stablecoinPrecision).div(this.constants.PRECISION).times(pool.oneYearInterestRate).times(this.mphPriceUSD).div(stablecoinPrice).times(100);
-          const mphAPY = tempMPHAPY.times(mphDepositorMultiplier);
+          const poolMintingMultiplier = new BigNumber(pool.mphMintingMultiplier);
+          const mphDepositorRewardMultiplier = new BigNumber(pool.mphDepositorRewardMultiplier);
+          const tempMPHAPY = poolMintingMultiplier.times(pool.oneYearInterestRate).times(this.mphPriceUSD).div(stablecoinPrice).times(100);
+          const mphAPY = tempMPHAPY.times(mphDepositorRewardMultiplier);
 
           const dpoolObj: DPool = {
             name: poolInfo.name,
@@ -306,7 +301,9 @@ interface QueryResult {
     totalMPHEarned: number;
     totalMPHPaidBack: number;
     pools: {
+      id: string;
       address: string;
+      mphDepositorRewardMultiplier: number;
       deposits: {
         nftID: number;
         fundingID: number;
@@ -328,8 +325,11 @@ interface QueryResult {
     }[];
   };
   dpools: {
+    id: string;
     address: string;
     totalActiveDeposit: number;
     oneYearInterestRate: number;
+    mphDepositorRewardMultiplier: number;
+    mphMintingMultiplier: number;
   }[];
 }

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Apollo, gql } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { ContractService, PoolInfo } from 'src/app/contract.service';
@@ -21,6 +22,7 @@ export class ModalWithdrawComponent implements OnInit {
   mphPriceUSD: BigNumber;
 
   constructor(
+    private apollo: Apollo,
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
@@ -38,15 +40,32 @@ export class ModalWithdrawComponent implements OnInit {
   }
 
   async loadData() {
-    const mphMinter = this.contract.getNamedContract('MPHMinter');
-    const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
-    const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(this.poolInfo.address).call()).div(this.constants.PRECISION);
-    const poolDepositorRewardMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(this.poolInfo.address).call()).div(this.constants.PRECISION);
-    this.mphRewardAmount = poolMintingMultiplier.times(this.userDeposit.interestEarnedToken).times(stablecoinPrecision).div(this.constants.PRECISION);
-    this.mphTakeBackAmount = this.userDeposit.locked ? this.mphRewardAmount : new BigNumber(1).minus(poolDepositorRewardMultiplier).times(this.mphRewardAmount);
+    const queryString = gql`
+      {
+        dpool(id: "${this.poolInfo.address.toLowerCase()}") {
+          id
+          mphMintingMultiplier
+          mphDepositorRewardMultiplier
+        }
+        mphholder(id: "${this.wallet.userAddress.toLowerCase()}") {
+          id
+          mphBalance
+        }
+      }
+    `;
+    this.apollo.query<QueryResult>({
+      query: queryString
+    }).subscribe((x) => {
+      const pool = x.data.dpool;
+      const mphholder = x.data.mphholder;
 
-    const mphToken = this.contract.getNamedContract('MPHToken');
-    this.mphBalance = new BigNumber(await mphToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+      const mphMintingMultiplier = new BigNumber(pool.mphMintingMultiplier);
+      const mphDepositorRewardMultiplier = new BigNumber(pool.mphDepositorRewardMultiplier);
+      this.mphRewardAmount = mphMintingMultiplier.times(this.userDeposit.interestEarnedToken);
+      this.mphTakeBackAmount = this.userDeposit.locked ? this.mphRewardAmount : new BigNumber(1).minus(mphDepositorRewardMultiplier).times(this.mphRewardAmount);
+
+      this.mphBalance = new BigNumber(mphholder.mphBalance);
+    });
   }
 
   resetData() {
@@ -69,4 +88,16 @@ export class ModalWithdrawComponent implements OnInit {
 
     this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
+}
+
+interface QueryResult {
+  dpool: {
+    id: string;
+    mphMintingMultiplier: number;
+    mphDepositorRewardMultiplier: number;
+  };
+  mphholder: {
+    id: string;
+    mphBalance: number;
+  };
 }
