@@ -63,6 +63,7 @@ export class BondsComponent implements OnInit {
   mphROI: BigNumber;
   weightedAvgMaturationTime: BigNumber;
   medianMaturationTime: BigNumber;
+  depositListIsCollapsed: boolean;
 
   constructor(
     private apollo: Apollo,
@@ -272,6 +273,7 @@ export class BondsComponent implements OnInit {
     this.mphROI = new BigNumber(0);
     this.weightedAvgMaturationTime = new BigNumber(0);
     this.medianMaturationTime = new BigNumber(0);
+    this.depositListIsCollapsed = true;
   }
 
   selectPool(poolIdx: number) {
@@ -389,7 +391,7 @@ export class BondsComponent implements OnInit {
     };
     this.medianMaturationTime = new BigNumber(median(
       deposits
-        .filter(x => x.active && x.maturationTimestamp - now > 0)
+        .filter(x => x.active && (x.maturationTimestamp - now > 0))
         .map(x => x.maturationTimestamp - now)
     )).div(dayInSeconds);
 
@@ -412,6 +414,21 @@ export class BondsComponent implements OnInit {
     this.estimatedROI = this.estimatedProfitToken.div(this.debtToFundToken).times(100);
 
     this.loadingCalculator = false;
+  }
+
+  getDepositsToFundByMaturationTime() {
+    const now = Math.floor(Date.now() / 1e3);
+    const newNum = this.numDepositsToFund === 'All' ? this.numFundableDeposits : +this.numDepositsToFund;
+    const deposits = newNum >= this.numFundableDeposits ? this.fundableDeposits : this.fundableDeposits.slice(0, newNum);
+    return deposits
+      .filter(x => x.active && (x.maturationTimestamp - now > 0))
+      .sort((a, b) => {
+        return a.maturationTimestamp - b.maturationTimestamp;
+      });
+  }
+
+  timestampToDateString(timestampSec: number): string {
+    return new Date(timestampSec * 1e3).toLocaleDateString();
   }
 
   buyBond() {
