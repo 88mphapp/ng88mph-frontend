@@ -18,19 +18,17 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.wallet.connected) {
-      this.loadData();
-    }
     this.wallet.connectedEvent.subscribe(() => {
+      this.resetData();
       this.loadData();
     });
-    this.wallet.errorEvent.subscribe(() => {
+    this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData();
     });
   }
 
   loadData(): void {
-    const mphHolderID = this.wallet.userAddress.toLowerCase();
+    const mphHolderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
     const queryString = gql`
       {
         mphholder(id: "${mphHolderID}") {

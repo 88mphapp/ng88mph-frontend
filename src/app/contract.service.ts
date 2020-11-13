@@ -31,15 +31,21 @@ export class ContractService {
       .find(poolInfo => poolInfo.address.toLowerCase() === address.toLowerCase());
   }
 
-  getPool(name: string) {
+  getPool(name: string, web3?: Web3) {
     const abi = require(`../assets/abis/DInterest.json`);
     const address = this.getPoolAddress(name);
+    if (web3) {
+      return new web3.eth.Contract(abi, address);
+    }
     return new this.wallet.web3.eth.Contract(abi, address);
   }
 
-  getPoolStablecoin(name: string) {
+  getPoolStablecoin(name: string, web3?: Web3) {
     const abi = require(`../assets/abis/ERC20.json`);
     const address = this.getPoolStablecoinAddress(name);
+    if (web3) {
+      return new web3.eth.Contract(abi, address);
+    }
     return new this.wallet.web3.eth.Contract(abi, address);
   }
 
@@ -52,8 +58,11 @@ export class ContractService {
     return new this.wallet.web3.eth.Contract(abi, address);
   }
 
-  getERC20(address: string) {
+  getERC20(address: string, web3?: Web3) {
     const abi = require(`../assets/abis/ERC20.json`);
+    if (web3) {
+      return new web3.eth.Contract(abi, address);
+    }
     return new this.wallet.web3.eth.Contract(abi, address);
   }
 }

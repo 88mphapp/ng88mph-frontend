@@ -39,33 +39,34 @@ export class RewardsComponent implements OnInit {
     public constants: ConstantsService,
     public helpers: HelpersService
   ) {
-    this.resetData();
+    this.resetData(true, true);
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(this.wallet.connected, true);
     this.wallet.connectedEvent.subscribe(() => {
-      this.loadData();
+      this.resetData(true, false);
+      this.loadData(true, false);
     });
-    this.wallet.errorEvent.subscribe(() => {
-      this.resetData();
+    this.wallet.disconnectedEvent.subscribe(() => {
+      this.resetData(true, false);
     });
   }
 
-  async loadData() {
+  async loadData(loadUser: boolean, loadGlobal: boolean) {
     const mphHolderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
     const queryString = gql`
       {
-        mphholder(id: "${mphHolderID}") {
+        ${loadUser ? `mphholder(id: "${mphHolderID}") {
           id
           stakedMPHBalance
-        }
-        mph(id: "0") {
+        }` : ''}
+        ${loadGlobal ? `mph(id: "0") {
           id
           totalStakedMPHBalance
           rewardPerMPHPerSecond
           rewardPerSecond
-        }
+        }` : ''}
       }
     `;
     this.apollo.query<QueryResult>({
@@ -81,13 +82,16 @@ export class RewardsComponent implements OnInit {
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
     if (!queryResult.loading) {
       const mph = queryResult.data.mph;
-      this.totalStakedMPHBalance = new BigNumber(mph.totalStakedMPHBalance);
-      this.rewardPerMPHPerSecond = new BigNumber(mph.rewardPerMPHPerSecond);
+      if (mph) {
+        this.totalStakedMPHBalance = new BigNumber(mph.totalStakedMPHBalance);
+        this.rewardPerMPHPerSecond = new BigNumber(mph.rewardPerMPHPerSecond);
+        this.totalRewardPerSecond = new BigNumber(mph.rewardPerSecond);
+      }
 
       const mphHolder = queryResult.data.mphholder;
       if (mphHolder) {
         this.stakedMPHBalance = new BigNumber(mphHolder.stakedMPHBalance);
-        this.stakedMPHPoolProportion = this.stakedMPHBalance.div(mph.totalStakedMPHBalance).times(100);
+        this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
         if (this.stakedMPHPoolProportion.isNaN()) {
           this.stakedMPHPoolProportion = new BigNumber(0);
         }
@@ -95,7 +99,6 @@ export class RewardsComponent implements OnInit {
         this.rewardPerWeek = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(weekInSeconds);
       }
 
-      this.totalRewardPerSecond = new BigNumber(mph.rewardPerSecond);
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
       const secondROI = this.totalRewardPerSecond.div(this.totalStakedMPHBalance.times(this.mphPriceUSD)).times(100);
       this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
@@ -105,19 +108,24 @@ export class RewardsComponent implements OnInit {
     }
   }
 
-  resetData(): void {
-    this.stakedMPHBalance = new BigNumber(0);
-    this.stakedMPHPoolProportion = new BigNumber(0);
-    this.claimableRewards = new BigNumber(0);
-    this.totalStakedMPHBalance = new BigNumber(0);
-    this.rewardPerMPHPerSecond = new BigNumber(0);
-    this.rewardPerWeek = new BigNumber(0);
-    this.totalRewardPerSecond = new BigNumber(0);
-    this.mphPriceUSD = new BigNumber(0);
-    this.yearlyROI = new BigNumber(0);
-    this.monthlyROI = new BigNumber(0);
-    this.weeklyROI = new BigNumber(0);
-    this.dailyROI = new BigNumber(0);
+  resetData(resetUser: boolean, resetGlobal: boolean): void {
+    if (resetUser) {
+      this.stakedMPHBalance = new BigNumber(0);
+      this.stakedMPHPoolProportion = new BigNumber(0);
+      this.claimableRewards = new BigNumber(0);
+    }
+
+    if (resetGlobal) {
+      this.totalStakedMPHBalance = new BigNumber(0);
+      this.rewardPerMPHPerSecond = new BigNumber(0);
+      this.rewardPerWeek = new BigNumber(0);
+      this.totalRewardPerSecond = new BigNumber(0);
+      this.mphPriceUSD = new BigNumber(0);
+      this.yearlyROI = new BigNumber(0);
+      this.monthlyROI = new BigNumber(0);
+      this.weeklyROI = new BigNumber(0);
+      this.dailyROI = new BigNumber(0);
+    }
   }
 
   openStakeModal() {

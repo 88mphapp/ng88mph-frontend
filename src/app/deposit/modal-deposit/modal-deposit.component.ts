@@ -53,9 +53,19 @@ export class ModalDepositComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.wallet.connectedEvent.subscribe(() => {
+      this.resetData();
+      this.loadData();
+    });
+    this.wallet.disconnectedEvent.subscribe(() => {
+      this.resetData();
+    });
   }
 
   loadData(): void {
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
     this.poolList = this.contract.getPoolInfoList();
     this.selectPool(this.defaultPoolName ? this.defaultPoolName : this.poolList[0].name);
   }
@@ -116,10 +126,6 @@ export class ModalDepositComponent implements OnInit {
       this.stablecoinBalance = new BigNumber(await stablecoin.methods.balanceOf(this.wallet.userAddress).call()).div(stablecoinPrecision);
     }
 
-    this.helpers.getMPHPriceUSD().then((price) => {
-      this.mphPriceUSD = price;
-    });
-
     this.updateAPY();
   }
 
@@ -139,7 +145,8 @@ export class ModalDepositComponent implements OnInit {
   }
 
   async updateAPY() {
-    const pool = this.contract.getPool(this.selectedPoolInfo.name);
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const pool = this.contract.getPool(this.selectedPoolInfo.name, readonlyWeb3);
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(this.selectedPoolInfo.stablecoin);
 
     // get deposit amount
