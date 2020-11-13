@@ -40,9 +40,7 @@ export class FarmingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.wallet.connected) {
-      this.loadData();
-    }
+    this.loadData();
     this.wallet.connectedEvent.subscribe(() => {
       this.loadData();
     });
@@ -52,7 +50,8 @@ export class FarmingComponent implements OnInit {
   }
 
   async loadData() {
-    const rewards = this.contract.getNamedContract('Farming');
+    const infuraEndpoint = this.wallet.infuraEndpoint();
+    const rewards = this.contract.getNamedContract('Farming', infuraEndpoint);
 
     this.totalStakedMPHBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
     this.totalRewardPerSecond = new BigNumber(await rewards.methods.rewardRate().call()).div(this.constants.PRECISION);
@@ -61,14 +60,15 @@ export class FarmingComponent implements OnInit {
       this.rewardPerMPHPerSecond = new BigNumber(0);
     }
 
-    this.stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    if (this.wallet.connected) {
+      this.stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+      this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    }
     this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
     if (this.totalStakedMPHBalance.isZero()) {
       this.stakedMPHPoolProportion = new BigNumber(0);
     }
     this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
-
-    this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
 
     this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
     this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();

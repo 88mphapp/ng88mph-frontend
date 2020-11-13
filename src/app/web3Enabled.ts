@@ -159,6 +159,11 @@ export class Web3Enabled {
     }
   }
 
+  infuraEndpoint() {
+    const endpointURL = `wss://mainnet.infura.io/ws/v3/${this.infuraKey}`;
+    return new Web3(endpointURL);
+  }
+
   async estimateGas(func, val, _onError) {
     return Math.floor((await func.estimateGas({
       from: this.state.address,

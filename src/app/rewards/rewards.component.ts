@@ -43,9 +43,7 @@ export class RewardsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.wallet.connected) {
-      this.loadData();
-    }
+    this.loadData();
     this.wallet.connectedEvent.subscribe(() => {
       this.loadData();
     });
@@ -55,7 +53,7 @@ export class RewardsComponent implements OnInit {
   }
 
   async loadData() {
-    const mphHolderID = this.wallet.userAddress.toLowerCase();
+    const mphHolderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
     const queryString = gql`
       {
         mphholder(id: "${mphHolderID}") {
@@ -74,8 +72,10 @@ export class RewardsComponent implements OnInit {
       query: queryString
     }).subscribe((x) => this.handleData(x));
 
-    const rewards = this.contract.getNamedContract('Rewards');
-    this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    if (this.wallet.connected) {
+      const rewards = this.contract.getNamedContract('Rewards');
+      this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    }
   }
 
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {

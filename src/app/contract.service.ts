@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import Web3 from 'web3';
 import { WalletService } from './wallet.service';
 
 @Injectable({
@@ -42,9 +43,12 @@ export class ContractService {
     return new this.wallet.web3.eth.Contract(abi, address);
   }
 
-  getNamedContract(name: string) {
+  getNamedContract(name: string, web3?: Web3) {
     const abi = require(`../assets/abis/${name}.json`);
     const address = require('../assets/json/contracts.json')[name];
+    if (web3) {
+      return new web3.eth.Contract(abi, address);
+    }
     return new this.wallet.web3.eth.Contract(abi, address);
   }
 

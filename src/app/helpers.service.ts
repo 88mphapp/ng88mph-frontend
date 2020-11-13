@@ -35,7 +35,8 @@ export class HelpersService {
   }
 
   async getMPHPriceUSD(): Promise<BigNumber> {
-    const uniswapPair = this.contract.getNamedContract('MPHLP');
+    const infuraEndpoint = this.wallet.infuraEndpoint();
+    const uniswapPair = this.contract.getNamedContract('MPHLP', infuraEndpoint);
     const reservesObj = await uniswapPair.methods.getReserves().call();
     const mphReserve = new BigNumber(reservesObj._reserve0).div(this.constants.PRECISION);
     const ethReserve = new BigNumber(reservesObj._reserve1).div(this.constants.PRECISION);
@@ -45,7 +46,8 @@ export class HelpersService {
   }
 
   async getMPHLPPriceUSD(): Promise<BigNumber> {
-    const uniswapPair = this.contract.getNamedContract('MPHLP');
+    const infuraEndpoint = this.wallet.infuraEndpoint();
+    const uniswapPair = this.contract.getNamedContract('MPHLP', infuraEndpoint);
     const reservesObj = await uniswapPair.methods.getReserves().call();
     const ethReserve = new BigNumber(reservesObj._reserve1).div(this.constants.PRECISION);
     const ethPriceInUSD = await this.getTokenPriceUSD(this.constants.WETH_ADDR);

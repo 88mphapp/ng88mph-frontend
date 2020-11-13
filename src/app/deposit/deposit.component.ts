@@ -143,7 +143,6 @@ export class DepositComponent implements OnInit {
     if (!queryResult.loading) {
       const user = queryResult.data.user;
       const dpools = queryResult.data.dpools;
-      const mphMinter = this.contract.getNamedContract('MPHMinter');
       let stablecoinPriceCache = {};
       if (user) {
         // update totalMPHEarned
