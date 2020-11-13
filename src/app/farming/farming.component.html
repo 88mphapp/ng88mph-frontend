@@ -11,6 +11,7 @@
               href="https://uniswap.exchange/add/0x75a1169e51a3c6336ef854f76cde949f999720b1/ETH" target="_blank">Provide
               liquidity to the Uniswap MPH-ETH pair</a> and earn MPH. Begins
             at 10:30am PT 11/16/2020 and lasts 14 days.</p>
+
           <div class="card-deck my-4">
             <div class="card mb-4 mb-lg-0">
               <div class="card-body pt-0">
@@ -52,10 +53,134 @@
                 <h2 class="mb-3 glowing pl-3">
                   {{claimableRewards.toFormat(4)}} MPH
                 </h2>
-                <h5 class="mb-3 text-white pl-3">(${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day) ({{rewardPerDay.toFormat(4)}} MPH/day)</h5>
+                <h5 class="mb-3 text-white pl-3">(${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day)
+                  ({{rewardPerDay.toFormat(4)}} MPH/day)</h5>
                 <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                 </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-deck my-4">
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Overall statistics
+                </h5>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Total value staked</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">
+                          ${{totalStakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}}</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Distribution period</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{PERIOD}} days</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Total reward</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">
+                          {{totalRewardPerSecond.times(PERIOD).times(constants.DAY_IN_SEC).toFormat(0)}} MPH</h3>
+                        <h5 class="text-white">
+                          ${{totalRewardPerSecond.times(PERIOD).times(constants.DAY_IN_SEC).times(mphPriceUSD).toFormat(4)}}
+                        </h5>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Daily reward</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">
+                          {{totalRewardPerSecond.times(constants.DAY_IN_SEC).toFormat(4)}} MPH
+                        </h3>
+                        <h5 class="text-white">
+                          ${{totalRewardPerSecond.times(constants.DAY_IN_SEC).times(mphPriceUSD).toFormat(4)}}
+                        </h5>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">MPH price</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">${{mphPriceUSD.toFormat(4)}}</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Estimated ROI
+                </h5>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Yearly</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{yearlyROI.toFormat(4)}}%</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Monthly</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{monthlyROI.toFormat(4)}}%</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Weekly</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{weeklyROI.toFormat(4)}}%</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Daily</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{dailyROI.toFormat(4)}}%</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>

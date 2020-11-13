@@ -59,6 +59,108 @@
               </div>
             </div>
           </div>
+
+          <div class="card-deck my-4">
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Overall statistics
+                </h5>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Total value staked</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">
+                          {{totalStakedMPHBalance.toFormat(4)}} MPH
+                        </h3>
+                        <h5 class="text-white">
+                          ${{totalStakedMPHBalance.times(mphPriceUSD).toFormat(4)}}
+                        </h5>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Total reward</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">
+                          {{totalRewardPerSecond.times(PERIOD).times(constants.DAY_IN_SEC).toFormat(4)}} DAI
+                        </h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Daily reward</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">
+                          {{totalRewardPerSecond.times(constants.DAY_IN_SEC).toFormat(4)}} DAI
+                        </h3>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Estimated ROI
+                </h5>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Yearly</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{yearlyROI.toFormat(4)}}%</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Monthly</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{monthlyROI.toFormat(4)}}%</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Weekly</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{weeklyROI.toFormat(4)}}%</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Daily</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">{{dailyROI.toFormat(4)}}%</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div> <!-- / .row -->
 

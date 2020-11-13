@@ -13,6 +13,8 @@ import { HelpersService } from '../helpers.service';
   styleUrls: ['./farming.component.css']
 })
 export class FarmingComponent implements OnInit {
+  PERIOD = 14; // 14 days
+
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
   claimableRewards: BigNumber;
@@ -21,6 +23,11 @@ export class FarmingComponent implements OnInit {
   rewardPerMPHPerSecond: BigNumber;
   totalStakedMPHBalance: BigNumber;
   mphPriceUSD: BigNumber;
+  mphLPPriceUSD: BigNumber;
+  yearlyROI: BigNumber;
+  monthlyROI: BigNumber;
+  weeklyROI: BigNumber;
+  dailyROI: BigNumber;
 
   constructor(
     private modalService: NgbModal,
@@ -64,9 +71,13 @@ export class FarmingComponent implements OnInit {
 
     this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
 
-    this.helpers.getMPHPriceUSD().then((price) => {
-      this.mphPriceUSD = price;
-    });
+    this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
+    this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
+    const secondROI = this.totalRewardPerSecond.times(this.mphPriceUSD).div(this.totalStakedMPHBalance).times(100);
+    this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+    this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
+    this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
+    this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
   }
 
   resetData(): void {
@@ -78,6 +89,11 @@ export class FarmingComponent implements OnInit {
     this.rewardPerDay = new BigNumber(0);
     this.totalRewardPerSecond = new BigNumber(0);
     this.mphPriceUSD = new BigNumber(0);
+    this.mphLPPriceUSD = new BigNumber(0);
+    this.yearlyROI = new BigNumber(0);
+    this.monthlyROI = new BigNumber(0);
+    this.weeklyROI = new BigNumber(0);
+    this.dailyROI = new BigNumber(0);
   }
 
   openStakeModal() {
