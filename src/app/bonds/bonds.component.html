@@ -323,7 +323,7 @@
                   <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
                       MPH rewards
-                      <button type="button" class="btn btn-sm btn-link p-0 text-white mt-n3" placement="top"
+                      <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                         ngbTooltip="Bond buyers get rewarded with upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
                         [i]
                       </button>
@@ -336,11 +336,11 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-6 mb-4">
+                  <div class="col-4 mb-4">
                     <h5 class="text-uppercase text-white">
                       Weighted avg. maturation time
-                      <button type="button" class="btn btn-sm btn-link p-0 text-white mt-n3" placement="top"
-                        ngbTooltip="The average maturation time of the deposits, weighted by the deposit amount.">
+                      <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                        ngbTooltip="The average maturation time of the deposits, weighted by the deposit amount. You receive interest when any deposit you funded is withdrawn.">
                         [i]
                       </button>
                     </h5>
@@ -348,17 +348,50 @@
                       {{weightedAvgMaturationTime.toFormat(4)}} days
                     </h2>
                   </div>
-                  <div class="col-6 mb-4">
+                  <div class="col-4 mb-4">
                     <h5 class="text-uppercase text-white">
                       Median maturation time
-                      <button type="button" class="btn btn-sm btn-link p-0 text-white mt-n3" placement="top"
-                        ngbTooltip="The median maturation time of the deposits, unweighted.">
+                      <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                        ngbTooltip="The median maturation time of the deposits, unweighted. You receive interest when any deposit you funded is withdrawn.">
                         [i]
                       </button>
                     </h5>
                     <h2 class="mb-1 glowing">
                       {{medianMaturationTime.toFormat(4)}} days
                     </h2>
+                  </div>
+                  <div class="col-4 mb-4">
+                    <button type="button" class="card-link" (click)="depositListIsCollapsed = !depositListIsCollapsed"
+                      [attr.aria-expanded]="!depositListIsCollapsed">
+                      <ng-container *ngIf="depositListIsCollapsed">Show</ng-container>
+                      <ng-container *ngIf="!depositListIsCollapsed">Hide</ng-container> full deposit list
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div [(ngbCollapse)]="depositListIsCollapsed" class="w-100">
+                    <div class="card">
+                      <div class="card-body">
+                        <table class="table mb-0">
+                          <thead>
+                            <th>
+                              Deposit Amount ({{selectedPool?.stablecoinSymbol}})
+                            </th>
+                            <th>
+                              Maturation time
+                            </th>
+                          </thead>
+                          <tr *ngFor="let deposit of getDepositsToFundByMaturationTime()">
+                            <td>
+                              {{deposit.amount.toFormat(4)}}
+                            </td>
+                            <td>
+                              {{timestampToDateString(deposit.maturationTimestamp)}}
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </ng-container>
