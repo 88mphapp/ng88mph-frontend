@@ -66,25 +66,20 @@ export class StatsComponent implements OnInit {
         let totalDepositUSD = new BigNumber(0);
         let totalInterestUSD = new BigNumber(0);
         let stablecoinPriceCache = {};
-        for (const pool of dpools) {
-          let stablecoinPrice = stablecoinPriceCache[pool.stablecoin];
-          if (!stablecoinPrice) {
-            const rawData = await this.coinGeckoClient.coins.fetchCoinContractMarketChart(pool.stablecoin, 'ethereum', {
-              days: 0
-            });
-            if (rawData.success) {
-              stablecoinPrice = rawData.data.prices[0][1];
-            } else {
-              stablecoinPrice = 0;
+        await Promise.all(
+          dpools.map(async pool => {
+            let stablecoinPrice = stablecoinPriceCache[pool.stablecoin];
+            if (!stablecoinPrice) {
+              stablecoinPrice = await this.helpers.getTokenPriceUSD(pool.stablecoin);
+              stablecoinPriceCache[pool.stablecoin] = stablecoinPrice;
             }
-            stablecoinPriceCache[pool.stablecoin] = stablecoinPrice;
-          }
 
-          const poolDepositUSD = new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice);
-          const poolInterestUSD = new BigNumber(pool.totalInterestPaid).times(stablecoinPrice);
-          totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
-          totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-        }
+            const poolDepositUSD = new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice);
+            const poolInterestUSD = new BigNumber(pool.totalInterestPaid).times(stablecoinPrice);
+            totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
+            totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
+          })
+        );
         this.totalDepositUSD = totalDepositUSD;
         this.totalInterestUSD = totalInterestUSD;
       }
