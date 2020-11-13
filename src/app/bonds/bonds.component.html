@@ -338,21 +338,21 @@
                 <div class="row">
                   <div class="col-4 mb-4">
                     <h5 class="text-uppercase text-white">
-                      Weighted avg. maturation time
+                      Avg. maturation time
                       <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                        ngbTooltip="The average maturation time of the deposits, weighted by the deposit amount. You receive interest when any deposit you funded is withdrawn.">
+                        ngbTooltip="The average maturation time of the deposits. You receive interest from all deposits you fund (in the same bond) when any one is withdrawn.">
                         [i]
                       </button>
                     </h5>
                     <h2 class="mb-1 glowing">
-                      {{weightedAvgMaturationTime.toFormat(4)}} days
+                      {{averageMaturationTime.toFormat(4)}} days
                     </h2>
                   </div>
                   <div class="col-4 mb-4">
                     <h5 class="text-uppercase text-white">
                       Median maturation time
                       <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                        ngbTooltip="The median maturation time of the deposits, unweighted. You receive interest when any deposit you funded is withdrawn.">
+                        ngbTooltip="The median maturation time of the deposits. You receive interest from all deposits you fund (in the same bond) when any one is withdrawn.">
                         [i]
                       </button>
                     </h5>
