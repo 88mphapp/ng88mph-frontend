@@ -66,7 +66,7 @@ export class StatsComponent implements OnInit {
         let totalDepositUSD = new BigNumber(0);
         let totalInterestUSD = new BigNumber(0);
         let stablecoinPriceCache = {};
-        await Promise.all(
+        Promise.all(
           dpools.map(async pool => {
             let stablecoinPrice = stablecoinPriceCache[pool.stablecoin];
             if (!stablecoinPrice) {
@@ -79,9 +79,10 @@ export class StatsComponent implements OnInit {
             totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
             totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
           })
-        );
-        this.totalDepositUSD = totalDepositUSD;
-        this.totalInterestUSD = totalInterestUSD;
+        ).then(() => {
+          this.totalDepositUSD = totalDepositUSD;
+          this.totalInterestUSD = totalInterestUSD;
+        });
       }
 
       if (mph) {

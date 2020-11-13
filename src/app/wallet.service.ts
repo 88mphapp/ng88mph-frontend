@@ -9,16 +9,12 @@ import { isNullOrUndefined } from 'util';
 })
 export class WalletService extends Web3Enabled {
   connectedEvent: EventEmitter<null>;
-  errorEvent: EventEmitter<null>;
+  disconnectedEvent: EventEmitter<null>;
 
   constructor(@Inject(WEB3) public web3: Web3) {
     super(web3);
     this.connectedEvent = new EventEmitter<null>();
-    this.errorEvent = new EventEmitter<null>();
-  }
-
-  public get userAddress(): string | null {
-    return this.state.address;
+    this.disconnectedEvent = new EventEmitter<null>();
   }
 
   public get connected(): boolean {
@@ -31,7 +27,7 @@ export class WalletService extends Web3Enabled {
       onConnected();
     };
     const _onError = () => {
-      this.errorEvent.emit();
+      this.disconnectedEvent.emit();
       onError();
     }
     await super.connect(_onConnected, _onError, isStartupMode);

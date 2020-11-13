@@ -36,63 +36,73 @@ export class FarmingComponent implements OnInit {
     public constants: ConstantsService,
     public helpers: HelpersService
   ) {
-    this.resetData();
+    this.resetData(true, true);
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(this.wallet.connected, true);
     this.wallet.connectedEvent.subscribe(() => {
-      this.loadData();
+      this.resetData(true, false);
+      this.loadData(true, false);
     });
-    this.wallet.errorEvent.subscribe(() => {
-      this.resetData();
+    this.wallet.disconnectedEvent.subscribe(() => {
+      this.resetData(true, false);
     });
   }
 
-  async loadData() {
-    const infuraEndpoint = this.wallet.infuraEndpoint();
-    const rewards = this.contract.getNamedContract('Farming', infuraEndpoint);
+  async loadData(loadUser: boolean, loadGlobal: boolean) {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const rewards = this.contract.getNamedContract('Farming', readonlyWeb3);
 
-    this.totalStakedMPHBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
-    this.totalRewardPerSecond = new BigNumber(await rewards.methods.rewardRate().call()).div(this.constants.PRECISION);
-    this.rewardPerMPHPerSecond = this.totalRewardPerSecond.div(this.totalStakedMPHBalance);
-    if (this.totalStakedMPHBalance.isZero()) {
-      this.rewardPerMPHPerSecond = new BigNumber(0);
+    if (loadGlobal) {
+      this.totalStakedMPHBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
+      this.totalRewardPerSecond = new BigNumber(await rewards.methods.rewardRate().call()).div(this.constants.PRECISION);
+      this.rewardPerMPHPerSecond = this.totalRewardPerSecond.div(this.totalStakedMPHBalance);
+      if (this.totalStakedMPHBalance.isZero()) {
+        this.rewardPerMPHPerSecond = new BigNumber(0);
+      }
+
+      this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
+
+      this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
+      const secondROI = this.totalRewardPerSecond.times(this.mphPriceUSD).div(this.totalStakedMPHBalance).times(100);
+      this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+      this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
+      this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
+      this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
+
+      this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
     }
 
-    if (this.wallet.connected) {
+    if (loadUser) {
       this.stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
       this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+      this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
+      if (this.totalStakedMPHBalance.isZero()) {
+        this.stakedMPHPoolProportion = new BigNumber(0);
+      }
     }
-    this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
-    if (this.totalStakedMPHBalance.isZero()) {
-      this.stakedMPHPoolProportion = new BigNumber(0);
-    }
-    this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
-
-    this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
-    this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
-    const secondROI = this.totalRewardPerSecond.times(this.mphPriceUSD).div(this.totalStakedMPHBalance).times(100);
-    this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
-    this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
-    this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
-    this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
   }
 
-  resetData(): void {
-    this.stakedMPHBalance = new BigNumber(0);
-    this.stakedMPHPoolProportion = new BigNumber(0);
-    this.claimableRewards = new BigNumber(0);
-    this.totalStakedMPHBalance = new BigNumber(0);
-    this.rewardPerMPHPerSecond = new BigNumber(0);
-    this.rewardPerDay = new BigNumber(0);
-    this.totalRewardPerSecond = new BigNumber(0);
-    this.mphPriceUSD = new BigNumber(0);
-    this.mphLPPriceUSD = new BigNumber(0);
-    this.yearlyROI = new BigNumber(0);
-    this.monthlyROI = new BigNumber(0);
-    this.weeklyROI = new BigNumber(0);
-    this.dailyROI = new BigNumber(0);
+  resetData(resetUser: boolean, resetGlobal: boolean): void {
+    if (resetUser) {
+      this.stakedMPHBalance = new BigNumber(0);
+      this.stakedMPHPoolProportion = new BigNumber(0);
+      this.claimableRewards = new BigNumber(0);
+    }
+
+    if (resetGlobal) {
+      this.totalStakedMPHBalance = new BigNumber(0);
+      this.rewardPerMPHPerSecond = new BigNumber(0);
+      this.rewardPerDay = new BigNumber(0);
+      this.totalRewardPerSecond = new BigNumber(0);
+      this.mphPriceUSD = new BigNumber(0);
+      this.mphLPPriceUSD = new BigNumber(0);
+      this.yearlyROI = new BigNumber(0);
+      this.monthlyROI = new BigNumber(0);
+      this.weeklyROI = new BigNumber(0);
+      this.dailyROI = new BigNumber(0);
+    }
   }
 
   openStakeModal() {
