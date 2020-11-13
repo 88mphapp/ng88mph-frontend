@@ -37,6 +37,8 @@ export class ModalDepositComponent implements OnInit {
   mphPriceUSD: BigNumber;
   mphAPY: BigNumber;
   tempMPHAPY: BigNumber;
+  mphMintingMultiplier: BigNumber;
+  mphDepositorRewardMultiplier: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -76,6 +78,8 @@ export class ModalDepositComponent implements OnInit {
     this.mphPriceUSD = new BigNumber(0);
     this.mphAPY = new BigNumber(0);
     this.tempMPHAPY = new BigNumber(0);
+    this.mphMintingMultiplier = new BigNumber(0);
+    this.mphDepositorRewardMultiplier = new BigNumber(0);
   }
 
   async selectPool(poolName: string) {
@@ -84,10 +88,13 @@ export class ModalDepositComponent implements OnInit {
     const queryString = gql`
       {
         dpool(id: "${this.selectedPoolInfo.address.toLowerCase()}") {
+          id
           MinDepositAmount
           MaxDepositAmount
           MinDepositPeriod
           MaxDepositPeriod
+          mphMintingMultiplier
+          mphDepositorRewardMultiplier
         }
       }
     `;
@@ -99,6 +106,8 @@ export class ModalDepositComponent implements OnInit {
       this.maxDepositAmount = new BigNumber(pool.MaxDepositAmount);
       this.minDepositPeriod = Math.ceil(pool.MinDepositPeriod / this.constants.DAY_IN_SEC);
       this.maxDepositPeriod = Math.floor(pool.MaxDepositPeriod / this.constants.DAY_IN_SEC);
+      this.mphMintingMultiplier = new BigNumber(pool.mphMintingMultiplier);
+      this.mphDepositorRewardMultiplier = new BigNumber(pool.mphDepositorRewardMultiplier);
     });
 
     if (this.wallet.connected) {
@@ -131,7 +140,6 @@ export class ModalDepositComponent implements OnInit {
 
   async updateAPY() {
     const pool = this.contract.getPool(this.selectedPoolInfo.name);
-    const mphMinter = this.contract.getNamedContract('MPHMinter');
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(this.selectedPoolInfo.stablecoin);
 
     // get deposit amount
@@ -151,10 +159,8 @@ export class ModalDepositComponent implements OnInit {
     }
 
     // get MPH reward amount
-    const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(this.selectedPoolInfo.address).call()).div(this.constants.PRECISION);
-    const poolDepositorRewardMultiplier = new BigNumber(await mphMinter.methods.poolDepositorRewardMultiplier(this.selectedPoolInfo.address).call()).div(this.constants.PRECISION);
-    this.mphRewardAmount = poolMintingMultiplier.times(this.interestAmountToken).times(stablecoinPrecision).div(this.constants.PRECISION);
-    this.mphTakeBackAmount = new BigNumber(1).minus(poolDepositorRewardMultiplier).times(this.mphRewardAmount);
+    this.mphRewardAmount = this.mphMintingMultiplier.times(this.interestAmountToken);
+    this.mphTakeBackAmount = new BigNumber(1).minus(this.mphDepositorRewardMultiplier).times(this.mphRewardAmount);
 
     const mphAPY = this.mphRewardAmount.minus(this.mphTakeBackAmount).times(this.mphPriceUSD).div(this.depositAmountUSD).div(this.depositTimeInDays).times(365).times(100);
     if (mphAPY.isNaN()) {
@@ -190,9 +196,12 @@ export class ModalDepositComponent implements OnInit {
 
 interface QueryResult {
   dpool: {
+    id: string;
     MinDepositAmount: number;
     MaxDepositAmount: number;
     MinDepositPeriod: number;
     MaxDepositPeriod: number;
+    mphMintingMultiplier: number;
+    mphDepositorRewardMultiplier: number;
   };
 }

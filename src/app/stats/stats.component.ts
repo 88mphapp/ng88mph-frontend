@@ -34,11 +34,13 @@ export class StatsComponent implements OnInit {
     const queryString = gql`
       {
         dpools {
+          id
           stablecoin
           totalActiveDeposit
           totalInterestPaid
         }
         mph(id: "0") {
+          id
           totalSupply
           totalStakedMPHBalance
           totalHistoricalReward
@@ -108,11 +110,13 @@ export class StatsComponent implements OnInit {
 
 interface QueryResult {
   dpools: {
+    id: string;
     stablecoin: string;
     totalActiveDeposit: number;
     totalInterestPaid: number;
   }[];
   mph: {
+    id: string;
     totalSupply: number;
     totalStakedMPHBalance: number;
     totalHistoricalReward: number;

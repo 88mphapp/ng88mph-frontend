@@ -63,8 +63,10 @@ export class RewardsComponent implements OnInit {
           stakedMPHBalance
         }
         mph(id: "0") {
+          id
           totalStakedMPHBalance
           rewardPerMPHPerSecond
+          rewardPerSecond
         }
       }
     `;
@@ -93,8 +95,7 @@ export class RewardsComponent implements OnInit {
         this.rewardPerWeek = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(weekInSeconds);
       }
 
-      const rewards = this.contract.getNamedContract('Rewards');
-      this.totalRewardPerSecond = new BigNumber(await rewards.methods.rewardRate().call()).div(this.constants.PRECISION);
+      this.totalRewardPerSecond = new BigNumber(mph.rewardPerSecond);
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
       const secondROI = this.totalRewardPerSecond.div(this.totalStakedMPHBalance.times(this.mphPriceUSD)).times(100);
       this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
@@ -153,7 +154,9 @@ interface QueryResult {
     stakedMPHBalance: number;
   };
   mph: {
+    id: string;
     totalStakedMPHBalance: number;
     rewardPerMPHPerSecond: number;
+    rewardPerSecond: number;
   };
 }

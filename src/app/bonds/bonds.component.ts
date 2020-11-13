@@ -92,6 +92,7 @@ export class BondsComponent implements OnInit {
         funder(id: "${funderID}") {
           totalMPHEarned
           pools {
+            id
             address
             fundings(where: { funder: "${funderID}" }, orderBy: nftID) {
               nftID
@@ -113,11 +114,14 @@ export class BondsComponent implements OnInit {
           }
         }
         dpools {
+          id
           address
           surplus
           unfundedDepositAmount
           oneYearInterestRate
           oracleInterestRate
+          mphMintingMultiplier
+          mphFunderRewardMultiplier
           latestFundedDeposit: deposits(where: { fundingID_gt: 0 }, orderBy: nftID, orderDirection: desc, first: 1) {
             nftID
           }
@@ -205,10 +209,8 @@ export class BondsComponent implements OnInit {
 
       if (dpools) {
         const allPoolList = new Array<DPool>(0);
-        const mphMinter = this.contract.getNamedContract('MPHMinter');
         for (const pool of dpools) {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
-          const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
 
           const stablecoin = poolInfo.stablecoin.toLowerCase()
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
@@ -218,9 +220,9 @@ export class BondsComponent implements OnInit {
           }
 
           // get MPH reward amount
-          const poolMintingMultiplier = new BigNumber(await mphMinter.methods.poolMintingMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
-          const poolFunderRewardMultiplier = new BigNumber(await mphMinter.methods.poolFunderRewardMultiplier(poolInfo.address).call()).div(this.constants.PRECISION);
-          const mphRewardPerToken = poolMintingMultiplier.times(stablecoinPrecision).div(this.constants.PRECISION).times(poolFunderRewardMultiplier);
+          const poolMintingMultiplier = new BigNumber(pool.mphMintingMultiplier);
+          const poolFunderRewardMultiplier = new BigNumber(pool.mphFunderRewardMultiplier);
+          const mphRewardPerToken = poolMintingMultiplier.times(poolFunderRewardMultiplier);
 
           const latestFundedDeposit = pool.latestFundedDeposit.length ? +pool.latestFundedDeposit[0].nftID : 0;
           const latestDeposit = pool.latestDeposit.length ? +pool.latestDeposit[0].nftID : 0;
@@ -285,6 +287,7 @@ export class BondsComponent implements OnInit {
     const queryString = gql`
       {
         dpool(id: "${poolID}") {
+          moneyMarketIncomeIndex
           deposits(where: { nftID_gt: ${this.selectedPool.latestFundedDeposit} }, orderBy: nftID) {
             nftID
             amount
@@ -298,10 +301,9 @@ export class BondsComponent implements OnInit {
     `;
     this.apollo.query<FundableDepositsQuery>({
       query: queryString
-    }).subscribe(async (x) => {
+    }).subscribe((x) => {
       const fundableDeposits = [];
-      const pool = this.contract.getPool(this.allPoolList[poolIdx].name);
-      const moneyMarketIncomeIndex = new BigNumber(await pool.methods.moneyMarketIncomeIndex().call()).div(this.constants.PRECISION);
+      const moneyMarketIncomeIndex = new BigNumber(x.data.dpool.moneyMarketIncomeIndex).div(this.constants.PRECISION);
       for (const deposit of x.data.dpool.deposits) {
         const surplus = moneyMarketIncomeIndex.div(deposit.initialMoneyMarketIncomeIndex).minus(1).times(deposit.amount).minus(deposit.interestEarned);
         const parsedDeposit: Deposit = {
@@ -476,11 +478,14 @@ interface QueryResult {
     }[];
   };
   dpools: {
+    id: string;
     address: string;
     surplus: number;
     unfundedDepositAmount: number;
     oneYearInterestRate: number;
     oracleInterestRate: number;
+    mphMintingMultiplier: number;
+    mphFunderRewardMultiplier: number;
     latestFundedDeposit: {
       nftID: number;
     }[];
@@ -492,6 +497,8 @@ interface QueryResult {
 
 interface FundableDepositsQuery {
   dpool: {
+    id: string;
+    moneyMarketIncomeIndex: number;
     deposits: {
       nftID: number;
       amount: number;
