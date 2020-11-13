@@ -61,6 +61,9 @@ export class BondsComponent implements OnInit {
   loadingCalculator: boolean;
   mphPriceUSD: BigNumber;
   mphROI: BigNumber;
+  weightedAvgMaturationTime: BigNumber;
+  medianMaturationTime: BigNumber;
+  depositListIsCollapsed: boolean;
 
   constructor(
     private apollo: Apollo,
@@ -268,6 +271,9 @@ export class BondsComponent implements OnInit {
     this.loadingCalculator = true;
     this.mphPriceUSD = new BigNumber(0);
     this.mphROI = new BigNumber(0);
+    this.weightedAvgMaturationTime = new BigNumber(0);
+    this.medianMaturationTime = new BigNumber(0);
+    this.depositListIsCollapsed = true;
   }
 
   selectPool(poolIdx: number) {
@@ -354,6 +360,41 @@ export class BondsComponent implements OnInit {
       this.mphROI = new BigNumber(0);
     }
 
+    // compute weighted average maturation time
+    const deposits = newNum >= this.numFundableDeposits ? this.fundableDeposits : this.fundableDeposits.slice(0, newNum);
+    let weightedSum = new BigNumber(0);
+    let totalWeights = new BigNumber(0);
+    const now = Math.floor(Date.now() / 1e3);
+    for (const deposit of deposits) {
+      const timeTillMaturation = deposit.maturationTimestamp - now;
+      if (!deposit.active || timeTillMaturation < 0) continue;
+      weightedSum = weightedSum.plus(deposit.amount.times(timeTillMaturation));
+      totalWeights = totalWeights.plus(deposit.amount);
+    }
+    const dayInSeconds = 24 * 60 * 60;
+    this.weightedAvgMaturationTime = totalWeights.isZero() ? new BigNumber(0) : weightedSum.div(totalWeights).div(dayInSeconds);
+
+    // compute median maturation time
+    const median = (values) => {
+      if (values.length === 0) return 0;
+
+      values.sort(function (a, b) {
+        return a - b;
+      });
+
+      var half = Math.floor(values.length / 2);
+
+      if (values.length % 2)
+        return values[half];
+
+      return (values[half - 1] + values[half]) / 2.0;
+    };
+    this.medianMaturationTime = new BigNumber(median(
+      deposits
+        .filter(x => x.active && (x.maturationTimestamp - now > 0))
+        .map(x => x.maturationTimestamp - now)
+    )).div(dayInSeconds);
+
     this.updateEstimatedROI();
   }
 
@@ -373,6 +414,21 @@ export class BondsComponent implements OnInit {
     this.estimatedROI = this.estimatedProfitToken.div(this.debtToFundToken).times(100);
 
     this.loadingCalculator = false;
+  }
+
+  getDepositsToFundByMaturationTime() {
+    const now = Math.floor(Date.now() / 1e3);
+    const newNum = this.numDepositsToFund === 'All' ? this.numFundableDeposits : +this.numDepositsToFund;
+    const deposits = newNum >= this.numFundableDeposits ? this.fundableDeposits : this.fundableDeposits.slice(0, newNum);
+    return deposits
+      .filter(x => x.active && (x.maturationTimestamp - now > 0))
+      .sort((a, b) => {
+        return a.maturationTimestamp - b.maturationTimestamp;
+      });
+  }
+
+  timestampToDateString(timestampSec: number): string {
+    return new Date(timestampSec * 1e3).toLocaleDateString();
   }
 
   buyBond() {
