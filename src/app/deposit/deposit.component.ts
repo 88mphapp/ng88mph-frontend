@@ -77,20 +77,21 @@ export class DepositComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService
   ) {
-    this.resetData();
+    this.resetData(true, true);
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(this.wallet.connected, true);
     this.wallet.connectedEvent.subscribe(() => {
-      this.loadData();
+      this.resetData(true, false);
+      this.loadData(true, false);
     });
-    this.wallet.errorEvent.subscribe(() => {
-      this.resetData();
+    this.wallet.disconnectedEvent.subscribe(() => {
+      this.resetData(true, false);
     });
   }
 
-  async loadData() {
+  async loadData(loadUser: boolean, loadGlobal: boolean) {
     await this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
@@ -98,7 +99,7 @@ export class DepositComponent implements OnInit {
     const userID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
     const queryString = gql`
       {
-        user(id: "${userID}") {
+        ${loadUser ? `user(id: "${userID}") {
           totalMPHEarned
           totalMPHPaidBack
           pools {
@@ -123,15 +124,15 @@ export class DepositComponent implements OnInit {
             totalActiveDeposit
             totalInterestEarned
           }
-        }
-        dpools {
+        }` : ''}
+        ${loadGlobal ? `dpools {
           id
           address
           totalActiveDeposit
           oneYearInterestRate
           mphDepositorRewardMultiplier
           mphMintingMultiplier
-        }
+        }` : ''}
       }
     `;
     this.apollo.query<QueryResult>({
@@ -259,31 +260,35 @@ export class DepositComponent implements OnInit {
     }
   }
 
-  resetData(): void {
-    this.totalDepositUSD = new BigNumber(0);
-    this.totalInterestUSD = new BigNumber(0);
-    this.totalMPHEarned = new BigNumber(0);
-    this.userPools = [];
-    this.mphPriceUSD = new BigNumber(0);
-
-    const allPoolList = new Array<DPool>(0);
-    const poolInfoList = this.contract.getPoolInfoList();
-    for (const poolInfo of poolInfoList) {
-      const dpoolObj: DPool = {
-        name: poolInfo.name,
-        protocol: poolInfo.protocol,
-        stablecoin: poolInfo.stablecoin,
-        stablecoinSymbol: poolInfo.stablecoinSymbol,
-        iconPath: poolInfo.iconPath,
-        totalDepositToken: new BigNumber(0),
-        totalDepositUSD: new BigNumber(0),
-        oneYearInterestRate: new BigNumber(0),
-        mphAPY: new BigNumber(0),
-        tempMPHAPY: new BigNumber(0)
-      };
-      allPoolList.push(dpoolObj);
+  resetData(resetUser: boolean, resetGlobal: boolean): void {
+    if (resetUser) {
+      this.totalDepositUSD = new BigNumber(0);
+      this.totalInterestUSD = new BigNumber(0);
+      this.totalMPHEarned = new BigNumber(0);
+      this.userPools = [];
     }
-    this.allPoolList = allPoolList;
+
+    if (resetGlobal) {
+      const allPoolList = new Array<DPool>(0);
+      const poolInfoList = this.contract.getPoolInfoList();
+      for (const poolInfo of poolInfoList) {
+        const dpoolObj: DPool = {
+          name: poolInfo.name,
+          protocol: poolInfo.protocol,
+          stablecoin: poolInfo.stablecoin,
+          stablecoinSymbol: poolInfo.stablecoinSymbol,
+          iconPath: poolInfo.iconPath,
+          totalDepositToken: new BigNumber(0),
+          totalDepositUSD: new BigNumber(0),
+          oneYearInterestRate: new BigNumber(0),
+          mphAPY: new BigNumber(0),
+          tempMPHAPY: new BigNumber(0)
+        };
+        allPoolList.push(dpoolObj);
+      }
+      this.allPoolList = allPoolList;
+      this.mphPriceUSD = new BigNumber(0);
+    }
   }
 
   openDepositModal(poolName?: string) {

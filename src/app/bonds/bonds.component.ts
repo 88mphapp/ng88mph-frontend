@@ -72,24 +72,25 @@ export class BondsComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService
   ) {
-    this.resetData();
+    this.resetData(true, true);
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(this.wallet.connected, true);
     this.wallet.connectedEvent.subscribe(() => {
-      this.loadData();
+      this.resetData(true, false);
+      this.loadData(true, false);
     });
-    this.wallet.errorEvent.subscribe(() => {
-      this.resetData();
+    this.wallet.disconnectedEvent.subscribe(() => {
+      this.resetData(true, false);
     });
   }
 
-  loadData(): void {
+  loadData(loadUser: boolean, loadGlobal: boolean): void {
     const funderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
     const queryString = gql`
       {
-        funder(id: "${funderID}") {
+        ${loadUser ? `funder(id: "${funderID}") {
           totalMPHEarned
           pools {
             id
@@ -112,8 +113,8 @@ export class BondsComponent implements OnInit {
             totalRecordedFundedDepositAmount
             totalInterestEarned
           }
-        }
-        dpools {
+        }` : ''}
+        ${loadGlobal ? `dpools {
           id
           address
           surplus
@@ -128,7 +129,7 @@ export class BondsComponent implements OnInit {
           latestDeposit: deposits(orderBy: nftID, orderDirection: desc, first: 1) {
             nftID
           }
-        }
+        }` : ''}
       }
     `;
     this.apollo.query<QueryResult>({
@@ -211,7 +212,7 @@ export class BondsComponent implements OnInit {
 
       if (dpools) {
         const allPoolList = new Array<DPool>(0);
-        for (const pool of dpools) {
+        Promise.all(dpools.map(async pool => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
           const stablecoin = poolInfo.stablecoin.toLowerCase()
@@ -245,39 +246,45 @@ export class BondsComponent implements OnInit {
             oracleInterestRate: new BigNumber(pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100)
           };
           allPoolList.push(dpoolObj);
-        }
-        this.allPoolList = allPoolList;
-
-        this.selectPool(0);
+        })).then(() => {
+          this.allPoolList = allPoolList;
+          this.selectPool(0);
+        });
       }
     }
   }
 
-  resetData(): void {
-    this.totalDeficitFundedUSD = new BigNumber(0);
-    this.totalCurrentDepositUSD = new BigNumber(0);
-    this.totalInterestUSD = new BigNumber(0);
-    this.totalMPHEarned = new BigNumber(0);
-    this.floatingRatePrediction = new BigNumber(0);
-    this.allPoolList = [];
-    this.funderPools = [];
-    this.numDepositsToFund = 'All';
-    this.numFundableDeposits = 0;
-    this.fundableDeposits = [];
-    this.debtToFundToken = new BigNumber(0);
-    this.debtToFundUSD = new BigNumber(0);
-    this.amountToEarnOnToken = new BigNumber(0);
-    this.amountToEarnOnUSD = new BigNumber(0);
-    this.mphRewardAmount = new BigNumber(0);
-    this.estimatedProfitToken = new BigNumber(0);
-    this.estimatedProfitUSD = new BigNumber(0);
-    this.estimatedROI = new BigNumber(0);
-    this.loadingCalculator = true;
-    this.mphPriceUSD = new BigNumber(0);
-    this.mphROI = new BigNumber(0);
-    this.averageMaturationTime = new BigNumber(0);
-    this.medianMaturationTime = new BigNumber(0);
-    this.depositListIsCollapsed = true;
+  resetData(resetUser: boolean, resetGlobal: boolean): void {
+    if (resetUser) {
+      this.totalDeficitFundedUSD = new BigNumber(0);
+      this.totalCurrentDepositUSD = new BigNumber(0);
+      this.totalInterestUSD = new BigNumber(0);
+      this.totalMPHEarned = new BigNumber(0);
+      this.funderPools = [];
+
+    }
+
+    if (resetGlobal) {
+      this.floatingRatePrediction = new BigNumber(0);
+      this.allPoolList = [];
+      this.numDepositsToFund = 'All';
+      this.numFundableDeposits = 0;
+      this.fundableDeposits = [];
+      this.debtToFundToken = new BigNumber(0);
+      this.debtToFundUSD = new BigNumber(0);
+      this.amountToEarnOnToken = new BigNumber(0);
+      this.amountToEarnOnUSD = new BigNumber(0);
+      this.mphRewardAmount = new BigNumber(0);
+      this.estimatedProfitToken = new BigNumber(0);
+      this.estimatedProfitUSD = new BigNumber(0);
+      this.estimatedROI = new BigNumber(0);
+      this.loadingCalculator = true;
+      this.mphPriceUSD = new BigNumber(0);
+      this.mphROI = new BigNumber(0);
+      this.averageMaturationTime = new BigNumber(0);
+      this.medianMaturationTime = new BigNumber(0);
+      this.depositListIsCollapsed = true;
+    }
   }
 
   selectPool(poolIdx: number) {
@@ -305,7 +312,7 @@ export class BondsComponent implements OnInit {
       query: queryString
     }).subscribe((x) => {
       const fundableDeposits = [];
-      const moneyMarketIncomeIndex = new BigNumber(x.data.dpool.moneyMarketIncomeIndex).div(this.constants.PRECISION);
+      const moneyMarketIncomeIndex = new BigNumber(x.data.dpool.moneyMarketIncomeIndex);
       for (const deposit of x.data.dpool.deposits) {
         const surplus = moneyMarketIncomeIndex.div(deposit.initialMoneyMarketIncomeIndex).minus(1).times(deposit.amount).minus(deposit.interestEarned);
         const parsedDeposit: Deposit = {

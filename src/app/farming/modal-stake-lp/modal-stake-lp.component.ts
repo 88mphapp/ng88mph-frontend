@@ -38,9 +38,10 @@ export class ModalStakeLPComponent implements OnInit {
       this.loadData();
     }
     this.wallet.connectedEvent.subscribe(() => {
+      this.resetData();
       this.loadData();
     });
-    this.wallet.errorEvent.subscribe(() => {
+    this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData();
     });
   }
