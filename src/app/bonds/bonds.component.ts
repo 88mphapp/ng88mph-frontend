@@ -152,8 +152,8 @@ export class BondsComponent implements OnInit {
 
         // process funding list
         const funderPools: FunderPool[] = [];
-        for (const pool of funder.pools) {
-          if (pool.fundings.length == 0) continue;
+        Promise.all(funder.pools.map(async pool => {
+          if (pool.fundings.length == 0) return;
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
           const stablecoin = poolInfo.stablecoin.toLowerCase()
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
@@ -181,14 +181,15 @@ export class BondsComponent implements OnInit {
             fundings: fundings
           };
           funderPools.push(funderPool);
-        }
-        this.funderPools = funderPools;
+        })).then(() => {
+          this.funderPools = funderPools;
+        });
 
         // compute overall statistics
         let totalDeficitFundedUSD = new BigNumber(0);
         let totalCurrentDepositUSD = new BigNumber(0);
         let totalInterestUSD = new BigNumber(0);
-        for (const totalInterestEntity of funder.totalInterestByPool) {
+        Promise.all(funder.totalInterestByPool.map(async totalInterestEntity => {
           let stablecoinPrice = stablecoinPriceCache[totalInterestEntity.pool.stablecoin];
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(totalInterestEntity.pool.stablecoin);
@@ -201,10 +202,11 @@ export class BondsComponent implements OnInit {
           totalDeficitFundedUSD = totalDeficitFundedUSD.plus(poolDeficitFundedUSD);
           totalCurrentDepositUSD = totalCurrentDepositUSD.plus(poolCurrentDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-        }
-        this.totalDeficitFundedUSD = totalDeficitFundedUSD;
-        this.totalCurrentDepositUSD = totalCurrentDepositUSD;
-        this.totalInterestUSD = totalInterestUSD;
+        })).then(() => {
+          this.totalDeficitFundedUSD = totalDeficitFundedUSD;
+          this.totalCurrentDepositUSD = totalCurrentDepositUSD;
+          this.totalInterestUSD = totalInterestUSD;
+        });
       }
 
       if (dpools) {

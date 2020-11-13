@@ -150,8 +150,8 @@ export class DepositComponent implements OnInit {
 
         // process user deposit list
         const userPools: UserPool[] = [];
-        for (const pool of user.pools) {
-          if (pool.deposits.length == 0) continue;
+        Promise.all(user.pools.map(async pool => {
+          if (pool.deposits.length == 0) return;
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
           const stablecoin = poolInfo.stablecoin.toLowerCase()
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
@@ -187,13 +187,14 @@ export class DepositComponent implements OnInit {
             deposits: userPoolDeposits
           };
           userPools.push(userPool);
-        }
-        this.userPools = userPools;
+        })).then(() => {
+          this.userPools = userPools;
+        });
 
         // compute total deposit & interest in USD
         let totalDepositUSD = new BigNumber(0);
         let totalInterestUSD = new BigNumber(0);
-        for (const totalDepositEntity of user.totalDepositByPool) {
+        Promise.all(user.totalDepositByPool.map(async totalDepositEntity => {
           let stablecoinPrice = stablecoinPriceCache[totalDepositEntity.pool.stablecoin];
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(totalDepositEntity.pool.stablecoin);
@@ -204,13 +205,14 @@ export class DepositComponent implements OnInit {
           const poolInterestUSD = new BigNumber(totalDepositEntity.totalInterestEarned).times(stablecoinPrice);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-        }
-        this.totalDepositUSD = totalDepositUSD;
-        this.totalInterestUSD = totalInterestUSD;
+        })).then(() => {
+          this.totalDepositUSD = totalDepositUSD;
+          this.totalInterestUSD = totalInterestUSD;
+        });
       }
       if (dpools) {
         let allPoolList = new Array<DPool>(0);
-        for (const pool of dpools) {
+        Promise.all(dpools.map(async pool => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
           const stablecoin = poolInfo.stablecoin.toLowerCase()
@@ -239,19 +241,20 @@ export class DepositComponent implements OnInit {
             tempMPHAPY: tempMPHAPY
           };
           allPoolList.push(dpoolObj);
-        }
-        allPoolList.sort((a, b) => {
-          const aName = a.name;
-          const bName = b.name;
-          if (aName > bName) {
-            return 1;
-          }
-          if (aName < bName) {
-            return -1;
-          }
-          return 0;
+        })).then(() => {
+          allPoolList.sort((a, b) => {
+            const aName = a.name;
+            const bName = b.name;
+            if (aName > bName) {
+              return 1;
+            }
+            if (aName < bName) {
+              return -1;
+            }
+            return 0;
+          });
+          this.allPoolList = allPoolList;
         });
-        this.allPoolList = allPoolList;
       }
     }
   }
