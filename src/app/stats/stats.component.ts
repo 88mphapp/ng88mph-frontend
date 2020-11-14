@@ -3,7 +3,6 @@ import { ApolloQueryResult } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
-import CoinGecko from 'coingecko-api';
 import { HelpersService } from '../helpers.service';
 
 @Component({
@@ -15,14 +14,11 @@ export class StatsComponent implements OnInit {
   mphTotalSupply: BigNumber;
   mphStakedPercentage: BigNumber;
   mphTotalHistoricalReward: BigNumber;
-  coinGeckoClient: CoinGecko;
   totalDepositUSD: BigNumber;
   totalInterestUSD: BigNumber;
   mphPriceUSD: BigNumber;
 
   constructor(private apollo: Apollo, public helpers: HelpersService) {
-    this.coinGeckoClient = new CoinGecko();
-
     this.resetData();
   }
 
