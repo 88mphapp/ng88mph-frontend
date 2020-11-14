@@ -162,19 +162,25 @@ export class DepositComponent implements OnInit {
           }
           const userPoolDeposits: Array<UserDeposit> = [];
           for (const deposit of pool.deposits) {
+            // compute MPH APY
             let mphDepositorRewardMultiplier = new BigNumber(pool.mphDepositorRewardMultiplier);
             const realMPHReward = mphDepositorRewardMultiplier.times(deposit.mintMPHAmount);
             const mphAPY = realMPHReward.times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
+
+            // compute interest
+            const interestEarnedToken = this.helpers.applyFeeToInterest(new BigNumber(deposit.interestEarned));
+            const interestEarnedUSD = interestEarnedToken.times(stablecoinPrice);
+
             const userPoolDeposit: UserDeposit = {
               nftID: deposit.nftID,
               fundingID: deposit.fundingID,
               locked: deposit.maturationTimestamp >= (Date.now() / 1e3),
               amountToken: new BigNumber(deposit.amount),
               amountUSD: new BigNumber(deposit.amount).times(stablecoinPrice),
-              apy: new BigNumber(deposit.interestEarned).div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.YEAR_IN_SEC).times(100),
+              apy: interestEarnedToken.div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.YEAR_IN_SEC).times(100),
               countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
-              interestEarnedToken: new BigNumber(deposit.interestEarned),
-              interestEarnedUSD: new BigNumber(deposit.interestEarned).times(stablecoinPrice),
+              interestEarnedToken,
+              interestEarnedUSD,
               mintMPHAmount: new BigNumber(deposit.mintMPHAmount),
               realMPHReward: realMPHReward,
               mphAPY: mphAPY
@@ -208,7 +214,7 @@ export class DepositComponent implements OnInit {
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
         })).then(() => {
           this.totalDepositUSD = totalDepositUSD;
-          this.totalInterestUSD = totalInterestUSD;
+          this.totalInterestUSD = this.helpers.applyFeeToInterest(totalInterestUSD);
         });
       }
       if (dpools) {
@@ -237,7 +243,7 @@ export class DepositComponent implements OnInit {
             iconPath: poolInfo.iconPath,
             totalDepositToken: new BigNumber(pool.totalActiveDeposit),
             totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice),
-            oneYearInterestRate: new BigNumber(pool.oneYearInterestRate).times(100),
+            oneYearInterestRate: this.helpers.applyFeeToInterest(pool.oneYearInterestRate).times(100),
             mphAPY: mphAPY,
             tempMPHAPY: tempMPHAPY
           };

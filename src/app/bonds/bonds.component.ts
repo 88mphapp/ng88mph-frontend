@@ -107,6 +107,7 @@ export class BondsComponent implements OnInit {
           }
           totalInterestByPool {
             pool {
+              id
               stablecoin
             }
             totalDeficitFunded
@@ -296,6 +297,7 @@ export class BondsComponent implements OnInit {
     const queryString = gql`
       {
         dpool(id: "${poolID}") {
+          id
           moneyMarketIncomeIndex
           deposits(where: { nftID_gt: ${this.selectedPool.latestFundedDeposit} }, orderBy: nftID) {
             nftID
@@ -479,6 +481,7 @@ interface QueryResult {
     }[];
     totalInterestByPool: {
       pool: {
+        id: string;
         stablecoin: string;
       };
       totalDeficitFunded: number;

@@ -54,4 +54,12 @@ export class HelpersService {
     const lpTotalSupply = new BigNumber(await uniswapPair.methods.totalSupply().call()).div(this.constants.PRECISION);
     return lpTotalSupply.isZero() ? new BigNumber(0) : ethReserve.times(ethPriceInUSD).times(2).div(lpTotalSupply);
   }
+
+  applyFeeToInterest(rawInterestAmount) {
+    return new BigNumber(rawInterestAmount).times(0.9);
+  }
+
+  unapplyFeeToInterest(interestAmount) {
+    return new BigNumber(interestAmount).div(0.9);
+  }
 }
