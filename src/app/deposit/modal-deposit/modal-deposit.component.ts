@@ -157,7 +157,7 @@ export class ModalDepositComponent implements OnInit {
     const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(stablecoinPrecision));
     const depositTime = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC));
     const rawInterestAmountToken = new BigNumber(await pool.methods.calculateInterestAmount(depositAmount, depositTime).call()).div(stablecoinPrecision);
-    const rawInterestAmountUSD = this.interestAmountToken.times(stablecoinPrice);
+    const rawInterestAmountUSD = rawInterestAmountToken.times(stablecoinPrice);
     this.interestAmountToken = this.helpers.applyFeeToInterest(rawInterestAmountToken);
     this.interestAmountUSD = this.helpers.applyFeeToInterest(rawInterestAmountUSD);
 
