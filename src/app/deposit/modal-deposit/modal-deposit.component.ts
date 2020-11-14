@@ -156,8 +156,10 @@ export class ModalDepositComponent implements OnInit {
     const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
     const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(stablecoinPrecision));
     const depositTime = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC));
-    this.interestAmountToken = new BigNumber(await pool.methods.calculateInterestAmount(depositAmount, depositTime).call()).div(stablecoinPrecision);
-    this.interestAmountUSD = this.interestAmountToken.times(stablecoinPrice);
+    const rawInterestAmountToken = new BigNumber(await pool.methods.calculateInterestAmount(depositAmount, depositTime).call()).div(stablecoinPrecision);
+    const rawInterestAmountUSD = this.interestAmountToken.times(stablecoinPrice);
+    this.interestAmountToken = this.helpers.applyFeeToInterest(rawInterestAmountToken);
+    this.interestAmountUSD = this.helpers.applyFeeToInterest(rawInterestAmountUSD);
 
     // get APY
     this.apy = this.interestAmountToken.div(this.depositAmount).div(this.depositTimeInDays).times(365).times(100);
@@ -166,7 +168,7 @@ export class ModalDepositComponent implements OnInit {
     }
 
     // get MPH reward amount
-    this.mphRewardAmount = this.mphMintingMultiplier.times(this.interestAmountToken);
+    this.mphRewardAmount = this.mphMintingMultiplier.times(rawInterestAmountToken);
     this.mphTakeBackAmount = new BigNumber(1).minus(this.mphDepositorRewardMultiplier).times(this.mphRewardAmount);
 
     const mphAPY = this.mphRewardAmount.minus(this.mphTakeBackAmount).times(this.mphPriceUSD).div(this.depositAmountUSD).div(this.depositTimeInDays).times(365).times(100);
@@ -181,7 +183,7 @@ export class ModalDepositComponent implements OnInit {
       this.tempMPHAPY = new BigNumber(0);
     } else {
       this.tempMPHAPY = tempMPHAPY;
-    }
+    }    
   }
 
   deposit() {

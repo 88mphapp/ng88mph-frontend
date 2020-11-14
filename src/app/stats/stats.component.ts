@@ -81,7 +81,7 @@ export class StatsComponent implements OnInit {
           })
         ).then(() => {
           this.totalDepositUSD = totalDepositUSD;
-          this.totalInterestUSD = totalInterestUSD;
+          this.totalInterestUSD = this.helpers.applyFeeToInterest(totalInterestUSD);
         });
       }
 
