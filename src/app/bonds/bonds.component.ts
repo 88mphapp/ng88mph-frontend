@@ -350,7 +350,10 @@ export class BondsComponent implements OnInit {
       // fund all deposits
       this.numDepositsToFund = 'All';
       this.debtToFundToken = this.selectedPool.surplus.times(-1);
-      this.amountToEarnOnToken = this.selectedPool.unfundedDepositAmount;
+      const readonlyWeb3 = this.wallet.readonlyWeb3();
+      const poolContract = this.contract.getPool(this.selectedPool.name, readonlyWeb3);
+      const unfundedDepositAmount = new BigNumber(await poolContract.methods.unfundedUserDepositAmount().call()).div(Math.pow(10, this.selectedPool.stablecoinDecimals));
+      this.amountToEarnOnToken = unfundedDepositAmount;
     } else {
       this.numDepositsToFund = newNum.toString();
       let debtToFundToken = new BigNumber(0);
