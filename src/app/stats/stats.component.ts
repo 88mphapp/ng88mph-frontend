@@ -3,6 +3,8 @@ import { ApolloQueryResult } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
+import { ConstantsService } from '../constants.service';
+import { ContractService } from '../contract.service';
 import { HelpersService } from '../helpers.service';
 
 @Component({
@@ -17,8 +19,14 @@ export class StatsComponent implements OnInit {
   totalDepositUSD: BigNumber;
   totalInterestUSD: BigNumber;
   mphPriceUSD: BigNumber;
+  mphCirculatingSupply: BigNumber;
 
-  constructor(private apollo: Apollo, public helpers: HelpersService) {
+  constructor(
+    private apollo: Apollo,
+    public helpers: HelpersService,
+    public contract: ContractService,
+    public constants: ConstantsService
+  ) {
     this.resetData();
   }
 
@@ -42,6 +50,18 @@ export class StatsComponent implements OnInit {
           totalHistoricalReward
           rewardPerMPHPerSecond
         }
+        lpPool: mphholder(id: "${this.contract.getNamedContractAddress('Farming').toLowerCase()}") {
+          id
+          mphBalance
+        }
+        govTreasury: mphholder(id: "${this.constants.GOV_TREASURY.toLowerCase()}") {
+          id
+          mphBalance
+        }
+        devWallet: mphholder(id: "${this.constants.DEV_WALLET.toLowerCase()}") {
+          id
+          mphBalance
+        }
       }
     `;
     this.apollo.query<QueryResult>({
@@ -57,6 +77,9 @@ export class StatsComponent implements OnInit {
     if (!queryResult.loading) {
       const dpools = queryResult.data.dpools;
       const mph = queryResult.data.mph;
+      const lpPool = queryResult.data.lpPool;
+      const govTreasury = queryResult.data.govTreasury;
+      const devWallet = queryResult.data.devWallet;
 
       if (dpools) {
         let totalDepositUSD = new BigNumber(0);
@@ -86,6 +109,18 @@ export class StatsComponent implements OnInit {
         this.mphStakedPercentage = this.mphTotalSupply.isZero() ? new BigNumber(0) : new BigNumber(mph.totalStakedMPHBalance).div(this.mphTotalSupply).times(100);
         this.mphTotalHistoricalReward = new BigNumber(mph.totalHistoricalReward);
       }
+
+      let mphCirculatingSupply = this.mphTotalSupply;
+      if (lpPool) {
+        mphCirculatingSupply = mphCirculatingSupply.minus(lpPool.mphBalance);
+      }
+      if (govTreasury) {
+        mphCirculatingSupply = mphCirculatingSupply.minus(govTreasury.mphBalance);
+      }
+      if (devWallet) {
+        mphCirculatingSupply = mphCirculatingSupply.minus(devWallet.mphBalance);
+      }
+      this.mphCirculatingSupply = mphCirculatingSupply;
     }
   }
 
@@ -96,6 +131,7 @@ export class StatsComponent implements OnInit {
     this.totalDepositUSD = new BigNumber(0);
     this.totalInterestUSD = new BigNumber(0);
     this.mphPriceUSD = new BigNumber(0);
+    this.mphCirculatingSupply = new BigNumber(0);
   }
 
 }
@@ -113,5 +149,17 @@ interface QueryResult {
     totalStakedMPHBalance: number;
     totalHistoricalReward: number;
     rewardPerMPHPerSecond: number;
+  };
+  lpPool: {
+    id: string;
+    mphBalance: number;
+  };
+  govTreasury: {
+    id: string;
+    mphBalance: number;
+  };
+  devWallet: {
+    id: string;
+    mphBalance: number;
   };
 }
