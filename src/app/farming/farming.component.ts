@@ -65,13 +65,12 @@ export class FarmingComponent implements OnInit {
       this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
 
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
-      const secondROI = this.totalRewardPerSecond.times(this.mphPriceUSD).div(this.totalStakedMPHBalance).times(100);
+      this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
+      const secondROI = this.totalRewardPerSecond.times(this.mphPriceUSD).div(this.totalStakedMPHBalance.times(this.mphLPPriceUSD)).times(100);
       this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
       this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
       this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
       this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
-
-      this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
     }
 
     if (loadUser) {
