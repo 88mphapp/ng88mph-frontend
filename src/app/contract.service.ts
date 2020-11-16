@@ -58,6 +58,10 @@ export class ContractService {
     return new this.wallet.web3.eth.Contract(abi, address);
   }
 
+  getNamedContractAddress(name: string) {
+    return require('../assets/json/contracts.json')[name];
+  }
+
   getERC20(address: string, web3?: Web3) {
     const abi = require(`../assets/abis/ERC20.json`);
     if (web3) {
