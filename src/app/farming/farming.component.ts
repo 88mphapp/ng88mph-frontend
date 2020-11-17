@@ -62,8 +62,6 @@ export class FarmingComponent implements OnInit {
         this.rewardPerMPHPerSecond = new BigNumber(0);
       }
 
-      this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
-
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
       this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
       const secondROI = this.totalRewardPerSecond.times(this.mphPriceUSD).div(this.totalStakedMPHBalance.times(this.mphLPPriceUSD)).times(100);
@@ -80,6 +78,7 @@ export class FarmingComponent implements OnInit {
       if (this.totalStakedMPHBalance.isZero()) {
         this.stakedMPHPoolProportion = new BigNumber(0);
       }
+      this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
     }
   }
 
