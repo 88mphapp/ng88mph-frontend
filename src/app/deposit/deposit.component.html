@@ -26,7 +26,7 @@
                   ${{totalDepositUSD.toFormat(4)}}
                 </h2>
                 <!-- Button -->
-                <button type="button" class="card-link small px-1 ml-3" (click)="openDepositModal()">
+                <button type="button" class="card-link small px-1 ml-3" (click)="openDepositModal()" disabled>
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                 </button>
               </div>
@@ -129,7 +129,7 @@
                   <td>
                     <!-- Button -->
                     <button type="button" class="card-link small small px-1"
-                      (click)="openDepositModal(userPool.poolInfo.name)">
+                      (click)="openDepositModal(userPool.poolInfo.name)" disabled>
                       <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                     </button>
                   </td>
@@ -273,7 +273,7 @@
                 </td>
                 <td class="text-right">
                   <!-- Button -->
-                  <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)">
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)" disabled>
                     <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                   </button>
                 </td>
