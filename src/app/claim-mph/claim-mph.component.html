@@ -1,0 +1,41 @@
+<!-- HEADER -->
+<div class="header pt-4">
+  <div class="container-fluid">
+
+    <!-- Body -->
+    <div class="header-body border-0 p-0">
+      <div class="row align-items-end">
+        <div class="col">
+          <h1>Claim MPH v2</h1>
+          <div class="card-deck my-5">
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Your Claim Amount
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-1 glowing pl-3">
+                  {{claimAmount.toFormat()}} MPH
+                </h2>
+                <ng-container *ngIf="claimed">
+                  <h5 class="mb-3 text-white pl-3">
+                    You have already claimed, and the funds have been sent to
+                    your wallet.
+                  </h5>
+                </ng-container>
+                <ng-container *ngIf="!claimed && wallet.connected && claimAmount.gt(0)">
+                  <button type="button" class="card-link small ml-3 px-1" (click)="claim()">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Claim
+                  </button>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- / .row -->
+
+    </div> <!-- / .header-body -->
+
+  </div>
+</div> <!-- / .header -->
