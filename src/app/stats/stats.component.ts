@@ -6,6 +6,7 @@ import gql from 'graphql-tag';
 import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
 import { HelpersService } from '../helpers.service';
+import { WalletService } from '../wallet.service';
 
 @Component({
   selector: 'app-stats',
@@ -25,13 +26,18 @@ export class StatsComponent implements OnInit {
     private apollo: Apollo,
     public helpers: HelpersService,
     public contract: ContractService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    public wallet: WalletService
   ) {
     this.resetData();
   }
 
   ngOnInit(): void {
     this.loadData();
+    this.wallet.connectedEvent.subscribe(() => {
+      this.resetData();
+      this.loadData();
+    });
   }
 
   loadData(): void {
