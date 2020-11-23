@@ -105,7 +105,7 @@ export class DepositComponent implements OnInit {
           pools {
             id
             address
-            mphDepositorRewardMultiplier
+            mphDepositorRewardTakeBackMultiplier
             deposits(where: { user: "${userID}", active: true }, orderBy: nftID) {
               nftID
               fundingID
@@ -163,8 +163,8 @@ export class DepositComponent implements OnInit {
           const userPoolDeposits: Array<UserDeposit> = [];
           for (const deposit of pool.deposits) {
             // compute MPH APY
-            let mphDepositorRewardMultiplier = new BigNumber(pool.mphDepositorRewardMultiplier);
-            const realMPHReward = mphDepositorRewardMultiplier.times(deposit.mintMPHAmount);
+            let mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
+            const realMPHReward = new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier).times(deposit.mintMPHAmount);
             const mphAPY = realMPHReward.times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
 
             // compute interest
@@ -316,7 +316,7 @@ interface QueryResult {
     pools: {
       id: string;
       address: string;
-      mphDepositorRewardMultiplier: number;
+      mphDepositorRewardTakeBackMultiplier: number;
       deposits: {
         nftID: number;
         fundingID: number;

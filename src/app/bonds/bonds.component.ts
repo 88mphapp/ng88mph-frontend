@@ -18,7 +18,7 @@ const mockFunder = {
       initialFundedDepositAmount: 200,
       fundedDeficitAmount: 10,
       totalInterestEarned: 7,
-      mintMPHAmount: 10
+      mphRewardEarned: 10
     }]
   }],
   totalInterestByPool: [{
@@ -102,7 +102,7 @@ export class BondsComponent implements OnInit {
               initialFundedDepositAmount
               fundedDeficitAmount
               totalInterestEarned
-              mintMPHAmount
+              mphRewardEarned
             }
           }
           totalInterestByPool {
@@ -172,7 +172,7 @@ export class BondsComponent implements OnInit {
               currentDepositUSD: new BigNumber(funding.recordedFundedDepositAmount).times(stablecoinPrice),
               interestEarnedToken: new BigNumber(funding.totalInterestEarned),
               interestEarnedUSD: new BigNumber(funding.totalInterestEarned).times(stablecoinPrice),
-              mintMPHAmount: new BigNumber(funding.mintMPHAmount),
+              mphRewardEarned: new BigNumber(funding.mphRewardEarned),
             }
             fundings.push(fundingObj)
           }
@@ -474,7 +474,7 @@ interface QueryResult {
         initialFundedDepositAmount: number;
         fundedDeficitAmount: number;
         totalInterestEarned: number;
-        mintMPHAmount: number;
+        mphRewardEarned: number;
       }[];
     }[];
     totalInterestByPool: {
@@ -532,7 +532,7 @@ interface Funding {
   currentDepositUSD: BigNumber;
   interestEarnedToken: BigNumber;
   interestEarnedUSD: BigNumber;
-  mintMPHAmount: BigNumber;
+  mphRewardEarned: BigNumber;
 }
 
 interface Deposit {
