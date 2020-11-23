@@ -37,8 +37,8 @@ export class ModalDepositComponent implements OnInit {
   mphPriceUSD: BigNumber;
   mphAPY: BigNumber;
   tempMPHAPY: BigNumber;
-  mphMintingMultiplier: BigNumber;
-  mphDepositorRewardMultiplier: BigNumber;
+  mphDepositorRewardMintMultiplier: BigNumber;
+  mphDepositorRewardTakeBackMultiplier: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -88,8 +88,8 @@ export class ModalDepositComponent implements OnInit {
     this.mphPriceUSD = new BigNumber(0);
     this.mphAPY = new BigNumber(0);
     this.tempMPHAPY = new BigNumber(0);
-    this.mphMintingMultiplier = new BigNumber(0);
-    this.mphDepositorRewardMultiplier = new BigNumber(0);
+    this.mphDepositorRewardMintMultiplier = new BigNumber(0);
+    this.mphDepositorRewardTakeBackMultiplier = new BigNumber(0);
   }
 
   async selectPool(poolName: string) {
@@ -103,8 +103,8 @@ export class ModalDepositComponent implements OnInit {
           MaxDepositAmount
           MinDepositPeriod
           MaxDepositPeriod
-          mphMintingMultiplier
-          mphDepositorRewardMultiplier
+          mphDepositorRewardMintMultiplier
+          mphDepositorRewardTakeBackMultiplier
         }
       }
     `;
@@ -116,8 +116,8 @@ export class ModalDepositComponent implements OnInit {
       this.maxDepositAmount = new BigNumber(pool.MaxDepositAmount);
       this.minDepositPeriod = Math.ceil(pool.MinDepositPeriod / this.constants.DAY_IN_SEC);
       this.maxDepositPeriod = Math.floor(pool.MaxDepositPeriod / this.constants.DAY_IN_SEC);
-      this.mphMintingMultiplier = new BigNumber(pool.mphMintingMultiplier);
-      this.mphDepositorRewardMultiplier = new BigNumber(pool.mphDepositorRewardMultiplier);
+      this.mphDepositorRewardMintMultiplier = new BigNumber(pool.mphDepositorRewardMintMultiplier);
+      this.mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
     });
 
     if (this.wallet.connected) {
@@ -168,8 +168,8 @@ export class ModalDepositComponent implements OnInit {
     }
 
     // get MPH reward amount
-    this.mphRewardAmount = this.mphMintingMultiplier.times(rawInterestAmountToken);
-    this.mphTakeBackAmount = new BigNumber(1).minus(this.mphDepositorRewardMultiplier).times(this.mphRewardAmount);
+    this.mphRewardAmount = this.mphDepositorRewardMintMultiplier.times(this.depositAmount).times(depositTime);
+    this.mphTakeBackAmount = this.mphDepositorRewardTakeBackMultiplier.times(this.mphRewardAmount);
 
     const mphAPY = this.mphRewardAmount.minus(this.mphTakeBackAmount).times(this.mphPriceUSD).div(this.depositAmountUSD).div(this.depositTimeInDays).times(365).times(100);
     if (mphAPY.isNaN()) {
@@ -210,7 +210,7 @@ interface QueryResult {
     MaxDepositAmount: number;
     MinDepositPeriod: number;
     MaxDepositPeriod: number;
-    mphMintingMultiplier: number;
-    mphDepositorRewardMultiplier: number;
+    mphDepositorRewardMintMultiplier: number;
+    mphDepositorRewardTakeBackMultiplier: number;
   };
 }
