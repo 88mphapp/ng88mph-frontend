@@ -130,8 +130,8 @@ export class DepositComponent implements OnInit {
           address
           totalActiveDeposit
           oneYearInterestRate
-          mphDepositorRewardMultiplier
-          mphMintingMultiplier
+          mphDepositorRewardMintMultiplier
+          mphDepositorRewardTakeBackMultiplier
         }` : ''}
       }
     `;
@@ -230,10 +230,10 @@ export class DepositComponent implements OnInit {
           }
 
           // get MPH APY
-          const poolMintingMultiplier = new BigNumber(pool.mphMintingMultiplier);
-          const mphDepositorRewardMultiplier = new BigNumber(pool.mphDepositorRewardMultiplier);
-          const tempMPHAPY = poolMintingMultiplier.times(pool.oneYearInterestRate).times(this.mphPriceUSD).div(stablecoinPrice).times(100);
-          const mphAPY = tempMPHAPY.times(mphDepositorRewardMultiplier);
+          const mphDepositorRewardMintMultiplier = new BigNumber(pool.mphDepositorRewardMintMultiplier);
+          const mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
+          const tempMPHAPY = mphDepositorRewardMintMultiplier.times(this.mphPriceUSD).times(this.YEAR_IN_SEC).div(stablecoinPrice).times(100);
+          const mphAPY = tempMPHAPY.times(new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier));
 
           const dpoolObj: DPool = {
             name: poolInfo.name,
@@ -342,7 +342,7 @@ interface QueryResult {
     address: string;
     totalActiveDeposit: number;
     oneYearInterestRate: number;
-    mphDepositorRewardMultiplier: number;
-    mphMintingMultiplier: number;
+    mphDepositorRewardMintMultiplier: number;
+    mphDepositorRewardTakeBackMultiplier: number;
   }[];
 }
