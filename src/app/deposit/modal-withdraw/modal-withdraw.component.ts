@@ -44,7 +44,7 @@ export class ModalWithdrawComponent implements OnInit {
       {
         dpool(id: "${this.poolInfo.address.toLowerCase()}") {
           id
-          mphDepositorRewardMultiplier
+          mphDepositorRewardTakeBackMultiplier
         }
         mphholder(id: "${this.wallet.userAddress.toLowerCase()}") {
           id
@@ -58,10 +58,14 @@ export class ModalWithdrawComponent implements OnInit {
       const pool = x.data.dpool;
       const mphholder = x.data.mphholder;
 
-      this.mphRewardAmount = this.userDeposit.mintMPHAmount;
-      this.mphTakeBackAmount = this.userDeposit.locked ? this.mphRewardAmount : new BigNumber(1).minus(pool.mphDepositorRewardMultiplier).times(this.mphRewardAmount);
+      if (pool) {
+        this.mphRewardAmount = this.userDeposit.mintMPHAmount;
+        this.mphTakeBackAmount = this.userDeposit.locked ? this.mphRewardAmount : new BigNumber(pool.mphDepositorRewardTakeBackMultiplier).times(this.mphRewardAmount);
+      }
 
-      this.mphBalance = new BigNumber(mphholder.mphBalance);
+      if (mphholder) {
+        this.mphBalance = new BigNumber(mphholder.mphBalance);
+      }
     });
   }
 
@@ -90,7 +94,7 @@ export class ModalWithdrawComponent implements OnInit {
 interface QueryResult {
   dpool: {
     id: string;
-    mphDepositorRewardMultiplier: number;
+    mphDepositorRewardTakeBackMultiplier: number;
   };
   mphholder: {
     id: string;

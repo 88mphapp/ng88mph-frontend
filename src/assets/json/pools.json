@@ -1,16 +1,16 @@
 {
-  "aUSDC": {
-    "name": "aUSDC",
-    "address": "0xb5EE8910A93F8A450E97BE0436F36B9458106682",
-    "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-    "stablecoinSymbol": "USDC",
-    "stablecoinDecimals": 6,
-    "protocol": "Aave",
-    "iconPath": "assets/img/token-icons/ausdc.png"
+  "cDAI": {
+    "name": "cDAI",
+    "address": "0x35966201A7724b952455B73A36C8846D8745218e",
+    "stablecoin": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "stablecoinSymbol": "DAI",
+    "stablecoinDecimals": 18,
+    "protocol": "Compound",
+    "iconPath": "assets/img/token-icons/dai.svg"
   },
   "cUSDC": {
     "name": "cUSDC",
-    "address": "0xEB2F0A3045db12366A9f6A8e922D725D86a117EB",
+    "address": "0x374226dbAa3e44bF3923AfB63f5Fd83928B7e148",
     "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     "stablecoinSymbol": "USDC",
     "stablecoinDecimals": 6,
@@ -19,7 +19,7 @@
   },
   "cUNI": {
     "name": "cUNI",
-    "address": "0xF9761c1A244C66E40cF9B7EfB4b0C29b562B6bC0",
+    "address": "0x19E10132841616CE4790920d5f94B8571F9b9341",
     "stablecoin": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
     "stablecoinSymbol": "UNI",
     "stablecoinDecimals": 18,
@@ -28,7 +28,7 @@
   },
   "yUSD": {
     "name": "yUSD",
-    "address": "0x25a5feB5aC6533fE3C4E8E8e2a55f9E1f1F8E5f0",
+    "address": "0xe615e59353f70cA2424Aa0F24F49C639B8E924D3",
     "stablecoin": "0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8",
     "stablecoinSymbol": "yCRV",
     "stablecoinDecimals": 18,
@@ -37,7 +37,7 @@
   },
   "ycrvSBTC": {
     "name": "ycrvSBTC",
-    "address": "0xD42F7c7463B261fAc72510C638A877690beA8d68",
+    "address": "0x681Aaa7CF3F7E1f110842f0149bA8A4AF53Ef2Fd",
     "stablecoin": "0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3",
     "stablecoinSymbol": "crvRenWSBTC",
     "stablecoinDecimals": 18,

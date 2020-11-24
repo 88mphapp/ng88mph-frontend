@@ -18,7 +18,7 @@ const mockFunder = {
       initialFundedDepositAmount: 200,
       fundedDeficitAmount: 10,
       totalInterestEarned: 7,
-      mintMPHAmount: 10
+      mphRewardEarned: 10
     }]
   }],
   totalInterestByPool: [{
@@ -102,7 +102,7 @@ export class BondsComponent implements OnInit {
               initialFundedDepositAmount
               fundedDeficitAmount
               totalInterestEarned
-              mintMPHAmount
+              mphRewardEarned
             }
           }
           totalInterestByPool {
@@ -122,7 +122,6 @@ export class BondsComponent implements OnInit {
           unfundedDepositAmount
           oneYearInterestRate
           oracleInterestRate
-          mphMintingMultiplier
           mphFunderRewardMultiplier
           latestFundedDeposit: deposits(where: { fundingID_gt: 0 }, orderBy: nftID, orderDirection: desc, first: 1) {
             nftID
@@ -173,7 +172,7 @@ export class BondsComponent implements OnInit {
               currentDepositUSD: new BigNumber(funding.recordedFundedDepositAmount).times(stablecoinPrice),
               interestEarnedToken: new BigNumber(funding.totalInterestEarned),
               interestEarnedUSD: new BigNumber(funding.totalInterestEarned).times(stablecoinPrice),
-              mintMPHAmount: new BigNumber(funding.mintMPHAmount),
+              mphRewardEarned: new BigNumber(funding.mphRewardEarned),
             }
             fundings.push(fundingObj)
           }
@@ -224,9 +223,7 @@ export class BondsComponent implements OnInit {
           }
 
           // get MPH reward amount
-          const poolMintingMultiplier = new BigNumber(pool.mphMintingMultiplier);
-          const poolFunderRewardMultiplier = new BigNumber(pool.mphFunderRewardMultiplier);
-          const mphRewardPerToken = poolMintingMultiplier.times(poolFunderRewardMultiplier);
+          const mphRewardPerTokenPerSecond = new BigNumber(pool.mphFunderRewardMultiplier);
 
           const latestFundedDeposit = pool.latestFundedDeposit.length ? +pool.latestFundedDeposit[0].nftID : 0;
           const latestDeposit = pool.latestDeposit.length ? +pool.latestDeposit[0].nftID : 0;
@@ -243,7 +240,7 @@ export class BondsComponent implements OnInit {
             latestFundedDeposit: latestFundedDeposit,
             latestDeposit: latestDeposit,
             unfundedDepositAmount: new BigNumber(pool.unfundedDepositAmount),
-            mphRewardPerToken: mphRewardPerToken,
+            mphRewardPerTokenPerSecond: mphRewardPerTokenPerSecond,
             oracleInterestRate: new BigNumber(pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100)
           };
           allPoolList.push(dpoolObj);
@@ -367,24 +364,25 @@ export class BondsComponent implements OnInit {
     this.debtToFundUSD = this.debtToFundToken.times(stablecoinPrice);
     this.amountToEarnOnUSD = this.amountToEarnOnToken.times(stablecoinPrice);
 
-    this.mphRewardAmount = this.selectedPool.mphRewardPerToken.times(this.debtToFundToken);
-    this.mphROI = this.mphRewardAmount.times(this.mphPriceUSD).div(this.debtToFundUSD).times(100);
-    if (this.mphROI.isNaN()) {
-      this.mphROI = new BigNumber(0);
-    }
-
-    // compute weighted average maturation time
+    // compute weighted average maturation time and MPH reward amount
     const deposits = newNum >= this.numFundableDeposits ? this.fundableDeposits : this.fundableDeposits.slice(0, newNum);
     let totalMaturationTime = new BigNumber(0);
     let numDepositsWithDebt = 0;
+    let mphRewardAmount = new BigNumber(0);
     const now = Math.floor(Date.now() / 1e3);
     for (const deposit of deposits) {
       const timeTillMaturation = deposit.maturationTimestamp - now;
       if (!deposit.active || timeTillMaturation < 0) continue;
       totalMaturationTime = totalMaturationTime.plus(timeTillMaturation);
+      mphRewardAmount = mphRewardAmount.plus(this.selectedPool.mphRewardPerTokenPerSecond.times(deposit.amount).times(timeTillMaturation));
       numDepositsWithDebt += 1;
     }
     this.averageMaturationTime = numDepositsWithDebt == 0 ? new BigNumber(0) : totalMaturationTime.div(numDepositsWithDebt).div(this.constants.DAY_IN_SEC);
+    this.mphRewardAmount = mphRewardAmount;
+    this.mphROI = this.mphRewardAmount.times(this.mphPriceUSD).div(this.debtToFundUSD).times(100);
+    if (this.mphROI.isNaN()) {
+      this.mphROI = new BigNumber(0);
+    }
 
     // compute median maturation time
     const median = (values) => {
@@ -476,7 +474,7 @@ interface QueryResult {
         initialFundedDepositAmount: number;
         fundedDeficitAmount: number;
         totalInterestEarned: number;
-        mintMPHAmount: number;
+        mphRewardEarned: number;
       }[];
     }[];
     totalInterestByPool: {
@@ -496,7 +494,6 @@ interface QueryResult {
     unfundedDepositAmount: number;
     oneYearInterestRate: number;
     oracleInterestRate: number;
-    mphMintingMultiplier: number;
     mphFunderRewardMultiplier: number;
     latestFundedDeposit: {
       nftID: number;
@@ -535,7 +532,7 @@ interface Funding {
   currentDepositUSD: BigNumber;
   interestEarnedToken: BigNumber;
   interestEarnedUSD: BigNumber;
-  mintMPHAmount: BigNumber;
+  mphRewardEarned: BigNumber;
 }
 
 interface Deposit {
@@ -560,6 +557,6 @@ interface DPool {
   surplus: BigNumber;
   oneYearInterestRate: BigNumber;
   unfundedDepositAmount: BigNumber;
-  mphRewardPerToken: BigNumber;
+  mphRewardPerTokenPerSecond: BigNumber;
   oracleInterestRate: BigNumber;
 }

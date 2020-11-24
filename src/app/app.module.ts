@@ -18,6 +18,9 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
 import { FarmingComponent } from './farming/farming.component';
 import { ModalStakeLPComponent } from './farming/modal-stake-lp/modal-stake-lp.component';
+import { ClaimETHComponent } from './claim-eth/claim-eth.component';
+import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
+import { VestingComponent } from './vesting/vesting.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,10 @@ import { ModalStakeLPComponent } from './farming/modal-stake-lp/modal-stake-lp.c
     SidebarComponent,
     HeaderComponent,
     FarmingComponent,
-    ModalStakeLPComponent
+    ModalStakeLPComponent,
+    ClaimETHComponent,
+    ClaimMPHComponent,
+    VestingComponent
   ],
   imports: [
     BrowserModule,
