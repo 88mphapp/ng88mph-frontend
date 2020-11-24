@@ -100,7 +100,10 @@ export class RewardsComponent implements OnInit {
       }
 
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
-      const secondROI = this.totalRewardPerSecond.div(this.totalStakedMPHBalance.times(this.mphPriceUSD)).times(100);
+      let secondROI = this.totalRewardPerSecond.div(this.totalStakedMPHBalance.times(this.mphPriceUSD)).times(100);
+      if (secondROI.isNaN()) {
+        secondROI = new BigNumber(0);
+      }
       this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
       this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
       this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);

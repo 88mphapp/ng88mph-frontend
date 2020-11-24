@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BondsComponent } from './bonds/bonds.component';
+import { ClaimETHComponent } from './claim-eth/claim-eth.component';
+import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
 import { DepositComponent } from './deposit/deposit.component';
 import { FarmingComponent } from './farming/farming.component';
 import { RewardsComponent } from './rewards/rewards.component';
 import { StatsComponent } from './stats/stats.component';
+import { VestingComponent } from './vesting/vesting.component';
 
 const routes: Routes = [
   {
@@ -31,6 +34,18 @@ const routes: Routes = [
   {
     path: 'farming',
     component: FarmingComponent
+  },
+  {
+    path: 'vesting',
+    component: VestingComponent
+  },
+  {
+    path: 'claim-eth',
+    component: ClaimETHComponent
+  },
+  {
+    path: 'claim-mph',
+    component: ClaimMPHComponent
   }
 ];
 

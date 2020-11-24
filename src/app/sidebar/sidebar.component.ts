@@ -4,6 +4,8 @@ import { ApolloQueryResult } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
+import { ConstantsService } from '../constants.service';
+import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
 
 @Component({
@@ -14,7 +16,8 @@ import { WalletService } from '../wallet.service';
 export class SidebarComponent implements OnInit {
   mphBalance: BigNumber;
 
-  constructor(private apollo: Apollo, public route: Router, public wallet: WalletService) {
+  constructor(private apollo: Apollo, public route: Router, public wallet: WalletService, public contract: ContractService,
+    public constants: ConstantsService) {
     this.resetData();
   }
 
@@ -28,7 +31,7 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  loadData(): void {
+  async loadData() {
     const mphHolderID = this.wallet.userAddress.toLowerCase();
     const queryString = gql`
       {

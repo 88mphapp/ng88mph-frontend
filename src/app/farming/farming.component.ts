@@ -42,8 +42,8 @@ export class FarmingComponent implements OnInit {
   ngOnInit(): void {
     this.loadData(this.wallet.connected, true);
     this.wallet.connectedEvent.subscribe(() => {
-      this.resetData(true, false);
-      this.loadData(true, false);
+      this.resetData(true, true);
+      this.loadData(true, true);
     });
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
