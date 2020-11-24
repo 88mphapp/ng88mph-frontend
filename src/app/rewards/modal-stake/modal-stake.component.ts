@@ -68,7 +68,7 @@ export class ModalStakeComponent implements OnInit {
       const mphHolder = queryResult.data.mphholder;
       if (mphHolder) {
         this.mphBalance = new BigNumber(mphHolder.mphBalance);
-        this.setStakeAmount(this.mphBalance.toString());
+        this.setStakeAmount(this.mphBalance.toFixed(18));
       }
     }
   }
