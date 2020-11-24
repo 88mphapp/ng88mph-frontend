@@ -72,6 +72,10 @@ export class StatsComponent implements OnInit {
           id
           mphBalance
         }
+        rewards: mphholder(id: "${this.contract.getNamedContractAddress('Rewards').toLowerCase()}") {
+          id
+          mphBalance
+        }
       }
     `;
     this.apollo.query<QueryResult>({
@@ -91,6 +95,7 @@ export class StatsComponent implements OnInit {
       const govTreasury = queryResult.data.govTreasury;
       const devWallet = queryResult.data.devWallet;
       const merkleDistributor = queryResult.data.merkleDistributor;
+      const rewards = queryResult.data.rewards;
 
       if (dpools) {
         let totalDepositUSD = new BigNumber(0);
@@ -133,6 +138,9 @@ export class StatsComponent implements OnInit {
       }
       if (merkleDistributor) {
         mphCirculatingSupply = mphCirculatingSupply.minus(merkleDistributor.mphBalance);
+      }
+      if (rewards) {
+        mphCirculatingSupply = mphCirculatingSupply.minus(rewards.mphBalance);
       }
       this.mphCirculatingSupply = mphCirculatingSupply;
     }
@@ -177,6 +185,10 @@ interface QueryResult {
     mphBalance: number;
   };
   merkleDistributor: {
+    id: string;
+    mphBalance: number;
+  };
+  rewards: {
     id: string;
     mphBalance: number;
   };
