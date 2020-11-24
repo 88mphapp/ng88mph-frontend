@@ -26,11 +26,11 @@
                     <label>Amount</label>
                     <div class="input-group mb-2">
                       <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                        aria-label="stake-amount" [value]="stakeAmount.toFixed()"
+                        aria-label="stake-amount" [value]="stakeAmount.toString()"
                         (input)="setStakeAmount($event.target.value)">
                       <div class="input-group-append">
                         <button class="card-link small px-1" type="button"
-                          (click)="setStakeAmount(mphBalance.toFixed(18))">Max</button>
+                          (click)="setStakeAmount(helpers.processStakeInput(this.mphBalance))">Max</button>
                       </div>
                     </div>
                   </div>
@@ -73,8 +73,10 @@
                             </button>
                           </td>
                           <td class="text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">${{newRewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</h4>
-                            <span class="text-white">Current: ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</span>
+                            <h4 class="mb-1 font-weight-normal glowing">
+                              ${{newRewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</h4>
+                            <span class="text-white">Current:
+                              ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</span>
                           </td>
                         </tr>
                       </tbody>
