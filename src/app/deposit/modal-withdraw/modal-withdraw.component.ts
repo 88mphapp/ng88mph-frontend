@@ -78,16 +78,22 @@ export class ModalWithdrawComponent implements OnInit {
 
   withdraw() {
     const pool = this.contract.getPool(this.poolInfo.name);
+    const mphToken = this.contract.getNamedContract('MPHToken');
+    const mphMinter = this.contract.getNamedContractAddress('MPHMinter');
+    const mphAmount = this.helpers.processWeb3Number(this.mphTakeBackAmount.times(this.constants.PRECISION));
     const func = pool.methods.withdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
 
-    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTxWithToken(func, mphToken, mphMinter, mphAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 
   earlyWithdraw() {
     const pool = this.contract.getPool(this.poolInfo.name);
+    const mphToken = this.contract.getNamedContract('MPHToken');
+    const mphMinter = this.contract.getNamedContractAddress('MPHMinter');
+    const mphAmount = this.helpers.processWeb3Number(this.mphTakeBackAmount.times(this.constants.PRECISION));
     const func = pool.methods.earlyWithdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
 
-    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTxWithToken(func, mphToken, mphMinter, mphAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 }
 
