@@ -32,7 +32,7 @@ export class SidebarComponent implements OnInit {
   }
 
   async loadData() {
-    /*const mphHolderID = this.wallet.userAddress.toLowerCase();
+    const mphHolderID = this.wallet.userAddress.toLowerCase();
     const queryString = gql`
       {
         mphholder(id: "${mphHolderID}") {
@@ -44,9 +44,7 @@ export class SidebarComponent implements OnInit {
     `;
     this.apollo.query<QueryResult>({
       query: queryString
-    }).subscribe((x) => this.handleData(x));*/
-    const mphToken = this.contract.getNamedContract('MPHToken')
-    this.mphBalance = new BigNumber(await mphToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    }).subscribe((x) => this.handleData(x));
   }
 
   handleData(queryResult: ApolloQueryResult<QueryResult>): void {

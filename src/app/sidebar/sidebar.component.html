@@ -44,6 +44,11 @@
               Buy floating-rate bonds
             </a>
           </li>
+          <li class="nav-item" ngbNavItem="/vesting">
+            <a class="nav-link text-white" routerLink="vesting" ngbNavLink>
+              MPH vesting
+            </a>
+          </li>
           <li class="nav-item" ngbNavItem="/rewards">
             <a class="nav-link text-white" routerLink="rewards" ngbNavLink>
               Stake MPH
@@ -57,16 +62,6 @@
           <li class="nav-item" ngbNavItem="/stats">
             <a class="nav-link text-white" routerLink="stats" ngbNavLink>
               Stats
-            </a>
-          </li>
-          <li class="nav-item" ngbNavItem="/claim-eth">
-            <a class="nav-link text-white" routerLink="claim-eth" ngbNavLink>
-              Claim ETH
-            </a>
-          </li>
-          <li class="nav-item" ngbNavItem="/claim-mph">
-            <a class="nav-link text-white" routerLink="claim-mph" ngbNavLink>
-              Claim MPH v2
             </a>
           </li>
         </ul>
@@ -98,8 +93,19 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link small" href="https://info.uniswap.org/pair/0x4d96369002fc5b9687ee924d458a7e5baa5df34e" target="_blank">
+            <a class="nav-link small" href="https://info.uniswap.org/pair/0x4d96369002fc5b9687ee924d458a7e5baa5df34e"
+              target="_blank">
               MPH Uniswap
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link small" routerLink="claim-eth">
+              Claim ETH
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link small" routerLink="claim-mph">
+              Claim MPH v2
             </a>
           </li>
           <li class="nav-item">

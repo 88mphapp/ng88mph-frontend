@@ -20,6 +20,7 @@ import { FarmingComponent } from './farming/farming.component';
 import { ModalStakeLPComponent } from './farming/modal-stake-lp/modal-stake-lp.component';
 import { ClaimETHComponent } from './claim-eth/claim-eth.component';
 import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
+import { VestingComponent } from './vesting/vesting.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
     FarmingComponent,
     ModalStakeLPComponent,
     ClaimETHComponent,
-    ClaimMPHComponent
+    ClaimMPHComponent,
+    VestingComponent
   ],
   imports: [
     BrowserModule,
