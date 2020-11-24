@@ -63,7 +63,7 @@ export class VestingComponent implements OnInit {
     const userID = this.wallet.userAddress.toLowerCase();
     const queryString = gql`
       {
-        vests(where: { user: "${userID}" }, orderBy: creationTimestamp, orderDirection: desc) {
+        vests(where: { user: "${userID}" }, orderBy: creationTimestamp, orderDirection: desc, first: 1000) {
           id
           amount
           vestPeriodInSeconds
