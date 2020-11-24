@@ -62,8 +62,12 @@
                         MPH to pay back
                       </h6>
                       <h4 class="mb-1 font-weight-normal glowing">{{mphTakeBackAmount.toFormat()}} MPH</h4>
-                      <div class="text-white small d-block">Your balance: {{mphBalance.toFormat()}}
-                        MPH</div>
+                      <div class="text-white small d-block">Your balance: {{mphBalance.toFormat()}}</div>
+                      <a class="text-white small" routerLink="/vesting" (click)="activeModal.dismiss()">
+                        <u>
+                          Check your vested MPH
+                        </u>
+                      </a>
                     </div>
                   </div>
                   <div class="row justify-content-center">
