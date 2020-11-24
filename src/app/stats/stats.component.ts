@@ -68,6 +68,10 @@ export class StatsComponent implements OnInit {
           id
           mphBalance
         }
+        merkleDistributor: mphholder(id: "${'0x8c5ddBB0fd86B6480D81A1a5872a63812099C043'.toLowerCase()}") {
+          id
+          mphBalance
+        }
       }
     `;
     this.apollo.query<QueryResult>({
@@ -86,6 +90,7 @@ export class StatsComponent implements OnInit {
       const lpPool = queryResult.data.lpPool;
       const govTreasury = queryResult.data.govTreasury;
       const devWallet = queryResult.data.devWallet;
+      const merkleDistributor = queryResult.data.merkleDistributor;
 
       if (dpools) {
         let totalDepositUSD = new BigNumber(0);
@@ -126,6 +131,9 @@ export class StatsComponent implements OnInit {
       if (devWallet) {
         mphCirculatingSupply = mphCirculatingSupply.minus(devWallet.mphBalance);
       }
+      if (merkleDistributor) {
+        mphCirculatingSupply = mphCirculatingSupply.minus(merkleDistributor.mphBalance);
+      }
       this.mphCirculatingSupply = mphCirculatingSupply;
     }
   }
@@ -165,6 +173,10 @@ interface QueryResult {
     mphBalance: number;
   };
   devWallet: {
+    id: string;
+    mphBalance: number;
+  };
+  merkleDistributor: {
     id: string;
     mphBalance: number;
   };
