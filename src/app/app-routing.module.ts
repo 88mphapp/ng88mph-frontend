@@ -7,6 +7,7 @@ import { DepositComponent } from './deposit/deposit.component';
 import { FarmingComponent } from './farming/farming.component';
 import { RewardsComponent } from './rewards/rewards.component';
 import { StatsComponent } from './stats/stats.component';
+import { VestingComponent } from './vesting/vesting.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
   {
     path: 'farming',
     component: FarmingComponent
+  },
+  {
+    path: 'vesting',
+    component: VestingComponent
   },
   {
     path: 'claim-eth',
