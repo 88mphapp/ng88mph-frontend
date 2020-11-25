@@ -49,7 +49,7 @@ export class ModalStakeLPComponent implements OnInit {
   async loadData() {
     const lpToken = this.contract.getNamedContract('MPHLP');
     this.mphBalance = new BigNumber(await lpToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
-    this.setStakeAmount(this.helpers.processStakeInput(this.mphBalance));
+    this.setStakeAmount(this.mphBalance.toFixed(18));
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
@@ -64,7 +64,7 @@ export class ModalStakeLPComponent implements OnInit {
   }
 
   setStakeAmount(amount: number | string) {
-    this.stakeAmount = new BigNumber(+amount);
+    this.stakeAmount = new BigNumber(amount);
     this.newStakedMPHPoolProportion = this.stakedMPHBalance.plus(this.stakeAmount).div(this.totalStakedMPHBalance.plus(this.stakeAmount)).times(100);
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);
