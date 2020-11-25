@@ -9,6 +9,7 @@ import { WalletService } from '../wallet.service';
 import { ModalStakeComponent } from './modal-stake/modal-stake.component';
 import { ConstantsService } from '../constants.service';
 import { HelpersService } from '../helpers.service';
+import { ModalUnstakeComponent } from './modal-unstake/modal-unstake.component';
 
 @Component({
   selector: 'app-rewards',
@@ -133,6 +134,15 @@ export class RewardsComponent implements OnInit {
 
   openStakeModal() {
     const modalRef = this.modalService.open(ModalStakeComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
+    modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
+    modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
+    modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
+    modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
+  }
+
+  openUntakeModal() {
+    const modalRef = this.modalService.open(ModalUnstakeComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;

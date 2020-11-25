@@ -82,12 +82,14 @@ export class ModalStakeComponent implements OnInit {
 
   setStakeAmount(amount: number | string) {
     this.stakeAmount = new BigNumber(amount);
+    if (this.stakeAmount.isNaN()) {
+      this.stakeAmount = new BigNumber(0);
+    }
     this.newStakedMPHPoolProportion = this.stakedMPHBalance.plus(this.stakeAmount).div(this.totalStakedMPHBalance.plus(this.stakeAmount)).times(100);
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);
     }
-    const weekInSeconds = 7 * 24 * 60 * 60;
-    this.newRewardPerWeek = this.stakedMPHBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.plus(this.stakeAmount))).times(weekInSeconds);
+    this.newRewardPerWeek = this.stakedMPHBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.plus(this.stakeAmount))).times(this.constants.WEEK_IN_SEC);
     if (this.newRewardPerWeek.isNaN()) {
       this.newRewardPerWeek = new BigNumber(0);
     }
