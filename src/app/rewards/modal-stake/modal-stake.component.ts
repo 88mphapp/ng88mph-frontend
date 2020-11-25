@@ -82,6 +82,9 @@ export class ModalStakeComponent implements OnInit {
 
   setStakeAmount(amount: number | string) {
     this.stakeAmount = new BigNumber(amount);
+    if (this.stakeAmount.isNaN()) {
+      this.stakeAmount = new BigNumber(0);
+    }
     this.newStakedMPHPoolProportion = this.stakedMPHBalance.plus(this.stakeAmount).div(this.totalStakedMPHBalance.plus(this.stakeAmount)).times(100);
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);
