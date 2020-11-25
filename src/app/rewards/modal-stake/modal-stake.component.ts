@@ -68,7 +68,7 @@ export class ModalStakeComponent implements OnInit {
       const mphHolder = queryResult.data.mphholder;
       if (mphHolder) {
         this.mphBalance = new BigNumber(mphHolder.mphBalance);
-        this.setStakeAmount(this.helpers.processStakeInput(this.mphBalance));
+        this.setStakeAmount(this.mphBalance.toFixed(18));
       }
     }
   }
@@ -81,7 +81,7 @@ export class ModalStakeComponent implements OnInit {
   }
 
   setStakeAmount(amount: number | string) {
-    this.stakeAmount = new BigNumber(+amount);
+    this.stakeAmount = new BigNumber(amount);
     this.newStakedMPHPoolProportion = this.stakedMPHBalance.plus(this.stakeAmount).div(this.totalStakedMPHBalance.plus(this.stakeAmount)).times(100);
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);

@@ -59,8 +59,4 @@ export class HelpersService {
   unapplyFeeToInterest(interestAmount) {
     return new BigNumber(interestAmount).div(0.9);
   }
-
-  processStakeInput(input: BigNumber): string {
-    return input.toFixed(18);
-  }
 }
