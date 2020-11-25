@@ -7,19 +7,20 @@ import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 
 @Component({
-  selector: 'app-modal-unstake',
-  templateUrl: './modal-unstake.component.html',
-  styleUrls: ['./modal-unstake.component.css']
+  selector: 'app-modal-unstake-lp',
+  templateUrl: './modal-unstake-lp.component.html',
+  styleUrls: ['./modal-unstake-lp.component.css']
 })
-export class ModalUnstakeComponent implements OnInit {
+export class ModalUnstakeLPComponent implements OnInit {
   @Input() stakedMPHPoolProportion: BigNumber;
   @Input() stakedMPHBalance: BigNumber;
   @Input() totalStakedMPHBalance: BigNumber;
   @Input() totalRewardPerSecond: BigNumber;
-  @Input() rewardPerWeek: BigNumber;
+  @Input() rewardPerDay: BigNumber;
+  @Input() mphPriceUSD: BigNumber;
   unstakeAmount: BigNumber;
   newStakedMPHPoolProportion: BigNumber;
-  newRewardPerWeek: BigNumber;
+  newRewardPerDay: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -51,7 +52,7 @@ export class ModalUnstakeComponent implements OnInit {
   resetData(): void {
     this.unstakeAmount = new BigNumber(0);
     this.newStakedMPHPoolProportion = new BigNumber(0);
-    this.newRewardPerWeek = new BigNumber(0);
+    this.newRewardPerDay = new BigNumber(0);
   }
 
   setUnstakeAmount(amount: number | string) {
@@ -63,14 +64,14 @@ export class ModalUnstakeComponent implements OnInit {
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);
     }
-    this.newRewardPerWeek = this.stakedMPHBalance.minus(this.unstakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.minus(this.unstakeAmount))).times(this.constants.WEEK_IN_SEC);
-    if (this.newRewardPerWeek.isNaN()) {
-      this.newRewardPerWeek = new BigNumber(0);
+    this.newRewardPerDay = this.stakedMPHBalance.minus(this.unstakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.minus(this.unstakeAmount))).times(this.constants.DAY_IN_SEC);
+    if (this.newRewardPerDay.isNaN()) {
+      this.newRewardPerDay = new BigNumber(0);
     }
   }
 
   unstake() {
-    const rewards = this.contract.getNamedContract('Rewards');
+    const rewards = this.contract.getNamedContract('Farming');
     const unstakeAmount = this.helpers.processWeb3Number(this.unstakeAmount.times(this.constants.PRECISION));
     const func = rewards.methods.withdraw(unstakeAmount);
 
