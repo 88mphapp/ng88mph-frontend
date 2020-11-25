@@ -228,7 +228,7 @@
                 <select class="custom-select" id="pool-select" data-toggle="select"
                   (change)="selectPool($event.target.value)">
                   <option value={{i}} *ngFor="let pool of allPoolList; index as i;">
-                    {{pool.name}}
+                    {{pool.stablecoinSymbol}} ({{pool.protocol}})
                   </option>
                 </select>
               </div>
