@@ -33,6 +33,9 @@
                 <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()">
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
                 </button>
+                <button type="button" class="card-link small ml-3 px-1" (click)="openUnstakeModal()">
+                  <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
+                </button>
                 <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()"
                   [disabled]="!canContinue()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim

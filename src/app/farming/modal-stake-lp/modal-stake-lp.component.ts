@@ -17,11 +17,11 @@ export class ModalStakeLPComponent implements OnInit {
   @Input() totalStakedMPHBalance: BigNumber;
   @Input() totalRewardPerSecond: BigNumber;
   @Input() rewardPerDay: BigNumber;
+  @Input() mphPriceUSD: BigNumber;
   mphBalance: BigNumber;
   stakeAmount: BigNumber;
   newStakedMPHPoolProportion: BigNumber;
   newRewardPerDay: BigNumber;
-  mphPriceUSD: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -50,9 +50,6 @@ export class ModalStakeLPComponent implements OnInit {
     const lpToken = this.contract.getNamedContract('MPHLP');
     this.mphBalance = new BigNumber(await lpToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
     this.setStakeAmount(this.mphBalance.toFixed(18));
-    this.helpers.getMPHPriceUSD().then((price) => {
-      this.mphPriceUSD = price;
-    });
   }
 
   resetData(): void {
@@ -60,7 +57,6 @@ export class ModalStakeLPComponent implements OnInit {
     this.stakeAmount = new BigNumber(0);
     this.newStakedMPHPoolProportion = new BigNumber(0);
     this.newRewardPerDay = new BigNumber(0);
-    this.mphPriceUSD = new BigNumber(0);
   }
 
   setStakeAmount(amount: number | string) {
