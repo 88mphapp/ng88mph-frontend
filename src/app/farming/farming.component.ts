@@ -6,6 +6,7 @@ import { WalletService } from '../wallet.service';
 import { ModalStakeLPComponent } from './modal-stake-lp/modal-stake-lp.component';
 import { ConstantsService } from '../constants.service';
 import { HelpersService } from '../helpers.service';
+import { ModalUnstakeLPComponent } from './modal-unstake-lp/modal-unstake-lp.component';
 
 @Component({
   selector: 'app-farming',
@@ -110,6 +111,17 @@ export class FarmingComponent implements OnInit {
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerDay = this.rewardPerDay;
+    modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
+  }
+
+  openUnstakeModal() {
+    const modalRef = this.modalService.open(ModalUnstakeLPComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
+    modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
+    modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
+    modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
+    modalRef.componentInstance.rewardPerDay = this.rewardPerDay;
+    modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
   }
 
   unstakeAndClaim() {

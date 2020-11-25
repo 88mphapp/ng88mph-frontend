@@ -21,6 +21,8 @@ import { ModalStakeLPComponent } from './farming/modal-stake-lp/modal-stake-lp.c
 import { ClaimETHComponent } from './claim-eth/claim-eth.component';
 import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
 import { VestingComponent } from './vesting/vesting.component';
+import { ModalUnstakeComponent } from './rewards/modal-unstake/modal-unstake.component';
+import { ModalUnstakeLPComponent } from './farming/modal-unstake-lp/modal-unstake-lp.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { VestingComponent } from './vesting/vesting.component';
     ModalStakeLPComponent,
     ClaimETHComponent,
     ClaimMPHComponent,
-    VestingComponent
+    VestingComponent,
+    ModalUnstakeComponent,
+    ModalUnstakeLPComponent
   ],
   imports: [
     BrowserModule,

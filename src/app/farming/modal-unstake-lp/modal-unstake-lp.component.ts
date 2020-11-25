@@ -7,19 +7,18 @@ import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 
 @Component({
-  selector: 'app-modal-stake-lp',
-  templateUrl: './modal-stake-lp.component.html',
-  styleUrls: ['./modal-stake-lp.component.css']
+  selector: 'app-modal-unstake-lp',
+  templateUrl: './modal-unstake-lp.component.html',
+  styleUrls: ['./modal-unstake-lp.component.css']
 })
-export class ModalStakeLPComponent implements OnInit {
+export class ModalUnstakeLPComponent implements OnInit {
   @Input() stakedMPHPoolProportion: BigNumber;
   @Input() stakedMPHBalance: BigNumber;
   @Input() totalStakedMPHBalance: BigNumber;
   @Input() totalRewardPerSecond: BigNumber;
   @Input() rewardPerDay: BigNumber;
   @Input() mphPriceUSD: BigNumber;
-  mphBalance: BigNumber;
-  stakeAmount: BigNumber;
+  unstakeAmount: BigNumber;
   newStakedMPHPoolProportion: BigNumber;
   newRewardPerDay: BigNumber;
 
@@ -47,43 +46,39 @@ export class ModalStakeLPComponent implements OnInit {
   }
 
   async loadData() {
-    const lpToken = this.contract.getNamedContract('MPHLP');
-    this.mphBalance = new BigNumber(await lpToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
-    this.setStakeAmount(this.mphBalance.toFixed(18));
+    this.setUnstakeAmount(this.stakedMPHBalance.toFixed(18));
   }
 
   resetData(): void {
-    this.mphBalance = new BigNumber(0);
-    this.stakeAmount = new BigNumber(0);
+    this.unstakeAmount = new BigNumber(0);
     this.newStakedMPHPoolProportion = new BigNumber(0);
     this.newRewardPerDay = new BigNumber(0);
   }
 
-  setStakeAmount(amount: number | string) {
-    this.stakeAmount = new BigNumber(amount);
-    if (this.stakeAmount.isNaN()) {
-      this.stakeAmount = new BigNumber(0);
+  setUnstakeAmount(amount: number | string) {
+    this.unstakeAmount = new BigNumber(amount);
+    if (this.unstakeAmount.isNaN()) {
+      this.unstakeAmount = new BigNumber(0);
     }
-    this.newStakedMPHPoolProportion = this.stakedMPHBalance.plus(this.stakeAmount).div(this.totalStakedMPHBalance.plus(this.stakeAmount)).times(100);
+    this.newStakedMPHPoolProportion = this.stakedMPHBalance.minus(this.unstakeAmount).div(this.totalStakedMPHBalance.minus(this.unstakeAmount)).times(100);
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);
     }
-    this.newRewardPerDay = this.stakedMPHBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.plus(this.stakeAmount))).times(this.constants.DAY_IN_SEC);
+    this.newRewardPerDay = this.stakedMPHBalance.minus(this.unstakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.minus(this.unstakeAmount))).times(this.constants.DAY_IN_SEC);
     if (this.newRewardPerDay.isNaN()) {
       this.newRewardPerDay = new BigNumber(0);
     }
   }
 
-  stake() {
+  unstake() {
     const rewards = this.contract.getNamedContract('Farming');
-    const lpToken = this.contract.getNamedContract('MPHLP');
-    const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
-    const func = rewards.methods.stake(stakeAmount);
+    const unstakeAmount = this.helpers.processWeb3Number(this.unstakeAmount.times(this.constants.PRECISION));
+    const func = rewards.methods.withdraw(unstakeAmount);
 
-    this.wallet.sendTxWithToken(func, lpToken, rewards.options.address, stakeAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 
   canContinue() {
-    return this.wallet.connected && this.stakeAmount.gt(0);
+    return this.wallet.connected && this.unstakeAmount.gt(0);
   }
 }
