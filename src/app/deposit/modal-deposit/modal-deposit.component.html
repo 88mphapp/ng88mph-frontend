@@ -38,7 +38,8 @@
                       <div class="input-group input-group-lg mb-2">
                         <select class="custom-select" (change)="selectPool($event.target.value)">
                           <option value={{pool.name}} *ngFor="let pool of poolList"
-                            [selected]="pool.name === selectedPoolInfo.name">{{pool.stablecoinSymbol}} ({{pool.protocol}})</option>
+                            [selected]="pool.name === selectedPoolInfo.name">{{pool.stablecoinSymbol}}
+                            ({{pool.protocol}})</option>
                         </select>
                       </div>
                     </div>
@@ -135,7 +136,7 @@
                           <td class="px-0 text-white border-0">
                             <strong>MPH to repay upon withdraw</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Depositors need to repay 90% of their MPH tokens when they want to withdraw. Relax! Keep them warm by staking them to earn rewards (protocol fees, harvested tokens on external protocols, etc).">
+                              ngbTooltip="Depositors need to repay {{mphDepositorRewardTakeBackMultiplier.times(100).toString()}}% of their MPH tokens when they want to withdraw. Relax! Keep them warm by staking them to earn rewards (protocol fees, harvested tokens on external protocols, etc).">
                               [i]
                             </button>
                           </td>
@@ -161,7 +162,7 @@
                           <td class="px-0 text-white border-0">
                             <strong>MPH APY (temporary)</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Annualized temporary MPH reward rate. Depositors need to pay back 90% of the temporary MPH reward received when they withdraw.">
+                              ngbTooltip="Annualized temporary MPH reward rate. Depositors need to pay back {{mphDepositorRewardTakeBackMultiplier.times(100).toString()}}% of the temporary MPH reward received when they withdraw.">
                               [i]
                             </button>
                           </td>
@@ -278,7 +279,8 @@
                       <p class="mb-0 font-weight-bold">
                         When your lending period is over, you withdraw your principal together with the fixed-rate
                         interest
-                        earned. When you withdraw, you need to return 90% of the
+                        earned. When you withdraw, you need to return
+                        {{mphDepositorRewardTakeBackMultiplier.times(100).toString()}}% of the
                         MPH tokens received at the time of deposit.
                       </p>
 
