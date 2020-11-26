@@ -57,8 +57,11 @@
                 <h2 class="mb-3 glowing pl-3">
                   {{claimableRewards.toFormat(4)}} MPH
                 </h2>
-                <h5 class="mb-3 text-white pl-3">(${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day)
-                  ({{rewardPerDay.toFormat(4)}} MPH/day)</h5>
+                <h5 class="mb-3 text-white pl-3">
+                  (${{claimableRewards.times(mphPriceUSD).toFormat(4)}})
+                  (${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day)
+                  ({{rewardPerDay.toFormat(4)}} MPH/day)
+                </h5>
                 <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue()">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                 </button>
