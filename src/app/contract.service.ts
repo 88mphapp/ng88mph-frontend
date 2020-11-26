@@ -79,4 +79,5 @@ export interface PoolInfo {
   stablecoinDecimals: number;
   protocol: string;
   iconPath: string;
+  moneyMarket: string;
 }
