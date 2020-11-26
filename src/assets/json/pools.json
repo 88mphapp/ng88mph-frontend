@@ -6,7 +6,8 @@
     "stablecoinSymbol": "DAI",
     "stablecoinDecimals": 18,
     "protocol": "Compound",
-    "iconPath": "assets/img/token-icons/dai.svg"
+    "iconPath": "assets/img/token-icons/dai.svg",
+    "moneyMarket": "0xB45badB785142e6f459a8f5F724B6688cef311FD"
   },
   "cUSDC": {
     "name": "cUSDC",
@@ -15,7 +16,8 @@
     "stablecoinSymbol": "USDC",
     "stablecoinDecimals": 6,
     "protocol": "Compound",
-    "iconPath": "assets/img/token-icons/cusdc.svg"
+    "iconPath": "assets/img/token-icons/usdc.svg",
+    "moneyMarket": "0xaDEDB64E36ba329FD116269A62276B1Ba5d039Dc"
   },
   "cUNI": {
     "name": "cUNI",
@@ -24,7 +26,8 @@
     "stablecoinSymbol": "UNI",
     "stablecoinDecimals": 18,
     "protocol": "Compound",
-    "iconPath": "assets/img/token-icons/uni.svg"
+    "iconPath": "assets/img/token-icons/uni.svg",
+    "moneyMarket": "0xb5d7BE07Cc7F03c8340A3F492357137438778aFF"
   },
   "yUSD": {
     "name": "yUSD",
@@ -33,7 +36,8 @@
     "stablecoinSymbol": "yCRV",
     "stablecoinDecimals": 18,
     "protocol": "yEarn",
-    "iconPath": "assets/img/token-icons/yusd.webp"
+    "iconPath": "assets/img/token-icons/yusd.webp",
+    "moneyMarket": "0x37315Cdf1d097dfAb8267c0c1Aef6fECaC09d845"
   },
   "ycrvSBTC": {
     "name": "ycrvSBTC",
@@ -42,6 +46,7 @@
     "stablecoinSymbol": "crvRenWSBTC",
     "stablecoinDecimals": 18,
     "protocol": "yEarn",
-    "iconPath": "assets/img/token-icons/btc.svg"
+    "iconPath": "assets/img/token-icons/btc.svg",
+    "moneyMarket": "0x10f1a7F480c75E6e434d35b025dF4e6C1FC26Db7"
   }
 }

@@ -31,6 +31,9 @@ export class RewardsComponent implements OnInit {
   weeklyROI: BigNumber;
   dailyROI: BigNumber;
   mphPriceUSD: BigNumber;
+  protocolFeesUSD: BigNumber;
+  compRewardsToken: BigNumber;
+  compRewardsUSD: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -62,21 +65,30 @@ export class RewardsComponent implements OnInit {
           id
           stakedMPHBalance
         }` : ''}
-        ${loadGlobal ? `mph(id: "0") {
-          id
-          totalStakedMPHBalance
-          rewardPerMPHPerSecond
-          rewardPerSecond
-        }` : ''}
+        ${loadGlobal ? `
+          mph(id: "0") {
+            id
+            totalStakedMPHBalance
+            rewardPerMPHPerSecond
+            rewardPerSecond
+          }
+        ` : ''}
       }
     `;
     this.apollo.query<QueryResult>({
       query: queryString
     }).subscribe((x) => this.handleData(x));
 
+    if (loadGlobal) {
+      // load reward accumulation stats
+      this.loadRewardAccumulationStats();
+    }
+
     if (this.wallet.connected) {
       const rewards = this.contract.getNamedContract('Rewards');
-      this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+      rewards.methods.earned(this.wallet.userAddress).call().then(claimableRewards => {
+        this.claimableRewards = new BigNumber(claimableRewards).div(this.constants.PRECISION);
+      });
     }
   }
 
@@ -129,7 +141,44 @@ export class RewardsComponent implements OnInit {
       this.monthlyROI = new BigNumber(0);
       this.weeklyROI = new BigNumber(0);
       this.dailyROI = new BigNumber(0);
+      this.protocolFeesUSD = new BigNumber(0);
+      this.compRewardsToken = new BigNumber(0);
+      this.compRewardsUSD = new BigNumber(0);
     }
+  }
+
+  loadRewardAccumulationStats() {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+
+    // compute protocol fees
+    const allPools = this.contract.getPoolInfoList();
+    let protocolFeesUSD = new BigNumber(0);
+    Promise.all(allPools.map(async poolInfo => {
+      const poolStablecoin = this.contract.getPoolStablecoin(poolInfo.name);
+      const poolFeesToken = new BigNumber(await poolStablecoin.methods.balanceOf(this.constants.DUMPER).call()).div(Math.pow(10, poolInfo.stablecoinDecimals));
+      const stablecoinPrice = await this.helpers.getTokenPriceUSD(poolInfo.stablecoin);
+      protocolFeesUSD = protocolFeesUSD.plus(poolFeesToken.times(stablecoinPrice));
+    })).then(() => {
+      this.protocolFeesUSD = protocolFeesUSD;
+    });
+
+    // compute COMP rewards
+    const compoundPools = allPools.filter(poolInfo => poolInfo.protocol === 'Compound');
+    const compoundLens = this.contract.getNamedContract('CompoundLens', readonlyWeb3);
+    const compToken = this.contract.getERC20(this.constants.COMP, readonlyWeb3);
+    let compRewardsToken = new BigNumber(0);
+    Promise.all(compoundPools.map(async poolInfo => {
+      const rewardUnclaimed = new BigNumber((await compoundLens.methods.getCompBalanceMetadataExt(this.constants.COMP, this.constants.COMPOUND_COMPTROLLER, poolInfo.moneyMarket).call()).allocated).div(this.constants.PRECISION);
+      const rewardClaimed = new BigNumber(await compToken.methods.balanceOf(poolInfo.moneyMarket).call()).div(this.constants.PRECISION);
+      compRewardsToken = compRewardsToken.plus(rewardUnclaimed).plus(rewardClaimed);
+    })).then(async () => {
+      const rewardInDumper = new BigNumber(await compToken.methods.balanceOf(this.constants.DUMPER).call()).div(this.constants.PRECISION);
+      compRewardsToken = compRewardsToken.plus(rewardInDumper);
+
+      this.compRewardsToken = compRewardsToken;
+      const compPriceUSD = await this.helpers.getTokenPriceUSD(this.constants.COMP);
+      this.compRewardsUSD = compRewardsToken.times(compPriceUSD);
+    });
   }
 
   openStakeModal() {
