@@ -76,6 +76,10 @@ export class StatsComponent implements OnInit {
           id
           mphBalance
         }
+        vesting: mphholder(id: "${this.contract.getNamedContractAddress('Vesting').toLowerCase()}") {
+          id
+          mphBalance
+        }
       }
     `;
     this.apollo.query<QueryResult>({
@@ -96,6 +100,7 @@ export class StatsComponent implements OnInit {
       const devWallet = queryResult.data.devWallet;
       const merkleDistributor = queryResult.data.merkleDistributor;
       const rewards = queryResult.data.rewards;
+      const vesting = queryResult.data.vesting;
 
       if (dpools) {
         let totalDepositUSD = new BigNumber(0);
@@ -141,6 +146,9 @@ export class StatsComponent implements OnInit {
       }
       if (rewards) {
         mphCirculatingSupply = mphCirculatingSupply.minus(rewards.mphBalance);
+      }
+      if (vesting) {
+        mphCirculatingSupply = mphCirculatingSupply.minus(vesting.mphBalance);
       }
       this.mphCirculatingSupply = mphCirculatingSupply;
     }
@@ -189,6 +197,10 @@ interface QueryResult {
     mphBalance: number;
   };
   rewards: {
+    id: string;
+    mphBalance: number;
+  };
+  vesting: {
     id: string;
     mphBalance: number;
   };
