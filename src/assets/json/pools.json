@@ -51,7 +51,7 @@
   },
   "harvestYCRV": {
     "name": "harvestYCRV",
-    "address": "0x23Fa6b36E870ca5753853538D17C3ca7f5269e84",
+    "address": "0x23fa6b36e870ca5753853538d17c3ca7f5269e84",
     "stablecoin": "0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8",
     "stablecoinSymbol": "yCRV",
     "stablecoinDecimals": 18,
