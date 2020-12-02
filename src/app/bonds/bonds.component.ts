@@ -290,7 +290,7 @@ export class BondsComponent implements OnInit {
     this.floatingRatePrediction = this.selectedPool.oneYearInterestRate.times(4 / 3);
     this.numFundableDeposits = Math.min(this.selectedPool.latestDeposit - this.selectedPool.latestFundedDeposit, 20);
 
-    const poolID = this.selectedPool.address.toLowerCase();
+    const poolID = this.selectedPool.address;
     const queryString = gql`
       {
         dpool(id: "${poolID}") {
