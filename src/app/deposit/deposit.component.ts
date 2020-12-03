@@ -166,6 +166,7 @@ export class DepositComponent implements OnInit {
             let mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
             const realMPHReward = new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier).times(deposit.mintMPHAmount);
             const mphAPY = realMPHReward.times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
+            const tempMPHAPY = new BigNumber(deposit.mintMPHAmount).times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
 
             // compute interest
             const interestEarnedToken = this.helpers.applyFeeToInterest(new BigNumber(deposit.interestEarned));
@@ -183,7 +184,8 @@ export class DepositComponent implements OnInit {
               interestEarnedUSD,
               mintMPHAmount: new BigNumber(deposit.mintMPHAmount),
               realMPHReward: realMPHReward,
-              mphAPY: mphAPY
+              mphAPY: mphAPY,
+              tempMPHAPY: tempMPHAPY
             }
             userPoolDeposit.countdownTimer.start();
             userPoolDeposits.push(userPoolDeposit);

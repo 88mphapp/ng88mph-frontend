@@ -34,6 +34,8 @@ export class RewardsComponent implements OnInit {
   protocolFeesUSD: BigNumber;
   compRewardsToken: BigNumber;
   compRewardsUSD: BigNumber;
+  farmRewardsToken: BigNumber;
+  farmRewardsUSD: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -144,6 +146,8 @@ export class RewardsComponent implements OnInit {
       this.protocolFeesUSD = new BigNumber(0);
       this.compRewardsToken = new BigNumber(0);
       this.compRewardsUSD = new BigNumber(0);
+      this.farmRewardsToken = new BigNumber(0);
+      this.farmRewardsUSD = new BigNumber(0);
     }
   }
 
@@ -178,6 +182,23 @@ export class RewardsComponent implements OnInit {
       this.compRewardsToken = compRewardsToken;
       const compPriceUSD = await this.helpers.getTokenPriceUSD(this.constants.COMP);
       this.compRewardsUSD = compRewardsToken.times(compPriceUSD);
+    });
+
+    // compute FARM rewards
+    const harvestPools = allPools.filter(poolInfo => poolInfo.protocol === 'Harvest');
+    const farmToken = this.contract.getERC20(this.constants.FARM, readonlyWeb3);
+    let farmRewardsToken = new BigNumber(0);
+    Promise.all(harvestPools.map(async poolInfo => {
+      const stakingPool = this.contract.getRewards(poolInfo.stakingPool);
+      const rewardUnclaimed = new BigNumber(await stakingPool.methods.earned(poolInfo.moneyMarket).call()).div(this.constants.PRECISION);
+      farmRewardsToken = farmRewardsToken.plus(rewardUnclaimed);
+    })).then(async () => {
+      const rewardInDumper = new BigNumber(await farmToken.methods.balanceOf(this.constants.DUMPER).call()).div(this.constants.PRECISION);
+      farmRewardsToken = farmRewardsToken.plus(rewardInDumper);
+
+      this.farmRewardsToken = farmRewardsToken;
+      const farmPriceUSD = await this.helpers.getTokenPriceUSD(this.constants.FARM);
+      this.farmRewardsUSD = farmRewardsToken.times(farmPriceUSD);
     });
   }
 

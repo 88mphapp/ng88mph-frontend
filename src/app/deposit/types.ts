@@ -33,4 +33,5 @@ export interface UserDeposit {
   mintMPHAmount: BigNumber;
   realMPHReward: BigNumber;
   mphAPY: BigNumber;
+  tempMPHAPY: BigNumber;
 }

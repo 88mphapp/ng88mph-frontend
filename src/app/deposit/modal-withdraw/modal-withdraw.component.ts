@@ -42,7 +42,7 @@ export class ModalWithdrawComponent implements OnInit {
   async loadData() {
     const queryString = gql`
       {
-        dpool(id: "${this.poolInfo.address.toLowerCase()}") {
+        dpool(id: "${this.poolInfo.address}") {
           id
           mphDepositorRewardTakeBackMultiplier
         }

@@ -97,7 +97,7 @@ export class ModalDepositComponent implements OnInit {
 
     const queryString = gql`
       {
-        dpool(id: "${this.selectedPoolInfo.address.toLowerCase()}") {
+        dpool(id: "${this.selectedPoolInfo.address}") {
           id
           MinDepositAmount
           MaxDepositAmount
