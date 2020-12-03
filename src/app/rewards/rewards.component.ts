@@ -190,7 +190,7 @@ export class RewardsComponent implements OnInit {
     let farmRewardsToken = new BigNumber(0);
     Promise.all(harvestPools.map(async poolInfo => {
       const stakingPool = this.contract.getRewards(poolInfo.stakingPool);
-      const rewardUnclaimed = new BigNumber(await stakingPool.methods.earned(poolInfo.address).call()).div(this.constants.PRECISION);
+      const rewardUnclaimed = new BigNumber(await stakingPool.methods.earned(poolInfo.moneyMarket).call()).div(this.constants.PRECISION);
       farmRewardsToken = farmRewardsToken.plus(rewardUnclaimed);
     })).then(async () => {
       const rewardInDumper = new BigNumber(await farmToken.methods.balanceOf(this.constants.DUMPER).call()).div(this.constants.PRECISION);
