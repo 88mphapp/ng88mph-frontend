@@ -118,7 +118,7 @@ export class VestingComponent implements OnInit {
   getCurrentWithdrawableAmount(vest: Vest): BigNumber {
     if (vest.locked) {
       // partially vested
-      return vest.amount.times(this.now - vest.creationTimestamp).div(vest.vestPeriodInSeconds);
+      return vest.amount.times(this.now - vest.creationTimestamp).div(vest.vestPeriodInSeconds).minus(vest.withdrawnAmount);
     } else {
       // fully vested
       return vest.amount.minus(vest.withdrawnAmount);
