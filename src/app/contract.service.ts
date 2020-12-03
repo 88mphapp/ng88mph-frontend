@@ -69,6 +69,14 @@ export class ContractService {
     }
     return new this.wallet.web3.eth.Contract(abi, address);
   }
+
+  getRewards(address: string, web3?: Web3) {
+    const abi = require(`../assets/abis/Rewards.json`);
+    if (web3) {
+      return new web3.eth.Contract(abi, address);
+    }
+    return new this.wallet.web3.eth.Contract(abi, address);
+  }
 }
 
 export interface PoolInfo {
@@ -80,4 +88,5 @@ export interface PoolInfo {
   protocol: string;
   iconPath: string;
   moneyMarket: string;
+  stakingPool?: string;
 }

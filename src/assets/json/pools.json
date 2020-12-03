@@ -57,6 +57,7 @@
     "stablecoinDecimals": 18,
     "protocol": "Harvest",
     "iconPath": "assets/img/token-icons/ycrv.png",
-    "moneyMarket": "0xD4AA5cC7Eb7f471F44bb744F518C5F3d937cc403"
+    "moneyMarket": "0xD4AA5cC7Eb7f471F44bb744F518C5F3d937cc403",
+    "stakingPool": "0x6D1b6Ea108AA03c6993d8010690264BA96D349A8"
   }
 }
