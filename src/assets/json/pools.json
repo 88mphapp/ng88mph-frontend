@@ -59,5 +59,15 @@
     "iconPath": "assets/img/token-icons/ycrv.png",
     "moneyMarket": "0xD4AA5cC7Eb7f471F44bb744F518C5F3d937cc403",
     "stakingPool": "0x6D1b6Ea108AA03c6993d8010690264BA96D349A8"
+  },
+  "aUSDC": {
+    "name": "aUSDC",
+    "address": "0xe8c52367b81113ed32bb276184e521c2fbe9393a",
+    "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "stablecoinSymbol": "USDC",
+    "stablecoinDecimals": 6,
+    "protocol": "Aave",
+    "iconPath": "assets/img/token-icons/usdc.svg",
+    "moneyMarket": "0xB558fD7F1927CeB334bf661acc5C6a11C103fc91"
   }
 }
