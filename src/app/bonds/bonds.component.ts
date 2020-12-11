@@ -95,7 +95,7 @@ export class BondsComponent implements OnInit {
           pools {
             id
             address
-            fundings(where: { funder: "${funderID}" }, orderBy: nftID) {
+            fundings(where: { funder: "${funderID}", active: true }, orderBy: nftID) {
               nftID
               recordedFundedDepositAmount
               recordedMoneyMarketIncomeIndex
