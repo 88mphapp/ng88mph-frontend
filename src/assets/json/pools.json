@@ -69,5 +69,16 @@
     "protocol": "Aave",
     "iconPath": "assets/img/token-icons/usdc.svg",
     "moneyMarket": "0xB558fD7F1927CeB334bf661acc5C6a11C103fc91"
+  },
+  "harvestCRVHUSD": {
+    "name": "harvestCRVHUSD",
+    "address": "0xb1abaac351e06d40441cf2cd97f6f0098e6473f2",
+    "stablecoin": "0x5B5CFE992AdAC0C9D48E05854B2d91C73a003858",
+    "stablecoinSymbol": "crvHUSD",
+    "stablecoinDecimals": 18,
+    "protocol": "Harvest",
+    "iconPath": "assets/img/token-icons/curve-husd.png",
+    "moneyMarket": "0x095cCFeDF134D20a033eeA5ab124C03777e8B0B0",
+    "stakingPool": "0x72C50e6FD8cC5506E166c273b6E814342Aa0a3c1"
   }
 }
