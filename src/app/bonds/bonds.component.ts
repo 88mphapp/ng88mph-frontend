@@ -103,6 +103,7 @@ export class BondsComponent implements OnInit {
               fundedDeficitAmount
               totalInterestEarned
               mphRewardEarned
+              refundAmount
             }
           }
           totalInterestByPool {
@@ -173,6 +174,8 @@ export class BondsComponent implements OnInit {
               interestEarnedToken: new BigNumber(funding.totalInterestEarned),
               interestEarnedUSD: new BigNumber(funding.totalInterestEarned).times(stablecoinPrice),
               mphRewardEarned: new BigNumber(funding.mphRewardEarned),
+              refundAmountToken: new BigNumber(funding.refundAmount),
+              refundAmountUSD: new BigNumber(funding.refundAmount).times(stablecoinPrice),
             }
             fundings.push(fundingObj)
           }
@@ -475,6 +478,7 @@ interface QueryResult {
         fundedDeficitAmount: number;
         totalInterestEarned: number;
         mphRewardEarned: number;
+        refundAmount: number;
       }[];
     }[];
     totalInterestByPool: {
@@ -533,6 +537,8 @@ interface Funding {
   interestEarnedToken: BigNumber;
   interestEarnedUSD: BigNumber;
   mphRewardEarned: BigNumber;
+  refundAmountToken: BigNumber;
+  refundAmountUSD: BigNumber;
 }
 
 interface Deposit {
