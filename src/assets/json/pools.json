@@ -74,7 +74,7 @@
     "name": "harvestCRVHUSD",
     "address": "0xb1abaac351e06d40441cf2cd97f6f0098e6473f2",
     "stablecoin": "0x5B5CFE992AdAC0C9D48E05854B2d91C73a003858",
-    "stablecoinSymbol": "crvHUSD",
+    "stablecoinSymbol": "CRV:HUSD",
     "stablecoinDecimals": 18,
     "protocol": "Harvest",
     "iconPath": "assets/img/token-icons/curve-husd.png",
