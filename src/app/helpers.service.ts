@@ -17,6 +17,10 @@ export class HelpersService {
   }
 
   async getTokenPriceUSD(address: string): Promise<number> {
+    if (address.toLowerCase() === '0x5B5CFE992AdAC0C9D48E05854B2d91C73a003858'.toLowerCase()) {
+      // crvHUSD
+      return 1;
+    }
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
     return rawResult.prices[0][1];
