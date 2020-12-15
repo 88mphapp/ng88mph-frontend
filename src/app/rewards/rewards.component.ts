@@ -157,8 +157,13 @@ export class RewardsComponent implements OnInit {
     // compute protocol fees
     const allPools = this.contract.getPoolInfoList();
     let protocolFeesUSD = new BigNumber(0);
+    let countedStablecoinMap = {};
     Promise.all(allPools.map(async poolInfo => {
-      const poolStablecoin = this.contract.getPoolStablecoin(poolInfo.name);
+      if (countedStablecoinMap[poolInfo.stablecoinSymbol]) {
+        return;
+      }
+      countedStablecoinMap[poolInfo.stablecoinSymbol] = true;
+      const poolStablecoin = this.contract.getPoolStablecoin(poolInfo.name, readonlyWeb3);
       const poolFeesToken = new BigNumber(await poolStablecoin.methods.balanceOf(this.constants.DUMPER).call()).div(Math.pow(10, poolInfo.stablecoinDecimals));
       const stablecoinPrice = await this.helpers.getTokenPriceUSD(poolInfo.stablecoin);
       protocolFeesUSD = protocolFeesUSD.plus(poolFeesToken.times(stablecoinPrice));
@@ -189,7 +194,7 @@ export class RewardsComponent implements OnInit {
     const farmToken = this.contract.getERC20(this.constants.FARM, readonlyWeb3);
     let farmRewardsToken = new BigNumber(0);
     Promise.all(harvestPools.map(async poolInfo => {
-      const stakingPool = this.contract.getRewards(poolInfo.stakingPool);
+      const stakingPool = this.contract.getRewards(poolInfo.stakingPool, readonlyWeb3);
       const rewardUnclaimed = new BigNumber(await stakingPool.methods.earned(poolInfo.moneyMarket).call()).div(this.constants.PRECISION);
       farmRewardsToken = farmRewardsToken.plus(rewardUnclaimed);
     })).then(async () => {
