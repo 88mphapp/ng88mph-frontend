@@ -26,6 +26,9 @@ export class RewardsComponent implements OnInit {
   totalRewardPerSecond: BigNumber;
   rewardPerMPHPerSecond: BigNumber;
   totalStakedMPHBalance: BigNumber;
+  totalHistoricalReward: BigNumber;
+  rewardStartTime: string;
+  rewardEndTime: string;
   yearlyROI: BigNumber;
   monthlyROI: BigNumber;
   weeklyROI: BigNumber;
@@ -73,6 +76,7 @@ export class RewardsComponent implements OnInit {
             totalStakedMPHBalance
             rewardPerMPHPerSecond
             rewardPerSecond
+            totalHistoricalReward
           }
         ` : ''}
       }
@@ -81,15 +85,23 @@ export class RewardsComponent implements OnInit {
       query: queryString
     }).subscribe((x) => this.handleData(x));
 
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
+
+    if (this.wallet.connected && loadUser) {
+      rewards.methods.earned(this.wallet.userAddress).call().then(claimableRewards => {
+        this.claimableRewards = new BigNumber(claimableRewards).div(this.constants.PRECISION);
+      });
+    }
+
     if (loadGlobal) {
       // load reward accumulation stats
       this.loadRewardAccumulationStats();
-    }
 
-    if (this.wallet.connected) {
-      const rewards = this.contract.getNamedContract('Rewards');
-      rewards.methods.earned(this.wallet.userAddress).call().then(claimableRewards => {
-        this.claimableRewards = new BigNumber(claimableRewards).div(this.constants.PRECISION);
+      // load reward start & end time
+      rewards.methods.periodFinish().call().then(endTime => {
+        this.rewardStartTime = new Date((+endTime - this.PERIOD * 24 * 60 * 60) * 1e3).toLocaleString();
+        this.rewardEndTime = new Date(+endTime * 1e3).toLocaleString();
       });
     }
   }
@@ -101,6 +113,7 @@ export class RewardsComponent implements OnInit {
         this.totalStakedMPHBalance = new BigNumber(mph.totalStakedMPHBalance);
         this.rewardPerMPHPerSecond = new BigNumber(mph.rewardPerMPHPerSecond);
         this.totalRewardPerSecond = new BigNumber(mph.rewardPerSecond);
+        this.totalHistoricalReward = new BigNumber(mph.totalHistoricalReward);
       }
 
       const mphHolder = queryResult.data.mphholder;
@@ -138,6 +151,7 @@ export class RewardsComponent implements OnInit {
       this.rewardPerMPHPerSecond = new BigNumber(0);
       this.rewardPerWeek = new BigNumber(0);
       this.totalRewardPerSecond = new BigNumber(0);
+      this.totalHistoricalReward = new BigNumber(0);
       this.mphPriceUSD = new BigNumber(0);
       this.yearlyROI = new BigNumber(0);
       this.monthlyROI = new BigNumber(0);
@@ -254,5 +268,6 @@ interface QueryResult {
     totalStakedMPHBalance: number;
     rewardPerMPHPerSecond: number;
     rewardPerSecond: number;
+    totalHistoricalReward: number;
   };
 }

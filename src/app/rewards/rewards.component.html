@@ -90,11 +90,11 @@
                   <li class="list-group-item">
                     <div class="row">
                       <div class="col text-left">
-                        <h3 class="text-white">Historical MPH staking rewards distributed</h3>
+                        <h3 class="text-white">Current distribution period</h3>
                       </div>
                       <div class="col text-right">
                         <h3 class="glowing">
-                          0.0000 DAI
+                          {{rewardStartTime}} to {{rewardEndTime}}
                         </h3>
                       </div>
                     </div>
@@ -102,7 +102,7 @@
                   <li class="list-group-item">
                     <div class="row">
                       <div class="col text-left">
-                        <h3 class="text-white">Weekly reward</h3>
+                        <h3 class="text-white">Current period reward</h3>
                       </div>
                       <div class="col text-right">
                         <h3 class="glowing">
@@ -119,6 +119,18 @@
                       <div class="col text-right">
                         <h3 class="glowing">
                           {{totalRewardPerSecond.times(constants.DAY_IN_SEC).toFormat(4)}} DAI
+                        </h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col text-left">
+                        <h3 class="text-white">Historical MPH staking rewards distributed</h3>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="glowing">
+                          {{totalHistoricalReward.toFormat(4)}} DAI
                         </h3>
                       </div>
                     </div>
