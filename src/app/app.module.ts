@@ -23,6 +23,7 @@ import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
 import { VestingComponent } from './vesting/vesting.component';
 import { ModalUnstakeComponent } from './rewards/modal-unstake/modal-unstake.component';
 import { ModalUnstakeLPComponent } from './farming/modal-unstake-lp/modal-unstake-lp.component';
+import { SyncWarningComponent } from './sync-warning/sync-warning.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { ModalUnstakeLPComponent } from './farming/modal-unstake-lp/modal-unstak
     ClaimMPHComponent,
     VestingComponent,
     ModalUnstakeComponent,
-    ModalUnstakeLPComponent
+    ModalUnstakeLPComponent,
+    SyncWarningComponent
   ],
   imports: [
     BrowserModule,

@@ -17,4 +17,6 @@ export class ConstantsService {
   COMP = '0xc00e94cb662c3520282e6f5717214004a7f26888';
   FARM = '0xa0246c9032bC3A600820415aE600c6388619A14D';
   DUMPER = '0x5B3C81C86d17786255904c316bFCB38A46146ef8';
+  GRAPHQL_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph';
+  SUBGRAPH_SYNC_WARNING_THRESHOLD = 20; // if falls behind by 20 blocks, display error banner
 }
