@@ -1,8 +1,6 @@
 <app-sidebar class="navbar navbar-vertical fixed-left navbar-expand-md mb-3" style="background-color: #131415;"></app-sidebar>
 <app-header class="navbar navbar-expand-md d-none d-md-flex border-0"></app-header>
-<div class="alert rounded-0 mb-0 text-right pl-md-8 mt-n3 mt-md-0" style="background: linear-gradient(157.95deg, #FF009D 43.73%, #3435F5 87.91%);">
-  Warning: The data on this site has only synced to Ethereum block 11466811 (out of 11466896). Please check back soon. 
-</div>
+<app-sync-warning></app-sync-warning>
 <div class="main-content">
   <router-outlet></router-outlet>
 </div>
