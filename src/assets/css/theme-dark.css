@@ -14555,7 +14555,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .navbar-light {
-  background-color: transparent;
+  background-color: #131415;
   border-image-source: linear-gradient(to bottom, #743ad5, #d53a9d 72%)!important;
   border-image-slice: 1;
   border-width: 3px
