@@ -29,6 +29,8 @@ export class FarmingComponent implements OnInit {
   monthlyROI: BigNumber;
   weeklyROI: BigNumber;
   dailyROI: BigNumber;
+  rewardStartTime: string;
+  rewardEndTime: string;
 
   constructor(
     private modalService: NgbModal,
@@ -62,6 +64,11 @@ export class FarmingComponent implements OnInit {
       if (this.totalStakedMPHBalance.isZero()) {
         this.rewardPerMPHPerSecond = new BigNumber(0);
       }
+      // load reward start & end time
+      rewards.methods.periodFinish().call().then(endTime => {
+        this.rewardStartTime = new Date((+endTime - this.PERIOD * 24 * 60 * 60) * 1e3).toLocaleString();
+        this.rewardEndTime = new Date(+endTime * 1e3).toLocaleString();
+      });
 
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
       this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
