@@ -61,6 +61,7 @@ const mockUser = {
 })
 export class DepositComponent implements OnInit {
   YEAR_IN_SEC = 31556952; // Number of seconds in a year
+  DECIMALS = 4;
 
   totalDepositUSD: BigNumber;
   totalInterestUSD: BigNumber;
