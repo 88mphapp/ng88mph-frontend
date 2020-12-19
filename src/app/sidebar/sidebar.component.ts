@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApolloQueryResult } from '@apollo/client/core';
-import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
-import gql from 'graphql-tag';
 import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
@@ -16,7 +13,7 @@ import { WalletService } from '../wallet.service';
 export class SidebarComponent implements OnInit {
   mphBalance: BigNumber;
 
-  constructor(private apollo: Apollo, public route: Router, public wallet: WalletService, public contract: ContractService,
+  constructor(public route: Router, public wallet: WalletService, public contract: ContractService,
     public constants: ConstantsService) {
     this.resetData();
   }
@@ -32,28 +29,16 @@ export class SidebarComponent implements OnInit {
   }
 
   async loadData() {
-    const mphHolderID = this.wallet.userAddress.toLowerCase();
-    const queryString = gql`
-      {
-        mphholder(id: "${mphHolderID}") {
-          id
-          mphBalance
-          stakedMPHBalance
-        }
-      }
-    `;
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => this.handleData(x));
-  }
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
+    const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
 
-  handleData(queryResult: ApolloQueryResult<QueryResult>): void {
-    if (!queryResult.loading) {
-      const mphHolder = queryResult.data.mphholder;
-      if (mphHolder) {
-        this.mphBalance = new BigNumber(mphHolder.mphBalance).plus(mphHolder.stakedMPHBalance);
-      }
-    }
+    let mphBalance, stakedMPHBalance;
+    await Promise.all([
+      mphBalance = new BigNumber(await mphToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION),
+      stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION)
+    ])
+    this.mphBalance = new BigNumber(mphBalance).plus(stakedMPHBalance);
   }
 
   resetData(): void {
@@ -63,12 +48,4 @@ export class SidebarComponent implements OnInit {
   connectWallet() {
     this.wallet.connect(() => { }, () => { }, false);
   }
-}
-
-interface QueryResult {
-  mphholder: {
-    id: string;
-    mphBalance: number;
-    stakedMPHBalance: number;
-  };
 }
