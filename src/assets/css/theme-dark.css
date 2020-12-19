@@ -4823,7 +4823,15 @@ a.badge-white.focus, a.badge-white:focus {
   padding: .75rem 1.25rem;
   color: inherit
 }
-
+.alert-pink-blue{
+  background: linear-gradient(157.95deg, #FF009D 43.73%, #3435F5 87.91%); 
+  padding-left: 288px;
+}
+@media (max-width: 767px){
+  .alert-pink-blue{
+    padding-left: 16px;
+  }
+}
 .alert-primary {
   color: #205295;
   background-color: #2c7be5;
