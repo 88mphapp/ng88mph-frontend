@@ -40,7 +40,7 @@ export class StatsComponent implements OnInit {
     });
   }
 
-  loadData(): void {
+  async loadData() {
     const queryString = gql`
       {
         dpools {
@@ -51,34 +51,8 @@ export class StatsComponent implements OnInit {
         }
         mph(id: "0") {
           id
-          totalSupply
-          totalStakedMPHBalance
           totalHistoricalReward
           rewardPerMPHPerSecond
-        }
-        lpPool: mphholder(id: "${this.contract.getNamedContractAddress('Farming').toLowerCase()}") {
-          id
-          mphBalance
-        }
-        govTreasury: mphholder(id: "${this.constants.GOV_TREASURY.toLowerCase()}") {
-          id
-          mphBalance
-        }
-        devWallet: mphholder(id: "${this.constants.DEV_WALLET.toLowerCase()}") {
-          id
-          mphBalance
-        }
-        merkleDistributor: mphholder(id: "${'0x8c5ddBB0fd86B6480D81A1a5872a63812099C043'.toLowerCase()}") {
-          id
-          mphBalance
-        }
-        rewards: mphholder(id: "${this.contract.getNamedContractAddress('Rewards').toLowerCase()}") {
-          id
-          mphBalance
-        }
-        vesting: mphholder(id: "${this.contract.getNamedContractAddress('Vesting').toLowerCase()}") {
-          id
-          mphBalance
         }
       }
     `;
@@ -89,18 +63,37 @@ export class StatsComponent implements OnInit {
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
+
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
+    const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
+    this.mphTotalSupply = new BigNumber(await mphToken.methods.totalSupply().call()).div(this.constants.PRECISION);
+    this.mphStakedPercentage = this.mphTotalSupply.isZero() ? new BigNumber(0) : new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION).div(this.mphTotalSupply).times(100);
+
+    // compute circulating supply
+    let mphCirculatingSupply = this.mphTotalSupply;
+    const getBalance = async address => {
+      return new BigNumber(await mphToken.methods.balanceOf(address).call()).div(this.constants.PRECISION);
+    }
+    const accountsToUpdate = [
+      this.contract.getNamedContractAddress('Farming'),
+      this.constants.GOV_TREASURY,
+      this.constants.DEV_WALLET,
+      this.constants.MPH_MERKLE_DISTRIBUTOR,
+      this.contract.getNamedContractAddress('Rewards'),
+      this.contract.getNamedContractAddress('Vesting')
+    ];
+    const accountBalances = await Promise.all(accountsToUpdate.map(account => getBalance(account)));
+    for (const balance of accountBalances) {
+      mphCirculatingSupply = mphCirculatingSupply.minus(balance);
+    }
+    this.mphCirculatingSupply = mphCirculatingSupply;
   }
 
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
     if (!queryResult.loading) {
       const dpools = queryResult.data.dpools;
       const mph = queryResult.data.mph;
-      const lpPool = queryResult.data.lpPool;
-      const govTreasury = queryResult.data.govTreasury;
-      const devWallet = queryResult.data.devWallet;
-      const merkleDistributor = queryResult.data.merkleDistributor;
-      const rewards = queryResult.data.rewards;
-      const vesting = queryResult.data.vesting;
 
       if (dpools) {
         let totalDepositUSD = new BigNumber(0);
@@ -126,31 +119,8 @@ export class StatsComponent implements OnInit {
       }
 
       if (mph) {
-        this.mphTotalSupply = new BigNumber(mph.totalSupply);
-        this.mphStakedPercentage = this.mphTotalSupply.isZero() ? new BigNumber(0) : new BigNumber(mph.totalStakedMPHBalance).div(this.mphTotalSupply).times(100);
         this.mphTotalHistoricalReward = new BigNumber(mph.totalHistoricalReward);
       }
-
-      let mphCirculatingSupply = this.mphTotalSupply;
-      if (lpPool) {
-        mphCirculatingSupply = mphCirculatingSupply.minus(lpPool.mphBalance);
-      }
-      if (govTreasury) {
-        mphCirculatingSupply = mphCirculatingSupply.minus(govTreasury.mphBalance);
-      }
-      if (devWallet) {
-        mphCirculatingSupply = mphCirculatingSupply.minus(devWallet.mphBalance);
-      }
-      if (merkleDistributor) {
-        mphCirculatingSupply = mphCirculatingSupply.minus(merkleDistributor.mphBalance);
-      }
-      if (rewards) {
-        mphCirculatingSupply = mphCirculatingSupply.minus(rewards.mphBalance);
-      }
-      if (vesting) {
-        mphCirculatingSupply = mphCirculatingSupply.minus(vesting.mphBalance);
-      }
-      this.mphCirculatingSupply = mphCirculatingSupply;
     }
   }
 
@@ -175,33 +145,7 @@ interface QueryResult {
   }[];
   mph: {
     id: string;
-    totalSupply: number;
-    totalStakedMPHBalance: number;
     totalHistoricalReward: number;
     rewardPerMPHPerSecond: number;
-  };
-  lpPool: {
-    id: string;
-    mphBalance: number;
-  };
-  govTreasury: {
-    id: string;
-    mphBalance: number;
-  };
-  devWallet: {
-    id: string;
-    mphBalance: number;
-  };
-  merkleDistributor: {
-    id: string;
-    mphBalance: number;
-  };
-  rewards: {
-    id: string;
-    mphBalance: number;
-  };
-  vesting: {
-    id: string;
-    mphBalance: number;
   };
 }

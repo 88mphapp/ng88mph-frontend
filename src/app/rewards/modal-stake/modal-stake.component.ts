@@ -49,28 +49,9 @@ export class ModalStakeComponent implements OnInit {
   }
 
   async loadData() {
-    const mphHolderID = this.wallet.userAddress.toLowerCase();
-    const queryString = gql`
-      {
-        mphholder(id: "${mphHolderID}") {
-          id
-          mphBalance
-        }
-      }
-    `;
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => this.handleData(x));
-  }
-
-  handleData(queryResult: ApolloQueryResult<QueryResult>): void {
-    if (!queryResult.loading) {
-      const mphHolder = queryResult.data.mphholder;
-      if (mphHolder) {
-        this.mphBalance = new BigNumber(mphHolder.mphBalance);
-        this.setStakeAmount(this.mphBalance.toFixed(18));
-      }
-    }
+    const mphToken = this.contract.getNamedContract('MPHToken', this.wallet.readonlyWeb3());
+    this.mphBalance = new BigNumber(await mphToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    this.setStakeAmount(this.mphBalance.toFixed(18));
   }
 
   resetData(): void {
@@ -107,11 +88,4 @@ export class ModalStakeComponent implements OnInit {
   canContinue() {
     return this.wallet.connected && this.stakeAmount.gt(0);
   }
-}
-
-interface QueryResult {
-  mphholder: {
-    id: string;
-    mphBalance: number;
-  };
 }

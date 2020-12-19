@@ -36,16 +36,8 @@ export class HeaderComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    const mphHolderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
     const queryString = gql`
     {
-      ${loadUser ? `
-        mphholder(id: "${mphHolderID}") {
-          id
-          mphBalance
-          stakedMPHBalance
-        }
-      ` : ''}
       ${loadGlobal ? `
         dpools {
           id
@@ -59,8 +51,16 @@ export class HeaderComponent implements OnInit {
       query: queryString
     }).subscribe((x) => this.handleData(x));
 
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+
+    if (loadUser && this.wallet.connected) {
+      const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
+      mphToken.methods.balanceOf(this.wallet.userAddress).call().then(mphBalance => {
+        this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
+      });
+    }
+
     if (loadGlobal) {
-      const readonlyWeb3 = this.wallet.readonlyWeb3();
       const rewards = this.contract.getNamedContract('Farming', readonlyWeb3);
       const totalStakedMPHLPBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
       const mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
@@ -71,11 +71,7 @@ export class HeaderComponent implements OnInit {
 
   handleData(queryResult: ApolloQueryResult<QueryResult>): void {
     if (!queryResult.loading) {
-      const mphHolder = queryResult.data.mphholder;
       const dpools = queryResult.data.dpools;
-      if (mphHolder) {
-        this.mphBalance = new BigNumber(mphHolder.mphBalance).plus(mphHolder.stakedMPHBalance);
-      }
       if (dpools) {
         let totalDepositUSD = new BigNumber(0);
         let stablecoinPriceCache = {};
@@ -115,11 +111,6 @@ export class HeaderComponent implements OnInit {
 }
 
 interface QueryResult {
-  mphholder: {
-    id: string;
-    mphBalance: number;
-    stakedMPHBalance: number;
-  };
   dpools: {
     id: string;
     stablecoin: string;

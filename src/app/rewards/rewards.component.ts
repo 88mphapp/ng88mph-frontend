@@ -63,32 +63,36 @@ export class RewardsComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    const mphHolderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
-    const queryString = gql`
+    if (loadGlobal) {
+      const queryString = gql`
       {
-        ${loadUser ? `mphholder(id: "${mphHolderID}") {
+        mph(id: "0") {
           id
-          stakedMPHBalance
-        }` : ''}
-        ${loadGlobal ? `
-          mph(id: "0") {
-            id
-            totalStakedMPHBalance
-            rewardPerMPHPerSecond
-            rewardPerSecond
-            totalHistoricalReward
-          }
-        ` : ''}
+          rewardPerMPHPerSecond
+          rewardPerSecond
+          totalHistoricalReward
+        }
       }
     `;
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => this.handleData(x));
+      this.apollo.query<QueryResult>({
+        query: queryString
+      }).subscribe((x) => this.handleData(x));
+    }
 
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
 
     if (this.wallet.connected && loadUser) {
+      rewards.methods.balanceOf(this.wallet.userAddress).call().then(stakeBalance => {
+        this.stakedMPHBalance = new BigNumber(stakeBalance).div(this.constants.PRECISION);
+        this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
+        if (this.stakedMPHPoolProportion.isNaN()) {
+          this.stakedMPHPoolProportion = new BigNumber(0);
+        }
+        const weekInSeconds = 7 * 24 * 60 * 60;
+        this.rewardPerWeek = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(weekInSeconds);
+      });
+
       rewards.methods.earned(this.wallet.userAddress).call().then(claimableRewards => {
         this.claimableRewards = new BigNumber(claimableRewards).div(this.constants.PRECISION);
       });
@@ -103,6 +107,19 @@ export class RewardsComponent implements OnInit {
         this.rewardStartTime = new Date((+endTime - this.PERIOD * 24 * 60 * 60) * 1e3).toLocaleString();
         this.rewardEndTime = new Date(+endTime * 1e3).toLocaleString();
       });
+
+      rewards.methods.totalSupply().call().then(async totalSupply => {
+        this.totalStakedMPHBalance = new BigNumber(totalSupply).div(this.constants.PRECISION);
+        this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
+        let secondROI = this.totalRewardPerSecond.div(this.totalStakedMPHBalance.times(this.mphPriceUSD)).times(100);
+        if (secondROI.isNaN()) {
+          secondROI = new BigNumber(0);
+        }
+        this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+        this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
+        this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
+        this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
+      });
     }
   }
 
@@ -110,32 +127,10 @@ export class RewardsComponent implements OnInit {
     if (!queryResult.loading) {
       const mph = queryResult.data.mph;
       if (mph) {
-        this.totalStakedMPHBalance = new BigNumber(mph.totalStakedMPHBalance);
         this.rewardPerMPHPerSecond = new BigNumber(mph.rewardPerMPHPerSecond);
         this.totalRewardPerSecond = new BigNumber(mph.rewardPerSecond);
         this.totalHistoricalReward = new BigNumber(mph.totalHistoricalReward);
       }
-
-      const mphHolder = queryResult.data.mphholder;
-      if (mphHolder) {
-        this.stakedMPHBalance = new BigNumber(mphHolder.stakedMPHBalance);
-        this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
-        if (this.stakedMPHPoolProportion.isNaN()) {
-          this.stakedMPHPoolProportion = new BigNumber(0);
-        }
-        const weekInSeconds = 7 * 24 * 60 * 60;
-        this.rewardPerWeek = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(weekInSeconds);
-      }
-
-      this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
-      let secondROI = this.totalRewardPerSecond.div(this.totalStakedMPHBalance.times(this.mphPriceUSD)).times(100);
-      if (secondROI.isNaN()) {
-        secondROI = new BigNumber(0);
-      }
-      this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
-      this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
-      this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
-      this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
     }
   }
 
@@ -259,13 +254,8 @@ export class RewardsComponent implements OnInit {
 }
 
 interface QueryResult {
-  mphholder: {
-    id: string;
-    stakedMPHBalance: number;
-  };
   mph: {
     id: string;
-    totalStakedMPHBalance: number;
     rewardPerMPHPerSecond: number;
     rewardPerSecond: number;
     totalHistoricalReward: number;
