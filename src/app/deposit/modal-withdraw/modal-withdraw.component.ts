@@ -46,27 +46,21 @@ export class ModalWithdrawComponent implements OnInit {
           id
           mphDepositorRewardTakeBackMultiplier
         }
-        mphholder(id: "${this.wallet.userAddress.toLowerCase()}") {
-          id
-          mphBalance
-        }
       }
     `;
     this.apollo.query<QueryResult>({
       query: queryString
     }).subscribe((x) => {
       const pool = x.data.dpool;
-      const mphholder = x.data.mphholder;
 
       if (pool) {
         this.mphRewardAmount = this.userDeposit.mintMPHAmount;
         this.mphTakeBackAmount = this.userDeposit.locked ? this.mphRewardAmount : new BigNumber(pool.mphDepositorRewardTakeBackMultiplier).times(this.mphRewardAmount);
       }
-
-      if (mphholder) {
-        this.mphBalance = new BigNumber(mphholder.mphBalance);
-      }
     });
+
+    const mphToken = this.contract.getNamedContract('MPHToken', this.wallet.readonlyWeb3());
+    this.mphBalance = new BigNumber(await mphToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
   }
 
   resetData() {
@@ -101,9 +95,5 @@ interface QueryResult {
   dpool: {
     id: string;
     mphDepositorRewardTakeBackMultiplier: number;
-  };
-  mphholder: {
-    id: string;
-    mphBalance: number;
   };
 }
