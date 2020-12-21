@@ -35,7 +35,8 @@ export class SyncWarningComponent implements OnInit {
 
   async handleData(queryResult: QueryResult) {
     this.syncBlockNumber = queryResult._meta.block.number;
-    this.latestBlockNumber = await this.wallet.web3.eth.getBlockNumber();
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    this.latestBlockNumber = await readonlyWeb3.eth.getBlockNumber();
   }
 
   resetData(): void {
