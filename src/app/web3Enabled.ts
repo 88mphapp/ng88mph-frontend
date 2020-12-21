@@ -55,6 +55,8 @@ export class Web3Enabled {
       this.web3Modal.clearCachedProvider();
       this.web3Provider = await this.web3Modal.connect();
     }
+    // walletconnect's web3 provider has a bug, this is a hacky fix
+    window['send'] = (e, t) => { return this.web3Provider.send(e, t) };
     this.web3 = new Web3(this.web3Provider);
 
     if (this.web3Provider) {
