@@ -80,5 +80,16 @@
     "iconPath": "assets/img/token-icons/curve-husd.png",
     "moneyMarket": "0x095cCFeDF134D20a033eeA5ab124C03777e8B0B0",
     "stakingPool": "0x72C50e6FD8cC5506E166c273b6E814342Aa0a3c1"
+  },
+  "harvest3CRV": {
+    "name": "harvest3CRV",
+    "address": "0x2f3efd1a90a2336ab8fa1b9060380dc37361ca55",
+    "stablecoin": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
+    "stablecoinSymbol": "3CRV",
+    "stablecoinDecimals": 18,
+    "protocol": "Harvest",
+    "iconPath": "assets/img/token-icons/3crv.png",
+    "moneyMarket": "0x68c16B704567F23a59615Fd7dc38ebE9E6768a1F",
+    "stakingPool": "0x27F12d1a08454402175b9F0b53769783578Be7d9"
   }
 }
