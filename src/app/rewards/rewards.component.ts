@@ -83,9 +83,10 @@ export class RewardsComponent implements OnInit {
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
 
     if (this.wallet.connected && loadUser) {
-      rewards.methods.balanceOf(this.wallet.userAddress).call().then(stakeBalance => {
+      rewards.methods.balanceOf(this.wallet.userAddress).call().then(async stakeBalance => {
         this.stakedMPHBalance = new BigNumber(stakeBalance).div(this.constants.PRECISION);
-        this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
+        const totalStakedMPHBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
+        this.stakedMPHPoolProportion = this.stakedMPHBalance.div(totalStakedMPHBalance).times(100);
         if (this.stakedMPHPoolProportion.isNaN()) {
           this.stakedMPHPoolProportion = new BigNumber(0);
         }
