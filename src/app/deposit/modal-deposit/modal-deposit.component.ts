@@ -21,7 +21,7 @@ export class ModalDepositComponent implements OnInit {
 
   poolList: PoolInfo[];
   selectedPoolInfo: PoolInfo;
-  stablecoinBalance: BigNumber;
+  depositTokenBalance: BigNumber;
   depositAmount: BigNumber;
   depositAmountUSD: BigNumber;
   depositTimeInDays: BigNumber;
@@ -39,6 +39,9 @@ export class ModalDepositComponent implements OnInit {
   tempMPHAPY: BigNumber;
   mphDepositorRewardMintMultiplier: BigNumber;
   mphDepositorRewardTakeBackMultiplier: BigNumber;
+  shouldDisplayZap: boolean;
+  selectedDepositToken: string;
+  zapDepositTokens: string[];
 
   constructor(
     private apollo: Apollo,
@@ -72,7 +75,7 @@ export class ModalDepositComponent implements OnInit {
 
   resetData(): void {
     this.poolList = [];
-    this.stablecoinBalance = new BigNumber(0);
+    this.depositTokenBalance = new BigNumber(0);
     this.depositTimeInDays = new BigNumber(365);
     this.depositAmount = new BigNumber(0);
     this.depositAmountUSD = new BigNumber(0);
@@ -90,10 +93,16 @@ export class ModalDepositComponent implements OnInit {
     this.tempMPHAPY = new BigNumber(0);
     this.mphDepositorRewardMintMultiplier = new BigNumber(0);
     this.mphDepositorRewardTakeBackMultiplier = new BigNumber(0);
+    this.shouldDisplayZap = false;
+    this.selectedDepositToken = '';
+    this.zapDepositTokens = [];
   }
 
   async selectPool(poolName: string) {
     this.selectedPoolInfo = this.contract.getPoolInfo(poolName);
+    this.shouldDisplayZap = !!this.selectedPoolInfo.zapDepositTokens;
+    this.selectedDepositToken = this.selectedPoolInfo.stablecoinSymbol;
+    this.zapDepositTokens = [this.selectedPoolInfo.stablecoinSymbol].concat(this.selectedPoolInfo.zapDepositTokens);
 
     const queryString = gql`
       {
@@ -123,10 +132,27 @@ export class ModalDepositComponent implements OnInit {
     if (this.wallet.connected) {
       const stablecoin = this.contract.getPoolStablecoin(poolName);
       const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
-      this.stablecoinBalance = new BigNumber(await stablecoin.methods.balanceOf(this.wallet.userAddress).call()).div(stablecoinPrecision);
+      this.depositTokenBalance = new BigNumber(await stablecoin.methods.balanceOf(this.wallet.userAddress).call()).div(stablecoinPrecision);
     }
 
     this.updateAPY();
+  }
+
+  async selectZapDepositToken(tokenSymbol: string) {
+    this.selectedDepositToken = tokenSymbol;
+    if (this.wallet.connected) {
+      if (this.selectedDepositToken === this.selectedPoolInfo.stablecoinSymbol) {
+        const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
+        const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
+        this.depositTokenBalance = new BigNumber(await stablecoin.methods.balanceOf(this.wallet.userAddress).call()).div(stablecoinPrecision);
+      } else {
+        const tokenAddress = this.contract.getZapDepositTokenAddress(tokenSymbol);
+        const token = this.contract.getERC20(tokenAddress);
+        const tokenDecimals = +await token.methods.decimals().call();
+        const tokenPrecision = Math.pow(10, tokenDecimals);
+        this.depositTokenBalance = new BigNumber(await token.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
+      }
+    }
   }
 
   setDepositAmount(amount: string): void {
@@ -135,7 +161,7 @@ export class ModalDepositComponent implements OnInit {
   }
 
   setMaxDepositAmount(): void {
-    this.depositAmount = BigNumber.min(this.stablecoinBalance, this.maxDepositAmount);
+    this.depositAmount = BigNumber.min(this.depositTokenBalance, this.maxDepositAmount);
     this.updateAPY();
   }
 
@@ -183,10 +209,18 @@ export class ModalDepositComponent implements OnInit {
       this.tempMPHAPY = new BigNumber(0);
     } else {
       this.tempMPHAPY = tempMPHAPY;
-    }    
+    }
   }
 
   deposit() {
+    if (this.selectedDepositToken === this.selectedPoolInfo.stablecoinSymbol) {
+      this.normalDeposit();
+    } else {
+      this.zapCurveDeposit();
+    }
+  }
+
+  normalDeposit() {
     const pool = this.contract.getPool(this.selectedPoolInfo.name);
     const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
     const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
@@ -195,6 +229,26 @@ export class ModalDepositComponent implements OnInit {
     const func = pool.methods.deposit(depositAmount, maturationTimestamp);
 
     this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+  }
+
+  async zapCurveDeposit() {
+    const tokenAddress = this.contract.getZapDepositTokenAddress(this.selectedDepositToken);
+    const token = this.contract.getERC20(tokenAddress);
+    const tokenDecimals = +await token.methods.decimals().call();
+    const tokenPrecision = Math.pow(10, tokenDecimals);
+    const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(tokenPrecision));
+    const minOutputTokenAmount = 0;
+    const maturationTimestamp = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC).plus(Date.now() / 1e3).plus(this.DEPOSIT_DELAY));
+    const func = this.contract.getNamedContract('ZapCurve').methods.zapCurveDeposit(
+      this.selectedPoolInfo.address,
+      this.selectedPoolInfo.curveSwapAddress,
+      tokenAddress,
+      depositAmount,
+      minOutputTokenAmount,
+      maturationTimestamp
+    );
+
+    this.wallet.sendTxWithToken(func, token, this.contract.getNamedContractAddress('ZapCurve'), depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 
   canContinue() {
