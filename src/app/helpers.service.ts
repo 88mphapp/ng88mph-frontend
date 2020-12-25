@@ -20,6 +20,9 @@ export class HelpersService {
     if (address.toLowerCase() === '0x5B5CFE992AdAC0C9D48E05854B2d91C73a003858'.toLowerCase()) {
       // crvHUSD
       return 1;
+    } else if (address.toLowerCase() === '0xb19059ebb43466C323583928285a49f558E572Fd'.toLowerCase()) {
+      // crvHBTC
+      address = '0x0316EB71485b0Ab14103307bf65a021042c6d380';
     }
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
