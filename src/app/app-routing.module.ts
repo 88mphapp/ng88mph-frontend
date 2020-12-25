@@ -12,7 +12,7 @@ import { VestingComponent } from './vesting/vesting.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'deposits',
+    component: DepositComponent,
     pathMatch: 'full'
   },
   {
