@@ -1,0 +1,54 @@
+<!-- Modal: withdraw money -->
+<!-- IDEA: modal modalFractionalize -->
+<div class="modal-dialog modal-dialog-vertical" role="document">
+  <div class="modal-content">
+    <div class="modal-body pt-0 py-lg-0">
+      <div class="row no-gutters">
+        <div class="col-auto mr-auto">
+          <button class="btn btn-link text-white pl-0" type="button" name="button" data-dismiss="modal"
+            aria-label="Close" (click)="activeModal.dismiss()">
+            <i class="fe fe-arrow-left h2 mb-0"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-6 col-xl-6 pt-0 ">
+          <div class="row justify-content-center no-gutters">
+            <div class="col-12 col-lg-10 pt-3 pb-5">
+              <h1 class="display-4 text-center">
+                Fractionalize your bond
+              </h1>
+              <p class="text-white small text-center mb-5">Fractionalize your fixed rate bond by wrapping it into a brand new ERC20 token (yep, your own coin 😎). It'll unlock crazy new use cases like selling zero-coupon bonds with your own set up on Uniswap or Sushiswap. Your zero coupon-bond buyers will be able to redeem the full face value of their bond at maturity directly on 88mph > Zero-coupon bonds.</p>
+
+              <div class="card">
+                <div class="card-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="TokenName">Token name</label>
+                      <input type="text" class="form-control" id="TokenName" placeholder="">
+                    </div>
+                    <div class="form-group">
+                      <label for="TokenTicker">Token ticker</label>
+                      <input type="password" class="form-control" id="TokenTicker" placeholder="">
+                    </div>
+                    <div class="form-group">
+                      <label for="MPHtoLockUp">MPH to lock up</label>
+                      <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                      ngbTooltip="In order to fractionalize your fixed-rate bond, you need to lock the MPH amount displayed below. When you bond reaches is maturity, you will receive back the percentage of MPH rewards promised when you did your initial deposit in the fixed yield pool.">
+                      [i]
+                      </button>
+                      <input type="tel" class="form-control mb-2" id="MPHtoLockUp" value="0.00" placeholder="0.00">
+                      <small class="form-text text-white">0.0000 MPH available</small>
+                    </div>
+                    <!-- Button -->
+                    <button type="button" class="card-link small small px-1" (click)="openFractionalizeConfirmationModal()">Fractionalize</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

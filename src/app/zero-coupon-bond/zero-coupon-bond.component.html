@@ -1,0 +1,227 @@
+<!-- HEADER -->
+<div class="header pt-4">
+  <div class="container-fluid">
+
+    <!-- Body -->
+    <div class="header-body border-0 p-0">
+      <div class="row align-items-end">
+        <div class="col">
+          <h1 class="mb-2">Zero coupon bonds</h1>
+          <p class="text-muted font-weight-bold mb-5">Desc.</p>
+          <div class="card-deck my-4">
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Zero coupon bonds balance
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                    ngbTooltip="Current total zero coupon bonds in USD">
+                    [i]
+                  </button>
+                </h5>
+
+                <!-- Heading -->
+                <h2 class="mb-3 glowing pl-3">
+                  ${{totalDepositUSD.toFormat(DECIMALS)}}
+                </h2>
+              </div>
+            </div>
+
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Total profit at maturity
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                    ngbTooltip="Total profit you earn when your zero coupon bonds reach maturity.">
+                    [i]
+                  </button>
+                </h5>
+
+                <!-- Heading -->
+                <h2 class="mb-0 glowing pl-3">
+                  ${{totalInterestUSD.toFormat(DECIMALS)}}
+                </h2>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  Bonds face value
+                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                    ngbTooltip="Full face value of the zero coupon bonds you currently hold.">
+                    [i]
+                  </button>
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-1 glowing pl-3">
+                  $0.000
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .header-body -->
+
+  </div>
+</div> <!-- / .header -->
+
+<!-- CARDS -->
+<div class="container-fluid mb-6">
+  <div class="row">
+    <div class="col-12">
+      <!-- Current zero-coupon bonds -->
+      <div class="card mb-6">
+        <h2 class="mt-n3 bg-dark mb-0 mx-3 pl-3">Current zero-coupon bonds</h2>
+        <div class="table-responsive mb-0">
+          <table class="table table-sm table-nowrap card-table">
+            <thead>
+              <tr>
+                <th class="text-dark">
+                  Bond
+                </th>
+                <th class="text-dark">
+                  Balance
+                </th>                
+                <th class="text-dark">
+                  Profits at maturity
+                </th>
+                <th class="text-dark">
+                  ROI
+                </th>
+                <th class="text-right"></th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              
+                <!-- Pool row -->
+                <tr>
+                  <td>
+                    <!-- Heading -->
+                    <h4 class="font-weight-normal mb-1">XYZ</h4>
+
+                    <!-- Text -->
+                    <small class="text-muted">Token name</small>
+                  </td>
+                  <td>
+                    <!-- Button -->
+                    <button type="button" class="card-link small small px-1">
+                      Buy on Uniswap
+                    </button> 
+                    <!-- Button -->                   
+                    <button type="button" class="card-link small small px-1">
+                      Buy on Sushiswap
+                    </button>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-right"></td>
+                </tr>
+                <!-- zero-coupon bond rows -->
+                <tr>
+                  <td>
+                    <!-- badge 
+                    <span class="badge mb-1"
+                      [ngClass]="{'badge-soft-danger': deposit.locked, 'badge-soft-success': !deposit.locked}">
+                      <ng-container *ngIf="deposit.locked">
+                        Not mature
+                      </ng-container>
+                      <ng-container *ngIf="!deposit.locked">
+                        Mature
+                      </ng-container>
+                    </span>
+                    -->
+                    <!-- badge -->
+                    <span class="badge badge-soft-danger mb-1">
+                      Not mature
+                    </span>
+                    <!-- Text -->
+                    <small class="text-white d-block">0d 0h 0m 0s</small>
+                  </td>
+                  <td>
+                    <h4 class="mb-1 font-weight-normal glowing">$0.000</h4>
+                    <div class="text-white d-block">0.0000 tokens</div>
+                  </td>
+                  <td>
+                    <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                    <span class="text-white">0.0000 tokens</span>
+                  </td>
+                  <td>
+                    <h4 class="mb-1 font-weight-normal glowing">0.0000%</h4>
+                  </td>
+                  <td class="text-right">
+                    <!-- If Zero-coupon bond mature -->
+                    <button type="button" class="card-link small small px-1">
+                      Withdraw
+                    </button>
+                  </td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Explore fixed rate opportunities -->
+      <div class="card" id="ZeroCouponBondOpportunities">
+        <h2 class="mt-n3 bg-dark mb-0 mx-3 pl-3">Explore the zero-coupon bond pools</h2>
+        <p class="mx-3 pl-3 text-secondary">Available zero-coupon bonds on Uniswap and Sushiswap, created by 88mph fixed-rate bonds users. Create your own zero-coupon bond by fractionalizing your fixed-rate bond <a href="">here</a> after their creation.</p>
+        
+        <div class="table-responsive mb-0">
+          <table class="table table-sm table-nowrap card-table">
+            <thead>
+              <tr>
+                <th class="text-dark">
+                  Bond
+                </th>
+                <th class="text-dark">
+                  maturity
+                </th>
+                <th class="text-dark">
+                  Supply
+                </th>
+                <th class="text-dark">
+                  ROI
+                </th>
+                <th class="text-right"></th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              <tr class="border-left border-2 border-amber">
+                <td>
+                  <!-- Heading -->
+                  <h4 class="font-weight-normal mb-1">XYZ</h4>
+
+                  <!-- Text -->
+                  <small class="text-muted">Token name</small>
+                </td>
+                <td>
+                  0d 0h 0m 0s left
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">$0.0000</h4>
+                  <span class="text-white">0.0000 tokens</span>
+                </td>
+                <td class="glowing">
+                  0.0000%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1">
+                    Buy on Uniswap
+                  </button>                  
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1">
+                    Buy on Sushiswap
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div> <!-- / .row -->
+</div>

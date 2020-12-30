@@ -6,6 +6,8 @@ import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
 import { ModalDepositComponent } from './modal-deposit/modal-deposit.component';
 import { ModalWithdrawComponent } from './modal-withdraw/modal-withdraw.component';
+import { ModalFractionalizeComponent } from './modal-fractionalize/modal-fractionalize.component';
+import { ModalFractionalizeConfirmationComponent } from './modal-fractionalize-confirmation/modal-fractionalize-confirmation.component';
 import { WalletService } from '../wallet.service';
 import { ContractService, PoolInfo } from '../contract.service';
 import { DPool, UserPool, UserDeposit } from './types';
@@ -307,6 +309,18 @@ export class DepositComponent implements OnInit {
 
   openWithdrawModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
     const modalRef = this.modalService.open(ModalWithdrawComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.userDeposit = userDeposit;
+    modalRef.componentInstance.poolInfo = poolInfo;
+  }
+  
+  openFractionalizeModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
+    const modalRef = this.modalService.open(ModalFractionalizeComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.userDeposit = userDeposit;
+    modalRef.componentInstance.poolInfo = poolInfo;
+  }
+
+  openFractionalizeConfirmationModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
+    const modalRef = this.modalService.open(ModalFractionalizeConfirmationComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
   }

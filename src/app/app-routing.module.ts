@@ -4,6 +4,7 @@ import { BondsComponent } from './bonds/bonds.component';
 import { ClaimETHComponent } from './claim-eth/claim-eth.component';
 import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
 import { DepositComponent } from './deposit/deposit.component';
+import { ZeroCouponBondComponent } from './zero-coupon-bond/zero-coupon-bond.component';
 import { FarmingComponent } from './farming/farming.component';
 import { RewardsComponent } from './rewards/rewards.component';
 import { StatsComponent } from './stats/stats.component';
@@ -18,6 +19,10 @@ const routes: Routes = [
   {
     path: 'deposits',
     component: DepositComponent
+  },
+  {
+    path: 'zero-coupon-bonds',
+    component: ZeroCouponBondComponent
   },
   {
     path: 'bonds',

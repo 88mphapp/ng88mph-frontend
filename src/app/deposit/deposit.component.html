@@ -216,6 +216,19 @@
                       </span>
                     </td>
                     <td class="text-right">
+                      <!-- Fractionalize bond -->
+                      <button type="button" class="card-link small small px-1"
+                        (click)="openFractionalizeModal(deposit, userPool.poolInfo)">
+                        Fractionalize
+                      </button>
+
+                      
+                      <!-- Fractionalize bond -->
+                      <button type="button" class="card-link small small px-1"
+                        (click)="openFractionalizeConfirmationModal()">
+                        Fractionalize confirmation
+                      </button>
+                      
                       <!-- Button -->
                       <button type="button" class="card-link small small px-1"
                         (click)="openWithdrawModal(deposit, userPool.poolInfo)">
