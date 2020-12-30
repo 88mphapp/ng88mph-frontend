@@ -1,0 +1,43 @@
+[
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "toWhomToIssue",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "fromToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "swapAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "incomingTokenQty",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minPoolTokens",
+        "type": "uint256"
+      }
+    ],
+    "name": "ZapIn",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "crvTokensBought",
+        "type": "uint256"
+      }
+    ],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  }
+]

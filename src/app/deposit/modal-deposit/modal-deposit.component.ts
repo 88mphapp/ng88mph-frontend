@@ -239,7 +239,32 @@ export class ModalDepositComponent implements OnInit {
     const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(tokenPrecision));
     const minOutputTokenAmount = 0;
     const maturationTimestamp = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC).plus(Date.now() / 1e3).plus(this.DEPOSIT_DELAY));
-    const func = this.contract.getNamedContract('ZapCurve').methods.zapCurveDeposit(
+
+    const funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
+      this.wallet.userAddress,
+      tokenAddress,
+      this.selectedPoolInfo.curveSwapAddress,
+      depositAmount,
+      minOutputTokenAmount
+    );
+    this.wallet.sendTxWithToken(funcZapIn, token, this.contract.getNamedContractAddress('CurveZapIn'), depositAmount, () => { }, (receipt) => {
+      let outputAmount;
+      for (const eventKey of Object.keys(receipt.events)) {
+        const event = receipt.events[eventKey];
+        if (event.address.toLowerCase() === this.selectedPoolInfo.stablecoin.toLowerCase()) {
+          // is mint event
+          outputAmount = event.raw.data;
+          break;
+        }
+      }
+
+      const pool = this.contract.getPool(this.selectedPoolInfo.name);
+      const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
+      const funcDeposit = pool.methods.deposit(outputAmount, maturationTimestamp);
+      this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.selectedPoolInfo.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    }, (error) => { this.wallet.displayGenericError(error) });
+
+    /*const func = this.contract.getNamedContract('ZapCurve').methods.zapCurveDeposit(
       this.selectedPoolInfo.address,
       this.selectedPoolInfo.curveSwapAddress,
       tokenAddress,
@@ -248,7 +273,7 @@ export class ModalDepositComponent implements OnInit {
       maturationTimestamp
     );
 
-    this.wallet.sendTxWithToken(func, token, this.contract.getNamedContractAddress('ZapCurve'), depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTxWithToken(func, token, this.contract.getNamedContractAddress('ZapCurve'), depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });*/
   }
 
   canContinue() {
