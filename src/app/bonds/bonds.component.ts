@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApolloQueryResult, gql } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
@@ -6,6 +7,7 @@ import { ConstantsService } from '../constants.service';
 import { ContractService, PoolInfo } from '../contract.service';
 import { HelpersService } from '../helpers.service';
 import { WalletService } from '../wallet.service';
+import { ModalBondDetailsComponent } from './modal-bond-details/modal-bond-details.component';
 
 const mockFunder = {
   totalMPHEarned: 123,
@@ -66,6 +68,7 @@ export class BondsComponent implements OnInit {
   depositListIsCollapsed: boolean;
 
   constructor(
+    private modalService: NgbModal,
     private apollo: Apollo,
     public wallet: WalletService,
     public contract: ContractService,
@@ -286,6 +289,11 @@ export class BondsComponent implements OnInit {
       this.medianMaturationTime = new BigNumber(0);
       this.depositListIsCollapsed = true;
     }
+  }
+
+  openBondDetailsModal(poolName?: string) {
+    const modalRef = this.modalService.open(ModalBondDetailsComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.defaultPoolName = poolName;
   }
 
   selectPool(poolIdx: number) {
