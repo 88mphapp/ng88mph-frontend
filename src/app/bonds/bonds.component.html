@@ -137,20 +137,21 @@
                     [i]
                   </button>
                 </th>
-                <th class="text-dark">
+                <th class="text-white">
                   Refund amount
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="Refunded amount triggered by a fixed yield depositor's early withdraw">
                     [i]
                   </button>
                 </th>
-                <th class="text-dark">
+                <th class="text-white">
                   MPH rewards
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="Bond buyers earn upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
                     [i]
                   </button>
                 </th>
+                <th></th>
               </tr>
             </thead>
             <tbody class="list">
@@ -175,6 +176,7 @@
                       </div>
                     </div>
                   </td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -217,6 +219,14 @@
                         ${{funding.mphRewardEarned.times(mphPriceUSD).toFormat(4)}}
                       </h4>
                       <span class="text-white">{{funding.mphRewardEarned.toFormat(4)}} MPH</span>
+                    </td>
+                    <td>
+                      <!-- Button -->
+                      <button type="button" class="card-link small small px-1"
+                        (click)="openBondDetailsModal()">
+                        <i class="fe fe-plus mr-2 align-bottom"></i>
+                          More
+                      </button>
                     </td>
                   </tr>
                 </ng-container>
