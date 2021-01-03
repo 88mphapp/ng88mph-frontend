@@ -77,6 +77,10 @@ export class ContractService {
     }
     return new this.wallet.web3.eth.Contract(abi, address);
   }
+
+  getZapDepositTokenAddress(symbol: string): string {
+    return require('../assets/json/zap-deposit-tokens.json')[symbol];
+  }
 }
 
 export interface PoolInfo {
@@ -89,4 +93,6 @@ export interface PoolInfo {
   iconPath: string;
   moneyMarket: string;
   stakingPool?: string;
+  curveSwapAddress?: string;
+  zapDepositTokens?: string[];
 }

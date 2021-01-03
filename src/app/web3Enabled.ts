@@ -116,9 +116,11 @@ export class Web3Enabled {
       }).on('transactionHash', (hash) => {
         _onTxHash(hash);
         const { emitter } = this.notifyInstance.hash(hash);
-        emitter.on('txConfirmed', _onReceipt);
+        // emitter.on('txConfirmed', _onReceipt);
         emitter.on('txFailed', _onError);
-      }).on('error', (e) => {
+      })
+      .on('receipt', _onReceipt)
+      .on('error', (e) => {
         if (!e.toString().contains('newBlockHeaders')) {
           _onError(e);
         }
@@ -136,9 +138,11 @@ export class Web3Enabled {
       }).on('transactionHash', (hash) => {
         _onTxHash(hash);
         const { emitter } = this.notifyInstance.hash(hash);
-        emitter.on('txConfirmed', _onReceipt);
+        // emitter.on('txConfirmed', _onReceipt);
         emitter.on('txFailed', _onError);
-      }).on('error', (e) => {
+      })
+      .on('receipt', _onReceipt)
+      .on('error', (e) => {
         if (!e.toString().contains('newBlockHeaders')) {
           _onError(e);
         }
