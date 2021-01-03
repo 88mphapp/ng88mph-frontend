@@ -9,7 +9,7 @@ import { WalletService } from 'src/app/wallet.service';
 import { UserDeposit } from '../types';
 
 @Component({
-  selector: 'app-modal-fractionalize',
+  selector: 'app-modal-fractionalize-confirmation',
   templateUrl: './modal-fractionalize-confirmation.component.html',
   styleUrls: ['./modal-fractionalize-confirmation.component.css']
 })
