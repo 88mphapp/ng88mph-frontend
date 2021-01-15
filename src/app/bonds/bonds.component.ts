@@ -99,6 +99,12 @@ export class BondsComponent implements OnInit {
             id
             address
             fundings(where: { funder: "${funderID}", active: true }, orderBy: nftID) {
+              id
+              pool {
+                address
+              }
+              fromDepositID
+    					toDepositID
               nftID
               recordedFundedDepositAmount
               recordedMoneyMarketIncomeIndex
@@ -169,6 +175,10 @@ export class BondsComponent implements OnInit {
           const fundings: Array<Funding> = [];
           for (const funding of pool.fundings) {
             const fundingObj: Funding = {
+              id: funding.id,
+              fromDepositID: funding.fromDepositID,
+              toDepositID: funding.toDepositID,
+              pool: funding.pool,
               nftID: funding.nftID,
               deficitToken: new BigNumber(funding.fundedDeficitAmount),
               deficitUSD: new BigNumber(funding.fundedDeficitAmount).times(stablecoinPrice),
@@ -291,9 +301,10 @@ export class BondsComponent implements OnInit {
     }
   }
 
-  openBondDetailsModal(poolName?: string) {
+  openBondDetailsModal(selectedFunderPool, selectedFunding) {
     const modalRef = this.modalService.open(ModalBondDetailsComponent, { windowClass: 'fullscreen' });
-    modalRef.componentInstance.defaultPoolName = poolName;
+    modalRef.componentInstance.funderPool = selectedFunderPool;
+    modalRef.componentInstance.funding = selectedFunding;
   }
 
   selectPool(poolIdx: number) {
@@ -479,6 +490,12 @@ interface QueryResult {
     pools: {
       address: string;
       fundings: {
+        id: number;
+        fromDepositID: number;
+        toDepositID: number;
+        pool: {
+          address: string;
+        };
         nftID: number;
         recordedFundedDepositAmount: number;
         recordedMoneyMarketIncomeIndex: number;
@@ -537,6 +554,12 @@ interface FunderPool {
 }
 
 interface Funding {
+  id: number;
+  pool: {
+    address: string;
+  };
+  fromDepositID: number;
+  toDepositID: number;
   nftID: number;
   deficitToken: BigNumber;
   deficitUSD: BigNumber;
