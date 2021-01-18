@@ -96,7 +96,7 @@ export class Web3Enabled {
     if (this.web3Provider) {
       return this.web3;
     }
-    const endpointURL = `wss://mainnet.infura.io/ws/v3/${this.infuraKey}`;
+    const endpointURL = `wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-`;
     return new Web3(endpointURL);
   }
 
