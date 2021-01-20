@@ -19,6 +19,7 @@ export class ModalBondDetailsComponent implements OnInit {
   mphBalance: BigNumber;
   mphPriceUSD: BigNumber;
   deposits: Deposit[];
+  roi: string;
   @Input() public funderPool;
   @Input() public funding;
 
@@ -41,11 +42,12 @@ export class ModalBondDetailsComponent implements OnInit {
   }
 
   loadData(): void {
-    const { fromDepositID, toDepositID, pool } = this.funding;
+    const { fromDepositID, toDepositID, pool, currentDepositUSD, deficitUSD } = this.funding;
+    this.roi = (100 * currentDepositUSD.toFormat(4).replaceAll(',', '') / deficitUSD.toFormat(4).replaceAll(',', '')).toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 
     const queryString = gql`
       {
-        deposits(where: { nftID_gt : ${fromDepositID}, nftID_lt : ${toDepositID}, pool: "${pool.address}", active: true }) {
+        deposits(where: { nftID_gte : ${fromDepositID}, nftID_lte : ${toDepositID}, pool: "${pool.address}", active: true }) {
           amount
           maturationTimestamp
           depositTimestamp
