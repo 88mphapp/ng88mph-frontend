@@ -231,6 +231,10 @@ export class BondsComponent implements OnInit {
         Promise.all(dpools.map(async pool => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
+          if (!poolInfo) {
+            return;
+          }
+
           const stablecoin = poolInfo.stablecoin.toLowerCase()
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
           if (!stablecoinPrice) {
