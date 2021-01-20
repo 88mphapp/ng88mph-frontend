@@ -23,6 +23,9 @@ export class HelpersService {
     } else if (address.toLowerCase() === '0xb19059ebb43466C323583928285a49f558E572Fd'.toLowerCase()) {
       // crvHBTC
       address = '0x0316EB71485b0Ab14103307bf65a021042c6d380';
+    } else if (address.toLowerCase() === '0x2fE94ea3d5d4a175184081439753DE15AeF9d614'.toLowerCase()) {
+      // crvOBTC
+      address = '0x8064d9Ae6cDf087b1bcd5BDf3531bD5d8C537a68';
     }
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
