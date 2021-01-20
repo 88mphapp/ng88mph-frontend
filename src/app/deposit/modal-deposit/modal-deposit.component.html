@@ -33,7 +33,7 @@
                     </div>
                   </div>
                   <div class="form-row">
-                    <div class="form-group col mb-lg-0">
+                    <div class="form-group col mb-0">
                       <label>Deposit amount ({{selectedDepositToken}})</label>
                       <div class="input-group mb-2">
                         <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
@@ -45,7 +45,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="form-group col" *ngIf="shouldDisplayZap">
+                    <div class="form-group col mb-0" *ngIf="shouldDisplayZap">
                       <label>Deposit token</label>
                       <div class="input-group input-group-lg">
                         <select class="custom-select" (change)="selectZapDepositToken($event.target.value)">
@@ -63,9 +63,9 @@
                     Max: {{maxDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}}
                     (per deposit)
                   </small>
-                  <div class="form-group row">
-                    <div class="col">
-                      <label for="colFormLabel" class="col-form-label">Lending duration in days</label>
+                  <div class="form-group row no-gutters">
+                    <div class="col-12 col-lg-8">
+                      <label for="colFormLabel" class="col-form-label">Preset lending duration</label>
                       <div>
                         <ng-container *ngFor="let period of DEPOSIT_PERIOD_PRESETS">
                           <ng-container *ngIf="period >= minDepositPeriod && maxDepositPeriod >= period">
@@ -75,14 +75,20 @@
                         </ng-container>
                       </div>
                     </div>
-                    <div class="col-sm-5">
-                      <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
+                    <div class="col-12 col-lg-4">
+                      <label class="col-form-label">Or custom duration</label>
+                      <div class="input-group mb-3">
+                        <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
                         class="form-control text-right" [value]="depositTimeInDays"
                         (input)="setDepositTime($event.target.value)">
-                      <small class="form-text text-white mb-4">
+                        <span class="input-group-text" for="inputGroupFile02">Days</span>
+                      </div>                      
+                      <small class="form-text text-white my-2">
                         Min: {{minDepositPeriod}}d
                         Max: {{maxDepositPeriod}}d
                       </small>
+                      
+                      
                     </div>
                   </div>
                   <div class="table-responsive">
