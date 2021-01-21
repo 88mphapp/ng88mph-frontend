@@ -103,6 +103,7 @@ export class BondsComponent implements OnInit {
               id
               pool {
                 address
+                oracleInterestRate
               }
               fromDepositID
     					toDepositID
@@ -179,7 +180,10 @@ export class BondsComponent implements OnInit {
               id: funding.id,
               fromDepositID: funding.fromDepositID,
               toDepositID: funding.toDepositID,
-              pool: funding.pool,
+              pool: {
+                address: funding.pool.address,
+                oracleInterestRate: new BigNumber(funding.pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100)
+              },
               nftID: funding.nftID,
               deficitToken: new BigNumber(funding.fundedDeficitAmount),
               deficitUSD: new BigNumber(funding.fundedDeficitAmount).times(stablecoinPrice),
@@ -500,6 +504,7 @@ interface QueryResult {
         toDepositID: number;
         pool: {
           address: string;
+          oracleInterestRate: number;
         };
         nftID: number;
         recordedFundedDepositAmount: number;

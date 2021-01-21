@@ -15,12 +15,13 @@ import { FunderPool, Funding } from '../interface';
   styleUrls: ['./modal-bond-details.component.css']
 })
 export class ModalBondDetailsComponent implements OnInit {
-  mphRewardAmount: BigNumber;
-  mphTakeBackAmount: BigNumber;
-  mphBalance: BigNumber;
-  mphPriceUSD: BigNumber;
   deposits: Deposit[];
   roi: string;
+  floatingRatePrediction: BigNumber;
+  estimatedROI: BigNumber;
+  estimatedProfitUSD: BigNumber;
+  estimatedProfitToken: BigNumber;
+  totalAmountMulTime: BigNumber;
   @Input() public funderPool: FunderPool;
   @Input() public funding: Funding;
 
@@ -37,9 +38,6 @@ export class ModalBondDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
-    this.helpers.getMPHPriceUSD().then((price) => {
-      this.mphPriceUSD = price;
-    });
   }
 
   loadData(): void {
@@ -69,33 +67,52 @@ export class ModalBondDetailsComponent implements OnInit {
   async handleData(queryResult: ApolloQueryResult<FundingDepositResult>): Promise<void> {
     if (!queryResult.loading) {
       const { deposits } = queryResult.data;
+      const now = Date.now() / 1e3;
 
       let newDeposits: Array<Deposit> = [];
+      let newTotalAmountMulTime = new BigNumber(0);
       for (const deposit of deposits) {
         const depositObj: Deposit = {
           ...deposit,
+          maturationTimestamp: +deposit.maturationTimestamp,
           amount: new BigNumber(deposit.amount),
           fundingInterestPaid: new BigNumber(deposit.fundingInterestPaid),
           fundingRefundAmount: new BigNumber(deposit.fundingRefundAmount),
         };
         newDeposits = [...newDeposits, depositObj];
+
+        if (depositObj.active && depositObj.maturationTimestamp > now) {
+          newTotalAmountMulTime = newTotalAmountMulTime.plus(depositObj.amount.times(depositObj.maturationTimestamp - now));
+        }
       }
 
       this.deposits = newDeposits;
+      this.totalAmountMulTime = newTotalAmountMulTime;
+      this.updateFloatingRatePrediction(this.funding.pool.oracleInterestRate);
     }
   }
 
-
   resetData(): void {
-    this.mphRewardAmount = new BigNumber(0);
-    this.mphTakeBackAmount = new BigNumber(0);
-    this.mphBalance = new BigNumber(0);
-    this.mphPriceUSD = new BigNumber(0);
     this.deposits = [];
+    this.floatingRatePrediction = new BigNumber(0);
+    this.estimatedProfitToken = new BigNumber(0);
+    this.estimatedProfitUSD = new BigNumber(0);
+    this.estimatedROI = new BigNumber(0);
+    this.totalAmountMulTime = new BigNumber(0);
   }
 
   timestampToDateString(timestampSec: number): string {
     return new Date(timestampSec * 1e3).toLocaleDateString();
+  }
+
+  updateFloatingRatePrediction(newPrediction: any) {
+    this.floatingRatePrediction = new BigNumber(newPrediction);
+    const estimatedRemainingEarnings = this.totalAmountMulTime.times(newPrediction).div(100).div(this.constants.YEAR_IN_SEC);
+    const cost = this.funding.deficitToken.minus(this.funding.refundAmountToken);
+    this.estimatedProfitToken = estimatedRemainingEarnings.plus(this.funding.interestEarnedToken).minus(cost);
+    const tokenPrice = this.funding.deficitUSD.div(this.funding.deficitToken); // infer token price from funding, avoids network request
+    this.estimatedProfitUSD = this.estimatedProfitToken.times(tokenPrice);
+    this.estimatedROI = this.estimatedProfitToken.div(cost).times(100);
   }
 }
 
