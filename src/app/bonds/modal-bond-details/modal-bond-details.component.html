@@ -17,8 +17,7 @@
               <h1 class="display-4 text-center">
                 Floating-rate bond details
               </h1>
-              <p class="text-white small text-center mb-5">You'll find below the underlying fixed-rate bonds' deficits
-                you filled up and their related details.</p>
+              <p class="text-white small text-center mb-5">View your current profits, estimate the bond's eventual ROI, and view the deposits whose debt your bond has funded.</p>
               <div class="card">
                 <div class="card-body p-0">
                   <div class="row justify-content-center mb-4 p-4">
@@ -54,6 +53,62 @@
                       <h4 class="mb-1 font-weight-normal glowing">${{funding.refundAmountUSD.toFormat(4)}}</h4>
                       <div class="text-white small d-block">{{funding.refundAmountToken.toFormat(4)}}
                         {{funderPool.poolInfo.stablecoinSymbol}}</div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h2 class="mt-n3 bg-dark mb-4 mx-3 pl-3">Estimate ROI</h2>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-12 col-lg-6">
+                          <div class="row mt-3 mb-4">
+                            <div class="col">
+                              <h4 class="mb-1">
+                                Your avg. floating-rate APY prediction:
+                                <strong>{{floatingRatePrediction.toFormat(1)}}%</strong>
+                              </h4>
+                              <input type="range" class="custom-range" min="0"
+                                max={{funding.pool.oracleInterestRate.times(2).toFixed(1)}} step="0.1"
+                                [value]="floatingRatePrediction.toFixed(1)"
+                                (input)="updateFloatingRatePrediction($event.target.value)">
+                              <div class="row justify-content-between text-white px-4 mb-4">
+                                <div class="col">
+                                  <small>0%</small>
+                                </div>
+                                <div class="col text-center">
+                                  <small>{{funding.pool.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate
+                                    APY)</small>
+                                </div>
+                                <div class="col text-right">
+                                  <small>{{funding.pool.oracleInterestRate.times(2).toFormat(1)}}%</small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                          <div class="row">
+                            <div class="col mb-4">
+                              <h5 class="text-uppercase text-white">
+                                Estimated ROI
+                              </h5>
+                              <h2 class="mb-1 glowing">
+                                {{estimatedROI.toFormat(4)}}%
+                              </h2>
+                            </div>
+                            <div class="col mb-4">
+                              <h5 class="text-uppercase text-white">
+                                Estimated profit
+                              </h5>
+                              <h2 class="mb-1 glowing">
+                                ${{estimatedProfitUSD.toFormat(4)}}
+                              </h2>
+                              <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}}
+                                {{funderPool.poolInfo.stablecoinSymbol}}
+                              </h5>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="table-responsive mb-0">

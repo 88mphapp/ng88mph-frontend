@@ -10,6 +10,7 @@ export interface Funding {
   id: number;
   pool: {
     address: string;
+    oracleInterestRate: BigNumber;
   };
   fromDepositID: number;
   toDepositID: number;
