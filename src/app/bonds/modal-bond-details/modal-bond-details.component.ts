@@ -4,9 +4,10 @@ import { Apollo, gql } from 'apollo-angular';
 import { ApolloQueryResult } from '@apollo/client/core';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
-import { ContractService, PoolInfo } from 'src/app/contract.service';
+import { ContractService } from 'src/app/contract.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
+import { FunderPool, Funding } from '../interface';
 
 @Component({
   selector: 'app-modal-bond-details',
@@ -20,8 +21,8 @@ export class ModalBondDetailsComponent implements OnInit {
   mphPriceUSD: BigNumber;
   deposits: Deposit[];
   roi: string;
-  @Input() public funderPool;
-  @Input() public funding;
+  @Input() public funderPool: FunderPool;
+  @Input() public funding: Funding;
 
   constructor(
     private apollo: Apollo,
@@ -42,12 +43,11 @@ export class ModalBondDetailsComponent implements OnInit {
   }
 
   loadData(): void {
-    const { fromDepositID, toDepositID, pool, currentDepositUSD, deficitUSD } = this.funding;
-    this.roi = (100 * currentDepositUSD.toFormat(4).replaceAll(',', '') / deficitUSD.toFormat(4).replaceAll(',', '')).toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
-
+    const { fromDepositID, toDepositID, pool, interestEarnedUSD, deficitUSD, refundAmountUSD } = this.funding;
+    this.roi = interestEarnedUSD.minus(deficitUSD.minus(refundAmountUSD)).div(deficitUSD.minus(refundAmountUSD)).times(100).toFormat(2);
     const queryString = gql`
       {
-        deposits(where: { nftID_gte : ${fromDepositID}, nftID_lte : ${toDepositID}, pool: "${pool.address}", active: true }) {
+        deposits(where: { nftID_gt : ${fromDepositID}, nftID_lte : ${toDepositID}, pool: "${pool.address.toLowerCase()}" }, orderBy: maturationTimestamp) {
           amount
           maturationTimestamp
           depositTimestamp
@@ -57,6 +57,7 @@ export class ModalBondDetailsComponent implements OnInit {
           initialMoneyMarketIncomeIndex
           fundingInterestPaid
           fundingRefundAmount
+          active
         }
       }
     `;
@@ -73,7 +74,7 @@ export class ModalBondDetailsComponent implements OnInit {
       for (const deposit of deposits) {
         const depositObj: Deposit = {
           ...deposit,
-          interestEarned: new BigNumber(deposit.interestEarned),
+          amount: new BigNumber(deposit.amount),
           fundingInterestPaid: new BigNumber(deposit.fundingInterestPaid),
           fundingRefundAmount: new BigNumber(deposit.fundingRefundAmount),
         };
@@ -96,10 +97,6 @@ export class ModalBondDetailsComponent implements OnInit {
   timestampToDateString(timestampSec: number): string {
     return new Date(timestampSec * 1e3).toLocaleDateString();
   }
-
-  isMaturated(timestampSec: number): boolean {
-    return timestampSec * 1e3 <= new Date().valueOf();
-  }
 }
 
 interface Deposit {
@@ -112,6 +109,7 @@ interface Deposit {
   initialMoneyMarketIncomeIndex: BigNumber;
   fundingInterestPaid: BigNumber;
   fundingRefundAmount: BigNumber;
+  active: boolean;
 }
 
 interface FundingDepositResult {

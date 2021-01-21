@@ -318,7 +318,7 @@
                     <h2 class="mb-1 glowing">
                       ${{debtToFundUSD.toFormat(4)}}
                     </h2>
-                    <h5 class="mb-3 text-white">{{debtToFundToken.toFormat()}} {{selectedPool?.stablecoinSymbol}}</h5>
+                    <h5 class="mb-3 text-white">{{debtToFundToken.toFormat(selectedPool?.stablecoinDecimals)}} {{selectedPool?.stablecoinSymbol}}</h5>
                   </div>
                   <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
@@ -339,7 +339,7 @@
                     <h2 class="mb-1 glowing">
                       ${{estimatedProfitUSD.toFormat(4)}}
                     </h2>
-                    <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat()}} {{selectedPool?.stablecoinSymbol}}
+                    <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}} {{selectedPool?.stablecoinSymbol}}
                     </h5>
                   </div>
                   <div class="col-6 mb-4">

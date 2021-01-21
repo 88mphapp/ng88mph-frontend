@@ -4,10 +4,11 @@ import { ApolloQueryResult, gql } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from '../constants.service';
-import { ContractService, PoolInfo } from '../contract.service';
+import { ContractService } from '../contract.service';
 import { HelpersService } from '../helpers.service';
 import { WalletService } from '../wallet.service';
 import { ModalBondDetailsComponent } from './modal-bond-details/modal-bond-details.component';
+import { FunderPool, Deposit, Funding, DPool } from './interface';
 
 const mockFunder = {
   totalMPHEarned: 123,
@@ -550,54 +551,4 @@ interface FundableDepositsQuery {
       initialMoneyMarketIncomeIndex: number;
     }[];
   };
-}
-
-interface FunderPool {
-  poolInfo: PoolInfo;
-  fundings: Funding[];
-}
-
-interface Funding {
-  id: number;
-  pool: {
-    address: string;
-  };
-  fromDepositID: number;
-  toDepositID: number;
-  nftID: number;
-  deficitToken: BigNumber;
-  deficitUSD: BigNumber;
-  currentDepositToken: BigNumber;
-  currentDepositUSD: BigNumber;
-  interestEarnedToken: BigNumber;
-  interestEarnedUSD: BigNumber;
-  mphRewardEarned: BigNumber;
-  refundAmountToken: BigNumber;
-  refundAmountUSD: BigNumber;
-}
-
-interface Deposit {
-  nftID: number;
-  amount: BigNumber;
-  active: boolean;
-  maturationTimestamp: number;
-  interestEarned: BigNumber;
-  surplus: BigNumber;
-}
-
-interface DPool {
-  name: string;
-  address: string;
-  protocol: string;
-  stablecoin: string;
-  stablecoinSymbol: string;
-  stablecoinDecimals: number;
-  iconPath: string;
-  latestFundedDeposit: number;
-  latestDeposit: number;
-  surplus: BigNumber;
-  oneYearInterestRate: BigNumber;
-  unfundedDepositAmount: BigNumber;
-  mphRewardPerTokenPerSecond: BigNumber;
-  oracleInterestRate: BigNumber;
 }
