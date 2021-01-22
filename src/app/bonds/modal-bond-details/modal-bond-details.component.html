@@ -107,13 +107,13 @@
                     <table class="table table-sm table-nowrap card-table">
                       <thead>
                         <th>
-                          Withdrawn
+                          Status
                         </th>
                         <th>
                           Maturation time
                         </th>
                         <th>
-                          You earn interest on
+                          Deposit amount
                         </th>
                         <th>
                           Interest paid out
@@ -127,10 +127,10 @@
                           <tr>
                             <td>
                               <span class="badge mb-1" [ngClass]="{
-                                  'badge-soft-danger': deposit.active, 
-                                  'badge-soft-success': !deposit.active
+                                  'badge-soft-danger': !deposit.active, 
+                                  'badge-soft-success': deposit.active
                                 }">
-                                {{deposit.active ? 'No' : 'Yes'}}
+                                {{deposit.active ? 'Active' : 'Withdrawn'}}
                               </span>
                             </td>
                             <td>
