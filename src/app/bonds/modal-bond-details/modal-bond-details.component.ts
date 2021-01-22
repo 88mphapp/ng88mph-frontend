@@ -41,11 +41,11 @@ export class ModalBondDetailsComponent implements OnInit {
   }
 
   loadData(): void {
-    const { fromDepositID, toDepositID, pool, interestEarnedUSD, deficitUSD, refundAmountUSD } = this.funding;
+    const { nftID, pool, interestEarnedUSD, deficitUSD, refundAmountUSD } = this.funding;
     this.roi = interestEarnedUSD.minus(deficitUSD.minus(refundAmountUSD)).div(deficitUSD.minus(refundAmountUSD)).times(100).toFormat(2);
     const queryString = gql`
       {
-        deposits(where: { nftID_gt : ${fromDepositID}, nftID_lte : ${toDepositID}, pool: "${pool.address.toLowerCase()}" }, orderBy: maturationTimestamp) {
+        deposits(where: { fundingID: "${nftID}", pool: "${pool.address.toLowerCase()}" }, orderBy: maturationTimestamp) {
           amount
           maturationTimestamp
           depositTimestamp
