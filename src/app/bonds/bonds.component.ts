@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApolloQueryResult, gql } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from '../constants.service';
-import { ContractService, PoolInfo } from '../contract.service';
+import { ContractService } from '../contract.service';
 import { HelpersService } from '../helpers.service';
 import { WalletService } from '../wallet.service';
+import { ModalBondDetailsComponent } from './modal-bond-details/modal-bond-details.component';
+import { FunderPool, Deposit, Funding, DPool } from './interface';
 
 const mockFunder = {
   totalMPHEarned: 123,
@@ -66,6 +69,7 @@ export class BondsComponent implements OnInit {
   depositListIsCollapsed: boolean;
 
   constructor(
+    private modalService: NgbModal,
     private apollo: Apollo,
     public wallet: WalletService,
     public contract: ContractService,
@@ -96,6 +100,13 @@ export class BondsComponent implements OnInit {
             id
             address
             fundings(where: { funder: "${funderID}", active: true }, orderBy: nftID) {
+              id
+              pool {
+                address
+                oracleInterestRate
+              }
+              fromDepositID
+    					toDepositID
               nftID
               recordedFundedDepositAmount
               recordedMoneyMarketIncomeIndex
@@ -166,6 +177,13 @@ export class BondsComponent implements OnInit {
           const fundings: Array<Funding> = [];
           for (const funding of pool.fundings) {
             const fundingObj: Funding = {
+              id: funding.id,
+              fromDepositID: funding.fromDepositID,
+              toDepositID: funding.toDepositID,
+              pool: {
+                address: funding.pool.address,
+                oracleInterestRate: new BigNumber(funding.pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100)
+              },
               nftID: funding.nftID,
               deficitToken: new BigNumber(funding.fundedDeficitAmount),
               deficitUSD: new BigNumber(funding.fundedDeficitAmount).times(stablecoinPrice),
@@ -217,6 +235,10 @@ export class BondsComponent implements OnInit {
         const allPoolList = new Array<DPool>(0);
         Promise.all(dpools.map(async pool => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+
+          if (!poolInfo) {
+            return;
+          }
 
           const stablecoin = poolInfo.stablecoin.toLowerCase()
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
@@ -286,6 +308,12 @@ export class BondsComponent implements OnInit {
       this.medianMaturationTime = new BigNumber(0);
       this.depositListIsCollapsed = true;
     }
+  }
+
+  openBondDetailsModal(selectedFunderPool, selectedFunding) {
+    const modalRef = this.modalService.open(ModalBondDetailsComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.funderPool = selectedFunderPool;
+    modalRef.componentInstance.funding = selectedFunding;
   }
 
   selectPool(poolIdx: number) {
@@ -471,6 +499,13 @@ interface QueryResult {
     pools: {
       address: string;
       fundings: {
+        id: number;
+        fromDepositID: number;
+        toDepositID: number;
+        pool: {
+          address: string;
+          oracleInterestRate: number;
+        };
         nftID: number;
         recordedFundedDepositAmount: number;
         recordedMoneyMarketIncomeIndex: number;
@@ -521,48 +556,4 @@ interface FundableDepositsQuery {
       initialMoneyMarketIncomeIndex: number;
     }[];
   };
-}
-
-interface FunderPool {
-  poolInfo: PoolInfo;
-  fundings: Funding[];
-}
-
-interface Funding {
-  nftID: number;
-  deficitToken: BigNumber;
-  deficitUSD: BigNumber;
-  currentDepositToken: BigNumber;
-  currentDepositUSD: BigNumber;
-  interestEarnedToken: BigNumber;
-  interestEarnedUSD: BigNumber;
-  mphRewardEarned: BigNumber;
-  refundAmountToken: BigNumber;
-  refundAmountUSD: BigNumber;
-}
-
-interface Deposit {
-  nftID: number;
-  amount: BigNumber;
-  active: boolean;
-  maturationTimestamp: number;
-  interestEarned: BigNumber;
-  surplus: BigNumber;
-}
-
-interface DPool {
-  name: string;
-  address: string;
-  protocol: string;
-  stablecoin: string;
-  stablecoinSymbol: string;
-  stablecoinDecimals: number;
-  iconPath: string;
-  latestFundedDeposit: number;
-  latestDeposit: number;
-  surplus: BigNumber;
-  oneYearInterestRate: BigNumber;
-  unfundedDepositAmount: BigNumber;
-  mphRewardPerTokenPerSecond: BigNumber;
-  oracleInterestRate: BigNumber;
 }

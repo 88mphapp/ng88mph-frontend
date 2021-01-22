@@ -13,6 +13,7 @@ import { ModalWithdrawComponent } from './deposit/modal-withdraw/modal-withdraw.
 import { RewardsComponent } from './rewards/rewards.component';
 import { ModalStakeComponent } from './rewards/modal-stake/modal-stake.component';
 import { BondsComponent } from './bonds/bonds.component';
+import { ModalBondDetailsComponent } from './bonds/modal-bond-details/modal-bond-details.component';
 import { StatsComponent } from './stats/stats.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
@@ -34,6 +35,7 @@ import { SyncWarningComponent } from './sync-warning/sync-warning.component';
     RewardsComponent,
     ModalStakeComponent,
     BondsComponent,
+    ModalBondDetailsComponent,
     StatsComponent,
     SidebarComponent,
     HeaderComponent,

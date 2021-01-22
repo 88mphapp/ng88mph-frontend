@@ -1,0 +1,161 @@
+<!-- modal modalBondDetails -->
+<div class="modal-dialog modal-dialog-vertical" role="document">
+  <div class="modal-content">
+    <div class="modal-body pt-0 py-lg-0">
+      <div class="row no-gutters">
+        <div class="col-auto mr-auto">
+          <button class="btn btn-link text-white pl-0" type="button" name="button" data-dismiss="modal"
+            aria-label="Close" (click)="activeModal.dismiss()">
+            <i class="fe fe-arrow-left h2 mb-0"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 pt-0">
+          <div class="row justify-content-center no-gutters">
+            <div class="col-12 col-lg-10 pt-3 pb-5">
+              <h1 class="display-4 text-center">
+                Floating-rate bond details
+              </h1>
+              <p class="text-white small text-center mb-5">View your current profits, estimate the bond's eventual ROI, and view the deposits whose debt your bond has funded.</p>
+              <div class="card">
+                <div class="card-body p-0">
+                  <div class="row justify-content-center px-4 pt-4">
+                    <div class="col-12 col-md-6 col-lg-3">
+                      <h6 class="header-pretitle mb-2">
+                        Amount paid
+                      </h6>
+                      <h4 class="mb-1 font-weight-normal glowing">${{funding.deficitUSD.toFormat(4)}}</h4>
+                      <div class="text-white small d-block">{{funding.deficitToken.toFormat(4)}}
+                        {{funderPool.poolInfo.stablecoinSymbol}}</div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                      <h6 class="header-pretitle mb-2">
+                        You earn interest on
+                      </h6>
+                      <h4 class="mb-1 font-weight-normal glowing">${{funding.currentDepositUSD.toFormat(4)}}</h4>
+                      <div class="text-white small d-block">{{funding.currentDepositToken.toFormat(4)}}
+                        {{funderPool.poolInfo.stablecoinSymbol}}</div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                      <h6 class="header-pretitle mb-2">
+                        Interest paid out
+                      </h6>
+                      <h4 class="mb-1 font-weight-normal glowing">${{funding.interestEarnedUSD.toFormat(4)}}</h4>
+                      <div class="text-white small d-block">{{funding.interestEarnedToken.toFormat(4)}}
+                        {{funderPool.poolInfo.stablecoinSymbol}}</div>
+                      <h5 class="mb-0 text-white">Realized ROI: {{roi}}%</h5>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                      <h6 class="header-pretitle mb-2">
+                        Refund amount
+                      </h6>
+                      <h4 class="mb-1 font-weight-normal glowing">${{funding.refundAmountUSD.toFormat(4)}}</h4>
+                      <div class="text-white small d-block">{{funding.refundAmountToken.toFormat(4)}}
+                        {{funderPool.poolInfo.stablecoinSymbol}}</div>
+                    </div>
+                  </div>
+                  <div class="row justify-content-center px-4 pt-4">
+                    <div class="col-12 col-lg-6">
+                      <h3>Estimate ROI</h3>
+                      <h4 class="mb-1">
+                        Your avg. floating-rate APY prediction:
+                        <strong>{{floatingRatePrediction.toFormat(1)}}%</strong>
+                      </h4>
+                      <input type="range" class="custom-range" min="0"
+                        max={{funding.pool.oracleInterestRate.times(2).toFixed(1)}} step="0.1"
+                        [value]="floatingRatePrediction.toFixed(1)"
+                        (input)="updateFloatingRatePrediction($event.target.value)">
+                      <div class="row justify-content-between text-white px-4 mb-4">
+                        <div class="col">
+                          <small>0%</small>
+                        </div>
+                        <div class="col text-center">
+                          <small>{{funding.pool.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate
+                            APY)</small>
+                        </div>
+                        <div class="col text-right">
+                          <small>{{funding.pool.oracleInterestRate.times(2).toFormat(1)}}%</small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                      <div class="row">
+                        <div class="col mb-4">
+                          <h6 class="header-pretitle mb-2">
+                            Estimated ROI
+                          </h6>
+                          <h4 class="mb-1 font-weight-normal glowing">
+                            {{estimatedROI.toFormat(4)}}%
+                          </h4>
+                        </div>
+                        <div class="col mb-4">
+                          <h6 class="header-pretitle mb-2">
+                            Estimated profit
+                          </h6>
+                          <h4 class="mb-1 font-weight-normal glowing">
+                            ${{estimatedProfitUSD.toFormat(4)}}
+                          </h4>
+                          <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}}
+                            {{funderPool.poolInfo.stablecoinSymbol}}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive mb-0">
+                    <table class="table table-sm table-nowrap card-table">
+                      <thead>
+                        <th>
+                          Status
+                        </th>
+                        <th>
+                          Maturation time
+                        </th>
+                        <th>
+                          Deposit amount
+                        </th>
+                        <th>
+                          Interest paid out
+                        </th>
+                        <th>
+                          Refund amount
+                        </th>
+                      </thead>
+                      <tbody class="list">
+                        <ng-container *ngFor="let deposit of deposits">
+                          <tr>
+                            <td>
+                              <span class="badge mb-1" [ngClass]="{
+                                  'badge-soft-danger': !deposit.active, 
+                                  'badge-soft-success': deposit.active
+                                }">
+                                {{deposit.active ? 'Active' : 'Withdrawn'}}
+                              </span>
+                            </td>
+                            <td>
+                              {{timestampToDateString(deposit.maturationTimestamp)}}
+                            </td>
+                            <td>
+                              {{deposit.amount.toFormat(4)}}
+                            </td>
+                            <td>
+                              {{deposit.fundingInterestPaid.toFormat(4)}}
+                            </td>
+                            <td>
+                              {{deposit.fundingRefundAmount.toFormat(4)}}
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
