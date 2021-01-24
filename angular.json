@@ -33,8 +33,7 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "src/assets/js/theme.min.js",
-              "src/assets/js/dashkit.min.js",
-              "src/assets/js/web3modal.js"
+              "src/assets/js/dashkit.min.js"
             ]
           },
           "configurations": {

@@ -17,8 +17,12 @@ export class WalletService extends Web3Enabled {
     this.disconnectedEvent = new EventEmitter<null>();
   }
 
+  public get userAddress(): string {
+    return this.state.address;
+  }
+
   public get connected(): boolean {
-    return !isNullOrUndefined(this.userAddress);
+    return !isNullOrUndefined(this.state.address);
   }
 
   async connect(onConnected, onError, isStartupMode: boolean) {
