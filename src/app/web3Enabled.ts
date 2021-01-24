@@ -30,7 +30,7 @@ export class Web3Enabled {
   async connect(onConnected, onError, isStartupMode: boolean) {
     if (!this.assistInstance) {
       const genericMobileWalletConfig = {
-        name: 'Web3 wallet',
+        name: 'Web3 wallet (Metamask)',
         mobile: true,
         desktop: true,
         preferred: true,
@@ -83,7 +83,7 @@ export class Web3Enabled {
 
       const walletSelectConfig = {
         heading: 'Select a Wallet',
-        description: 'Please select a wallet to connect to Tree:',
+        description: 'Please select a wallet to connect to 88mph:',
         wallets
       };
 
