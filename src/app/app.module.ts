@@ -26,6 +26,7 @@ import { VestingComponent } from './vesting/vesting.component';
 import { ModalUnstakeComponent } from './rewards/modal-unstake/modal-unstake.component';
 import { ModalUnstakeLPComponent } from './farming/modal-unstake-lp/modal-unstake-lp.component';
 import { SyncWarningComponent } from './sync-warning/sync-warning.component';
+import { ZeroCouponBondsComponent } from './zero-coupon-bonds/zero-coupon-bonds.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { SyncWarningComponent } from './sync-warning/sync-warning.component';
     VestingComponent,
     ModalUnstakeComponent,
     ModalUnstakeLPComponent,
-    SyncWarningComponent
+    SyncWarningComponent,
+    ZeroCouponBondsComponent
   ],
   imports: [
     BrowserModule,
