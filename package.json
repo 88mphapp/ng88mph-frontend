@@ -20,10 +20,9 @@
     "@angular/platform-browser": "~11.1.0",
     "@angular/platform-browser-dynamic": "~11.1.0",
     "@angular/router": "~11.1.0",
-    "@apollo/client": "^3.0.0",
-    "@ledgerhq/hw-transport-node-hid": "^5.40.0",
+    "@apollo/client": "^3.3.7",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
-    "apollo-angular": "^2.1.0",
+    "apollo-angular": "^2.2.0",
     "bignumber.js": "^9.0.1",
     "bnc-notify": "^1.5.0",
     "bnc-onboard": "^1.18.0",
@@ -37,6 +36,7 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^11.0.0",
     "@angular-devkit/build-angular": "~0.1101.1",
     "@angular/cli": "~11.1.1",
     "@angular/compiler-cli": "~11.1.0",
