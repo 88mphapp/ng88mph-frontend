@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConstantsService } from '../constants.service';
-import { ContractService } from '../contract.service';
+import { ContractService, PoolInfo, ZeroCouponBondInfo } from '../contract.service';
 import { HelpersService } from '../helpers.service';
 import { WalletService } from '../wallet.service';
 
@@ -10,6 +10,9 @@ import { WalletService } from '../wallet.service';
   styleUrls: ['./zero-coupon-bonds.component.css']
 })
 export class ZeroCouponBondsComponent implements OnInit {
+  allPoolList: PoolInfo[];
+  selectedPoolInfo: PoolInfo;
+  selectedPoolZCBList: ZeroCouponBondInfo[];
 
   constructor(
     public wallet: WalletService,
@@ -19,9 +22,17 @@ export class ZeroCouponBondsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
+    this.allPoolList = zcbPoolNameList.map(poolName => this.contract.getPoolInfo(poolName));
+    this.selectPool(0);
   }
 
   selectPool(poolIdx: number) {
+    this.selectedPoolInfo = this.allPoolList[poolIdx];
+    this.selectedPoolZCBList = this.contract.getZeroCouponBondPool(this.selectedPoolInfo.name);
+  }
+
+  openZCBModal(zcbInfo: ZeroCouponBondInfo) {
 
   }
 }
