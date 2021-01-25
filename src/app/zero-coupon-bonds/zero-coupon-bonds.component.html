@@ -7,7 +7,7 @@
       <div class="row align-items-end">
         <div class="col">
           <h1 class="mb-2">Zero coupon bonds</h1>
-          <p class="text-muted font-weight-bold mb-5">
+          <p class="text-muted font-weight-bold mb-3">
             Mint zero coupon bonds using your fixed-rate deposit, and get
             instant liquidity on Sushiswap.
           </p>
@@ -24,7 +24,7 @@
       <div class="card">
         <h2 class="mt-n3 bg-dark mb-0 mx-3 pl-3">Explore our zero coupon bond offerings</h2>
 
-        <div class="form-group mb-4">
+        <div class="form-group m-4">
           <label for="pool-select">Select pool</label>
           <select class="custom-select" id="pool-select" data-toggle="select"
             (change)="selectPool($event.target.value)">
@@ -39,16 +39,13 @@
             <thead>
               <tr>
                 <th class="text-dark">
-                  #
+                  Series
                 </th>
                 <th class="text-dark">
-                  Full Amount
+                  Total Supply
                 </th>
                 <th class="text-dark">
-                  Withdrawn Amount
-                </th>
-                <th class="text-dark">
-                  Current Withdrawable Amount
+                  Implied Interest Rate
                 </th>
                 <th class="text-dark">
 
@@ -56,50 +53,25 @@
               </tr>
             </thead>
             <tbody class="list">
-              <tr class="border-left border-2 border-amber" *ngFor="let vest of vestList">
+              <tr class="border-left border-2 border-amber" *ngFor="let zcbPoolInfo of selectedPoolZCBList">
                 <td>
                   <div class="d-flex align-items-center">
                     <div class="ml-3">
-
-                      <h4 class="mb-0">#{{getIdxOfVest(vest)}}</h4>
-
-                      <!-- badge -->
-                      <span class="badge mb-1"
-                        [ngClass]="{'badge-soft-danger': vest.locked, 'badge-soft-success': !vest.locked}">
-                        <ng-container *ngIf="vest.locked">
-                          Locked
-                        </ng-container>
-                        <ng-container *ngIf="!vest.locked">
-                          Unlocked
-                        </ng-container>
-                      </span>
-
-                      <!-- Text -->
-                      <small class="text-white d-block">{{vest.countdownTimer.days}}d
-                        {{vest.countdownTimer.hours}}h {{vest.countdownTimer.minutes}}m
-                        {{vest.countdownTimer.seconds}}s left</small>
-
+                      <h4 class="mb-0">{{zcbPoolInfo.series}}</h4>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <h4 class="mb-1 font-weight-normal glowing">{{vest.amount.toFormat(4)}} MPH</h4>
-                  <span class="text-white">${{vest.amount.times(mphPriceUSD).toFormat(4)}}</span>
+                  <h4 class="mb-1 font-weight-normal glowing">100,000.0000 {{selectedPoolInfo.stablecoinSymbol}}</h4>
+                  <span class="text-white">$123,456.7890</span>
                 </td>
                 <td>
-                  <h4 class="mb-1 font-weight-normal glowing">{{vest.withdrawnAmount.toFormat(4)}} MPH</h4>
-                  <span class="text-white">${{vest.withdrawnAmount.times(mphPriceUSD).toFormat(4)}}</span>
-                </td>
-                <td>
-                  <h4 class="mb-1 font-weight-normal glowing">{{getCurrentWithdrawableAmount(vest).toFormat(4)}} MPH
-                  </h4>
-                  <span class="text-white">${{getCurrentWithdrawableAmount(vest).times(mphPriceUSD).toFormat(4)}}</span>
+                  <h4 class="mb-1 font-weight-normal glowing">12.34%</h4>
                 </td>
                 <td class="text-right">
                   <!-- Button -->
-                  <button type="button" class="card-link small small px-1" (click)="withdraw(vest)"
-                    *ngIf="getCurrentWithdrawableAmount(vest).gt(0)">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Withdraw
+                  <button type="button" class="card-link small small px-1" (click)="openZCBModal(zcbPoolInfo)">
+                    <i class="fe fe-info mr-2 align-bottom"></i>Info
                   </button>
                 </td>
               </tr>

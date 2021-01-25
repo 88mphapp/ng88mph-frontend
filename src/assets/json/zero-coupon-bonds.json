@@ -1,8 +1,28 @@
 {
+  "cUNI": [
+    {
+      "series": "July 2021",
+      "symbol": "88MPH-COMP-UNI-JUL-2021",
+      "address": "0x1234",
+      "sushiSwapPair": "0x1234"
+    },
+    {
+      "series": "January 2022",
+      "symbol": "88MPH-COMP-UNI-JAN-2022",
+      "address": "0x1234",
+      "sushiSwapPair": "0x1234"
+    }
+  ],
   "harvest3CRV": [
     {
-      "name": "July 2021",
+      "series": "July 2021",
       "symbol": "88MPH-HARVEST-3CRV-JUL-2021",
+      "address": "0x1234",
+      "sushiSwapPair": "0x1234"
+    },
+    {
+      "series": "January 2022",
+      "symbol": "88MPH-HARVEST-3CRV-JAN-2022",
       "address": "0x1234",
       "sushiSwapPair": "0x1234"
     }

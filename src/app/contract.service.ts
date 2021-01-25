@@ -69,6 +69,14 @@ export class ContractService {
   getZapDepositTokenAddress(symbol: string): string {
     return require('../assets/json/zap-deposit-tokens.json')[symbol];
   }
+
+  getZeroCouponBondPoolNameList(): string[] {
+    return Object.keys(require('../assets/json/zero-coupon-bonds.json'));
+  }
+
+  getZeroCouponBondPool(name: string): ZeroCouponBondInfo[] {
+    return require('../assets/json/zero-coupon-bonds.json')[name];
+  }
 }
 
 export interface PoolInfo {
@@ -85,4 +93,11 @@ export interface PoolInfo {
   zapDepositTokens?: string[];
   interestFee?: number;
   depositFee?: number;
+}
+
+export interface ZeroCouponBondInfo {
+  series: string;
+  symbol: string;
+  address: string;
+  sushiSwapPair: string;
 }
