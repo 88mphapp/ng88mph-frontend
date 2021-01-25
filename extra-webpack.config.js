@@ -1,5 +1,10 @@
 module.exports = {
   node: {
-    fs: true
+    crypto: true,
+    stream: true,
+    http: true,
+    https: true,
+    os: true,
+    path: true
   }
 }

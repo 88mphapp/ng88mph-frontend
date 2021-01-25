@@ -2,7 +2,6 @@ import Web3 from 'web3';
 import Notify from 'bnc-notify';
 import Onboard from 'bnc-onboard';
 import BigNumber from 'bignumber.js';
-import TransportNodeHid from "@ledgerhq/hw-transport-node-hid";
 
 export class Web3Enabled {
   blocknativeAPIKey: string;
@@ -14,13 +13,15 @@ export class Web3Enabled {
   state: any;
   networkID: number;
   alchemyEndpoint: string;
+  alchemyWSEndpoint: string;
 
   constructor(public web3: Web3) {
     this.blocknativeAPIKey = 'af9c0a83-8874-4e07-a272-19c879420693';
     this.infuraKey = '9e5f0d08ad19483193cc86092b7512f2';
     this.portisAPIKey = 'a838dbd2-c0b1-4465-8dbe-36b88f3d0d4e';
     this.fortmaticKey = 'pk_live_937F9430B2CB3407';
-    this.alchemyEndpoint = 'wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-';
+    this.alchemyEndpoint = 'https://eth-mainnet.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-';
+    this.alchemyWSEndpoint = 'wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-';
     this.networkID = 1;
     this.state = {
       address: null,
@@ -68,14 +69,14 @@ export class Web3Enabled {
         {
           walletName: 'ledger',
           rpcUrl: this.alchemyEndpoint,
-          LedgerTransport: TransportNodeHid,
           preferred: true
         },
         {
           walletName: 'trezor',
           appUrl: 'https://88mph.app',
           email: 'hello@88mph.app',
-          rpcUrl: this.alchemyEndpoint
+          rpcUrl: this.alchemyEndpoint,
+          preferred: true
         },
         { 
           walletName: 'walletLink',
@@ -183,7 +184,7 @@ export class Web3Enabled {
     if (this.state.wallet.provider) {
       return this.web3;
     }
-    return new Web3(this.alchemyEndpoint);
+    return new Web3(this.alchemyWSEndpoint);
   }
 
   async estimateGas(func, val, _onError) {
