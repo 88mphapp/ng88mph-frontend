@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "~10.2.2",
     "@angular/router": "~10.2.2",
     "@apollo/client": "^3.0.0",
+    "@ledgerhq/hw-transport-node-hid": "^5.40.0",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
     "apollo-angular": "^2.1.0",
     "bignumber.js": "^9.0.1",
