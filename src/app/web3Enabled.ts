@@ -80,7 +80,7 @@ export class Web3Enabled {
           rpcUrl: this.alchemyEndpoint,
           preferred: true
         },
-        { 
+        {
           walletName: 'walletLink',
           rpcUrl: this.alchemyEndpoint,
           appName: '88mph',
@@ -101,9 +101,10 @@ export class Web3Enabled {
       ];
 
       const walletChecks = [
+        { checkName: 'derivationPath' },
         { checkName: 'connect' },
+        { checkName: 'accounts' },
         { checkName: 'network' },
-        { checkName: 'balance', minimumBalance: '0' }
       ];
 
       const walletSelectConfig = {
@@ -116,6 +117,7 @@ export class Web3Enabled {
         dappId: this.blocknativeAPIKey,
         darkMode: true,
         networkId: this.networkID,
+        hideBranding: true,
         subscriptions: {
           wallet: wallet => {
             if (wallet.provider) {
@@ -209,12 +211,12 @@ export class Web3Enabled {
         // emitter.on('txConfirmed', _onReceipt);
         emitter.on('txFailed', _onError);
       })
-      .on('receipt', _onReceipt)
-      .on('error', (e) => {
-        if (!e.toString().contains('newBlockHeaders')) {
-          _onError(e);
-        }
-      });
+        .on('receipt', _onReceipt)
+        .on('error', (e) => {
+          if (!e.toString().contains('newBlockHeaders')) {
+            _onError(e);
+          }
+        });
     }
   }
 
@@ -231,12 +233,12 @@ export class Web3Enabled {
         // emitter.on('txConfirmed', _onReceipt);
         emitter.on('txFailed', _onError);
       })
-      .on('receipt', _onReceipt)
-      .on('error', (e) => {
-        if (!e.toString().contains('newBlockHeaders')) {
-          _onError(e);
-        }
-      });
+        .on('receipt', _onReceipt)
+        .on('error', (e) => {
+          if (!e.toString().contains('newBlockHeaders')) {
+            _onError(e);
+          }
+        });
     }
   }
 
