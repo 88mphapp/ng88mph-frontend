@@ -8,7 +8,8 @@
         <div class="col">
           <h1 class="mb-2">Zero coupon bonds</h1>
           <p class="text-muted font-weight-bold mb-3">
-            Mint zero coupon bonds using your fixed-rate deposit, and get
+            Zero coupon bonds are a type of financial instrument that can be redeemed 1-to-1 for its underlying currency
+            upon maturation. Mint zero coupon bonds using your fixed-rate deposit, and get
             instant liquidity on Sushiswap.
           </p>
         </div>
@@ -53,11 +54,11 @@
               </tr>
             </thead>
             <tbody class="list">
-              <tr class="border-left border-2 border-amber" *ngFor="let zcbPoolInfo of selectedPoolZCBList">
+              <tr class="border-left border-2 border-amber" *ngFor="let zcbInfo of selectedPoolZCBList">
                 <td>
                   <div class="d-flex align-items-center">
                     <div class="ml-3">
-                      <h4 class="mb-0">{{zcbPoolInfo.series}}</h4>
+                      <h4 class="mb-0">{{zcbInfo.series}}</h4>
                     </div>
                   </div>
                 </td>
@@ -70,7 +71,13 @@
                 </td>
                 <td class="text-right">
                   <!-- Button -->
-                  <button type="button" class="card-link small small px-1" (click)="openZCBModal(zcbPoolInfo)">
+                  <a class="mr-3" href="https://sushiswap.fi/pair/{{zcbInfo.sushiSwapPair}}" target="_blank">
+                    <button type="button" class="card-link small px-1">
+                      <i class="fe fe-refresh-ccw mr-2 align-bottom"></i>Trade
+                    </button>
+                  </a>
+                  <!-- Button -->
+                  <button type="button" class="card-link small px-1" (click)="openZCBModal(zcbInfo)">
                     <i class="fe fe-info mr-2 align-bottom"></i>Info
                   </button>
                 </td>

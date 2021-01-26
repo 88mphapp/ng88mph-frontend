@@ -27,6 +27,10 @@ import { ModalUnstakeComponent } from './rewards/modal-unstake/modal-unstake.com
 import { ModalUnstakeLPComponent } from './farming/modal-unstake-lp/modal-unstake-lp.component';
 import { SyncWarningComponent } from './sync-warning/sync-warning.component';
 import { ZeroCouponBondsComponent } from './zero-coupon-bonds/zero-coupon-bonds.component';
+import { ModalZeroCouponBondInfoComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/modal-zero-coupon-bond-info.component';
+import { MintZeroCouponBondComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/mint-zero-coupon-bond/mint-zero-coupon-bond.component';
+import { RedeemZeroCouponBondComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/redeem-zero-coupon-bond/redeem-zero-coupon-bond.component';
+import { WithdrawZeroCouponBondComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/withdraw-zero-coupon-bond/withdraw-zero-coupon-bond.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +54,11 @@ import { ZeroCouponBondsComponent } from './zero-coupon-bonds/zero-coupon-bonds.
     ModalUnstakeComponent,
     ModalUnstakeLPComponent,
     SyncWarningComponent,
-    ZeroCouponBondsComponent
+    ZeroCouponBondsComponent,
+    ModalZeroCouponBondInfoComponent,
+    MintZeroCouponBondComponent,
+    RedeemZeroCouponBondComponent,
+    WithdrawZeroCouponBondComponent
   ],
   imports: [
     BrowserModule,
