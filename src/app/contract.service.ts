@@ -100,4 +100,5 @@ export interface ZeroCouponBondInfo {
   symbol: string;
   address: string;
   sushiSwapPair: string;
+  sushiSwapPairBaseTokenSymbol: string;
 }
