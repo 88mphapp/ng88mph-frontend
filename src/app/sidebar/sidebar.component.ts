@@ -29,6 +29,9 @@ export class SidebarComponent implements OnInit {
   }
 
   async loadData() {
+    if (!this.wallet.connected) {
+      return;
+    }
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
