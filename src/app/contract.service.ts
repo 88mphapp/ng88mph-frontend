@@ -77,6 +77,10 @@ export class ContractService {
   getZeroCouponBondPool(name: string): ZeroCouponBondInfo[] {
     return require('../assets/json/zero-coupon-bonds.json')[name];
   }
+
+  getZeroCouponBondContract(address: string, web3?: Web3) {
+    return this.getContract(address, 'ZeroCouponBond', web3);
+  }
 }
 
 export interface PoolInfo {
