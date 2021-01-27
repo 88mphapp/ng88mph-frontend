@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConstantsService } from 'src/app/constants.service';
-import { ContractService, PoolInfo, ZeroCouponBondInfo } from 'src/app/contract.service';
+import { ContractService, PoolInfo } from 'src/app/contract.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
+import { ZeroCouponBondTableEntry } from '../zero-coupon-bonds.component';
 
 @Component({
   selector: 'app-modal-zero-coupon-bond-info',
@@ -11,8 +12,9 @@ import { WalletService } from 'src/app/wallet.service';
   styleUrls: ['./modal-zero-coupon-bond-info.component.css']
 })
 export class ModalZeroCouponBondInfoComponent implements OnInit {
-  @Input() zcbInfo: ZeroCouponBondInfo;
+  @Input() zcbEntry: ZeroCouponBondTableEntry;
   @Input() poolInfo: PoolInfo;
+  maturationDate: string;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -39,7 +41,11 @@ export class ModalZeroCouponBondInfoComponent implements OnInit {
 
   }
 
-  loadData(loadUser: boolean, loadGlobal: boolean): void {
-
+  async loadData(loadUser: boolean, loadGlobal: boolean) {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    if (loadGlobal) {
+      const zcbContract = this.contract.getZeroCouponBondContract(this.zcbEntry.zcbInfo.address, readonlyWeb3);
+      zcbContract.methods.maturationTimestamp().call().then(maturationTimestamp => this.maturationDate = new Date(+maturationTimestamp * 1e3).toLocaleString());
+    }
   }
 }
