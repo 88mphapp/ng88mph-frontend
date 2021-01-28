@@ -54,7 +54,8 @@ export class ZeroCouponBondsComponent implements OnInit {
       return {
         zcbInfo,
         totalSupply: new BigNumber(0),
-        userBalance: new BigNumber(0)
+        userBalance: new BigNumber(0),
+        maturationTimestamp: new Date()
       }
     });
 
@@ -63,11 +64,10 @@ export class ZeroCouponBondsComponent implements OnInit {
       const zcbContract = this.contract.getZeroCouponBondContract(zcbEntry.zcbInfo.address, readonlyWeb3);
       const tokenDecimals = this.selectedPoolInfo.stablecoinDecimals;
       const tokenPrecision = Math.pow(10, tokenDecimals);
-      const totalSupply = new BigNumber(await zcbContract.methods.totalSupply().call()).div(tokenPrecision);
-      zcbEntry.totalSupply = totalSupply;
+      zcbEntry.totalSupply = new BigNumber(await zcbContract.methods.totalSupply().call()).div(tokenPrecision);
+      zcbEntry.maturationTimestamp = new Date(+(await zcbContract.methods.maturationTimestamp().call()) * 1e3);
       if (this.wallet.connected) {
-        const userBalance = new BigNumber(await zcbContract.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
-        zcbEntry.userBalance = userBalance;
+        zcbEntry.userBalance = new BigNumber(await zcbContract.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
       }
       return zcbEntry;
     })).then(zcbList => this.selectedPoolZCBList = zcbList);
@@ -84,4 +84,5 @@ export interface ZeroCouponBondTableEntry {
   zcbInfo: ZeroCouponBondInfo;
   totalSupply: BigNumber;
   userBalance: BigNumber;
+  maturationTimestamp: Date;
 }
