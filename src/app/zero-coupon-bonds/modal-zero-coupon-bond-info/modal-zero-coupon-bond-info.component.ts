@@ -14,7 +14,6 @@ import { ZeroCouponBondTableEntry } from '../zero-coupon-bonds.component';
 export class ModalZeroCouponBondInfoComponent implements OnInit {
   @Input() zcbEntry: ZeroCouponBondTableEntry;
   @Input() poolInfo: PoolInfo;
-  maturationDate: string;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -45,7 +44,6 @@ export class ModalZeroCouponBondInfoComponent implements OnInit {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     if (loadGlobal) {
       const zcbContract = this.contract.getZeroCouponBondContract(this.zcbEntry.zcbInfo.address, readonlyWeb3);
-      zcbContract.methods.maturationTimestamp().call().then(maturationTimestamp => this.maturationDate = new Date(+maturationTimestamp * 1e3).toLocaleString());
     }
   }
 }
