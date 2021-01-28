@@ -60,14 +60,14 @@ export class Web3Enabled {
 
       const wallets = [
         genericMobileWalletConfig,
-        /*{
+        {
           walletName: 'walletConnect',
           rpc: {
             [this.networkID]: this.alchemyEndpoint
           },
           networkId: this.networkID,
           preferred: true
-        },*/
+        },
         {
           walletName: 'ledger',
           rpcUrl: this.alchemyEndpoint,
@@ -84,8 +84,7 @@ export class Web3Enabled {
           walletName: 'walletLink',
           rpcUrl: this.alchemyEndpoint,
           appName: '88mph',
-          appLogoUrl: 'https://88mph.app/docs/img/88mph-logo-dark.png',
-          preferred: true
+          appLogoUrl: 'https://88mph.app/docs/img/88mph-logo-dark.png'
         },
         {
           walletName: 'fortmatic',
