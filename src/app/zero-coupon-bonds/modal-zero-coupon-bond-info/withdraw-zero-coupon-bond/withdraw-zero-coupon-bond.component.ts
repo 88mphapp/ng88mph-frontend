@@ -9,6 +9,25 @@ import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 
+const mockData = {
+  fractionalDeposits: [
+    {
+      id: '0x1234',
+      address: '0x1234',
+      deposit: {
+        nftID: 1,
+        fundingID: 3,
+        amount: 100,
+        interestEarned: 10,
+        mintMPHAmount: 10
+      }
+    }
+  ],
+  dpool: {
+    mphDepositorRewardTakeBackMultiplier: 0.3
+  }
+}
+
 @Component({
   selector: 'app-withdraw-zero-coupon-bond',
   templateUrl: './withdraw-zero-coupon-bond.component.html',
@@ -58,15 +77,37 @@ export class WithdrawZeroCouponBondComponent implements OnInit {
 
     this.helpers.getTokenPriceUSD(this.poolInfo.stablecoin).then(price => this.stablecoinPriceUSD = new BigNumber(price));
 
-    this.loadActiveDeposits(true);
+    if (this.wallet.connected) {
+      this.loadActiveDeposits(false);
+    }
   }
 
-  loadActiveDeposits(onlyUserDeposits: boolean) {
+  loadActiveDeposits(showAllDeposits: boolean) {
     const userID = this.wallet.userAddress.toLowerCase();
     const zeroCouponBondID = this.zcbEntry.zcbInfo.address.toLowerCase();
     const poolID = this.poolInfo.address.toLowerCase();
     let queryString;
-    if (onlyUserDeposits) {
+    if (showAllDeposits) {
+      queryString = gql`
+        {
+          fractionalDeposits(where: { active: true, zeroCouponBondAddress: "${zeroCouponBondID}" }) {
+            id
+            address
+            deposit {
+              nftID
+              fundingID
+              amount
+              interestEarned
+              mintMPHAmount
+            }
+          }
+          dpool(id: "${poolID}") {
+            id
+            mphDepositorRewardTakeBackMultiplier
+          }
+        }
+      `;
+    } else {
       queryString = gql`
         {
           fractionalDeposits(where: { active: true, ownerAddress: "${userID}", zeroCouponBondAddress: "${zeroCouponBondID}" }) {
@@ -81,6 +122,7 @@ export class WithdrawZeroCouponBondComponent implements OnInit {
             }
           }
           dpool(id: "${poolID}") {
+            id
             mphDepositorRewardTakeBackMultiplier
           }
         }
@@ -141,6 +183,7 @@ interface QueryResult {
     }
   }[];
   dpool: {
+    id: string;
     mphDepositorRewardTakeBackMultiplier: number;
   };
 }
