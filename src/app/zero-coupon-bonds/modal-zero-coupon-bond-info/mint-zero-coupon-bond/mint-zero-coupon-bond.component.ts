@@ -61,8 +61,7 @@ export class MintZeroCouponBondComponent implements OnInit {
     const mphContract = this.contract.getNamedContract('MPHToken');
     mphContract.methods.balanceOf(this.wallet.userAddress).call().then((balance) => this.mphBalance = new BigNumber(balance).div(this.constants.PRECISION));
 
-    const zcbContract = this.contract.getZeroCouponBondContract(this.zcbEntry.zcbInfo.address);
-    const maturationTimestamp = await zcbContract.methods.maturationTimestamp().call();
+    const maturationTimestamp = Math.floor(this.zcbEntry.maturationTimestamp.getTime() / 1e3);
 
     const userID = this.wallet.userAddress.toLowerCase();
     const queryString = gql`
@@ -104,7 +103,7 @@ export class MintZeroCouponBondComponent implements OnInit {
           const realMPHReward = new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier).times(deposit.mintMPHAmount);
 
           // compute interest
-          const interestEarnedToken = this.helpers.applyFeeToInterest(new BigNumber(deposit.interestEarned));
+          const interestEarnedToken = this.helpers.applyFeeToInterest(deposit.interestEarned);
           const interestEarnedUSD = interestEarnedToken.times(stablecoinPrice);
 
           const userPoolDeposit: UserDeposit = {
