@@ -16,6 +16,7 @@ export class ZeroCouponBondsComponent implements OnInit {
   allPoolList: PoolInfo[];
   selectedPoolInfo: PoolInfo;
   selectedPoolZCBList: ZeroCouponBondTableEntry[];
+  now: Date;
 
   constructor(
     public wallet: WalletService,
@@ -23,7 +24,9 @@ export class ZeroCouponBondsComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService,
     private modalService: NgbModal
-  ) { }
+  ) {
+    this.resetData(true, true);
+  }
 
   ngOnInit(): void {
     this.loadData(this.wallet.connected, true);
@@ -37,7 +40,9 @@ export class ZeroCouponBondsComponent implements OnInit {
   }
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
-
+    if (resetGlobal) {
+      this.now = new Date();
+    }
   }
 
   loadData(loadUser: boolean, loadGlobal: boolean): void {
@@ -55,7 +60,9 @@ export class ZeroCouponBondsComponent implements OnInit {
         zcbInfo,
         totalSupply: new BigNumber(0),
         userBalance: new BigNumber(0),
-        maturationTimestamp: new Date()
+        maturationTimestamp: new Date(),
+        priceInUSD: new BigNumber(0),
+        impliedInterestRate: new BigNumber(0)
       }
     });
 
@@ -69,6 +76,8 @@ export class ZeroCouponBondsComponent implements OnInit {
       if (this.wallet.connected) {
         zcbEntry.userBalance = new BigNumber(await zcbContract.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
       }
+      zcbEntry.priceInUSD = await this.getZeroCouponBondPriceUSD(zcbEntry.zcbInfo);
+      zcbEntry.impliedInterestRate = this.computeImpliedInterestRate(zcbEntry);
       return zcbEntry;
     })).then(zcbList => this.selectedPoolZCBList = zcbList);
   }
@@ -78,6 +87,43 @@ export class ZeroCouponBondsComponent implements OnInit {
     modalRef.componentInstance.poolInfo = this.selectedPoolInfo;
     modalRef.componentInstance.zcbEntry = zcbEntry;
   }
+
+  async getZeroCouponBondPriceUSD(bond: ZeroCouponBondInfo): Promise<BigNumber> {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const pair = this.contract.getContract(bond.sushiSwapPair, 'MPHLP', readonlyWeb3);
+    const reservesObj = await pair.methods.getReserves().call();
+    if (+reservesObj._reserve0 === 0 || +reservesObj._reserve1 === 0) {
+      // no liquidity, return NaN
+      return new BigNumber(NaN);
+    }
+    const baseToken = this.contract.getERC20(bond.sushiSwapPairBaseTokenAddress, readonlyWeb3);
+    const baseTokenPrecision = Math.pow(10, +await baseToken.methods.decimals().call());
+    let baseTokenReserve;
+    let bondReserve;
+    if (new BigNumber(bond.sushiSwapPairBaseTokenAddress, 16).lt(new BigNumber(bond.address, 16))) {
+      // base token is token0
+      baseTokenReserve = new BigNumber(reservesObj._reserve0).div(baseTokenPrecision);
+      bondReserve = new BigNumber(reservesObj._reserve1).div(Math.pow(10, this.selectedPoolInfo.stablecoinDecimals));
+    } else {
+      // base token is token1
+      bondReserve = new BigNumber(reservesObj._reserve0).div(Math.pow(10, this.selectedPoolInfo.stablecoinDecimals));
+      baseTokenReserve = new BigNumber(reservesObj._reserve1).div(baseTokenPrecision);
+    }
+    const bondPriceInBaseToken = baseTokenReserve.div(bondReserve);
+    const baseTokenPriceInUSD = await this.helpers.getTokenPriceUSD(bond.sushiSwapPairBaseTokenAddress);
+    return bondPriceInBaseToken.times(baseTokenPriceInUSD);
+  }
+
+  computeImpliedInterestRate(zcbEntry: ZeroCouponBondTableEntry): BigNumber {
+    const roi = new BigNumber(1).div(zcbEntry.priceInUSD).minus(1);
+    const secondsToMaturation = (zcbEntry.maturationTimestamp.getTime() - this.now.getTime()) / 1e3;
+    if (secondsToMaturation <= 0) {
+      // already mature
+      return new BigNumber(NaN);
+    }
+    const apy = roi.div(secondsToMaturation).times(this.constants.YEAR_IN_SEC);
+    return apy;
+  }
 }
 
 export interface ZeroCouponBondTableEntry {
@@ -85,4 +131,6 @@ export interface ZeroCouponBondTableEntry {
   totalSupply: BigNumber;
   userBalance: BigNumber;
   maturationTimestamp: Date;
+  priceInUSD: BigNumber;
+  impliedInterestRate: BigNumber;
 }
