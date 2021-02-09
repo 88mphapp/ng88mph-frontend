@@ -178,5 +178,15 @@
       "renBTC",
       "sBTC"
     ]
+  },
+  "yaLINK": {
+    "name": "yaLINK",
+    "address": "0xdb7f4a6f7ae241a8944f3b3ae5dcdeec6a20465e",
+    "stablecoin": "0xA64BD6C70Cb9051F6A9ba1F163Fdc07E0DfB5F84",
+    "stablecoinSymbol": "aLINK v1",
+    "stablecoinDecimals": 18,
+    "protocol": "yEarn",
+    "iconPath": "assets/img/token-icons/link.svg",
+    "moneyMarket": "0x90aA32cE8a7547E71C18499Bb25fE4E1cf14c658"
   }
 }
