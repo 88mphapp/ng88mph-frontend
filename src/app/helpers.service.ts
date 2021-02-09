@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from './constants.service';
-import { ContractService } from './contract.service';
+import { ContractService, PoolInfo } from './contract.service';
 import { WalletService } from './wallet.service';
 
 @Injectable({
@@ -62,11 +62,19 @@ export class HelpersService {
     return lpTotalSupply.isZero() ? new BigNumber(0) : ethReserve.times(ethPriceInUSD).times(2).div(lpTotalSupply);
   }
 
-  applyFeeToInterest(rawInterestAmount) {
-    return new BigNumber(rawInterestAmount).times(0.9);
+  applyFeeToInterest(rawInterestAmount, poolInfo: PoolInfo) {
+    let interestFee = 0.1;
+    if (poolInfo.interestFee) {
+      interestFee = poolInfo.interestFee;
+    }
+    return new BigNumber(rawInterestAmount).times(1 - interestFee);
   }
 
-  unapplyFeeToInterest(interestAmount) {
-    return new BigNumber(interestAmount).div(0.9);
+  unapplyFeeToInterest(interestAmount, poolInfo: PoolInfo) {
+    let interestFee = 0.1;
+    if (poolInfo.interestFee) {
+      interestFee = poolInfo.interestFee;
+    }
+    return new BigNumber(interestAmount).div(1 - interestFee);
   }
 }

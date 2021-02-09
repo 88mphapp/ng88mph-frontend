@@ -45,6 +45,7 @@ export class StatsComponent implements OnInit {
       {
         dpools {
           id
+          address
           stablecoin
           totalActiveDeposit
           totalInterestPaid
@@ -108,13 +109,14 @@ export class StatsComponent implements OnInit {
             }
 
             const poolDepositUSD = new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice);
-            const poolInterestUSD = new BigNumber(pool.totalInterestPaid).times(stablecoinPrice);
+            const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+            const poolInterestUSD = this.helpers.applyFeeToInterest(new BigNumber(pool.totalInterestPaid).times(stablecoinPrice), poolInfo);
             totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
             totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
           })
         ).then(() => {
           this.totalDepositUSD = totalDepositUSD;
-          this.totalInterestUSD = this.helpers.applyFeeToInterest(totalInterestUSD);
+          this.totalInterestUSD = totalInterestUSD;
         });
       }
 
@@ -139,6 +141,7 @@ export class StatsComponent implements OnInit {
 interface QueryResult {
   dpools: {
     id: string;
+    address: string;
     stablecoin: string;
     totalActiveDeposit: number;
     totalInterestPaid: number;

@@ -187,6 +187,8 @@
     "stablecoinDecimals": 18,
     "protocol": "yEarn",
     "iconPath": "assets/img/token-icons/link.svg",
-    "moneyMarket": "0x90aA32cE8a7547E71C18499Bb25fE4E1cf14c658"
+    "moneyMarket": "0x90aA32cE8a7547E71C18499Bb25fE4E1cf14c658",
+    "interestFee": 0.2,
+    "depositFee": 0.005
   }
 }
