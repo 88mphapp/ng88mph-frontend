@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import BigNumber from 'bignumber.js';
+import { AppComponent } from '../app.component';
 import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
@@ -14,7 +15,7 @@ export class SidebarComponent implements OnInit {
   mphBalance: BigNumber;
 
   constructor(public route: Router, public wallet: WalletService, public contract: ContractService,
-    public constants: ConstantsService) {
+    public constants: ConstantsService, public app: AppComponent) {
     this.resetData();
   }
 
