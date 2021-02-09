@@ -63,7 +63,7 @@
             <a class="nav-link text-white" routerLink="stats" ngbNavLink>
               Stats
             </a>
-          </li>          
+          </li>
           <li class="nav-item">
             <a class="nav-link small" href="https://88mph.app/fm/" target="_blank">
               88.0 FM 📼
@@ -80,11 +80,12 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link small" href="https://app.coverprotocol.com/app/marketplace/protocols/88MPH" target="_blank">
+            <a class="nav-link small" href="https://app.coverprotocol.com/app/marketplace/protocols/88MPH"
+              target="_blank">
               Insurance
             </a>
           </li>
-          <li class="nav-item">          
+          <li class="nav-item">
             <a class="nav-link" href="#sidebarAudits" data-toggle="collapse" role="button" aria-expanded="false"
               aria-controls="sidebarAudits">
               Security audits
@@ -92,7 +93,9 @@
             <div class="collapse" id="sidebarAudits">
               <ul class="nav nav-sm flex-column">
                 <li class="nav-item">
-                  <a class="nav-link small" href="https://github.com/peckshield/publications/blob/master/audit_reports/peckshield-audit-report-88mph-v1.0.pdf" target="_blank">
+                  <a class="nav-link small"
+                    href="https://github.com/peckshield/publications/blob/master/audit_reports/peckshield-audit-report-88mph-v1.0.pdf"
+                    target="_blank">
                     PeckShield v2 audit
                   </a>
                 </li>
@@ -116,7 +119,7 @@
             </a>
             <div class="collapse" id="sidebarMore">
               <ul class="nav nav-sm flex-column">
-                
+
                 <li class="nav-item">
                   <a class="nav-link small" href="https://twitter.com/88mphapp" target="_blank">
                     Twitter
@@ -133,7 +136,8 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link small" href="https://www.youtube.com/channel/UCEr3cuwaggjkw8TajaPSpgg" target="_blank">
+                  <a class="nav-link small" href="https://www.youtube.com/channel/UCEr3cuwaggjkw8TajaPSpgg"
+                    target="_blank">
                     Youtube
                   </a>
                 </li>
@@ -164,8 +168,8 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f" target="_blank">
+                  <a class="nav-link small" href="https://sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
+                    target="_blank">
                     Sushiswap
                   </a>
                 </li>
@@ -209,14 +213,14 @@
             </div>
           </li>
         </ul>
-        
-        <div class="btn-group-toggle d-flex mt-3" data-toggle="buttons">          
-          <button class="card-link">
-            <input type="radio" name="colorScheme" id="colorScheme80s" value="80s"> 80s
-          </button>
-          <button class="card-link">
-            <input type="radio" name="colorScheme" id="colorSchemeBoring" value="boring"> Boring
-          </button>
+
+        <div class="btn-group-toggle d-flex mt-3" data-toggle="buttons">
+          <ng-container *ngFor="let themeName of app.themes">
+            <button class="card-link" (click)="app.setTheme(themeName)">
+              <input type="radio" name="colorScheme" value={{themeName}} [checked]="app.themeName === themeName">
+              {{themeName}}
+            </button>
+          </ng-container>
         </div>
       </div>
     </div>
