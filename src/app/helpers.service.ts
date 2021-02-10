@@ -62,19 +62,18 @@ export class HelpersService {
     return lpTotalSupply.isZero() ? new BigNumber(0) : ethReserve.times(ethPriceInUSD).times(2).div(lpTotalSupply);
   }
 
-  applyFeeToInterest(rawInterestAmount, poolInfo: PoolInfo) {
+  applyFeeToInterest(rawInterestAmount, poolInfo: PoolInfo): BigNumber {
     let interestFee = 0.1;
     if (poolInfo.interestFee) {
       interestFee = poolInfo.interestFee;
     }
-    return new BigNumber(rawInterestAmount).times(1 - interestFee);
+    return this.applyDepositFee(new BigNumber(rawInterestAmount).times(1 - interestFee), poolInfo);
   }
 
-  unapplyFeeToInterest(interestAmount, poolInfo: PoolInfo) {
-    let interestFee = 0.1;
-    if (poolInfo.interestFee) {
-      interestFee = poolInfo.interestFee;
+  applyDepositFee(rawDepositAmount, poolInfo: PoolInfo): BigNumber {
+    if (!poolInfo.depositFee) {
+      return rawDepositAmount;
     }
-    return new BigNumber(interestAmount).div(1 - interestFee);
+    return new BigNumber(rawDepositAmount).times(1 - poolInfo.depositFee);
   }
 }
