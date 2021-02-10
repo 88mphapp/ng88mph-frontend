@@ -178,8 +178,8 @@ export class DepositComponent implements OnInit {
               nftID: deposit.nftID,
               fundingID: deposit.fundingID,
               locked: deposit.maturationTimestamp >= (Date.now() / 1e3),
-              amountToken: new BigNumber(deposit.amount),
-              amountUSD: new BigNumber(deposit.amount).times(stablecoinPrice),
+              amountToken: this.helpers.applyDepositFee(new BigNumber(deposit.amount), poolInfo),
+              amountUSD: this.helpers.applyDepositFee(new BigNumber(deposit.amount).times(stablecoinPrice), poolInfo),
               apy: interestEarnedToken.div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.YEAR_IN_SEC).times(100),
               countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
               interestEarnedToken,
@@ -212,8 +212,8 @@ export class DepositComponent implements OnInit {
             stablecoinPriceCache[totalDepositEntity.pool.stablecoin] = stablecoinPrice;
           }
 
-          const poolDepositUSD = new BigNumber(totalDepositEntity.totalActiveDeposit).times(stablecoinPrice);
           const poolInfo = this.contract.getPoolInfoFromAddress(totalDepositEntity.pool.address);
+          const poolDepositUSD = this.helpers.applyDepositFee(new BigNumber(totalDepositEntity.totalActiveDeposit).times(stablecoinPrice), poolInfo);
           const poolInterestUSD = this.helpers.applyFeeToInterest(new BigNumber(totalDepositEntity.totalInterestEarned).times(stablecoinPrice), poolInfo);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
