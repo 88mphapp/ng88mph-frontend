@@ -103,7 +103,7 @@ export class MintZeroCouponBondComponent implements OnInit {
           const realMPHReward = new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier).times(deposit.mintMPHAmount);
 
           // compute interest
-          const interestEarnedToken = this.helpers.applyFeeToInterest(deposit.interestEarned);
+          const interestEarnedToken = this.helpers.applyFeeToInterest(deposit.interestEarned, this.poolInfo);
           const interestEarnedUSD = interestEarnedToken.times(stablecoinPrice);
 
           const userPoolDeposit: UserDeposit = {
