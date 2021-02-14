@@ -143,7 +143,7 @@ export class WithdrawZeroCouponBondComponent implements OnInit {
         const mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
         const parsedDeposits: FractionalDeposit[] = [];
         for (const rawDeposit of fractionalDeposits) {
-          const interestEarnedToken = this.helpers.applyFeeToInterest(rawDeposit.deposit.interestEarned);
+          const interestEarnedToken = this.helpers.applyFeeToInterest(rawDeposit.deposit.interestEarned, this.poolInfo);
           const realMPHReward = new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier).times(rawDeposit.deposit.mintMPHAmount);
           const parsedDeposit: FractionalDeposit = {
             address: rawDeposit.address,
