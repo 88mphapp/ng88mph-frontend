@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'Glass TTY VT220';
-  src: url(src/assets/fonts/Glass_TTY_VT220/Glass_TTY_VT220.ttf);
-  src: url(src/assets/fonts/Glass_TTY_VT220/Glass_TTY_VT220.ttf) format("truetype")
+  src: url(/assets/fonts/Glass_TTY_VT220/Glass_TTY_VT220.ttf);
+  src: url(/assets/fonts/Glass_TTY_VT220/Glass_TTY_VT220.ttf) format("truetype")
 }
 
 /*!

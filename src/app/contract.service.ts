@@ -95,4 +95,6 @@ export interface PoolInfo {
   stakingPool?: string;
   curveSwapAddress?: string;
   zapDepositTokens?: string[];
+  interestFee?: number;
+  depositFee?: number;
 }
