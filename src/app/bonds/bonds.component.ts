@@ -187,8 +187,8 @@ export class BondsComponent implements OnInit {
               nftID: funding.nftID,
               deficitToken: new BigNumber(funding.fundedDeficitAmount),
               deficitUSD: new BigNumber(funding.fundedDeficitAmount).times(stablecoinPrice),
-              currentDepositToken: new BigNumber(funding.recordedFundedDepositAmount),
-              currentDepositUSD: new BigNumber(funding.recordedFundedDepositAmount).times(stablecoinPrice),
+              currentDepositToken: this.helpers.applyDepositFee(new BigNumber(funding.recordedFundedDepositAmount), poolInfo),
+              currentDepositUSD: this.helpers.applyDepositFee(new BigNumber(funding.recordedFundedDepositAmount).times(stablecoinPrice), poolInfo),
               interestEarnedToken: new BigNumber(funding.totalInterestEarned),
               interestEarnedUSD: new BigNumber(funding.totalInterestEarned).times(stablecoinPrice),
               mphRewardEarned: new BigNumber(funding.mphRewardEarned),
@@ -219,7 +219,7 @@ export class BondsComponent implements OnInit {
           }
 
           const poolDeficitFundedUSD = new BigNumber(totalInterestEntity.totalDeficitFunded).times(stablecoinPrice);
-          const poolCurrentDepositUSD = new BigNumber(totalInterestEntity.totalRecordedFundedDepositAmount).times(stablecoinPrice);
+          const poolCurrentDepositUSD = this.helpers.applyDepositFee(new BigNumber(totalInterestEntity.totalRecordedFundedDepositAmount).times(stablecoinPrice), this.contract.getPoolInfoFromAddress(totalInterestEntity.pool.id));
           const poolInterestUSD = new BigNumber(totalInterestEntity.totalInterestEarned).times(stablecoinPrice);
           totalDeficitFundedUSD = totalDeficitFundedUSD.plus(poolDeficitFundedUSD);
           totalCurrentDepositUSD = totalCurrentDepositUSD.plus(poolCurrentDepositUSD);
@@ -264,7 +264,7 @@ export class BondsComponent implements OnInit {
             oneYearInterestRate: new BigNumber(pool.oneYearInterestRate).times(100),
             latestFundedDeposit: latestFundedDeposit,
             latestDeposit: latestDeposit,
-            unfundedDepositAmount: new BigNumber(pool.unfundedDepositAmount),
+            unfundedDepositAmount: this.helpers.applyDepositFee(new BigNumber(pool.unfundedDepositAmount), poolInfo),
             mphRewardPerTokenPerSecond: mphRewardPerTokenPerSecond,
             oracleInterestRate: new BigNumber(pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100)
           };
@@ -347,7 +347,7 @@ export class BondsComponent implements OnInit {
         const surplus = moneyMarketIncomeIndex.div(deposit.initialMoneyMarketIncomeIndex).minus(1).times(deposit.amount).minus(deposit.interestEarned);
         const parsedDeposit: Deposit = {
           nftID: deposit.nftID,
-          amount: new BigNumber(deposit.amount),
+          amount: this.helpers.applyDepositFee(new BigNumber(deposit.amount), this.contract.getPoolInfoFromAddress(x.data.dpool.id)),
           active: deposit.active,
           maturationTimestamp: deposit.maturationTimestamp,
           interestEarned: new BigNumber(deposit.interestEarned),

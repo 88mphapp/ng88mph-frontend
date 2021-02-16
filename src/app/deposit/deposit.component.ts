@@ -120,6 +120,7 @@ export class DepositComponent implements OnInit {
           }
           totalDepositByPool {
             pool {
+              address
               stablecoin
             }
             totalActiveDeposit
@@ -170,15 +171,15 @@ export class DepositComponent implements OnInit {
             const tempMPHAPY = new BigNumber(deposit.mintMPHAmount).times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
 
             // compute interest
-            const interestEarnedToken = this.helpers.applyFeeToInterest(new BigNumber(deposit.interestEarned));
+            const interestEarnedToken = this.helpers.applyFeeToInterest(new BigNumber(deposit.interestEarned), poolInfo);
             const interestEarnedUSD = interestEarnedToken.times(stablecoinPrice);
 
             const userPoolDeposit: UserDeposit = {
               nftID: deposit.nftID,
               fundingID: deposit.fundingID,
               locked: deposit.maturationTimestamp >= (Date.now() / 1e3),
-              amountToken: new BigNumber(deposit.amount),
-              amountUSD: new BigNumber(deposit.amount).times(stablecoinPrice),
+              amountToken: this.helpers.applyDepositFee(new BigNumber(deposit.amount), poolInfo),
+              amountUSD: this.helpers.applyDepositFee(new BigNumber(deposit.amount).times(stablecoinPrice), poolInfo),
               apy: interestEarnedToken.div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.YEAR_IN_SEC).times(100),
               countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
               interestEarnedToken,
@@ -211,13 +212,14 @@ export class DepositComponent implements OnInit {
             stablecoinPriceCache[totalDepositEntity.pool.stablecoin] = stablecoinPrice;
           }
 
-          const poolDepositUSD = new BigNumber(totalDepositEntity.totalActiveDeposit).times(stablecoinPrice);
-          const poolInterestUSD = new BigNumber(totalDepositEntity.totalInterestEarned).times(stablecoinPrice);
+          const poolInfo = this.contract.getPoolInfoFromAddress(totalDepositEntity.pool.address);
+          const poolDepositUSD = this.helpers.applyDepositFee(new BigNumber(totalDepositEntity.totalActiveDeposit).times(stablecoinPrice), poolInfo);
+          const poolInterestUSD = this.helpers.applyFeeToInterest(new BigNumber(totalDepositEntity.totalInterestEarned).times(stablecoinPrice), poolInfo);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
         })).then(() => {
           this.totalDepositUSD = totalDepositUSD;
-          this.totalInterestUSD = this.helpers.applyFeeToInterest(totalInterestUSD);
+          this.totalInterestUSD = totalInterestUSD;
         });
       }
       if (dpools) {
@@ -246,7 +248,7 @@ export class DepositComponent implements OnInit {
             iconPath: poolInfo.iconPath,
             totalDepositToken: new BigNumber(pool.totalActiveDeposit),
             totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice),
-            oneYearInterestRate: this.helpers.applyFeeToInterest(pool.oneYearInterestRate).times(100),
+            oneYearInterestRate: this.helpers.applyFeeToInterest(pool.oneYearInterestRate, poolInfo).times(100),
             mphAPY: mphAPY,
             tempMPHAPY: tempMPHAPY
           };
@@ -333,6 +335,7 @@ interface QueryResult {
     }[];
     totalDepositByPool: {
       pool: {
+        address: string;
         stablecoin: string;
       };
       totalActiveDeposit: number;
