@@ -75,14 +75,14 @@ export class ModalBondDetailsComponent implements OnInit {
         const depositObj: Deposit = {
           ...deposit,
           maturationTimestamp: +deposit.maturationTimestamp,
-          amount: this.helpers.applyDepositFee(new BigNumber(deposit.amount), this.funderPool.poolInfo),
+          amount: new BigNumber(deposit.amount),
           fundingInterestPaid: new BigNumber(deposit.fundingInterestPaid),
           fundingRefundAmount: new BigNumber(deposit.fundingRefundAmount),
         };
         newDeposits = [...newDeposits, depositObj];
 
         if (depositObj.active && depositObj.maturationTimestamp > now) {
-          newTotalAmountMulTime = newTotalAmountMulTime.plus(this.helpers.applyDepositFee(depositObj.amount, this.funderPool.poolInfo).times(depositObj.maturationTimestamp - now));
+          newTotalAmountMulTime = newTotalAmountMulTime.plus(depositObj.amount).times(depositObj.maturationTimestamp - now);
         }
       }
 
