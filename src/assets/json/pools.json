@@ -181,13 +181,13 @@
   },
   "yaLINK": {
     "name": "yaLINK",
-    "address": "0xf19d0723ac91f16c4ddfd04fe77fd72de92b9f6e",
+    "address": "0x904F81EFF3c35877865810CCA9a63f2D9cB7D4DD",
     "stablecoin": "0xA64BD6C70Cb9051F6A9ba1F163Fdc07E0DfB5F84",
     "stablecoinSymbol": "aLINK v1",
     "stablecoinDecimals": 18,
     "protocol": "yEarn",
     "iconPath": "assets/img/token-icons/link.svg",
-    "moneyMarket": "0x47E81bC6e2Fb1Fb00A558a5072284C43Ef1396fc",
+    "moneyMarket": "0x08cC88c379911BF6d778081a078B48bd7035fB70",
     "interestFee": 0.2,
     "depositFee": 0.005
   }
