@@ -67,7 +67,7 @@ export class HelpersService {
     if (poolInfo.interestFee) {
       interestFee = poolInfo.interestFee;
     }
-    return this.applyDepositFee(new BigNumber(rawInterestAmount).times(1 - interestFee), poolInfo);
+    return new BigNumber(rawInterestAmount).times(1 - interestFee);
   }
 
   applyDepositFee(rawDepositAmount, poolInfo: PoolInfo): BigNumber {
