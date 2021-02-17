@@ -178,17 +178,5 @@
       "renBTC",
       "sBTC"
     ]
-  },
-  "yaLINK": {
-    "name": "yaLINK",
-    "address": "0xf19d0723ac91f16c4ddfd04fe77fd72de92b9f6e",
-    "stablecoin": "0xA64BD6C70Cb9051F6A9ba1F163Fdc07E0DfB5F84",
-    "stablecoinSymbol": "aLINK v1",
-    "stablecoinDecimals": 18,
-    "protocol": "yEarn",
-    "iconPath": "assets/img/token-icons/link.svg",
-    "moneyMarket": "0x47E81bC6e2Fb1Fb00A558a5072284C43Ef1396fc",
-    "interestFee": 0.2,
-    "depositFee": 0.005
   }
 }
