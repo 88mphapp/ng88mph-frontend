@@ -19,6 +19,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
 import { FarmingComponent } from './farming/farming.component';
 import { ModalStakeLPComponent } from './farming/modal-stake-lp/modal-stake-lp.component';
+import { FundingComponent } from './funding/funding.component';
 import { ClaimETHComponent } from './claim-eth/claim-eth.component';
 import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
 import { VestingComponent } from './vesting/vesting.component';
@@ -41,6 +42,7 @@ import { SyncWarningComponent } from './sync-warning/sync-warning.component';
     HeaderComponent,
     FarmingComponent,
     ModalStakeLPComponent,
+    FundingComponent,
     ClaimETHComponent,
     ClaimMPHComponent,
     VestingComponent,
