@@ -14646,6 +14646,8 @@ input[type=range]:focus::-ms-fill-upper {
 
 .glowing {
   color: #fff;
+  font-weight: 600;
+  text-shadow: rgb(192 219 255 / 48%) 0px 0px 64px, rgb(65 120 255 / 24%) 0px 0px 16px;
 }
 
 .border-purple {
