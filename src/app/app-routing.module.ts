@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BondsComponent } from './bonds/bonds.component';
+import { FundingComponent } from './funding/funding.component';
 import { ClaimETHComponent } from './claim-eth/claim-eth.component';
 import { ClaimMPHComponent } from './claim-mph/claim-mph.component';
 import { DepositComponent } from './deposit/deposit.component';
@@ -38,6 +39,10 @@ const routes: Routes = [
   {
     path: 'vesting',
     component: VestingComponent
+  },
+  {
+    path: 'funding',
+    component: FundingComponent
   },
   {
     path: 'claim-eth',
