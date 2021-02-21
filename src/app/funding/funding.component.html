@@ -6,32 +6,168 @@
     <div class="header-body border-0 p-0">
       <div class="row align-items-end">
         <div class="col">
-          <h1>Claim ETH (LPs)</h1>
+          <h1 class="mb-2">Apply for Funding - Help Grow 88mph</h1>
+          <p class="text-muted font-weight-bold mb-5">
+            We provide grants for projects, initiatives, resources, NFTs, and events that encourage and develop the 88mph ecosystem and empower the community. We offer grants ranging from $100 - $5k worth of $MPH and distribute blocks of funds as individuals and teams reach predetermined milestones.
+          </p>
           <div class="card-deck my-5">
             <div class="card mb-4 mb-lg-0">
               <div class="card-body pt-0">
                 <!-- Title -->
                 <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  Your Claim Amount
+                  👨‍💻👩‍💻 Ecosystem grants
                 </h5>
                 <!-- Heading -->
-                <h2 class="mb-1 glowing pl-3">
-                  {{claimAmount.toFormat()}} ETH
+                <h2 class="mb-3 glowing pl-3">
+                  $100 - $5,000
+                </h2>                
+                <h5 class="mb-3 text-white pl-3">Apply to help build 88mph & its ecosystem.</h5>
+                <button type="button" class="card-link small ml-3 px-1" onclick="location.href='https://forms.gle/K4t7DNaVrkGp8KK46';" value="Go to Google Forms">
+                  <i class="fe fe-arrow-down mr-2 align-bottom"></i>Apply for ecosystem grants
+                </button>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase mt-n3 bg-dark pl-3">
+                  👨‍🎨✍️🎈 Community grants
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-3 glowing pl-3">
+                  $100 - $2,000
                 </h2>
-                <ng-container *ngIf="claimed">
-                  <h5 class="mb-3 text-white pl-3">
-                    You have already claimed, and the funds have been sent to
-                    your wallet.
-                  </h5>
-                </ng-container>
-                <ng-container *ngIf="!claimed && wallet.connected && claimAmount.gt(0)">
-                  <button type="button" class="card-link small ml-3 px-1" (click)="claim()">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Claim
-                  </button>
-                </ng-container>
+                <h5 class="mb-3 text-white pl-3">Apply to help other community members by creating initiatives or resources (contents creation, NFTs, meetups, etc.).</h5>
+                <button type="button" class="card-link small ml-3 px-1" onclick="location.href='https://forms.gle/K4t7DNaVrkGp8KK46';" value="Go to Google Forms">
+                  <i class="fe fe-arrow-down mr-2 align-bottom"></i>Apply for community grants
+                </button>
               </div>
             </div>
           </div>
+          <h2 class="mb-2">Examples of funded grants</h2>
+          <ul class="mb-5">
+            <li>
+              <a class="text-purple" href="https://github.com/88mphapp/ng88mph-frontend/pull/26" target="_blank">Frontend dev Floating-rate bond details</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://88mph.app/fm/" target="_blank">88.0 FM - Dynamic NFT radio</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://twitter.com/88mphapp/status/1361066131340034051/photo/1" target="_blank">NFTs creation</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://t.me/join88mphturkey" target="_blank">Community management of the official Turkish Telegram group</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://imgur.com/uJkDeyC" target="_blank">Community management of the official Chinese WeChat group</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://t.me/join88mphPersian" target="_blank">Community management of the official Persian Telegram group</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://t.me/join88mphIndonesia" target="_blank">Community management of the official Indonesian Telegram group</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://t.me/join88mphJP" target="_blank">Community management of the official Japanese Telegram group</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://medium.com/88mphapp/88mph-app-fixed-rate-deposits-how-they-work-how-to-use-them-and-how-to-make-them-work-for-you-667bc357055d" target="_blank">Medium tutorial</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://www.youtube.com/watch?v=HC0AYMaodOg&t=21s" target="_blank">English video explainer</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://www.bilibili.com/video/BV1PX4y1N7Ff" target="_blank">Chinese video explainer</a>
+            </li>
+            <li>
+              <a class="text-purple" href="https://www.youtube.com/watch?v=K2flgA5nn2Q&feature=youtu.bez" target="_blank">Chinese video updates</a>
+            </li>
+          </ul>
+          <h2 class="mb-2">Get funded</h2>
+          <p class="text-muted font-weight-bold">Please follow the steps below to apply for funding.
+            After submitting your application, please allow 5 to 10 business days for a response.</p>
+          <div class="list-group list-group-flush list-group-activity mb-5">
+            <div class="list-group-item">
+              <div class="row">
+                <div class="col-auto">
+
+                  <h2 class="text-center bg-dark">
+                    <1>
+                  </h2>
+
+                </div>
+                <div class="col ml-n2">
+
+                  <!-- Heading -->
+                  <h3>Create an Invoice on Request Network</h3>
+                  <p class="font-weight-bold">
+                    Make Sure the Invoice is addressed to mcfly@88mph.app and the currency is set on $MPH.
+                  </p>
+                  <button type="button" class="card-link small px-1 mr-3" onclick="location.href='https://invoicing.request.network/';" value="Go to Request Network">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Create invoice
+                  </button>
+                  <a class="text-purple" href="https://request.network/en/invoicing/getting-started/" target="_blank">How-to <i class="fe fe-external-link"></i></a>
+
+                </div>
+              </div> <!-- / .row -->
+            </div>
+            <div class="list-group-item">
+              <div class="row">
+                <div class="col-auto text-center">
+
+                  <h2 class="text-center bg-dark">
+                    <2>
+                  </h2>
+
+                </div>
+                <div class="col ml-n2">
+                  <h3>Submit an Application</h3>
+                  <!-- Heading -->
+                  <p class="font-weight-bold">
+                    This form gives us the information we need to decide on your funding request.
+                  </p>
+                  
+                  <button type="button" class="card-link small mr-3 px-1 mb-3" onclick="location.href='https://forms.gle/K4t7DNaVrkGp8KK46';" value="Go to Google Forms">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Apply for a grant
+                  </button>
+                  <div class="alert alert-pink-blue rounded-0">
+                    Make sure to read the requirements listed below. 
+                  </div>
+                </div>
+              </div> <!-- / .row -->
+            </div>
+          </div>
+          <h2 class="mb-2">Ecosystem Grants</h2>
+          <p class="text-muted font-weight-bold">Ecosystem grants aim at improving and developing 88mph, and more generally the DeFi ecosystem. They are for individuals or teams looking to develop tools, projects that could benefit from grants.
+          </p>
+          <p>The following criteria are considered</p>
+          <ul>
+            <li>How it relates to 88mph protocol and the upcoming 88mph governance.</li>
+            <li>How it may benefit and impact the 88mph protocol and the 88mph community.</li>
+            <li>The status and progress of the team’s MVP or previous projects (draft vs mainnet grade).</li>
+            <li>The team and how likely they are to deliver.</li>
+            <li>Project’s longevity and/or business viability, feasibility, competitiveness, etc.</li>
+            <li>How the funds will be used and why they are needed.</li>
+          </ul>
+          <p>These grants are quite flexible in how they are awarded with demonstrating benefit to the 88mph system being most important. Existing and completed projects are also eligible.</p>
+          
+          <h2 class="mb-2">Areas of research and interest</h2>
+          <p class="text-muted font-weight-bold">We would like to suggest areas of research and interest for the 88mph ecosystem. It’s by no means an exhaustive list. All applications related to the 88mph ecosystem are welcome, as long as your project contributes to the 88mph ecosystem or helps in some way.</p>
+          <ul>
+            <li>New protocol adapters (Eg. curve).</li>
+            <li>Porting to other chains and Ethereum L2 (HECO, BSC, Elrond, etc).</li>
+            <li>Protocols wishing to integrate with parts of the 88mph protocol.</li>
+            <li>External protocol strategies.</li>
+            <li>Translation.</li>
+            <li>Dune queries.</li>
+            <li>[Your idea, project, etc]</li>
+          </ul>
+          <h2 class="mb-2">Community Grants</h2>
+          <p class="text-muted font-weight-bold">Community grants aim at encouraging and developing the 88mph community and 88mph itself. Those grants will be received by users, content creators and projects supporting 88mph.
+            Those users may have helped out users, contributed in a meaningful way to the community, created content, guides, NFTs, etc.
+            Grants range from $100 to $2,000 to be paid in MPH.</p>
+          <p>A list of recipients will be circulated publicly before they are awarded.</p>
+          <p>Users or applications with questions may join this <a class="text-purple" href="https://t.me/join88mph_grants" target="_blank">Telegram</a> or the Grants channel on <a class="text-purple" href="https://discord.com/invite/QThgeYxDuM" target="_blank">88mph Discord</a>.</p>
         </div>
       </div> <!-- / .row -->
 
