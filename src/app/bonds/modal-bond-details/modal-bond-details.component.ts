@@ -82,7 +82,7 @@ export class ModalBondDetailsComponent implements OnInit {
         newDeposits = [...newDeposits, depositObj];
 
         if (depositObj.active && depositObj.maturationTimestamp > now) {
-          newTotalAmountMulTime = newTotalAmountMulTime.plus(depositObj.amount.times(depositObj.maturationTimestamp - now));
+          newTotalAmountMulTime = newTotalAmountMulTime.plus(depositObj.amount).times(depositObj.maturationTimestamp - now);
         }
       }
 
