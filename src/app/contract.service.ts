@@ -9,6 +9,14 @@ export class ContractService {
 
   constructor(public wallet: WalletService) { }
 
+  getContract(address: string, abiName: string, web3?: Web3) {
+    const abi = require(`../assets/abis/${abiName}.json`);
+    if (web3) {
+      return new web3.eth.Contract(abi, address);
+    }
+    return new this.wallet.web3.eth.Contract(abi, address);
+  }
+
   getPoolAddress(name: string): string {
     return require('../assets/json/pools.json')[name].address;
   }
@@ -32,30 +40,18 @@ export class ContractService {
   }
 
   getPool(name: string, web3?: Web3) {
-    const abi = require(`../assets/abis/DInterest.json`);
     const address = this.getPoolAddress(name);
-    if (web3) {
-      return new web3.eth.Contract(abi, address);
-    }
-    return new this.wallet.web3.eth.Contract(abi, address);
+    return this.getContract(address, 'DInterest', web3);
   }
 
   getPoolStablecoin(name: string, web3?: Web3) {
-    const abi = require(`../assets/abis/ERC20.json`);
     const address = this.getPoolStablecoinAddress(name);
-    if (web3) {
-      return new web3.eth.Contract(abi, address);
-    }
-    return new this.wallet.web3.eth.Contract(abi, address);
+    return this.getContract(address, 'ERC20', web3);
   }
 
   getNamedContract(name: string, web3?: Web3) {
-    const abi = require(`../assets/abis/${name}.json`);
     const address = require('../assets/json/contracts.json')[name];
-    if (web3) {
-      return new web3.eth.Contract(abi, address);
-    }
-    return new this.wallet.web3.eth.Contract(abi, address);
+    return this.getContract(address, name, web3);
   }
 
   getNamedContractAddress(name: string) {
@@ -63,19 +59,11 @@ export class ContractService {
   }
 
   getERC20(address: string, web3?: Web3) {
-    const abi = require(`../assets/abis/ERC20.json`);
-    if (web3) {
-      return new web3.eth.Contract(abi, address);
-    }
-    return new this.wallet.web3.eth.Contract(abi, address);
+    return this.getContract(address, 'ERC20', web3);
   }
 
   getRewards(address: string, web3?: Web3) {
-    const abi = require(`../assets/abis/Rewards.json`);
-    if (web3) {
-      return new web3.eth.Contract(abi, address);
-    }
-    return new this.wallet.web3.eth.Contract(abi, address);
+    return this.getContract(address, 'Rewards', web3);
   }
 
   getZapDepositTokenAddress(symbol: string): string {

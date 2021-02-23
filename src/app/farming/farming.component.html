@@ -14,8 +14,9 @@
                   <div class="col-12 col-lg-6">
                     <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
                       🦄 <a class="text-purple"
-                      href="https://uniswap.exchange/add/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH" target="_blank">Provide
-                      liquidity</a> to the Uniswap MPH-ETH pair and earn MPH
+                        href="https://uniswap.exchange/add/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH"
+                        target="_blank">Provide
+                        liquidity</a> to the Uniswap MPH-ETH pair and earn MPH
                     </h5>
                     <!-- Heading -->
                     <h2 class="mt-4 mb-2 glowing pl-3">
@@ -45,9 +46,11 @@
                           {{claimableRewards.toFormat(4)}} MPH
                         </h2>
                         <h5 class="mb-3 text-white">
-                          ${{claimableRewards.times(mphPriceUSD).toFormat(4)}} / ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day / {{rewardPerDay.toFormat(4)}} MPH/day
+                          ${{claimableRewards.times(mphPriceUSD).toFormat(4)}} /
+                          ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day / {{rewardPerDay.toFormat(4)}} MPH/day
                         </h5>
-                        <button type="button" class="card-link small px-1" (click)="claim()" [disabled]="!canContinue()">
+                        <button type="button" class="card-link small px-1" (click)="claim()"
+                          [disabled]="!canContinue()">
                           <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                         </button>
                       </div>
@@ -60,7 +63,8 @@
                           {{yearlyROI.toFormat(4)}}%
                         </h2>
                         <h5 class="mb-2 text-white">
-                          {{monthlyROI.toFormat(4)}}% (m) / {{weeklyROI.toFormat(4)}}% (w) / {{dailyROI.toFormat(4)}}% (d)
+                          {{monthlyROI.toFormat(4)}}% (m) / {{weeklyROI.toFormat(4)}}% (w) / {{dailyROI.toFormat(4)}}%
+                          (d)
                         </h5>
                       </div>
                     </div>
@@ -142,18 +146,21 @@
                 <!-- Title -->
                 <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
                   🍣 <a class="text-purple"
-                  href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f" target="_blank">Provide
-                  liquidity</a> to the SushiSwap MPH-ETH pair and earn SUSHI
+                    href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
+                    target="_blank">Provide
+                    liquidity</a> to the SushiSwap MPH-ETH pair and earn SUSHI
                 </h5>
                 <!-- Heading -->
                 <h2 class="mt-4 mb-2 glowing pl-3">
-                  {{stakedMPHBalance.toFormat(4)}} MPH-ETH SLP
+                  {{sushiStakedLPBalance.toFormat(4)}} MPH-ETH SLP
                 </h2>
                 <h5 class="mb-3 text-white pl-3">
-                  (${{stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}})
-                  ({{stakedMPHPoolProportion.toFormat(4)}}% of the pool)
+                  (${{sushiStakedLPBalance.times(sushiLPPriceUSD).toFormat(4)}})
+                  ({{sushiStakedLPPoolProportion.toFormat(4)}}% of the pool)
                 </h5>
-                <a class="text-purple pl-3" href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f" target="_blank">Manage liquidity <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+                <a class="text-purple pl-3"
+                  href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f" target="_blank">Manage
+                  liquidity <i class="fe fe-external-link ml-2 align-bottom"></i></a>
                 <div class="row pl-3 mt-4">
                   <div class="col-12 col-lg-6">
                     <h5 class="text-uppercase">
@@ -161,12 +168,16 @@
                     </h5>
                     <!-- Heading -->
                     <h2 class="mb-3 glowing">
-                      {{claimableRewards.toFormat(4)}} SUSHI
+                      {{sushiClaimableRewards.toFormat(4)}} SUSHI
                     </h2>
                     <h5 class="mb-3 text-white">
-                      ${{claimableRewards.times(mphPriceUSD).toFormat(4)}} / ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day / {{rewardPerDay.toFormat(4)}} SUSHI/day
+                      ${{sushiClaimableRewards.times(sushiPriceUSD).toFormat(4)}} /
+                      ${{sushiRewardPerDay.times(sushiPriceUSD).toFormat(4)}}/day / {{sushiRewardPerDay.toFormat(4)}}
+                      SUSHI/day
                     </h5>
-                    <a class="text-purple" href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f" target="_blank">Claim <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+                    <a class="text-purple"
+                      href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
+                      target="_blank">Claim <i class="fe fe-external-link ml-2 align-bottom"></i></a>
                   </div>
                   <div class="col-12 col-lg-6">
                     <h5 class="text-uppercase">
@@ -174,33 +185,36 @@
                     </h5>
                     <!-- Heading -->
                     <h2 class="mb-3 glowing">
-                      {{yearlyROI.toFormat(4)}}%
+                      {{sushiYearlyROI.toFormat(4)}}%
                     </h2>
                     <h5 class="mb-2 text-white">
-                      {{monthlyROI.toFormat(4)}}% (m) / {{weeklyROI.toFormat(4)}}% (w) / {{dailyROI.toFormat(4)}}% (d)
+                      {{sushiMonthlyROI.toFormat(4)}}% (m) / {{sushiWeeklyROI.toFormat(4)}}% (w) /
+                      {{sushiDailyROI.toFormat(4)}}% (d)
                     </h5>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div class="card mb-4 mb-lg-0">
               <div class="card-body pt-0">
                 <!-- Title -->
                 <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                   <a class="text-purple"
-                  href="" target="_blank">Provide
-                  liquidity</a> to the Linkswap MPH-LINK pair and earn MPH + YFL
+                  <a class="text-purple"
+                    href="https://linkswap.app/#/add/0x514910771AF9Ca656af840dff83E8264EcF986CA/0x8888801af4d980682e47f1a9036e589479e835c5"
+                    target="_blank">Provide
+                    liquidity</a> to the Linkswap MPH-LINK pair and earn MPH + YFL
                 </h5>
                 <!-- Heading -->
                 <h2 class="mt-4 mb-2 glowing pl-3">
-                  {{stakedMPHBalance.toFormat(4)}} MPH-LINK LS
+                  {{yflinkStakedLPBalance.toFormat(4)}} MPH-LINK LSLP
                 </h2>
                 <h5 class="mb-3 text-white pl-3">
-                  (${{stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}})
-                  ({{stakedMPHPoolProportion.toFormat(4)}}% of the pool)
+                  (${{yflinkStakedLPBalance.times(yflinkLPPriceUSD).toFormat(4)}})
+                  ({{yflinkStakedLPPoolProportion.toFormat(4)}}% of the pool)
                 </h5>
-                <a class="text-purple pl-3" href="" target="_blank">Manage liquidity <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+                <a class="text-purple pl-3" href="https://linkswap.app/#/pool" target="_blank">Manage liquidity <i
+                    class="fe fe-external-link ml-2 align-bottom"></i></a>
                 <div class="row pl-3 mt-4">
                   <div class="col-12 col-lg-6">
                     <h5 class="text-uppercase">
@@ -208,19 +222,24 @@
                     </h5>
                     <!-- Heading -->
                     <h2 class="mb-3 glowing">
-                      {{claimableRewards.toFormat(4)}} MPH
+                      {{yflinkClaimableRewardsMPH.toFormat(4)}} MPH
                     </h2>
                     <h5 class="mb-3 text-white">
-                      ${{claimableRewards.times(mphPriceUSD).toFormat(4)}} / ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day / {{rewardPerDay.toFormat(4)}} MPH/day
+                      ${{yflinkClaimableRewardsMPH.times(mphPriceUSD).toFormat(4)}} /
+                      ${{yflinkRewardPerDayMPH.times(mphPriceUSD).toFormat(4)}}/day /
+                      {{yflinkRewardPerDayMPH.toFormat(4)}} MPH/day
                     </h5>
                     <!-- Heading -->
                     <h2 class="mb-3 glowing">
-                      {{claimableRewards.toFormat(4)}} YFL
+                      {{yflinkClaimableRewardsYFL.toFormat(4)}} YFL
                     </h2>
                     <h5 class="mb-3 text-white">
-                      ${{claimableRewards.times(mphPriceUSD).toFormat(4)}} / ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day / {{rewardPerDay.toFormat(4)}} YFL/day
+                      ${{yflinkClaimableRewardsYFL.times(yflinkPriceUSD).toFormat(4)}} /
+                      ${{yflinkRewardPerDayYFL.times(yflinkPriceUSD).toFormat(4)}}/day /
+                      {{yflinkRewardPerDayYFL.toFormat(4)}} YFL/day
                     </h5>
-                    <a class="text-purple" href="" target="_blank">Claim <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+                    <a class="text-purple" href="https://linkswap.app/#/stake" target="_blank">Claim <i
+                        class="fe fe-external-link ml-2 align-bottom"></i></a>
                   </div>
                   <div class="col-12 col-lg-6">
                     <h5 class="text-uppercase">
@@ -228,10 +247,11 @@
                     </h5>
                     <!-- Heading -->
                     <h2 class="mb-3 glowing">
-                      {{yearlyROI.toFormat(4)}}%
+                      {{yflinkYearlyROI.toFormat(4)}}%
                     </h2>
                     <h5 class="mb-2 text-white">
-                      {{monthlyROI.toFormat(4)}}% (m) / {{weeklyROI.toFormat(4)}}% (w) / {{dailyROI.toFormat(4)}}% (d)
+                      {{yflinkMonthlyROI.toFormat(4)}}% (m) / {{yflinkWeeklyROI.toFormat(4)}}% (w) /
+                      {{yflinkDailyROI.toFormat(4)}}% (d)
                     </h5>
                   </div>
                 </div>
