@@ -159,9 +159,12 @@ export class FarmingComponent implements OnInit {
       this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
 
       // sushi
-      const sushiUserInfo = await sushiMasterChef.methods.userInfo(this.constants.SUSHI_MPH_ONSEN_ID, this.wallet.userAddress).call();
+      let sushiUserInfo;
+      await Promise.all([
+        sushiUserInfo = await sushiMasterChef.methods.userInfo(this.constants.SUSHI_MPH_ONSEN_ID, this.wallet.userAddress).call(),
+        this.sushiClaimableRewards = new BigNumber(await sushiMasterChef.methods.pendingSushi(this.constants.SUSHI_MPH_ONSEN_ID, this.wallet.userAddress).call()).div(this.constants.PRECISION)
+      ]);
       this.sushiStakedLPBalance = new BigNumber(sushiUserInfo.amount).div(this.constants.PRECISION);
-      this.sushiClaimableRewards = new BigNumber(await sushiMasterChef.methods.pendingSushi(this.constants.SUSHI_MPH_ONSEN_ID, this.wallet.userAddress).call()).div(this.constants.PRECISION);
       this.sushiStakedLPPoolProportion = this.sushiStakedLPBalance.div(this.sushiTotalStakedLPBalance).times(100);
       if (this.sushiTotalStakedLPBalance.isZero()) {
         this.sushiStakedLPPoolProportion = new BigNumber(0);
@@ -169,9 +172,11 @@ export class FarmingComponent implements OnInit {
       this.sushiRewardPerDay = this.sushiStakedLPBalance.times(this.sushiRewardPerLPPerSecond).times(this.constants.DAY_IN_SEC);
 
       // yflink
-      this.yflinkStakedLPBalance = new BigNumber(await yflinkStaking.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
-      this.yflinkClaimableRewardsYFL = new BigNumber(await yflinkStaking.methods.earned(this.wallet.userAddress, 0).call()).div(this.constants.PRECISION);
-      this.yflinkClaimableRewardsMPH = new BigNumber(await yflinkStaking.methods.earned(this.wallet.userAddress, 1).call()).div(this.constants.PRECISION);
+      await Promise.all([
+        this.yflinkClaimableRewardsYFL = new BigNumber(await yflinkStaking.methods.earned(this.wallet.userAddress, 0).call()).div(this.constants.PRECISION),
+        this.yflinkClaimableRewardsMPH = new BigNumber(await yflinkStaking.methods.earned(this.wallet.userAddress, 1).call()).div(this.constants.PRECISION),
+        this.yflinkStakedLPBalance = new BigNumber(await yflinkStaking.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION)
+      ]);
       this.yflinkStakedLPPoolProportion = this.yflinkStakedLPBalance.div(this.yflinkTotalStakedLPBalance).times(100);
       if (this.yflinkTotalStakedLPBalance.isZero()) {
         this.yflinkStakedLPPoolProportion = new BigNumber(0);
