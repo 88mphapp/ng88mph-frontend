@@ -20,4 +20,11 @@ export class ConstantsService {
   MPH_MERKLE_DISTRIBUTOR = '0x8c5ddBB0fd86B6480D81A1a5872a63812099C043'; // the MPH V2 distributor
   GRAPHQL_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph';
   SUBGRAPH_SYNC_WARNING_THRESHOLD = 20; // if falls behind by 20 blocks, display error banner
+  SUSHI_MASTERCHEF = '0xc2edad668740f1aa35e4d8f227fb8e17dca888cd';
+  SUSHI_MPH_ONSEN_ID = 92;
+  SUSHI_LP = '0xb2c29e311916a346304f83aa44527092d5bd4f0f';
+  SUSHI = '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2';
+  LINKSWAP_STAKING = '0x0E6FA9f95a428F185752b60D38c62184854bB9e1';
+  YFLINK = '0x28cb7e841ee97947a86B06fA4090C8451f64c0be';
+  LINKSWAP_LP = '0x40f1068495ba9921d6c18cf1ac25f718df8ce69d';
 }
