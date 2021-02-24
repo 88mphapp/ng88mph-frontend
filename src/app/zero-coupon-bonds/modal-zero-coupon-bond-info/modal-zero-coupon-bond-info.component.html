@@ -31,7 +31,7 @@
                   <h6 class="header-pretitle mb-2 pl-3">
                     Your ZCB balance
                   </h6>
-                  <h2 class="mb-1 glowing pl-3">{{zcbEntry.userBalance.toFormat(18)}}</h2>
+                  <h2 class="mb-1 glowing pl-3">{{zcbEntry.userBalance.toFormat(18)}} ZCB</h2>
                   <div class="pl-3 mb-3 text-white d-block">$0.00</div>
                   <a class="mb-3 pl-3" href="https://sushiswap.fi/pair/{{zcbEntry.zcbInfo.sushiSwapPair}}"
                   target="_blank">
@@ -57,7 +57,7 @@
                         Total supply
                       </h6>
                       <h4 class="mb-1 font-weight-normal glowing">
-                        {{zcbEntry.totalSupply.toFormat(2)}}
+                        {{zcbEntry.totalSupply.toFormat(2)}} ZCB
                       </h4>
                       <div class="mb-3 text-white d-block">$0.00</div>
                     </div>
@@ -85,7 +85,7 @@
                   </ng-template>
                 </li>
                 <li ngbNavItem>
-                  <a ngbNavLink>Redeem full-face value ({{poolInfo.stablecoinSymbol}})</a>
+                  <a ngbNavLink>Redeem ZCB's full-face value ({{poolInfo.stablecoinSymbol}})</a>
                   <ng-template ngbNavContent>
                     <app-redeem-zero-coupon-bond [zcbEntry]="zcbEntry" [poolInfo]="poolInfo">
                     </app-redeem-zero-coupon-bond>
