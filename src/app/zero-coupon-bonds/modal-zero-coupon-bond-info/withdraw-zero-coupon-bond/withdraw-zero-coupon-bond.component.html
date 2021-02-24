@@ -1,15 +1,21 @@
-<div class="row px-5 justify-content-left">
-  <h2>How it works</h2>
-  <p class="text-white mb-5">
-    When the zero coupon bond is mature, the individual deposits it contains must be withdrawn so that bond holders can
-    redeem their bonds for the underlying tokens. When a deposit is withdrawn, the MPH reward is unlocked and given to
-    the deposit's owner, providing an incentive for the owners to withdraw their deposits. However, a deposit can be
-    withdrawn by anyone, so even if a deposit's owner is unresponsive, bond holders can still redeem their bonds.
-  </p>
+<div class="row px-4 no-gutters">
+  <div class="col">
+    <h2>How it works</h2>
+      <p class="text-white">
+      When the zero coupon bond is mature, the individual deposits it contains must be withdrawn so that bond holders can
+      redeem their bonds for the underlying tokens.
+      </p>
+      <p class="text-white">When a deposit is withdrawn, the MPH reward is unlocked and given to
+      the deposit's owner, providing an incentive for the owners to withdraw their deposits.</p>
+      <p class="text-white mb-4">When a deposit is withdrawn, the MPH reward is unlocked and given to
+      the deposit's owner, providing an incentive for the owners to withdraw their deposits. However, a deposit can be
+      withdrawn by anyone, so even if a deposit's owner is unresponsive, bond holders can still redeem their bonds.</p>
+  </div>
 </div>
-<div class="row px-5 justify-content-left">
+
+<div class="row px-4 justify-content-end align-items-center">
   <input type="checkbox" id="showAllDeposits" (input)="loadActiveDeposits($event.target.checked)" />
-  <label for="showAllDeposits" class="ml-2">
+  <label for="showAllDeposits" class="ml-2 mb-0">
     Show everyone's deposits
   </label>
 </div>
@@ -35,7 +41,7 @@
         </tr>
       </thead>
       <tbody class="list">
-        <tr class="border-left border-2 border-amber" *ngFor="let deposit of activeDeposits">
+        <tr *ngFor="let deposit of activeDeposits">
           <td>
             <h4 class="mb-0">#{{deposit.nftID}}</h4>
           </td>
