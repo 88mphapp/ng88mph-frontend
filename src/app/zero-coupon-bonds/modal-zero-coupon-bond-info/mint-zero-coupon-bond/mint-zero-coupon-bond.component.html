@@ -1,20 +1,22 @@
-<div class="row px-5 justify-content-left">
-  <h2>How it works</h2>
-  <p class="text-white mb-5">
-    If you have a deposit in the {{poolInfo.protocol}} {{poolInfo.stablecoinSymbol}} pool whose maturation date is on or
-    before that of this zero coupon bond, then you can use the deposit to mint this zero coupon bond.
-  </p>
-  <p class="text-white mb-5">
-    You will need to deposit
-    all of the MPH rewards you received from the deposit. When the deposit is
-    mature, part of the deposited MPH will be used to pay for withdrawing the deposit, and the remaining MPH will be
-    returned to you.
-  </p>
-  <p class="text-white mb-5">
-    Once you've used your deposit to mint zero coupon bonds, you will give up your ownership of the deposit, meaning you
-    cannot
-    withdraw it early or trade its NFT. The NFT will be returned to you after the deposit is mature & withdrawn.
-  </p>
+<div class="row px-4 no-gutters">
+  <div class="col">
+    <h2>How it works</h2>
+    <p class="text-white">
+      If you have a deposit in the {{poolInfo.protocol}} {{poolInfo.stablecoinSymbol}} pool whose maturation date is on or
+      before that of this zero coupon bond, then you can use the deposit to mint this zero coupon bond.
+    </p>
+    <p class="text-white">
+      You will need to deposit
+      all of the MPH rewards you received from the deposit. When the deposit is
+      mature, part of the deposited MPH will be used to pay for withdrawing the deposit, and the remaining MPH will be
+      returned to you.
+    </p>
+    <p class="text-white mb-4">
+      Once you've used your deposit to mint zero coupon bonds, you will give up your ownership of the deposit, meaning you
+      cannot
+      withdraw it early or trade its NFT. The NFT will be returned to you after the deposit is mature & withdrawn.
+    </p>
+  </div>
 </div>
 <div class="row justify-content-center">
   <ng-container *ngIf="eligibleDeposits.length == 0">
@@ -47,7 +49,7 @@
         </tr>
       </thead>
       <tbody class="list">
-        <tr class="border-left border-2 border-amber" *ngFor="let deposit of eligibleDeposits">
+        <tr *ngFor="let deposit of eligibleDeposits">
           <td>
             <h4 class="mb-0">#{{deposit.nftID}}</h4>
           </td>

@@ -59,11 +59,7 @@
             <tbody class="list">
               <tr class="border-left border-2 border-amber" *ngFor="let zcbEntry of selectedPoolZCBList">
                 <td>
-                  <div class="d-flex align-items-center">
-                    <div class="ml-3">
-                      <h4 class="mb-0">{{zcbEntry.zcbInfo.series}}</h4>
-                    </div>
-                  </div>
+                  <h4 class="mb-0">{{zcbEntry.zcbInfo.series}}</h4>
                 </td>
                 <td>
                   <h4 class="mb-1 font-weight-normal glowing">{{zcbEntry.userBalance.toFormat(2)}}</h4>
@@ -78,12 +74,12 @@
                   <!-- Button -->
                   <a class="mr-3" href="https://sushiswap.fi/pair/{{zcbEntry.zcbInfo.sushiSwapPair}}" target="_blank">
                     <button type="button" class="card-link small px-1">
-                      <i class="fe fe-refresh-ccw mr-2 align-bottom"></i>Trade
+                      <i class="fe fe-external-link mr-2 align-bottom"></i>Trade
                     </button>
                   </a>
                   <!-- Button -->
                   <button type="button" class="card-link small px-1" (click)="openZCBModal(zcbEntry)">
-                    <i class="fe fe-info mr-2 align-bottom"></i>Info
+                    <i class="fe fe-settings mr-2 align-bottom"></i>Manage
                   </button>
                 </td>
               </tr>

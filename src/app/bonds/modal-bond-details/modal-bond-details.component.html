@@ -71,8 +71,7 @@
                           <small>0%</small>
                         </div>
                         <div class="col text-center">
-                          <small>{{funding.pool.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate
-                            APY)</small>
+                          <small>{{funding.pool.oracleInterestRate.toFormat(1)}}% <br> (Current <a href="https://88mph.app/docs/howitworks/#interest-rate-model" target="_blank">30d EMA floating-rate APY</a>)</small>
                         </div>
                         <div class="col text-right">
                           <small>{{funding.pool.oracleInterestRate.times(2).toFormat(1)}}%</small>
