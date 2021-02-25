@@ -57,6 +57,10 @@ export class RedeemZeroCouponBondComponent implements OnInit {
     return this.wallet.connected;
   }
 
+  get maxRedeemableAmount(): BigNumber {
+    return BigNumber.min(this.globalRedeemableAmount, this.zcbEntry.userBalance);
+  }
+
   redeem() {
     const zcbContract = this.contract.getZeroCouponBondContract(this.zcbEntry.zcbInfo.address);
     const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
