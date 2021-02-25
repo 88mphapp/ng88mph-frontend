@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { ContractService, PoolInfo } from 'src/app/contract.service';
 import { HelpersService } from 'src/app/helpers.service';
@@ -22,28 +23,9 @@ export class ModalZeroCouponBondInfoComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService
   ) {
-    this.resetData(true, true);
   }
 
   ngOnInit(): void {
-    this.loadData(this.wallet.connected, true);
-    this.wallet.connectedEvent.subscribe(() => {
-      this.resetData(true, false);
-      this.loadData(true, false);
-    });
-    this.wallet.disconnectedEvent.subscribe(() => {
-      this.resetData(true, false);
-    });
-  }
 
-  resetData(resetUser: boolean, resetGlobal: boolean): void {
-
-  }
-
-  async loadData(loadUser: boolean, loadGlobal: boolean) {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    if (loadGlobal) {
-      const zcbContract = this.contract.getZeroCouponBondContract(this.zcbEntry.zcbInfo.address, readonlyWeb3);
-    }
   }
 }
