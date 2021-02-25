@@ -128,7 +128,7 @@ export class ZeroCouponBondsComponent implements OnInit {
       // already mature
       return new BigNumber(NaN);
     }
-    const apy = roi.div(secondsToMaturation).times(this.constants.YEAR_IN_SEC);
+    const apy = roi.div(secondsToMaturation).times(this.constants.YEAR_IN_SEC).times(100);
     return apy;
   }
 }
