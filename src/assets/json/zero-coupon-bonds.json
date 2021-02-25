@@ -1,14 +1,4 @@
 {
-  "aDAI": [
-    {
-      "series": "Test Series",
-      "symbol": "88MPH-AAVE-DAI-TEST",
-      "address": "0x1655ca36a8787ce9cfd111044a9281ba838d76d5",
-      "sushiSwapPair": "0x555e8b90b7d72cb935112778d1f58d6044cc4e6a",
-      "sushiSwapPairBaseTokenSymbol": "DAI",
-      "sushiSwapPairBaseTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f"
-    }
-  ],
   "cUNI": [
     {
       "series": "August 2021",
