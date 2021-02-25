@@ -82,7 +82,7 @@ export class ZeroCouponBondsComponent implements OnInit {
         zcbEntry.userBalance = new BigNumber(await zcbContract.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
         zcbEntry.userBalanceUSD = zcbEntry.priceInUSD.times(zcbEntry.userBalance);
       }
-      zcbEntry.impliedInterestRate = this.computeImpliedInterestRate(zcbEntry);
+      zcbEntry.impliedInterestRate = await this.computeImpliedInterestRate(zcbEntry);
       zcbEntry.mature = zcbEntry.maturationTimestamp <= new Date();
       return zcbEntry;
     })).then(zcbList => this.selectedPoolZCBList = zcbList);
@@ -120,8 +120,9 @@ export class ZeroCouponBondsComponent implements OnInit {
     return bondPriceInBaseToken.times(baseTokenPriceInUSD);
   }
 
-  computeImpliedInterestRate(zcbEntry: ZeroCouponBondTableEntry): BigNumber {
-    const roi = new BigNumber(1).div(zcbEntry.priceInUSD).minus(1);
+  async computeImpliedInterestRate(zcbEntry: ZeroCouponBondTableEntry): Promise<BigNumber> {
+    const underlyingPrice = await this.helpers.getTokenPriceUSD(this.selectedPoolInfo.stablecoin);
+    const roi = new BigNumber(underlyingPrice).div(zcbEntry.priceInUSD).minus(1);
     const secondsToMaturation = (zcbEntry.maturationTimestamp.getTime() - this.now.getTime()) / 1e3;
     if (secondsToMaturation <= 0) {
       // already mature
