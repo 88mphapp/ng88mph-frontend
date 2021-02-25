@@ -1,0 +1,47 @@
+<div class="row px-4 no-gutters">
+  <div class="col">
+    <h2>How it works</h2>
+    <p class="text-white">
+      When the zero coupon bond becomes mature, you can redeem your zero coupon bond 1-to-1 for
+      {{poolInfo.stablecoinSymbol}}.
+    </p>
+    <p class="text-white">
+      However, it's likely that you won't be able to do so immediately after maturation, because the individual deposits
+      need to be withdrawn first in order to provide the {{poolInfo.stablecoinSymbol}}. The maximum redeemable amount is
+      displayed below. The owners of the deposits are incentivized to withdraw the deposits, since they will receive their
+      MPH reward after withdrawal, so feel free to wait until enough deposits have been withdrawn to redeem your zero
+      coupon bonds.
+    </p>
+    <p class="text-white mb-4">
+      If you urgently need to redeem your bonds for some reason, you also have the option to go to the
+      "Withdraw MPH reward from deposit" tab and withdraw the deposits yourself.
+    </p>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col">
+    <ng-container *ngIf="!zcbIsMature">
+      <h3 class="text-center glowing">This zero coupon bond is not mature yet. Please come back when the maturation date has passed.</h3>
+    </ng-container>
+    <ng-container *ngIf="zcbIsMature">
+      <div class="row align-items-center mb-4 px-4">
+        <div class="col-12 col-lg-auto">
+          <h6 class="header-pretitle mb-2">
+            Your max redeemable amount
+          </h6>
+          <h4 class="mb-1 font-weight-normal glowing">
+            {{maxRedeemableAmount.toFormat(poolInfo.stablecoinDecimals)}} {{poolInfo.stablecoinSymbol}}
+          </h4>
+        </div>
+        <div class="col-12 col-lg-auto">
+          <!-- Button -->
+          <button type="button" class="card-link small small px-1" (click)="redeem()" [disabled]="!canContinue">
+            <i class="fe fe-dollar-sign mr-2 align-bottom"></i>
+            Redeem max possible amount
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

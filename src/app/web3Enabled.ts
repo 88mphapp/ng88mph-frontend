@@ -253,10 +253,16 @@ export class Web3Enabled {
   }
 
   displayGenericError(error: Error) {
+    let errorMessage;
+    try {
+      errorMessage = JSON.parse(error.message.slice(error.message.indexOf('{'))).originalError.message;
+    } catch (err) {
+      errorMessage = error.message;
+    }
     this.notifyInstance.notification({
       eventCode: 'genericError',
       type: 'error',
-      message: error.message
+      message: errorMessage
     });
   }
 

@@ -9,6 +9,7 @@ import { FarmingComponent } from './farming/farming.component';
 import { RewardsComponent } from './rewards/rewards.component';
 import { StatsComponent } from './stats/stats.component';
 import { VestingComponent } from './vesting/vesting.component';
+import { ZeroCouponBondsComponent } from './zero-coupon-bonds/zero-coupon-bonds.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'bonds',
     component: BondsComponent
+  },
+  {
+    path: 'zero-coupon-bonds',
+    component: ZeroCouponBondsComponent
   },
   {
     path: 'rewards',
