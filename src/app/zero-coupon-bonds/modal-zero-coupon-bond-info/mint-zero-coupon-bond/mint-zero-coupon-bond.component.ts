@@ -132,8 +132,8 @@ export class MintZeroCouponBondComponent implements OnInit {
     const depositNFTAddress = await poolContract.methods.depositNFT().call();
     const depositNFTContract = this.contract.getContract(depositNFTAddress, 'NFT');
 
-    const fractionalDepositName = ``;
-    const fractionalDepositSymbol = ``;
+    const fractionalDepositName = `88mph Fractional Deposit`;
+    const fractionalDepositSymbol = `88MPH-FD`;
     const mphDepositAmount = deposit.mintMPHAmount.times(this.constants.PRECISION).integerValue().toFixed();
     const mintFunc = zcbContract.methods.mintWithDepositNFT(deposit.nftID, fractionalDepositName, fractionalDepositSymbol);
 
