@@ -190,5 +190,37 @@
     "moneyMarket": "0x08cC88c379911BF6d778081a078B48bd7035fB70",
     "interestFee": 0.2,
     "depositFee": 0.005
+  },
+  "harvestCRVSTETH": {
+    "name": "harvestCRVSTETH",
+    "address": "0x303CB7Ede0c3AD99CE017CDC3aBAcD65164Ff486",
+    "stablecoin": "0x06325440D014e39736583c165C2963BA99fAf14E",
+    "stablecoinSymbol": "CRV:STETH",
+    "stablecoinDecimals": 18,
+    "protocol": "Harvest",
+    "iconPath": "assets/img/token-icons/curve-steth.png",
+    "moneyMarket": "0xC03e7F63A6Be1198127B7a6eEb5ecD0FBCfF6381",
+    "stakingPool": "0x2E25800957742C52b4d69b65F9C67aBc5ccbffe6",
+    "curveSwapAddress": "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022",
+    "zapDepositTokens": [
+      "ETH",
+      "stETH"
+    ]
+  },
+  "harvestCRVRENWBTC": {
+    "name": "harvestCRVRENWBTC",
+    "address": "0x22E6b9A65163CE1225D1F65EF7942a979d093039",
+    "stablecoin": "0x49849C98ae39Fff122806C06791Fa73784FB3675",
+    "stablecoinSymbol": "CRV:RENWBTC",
+    "stablecoinDecimals": 18,
+    "protocol": "Harvest",
+    "iconPath": "assets/img/token-icons/btc.svg",
+    "moneyMarket": "0xD614307FbE4ecE3960f2BB6Ec7863905515AF037",
+    "stakingPool": "0xA3Cf8D1CEe996253FAD1F8e3d68BDCba7B3A3Db5",
+    "curveSwapAddress": "0x93054188d876f558f4a66B2EF1d97d16eDf0895B",
+    "zapDepositTokens": [
+      "WBTC",
+      "renBTC"
+    ]
   }
 }
