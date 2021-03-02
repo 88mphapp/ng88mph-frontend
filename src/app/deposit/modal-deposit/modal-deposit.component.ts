@@ -238,15 +238,28 @@ export class ModalDepositComponent implements OnInit {
   }
 
   async zapCurveDeposit() {
+    const slippage = 0.01;
     const tokenAddress = this.contract.getZapDepositTokenAddress(this.selectedDepositToken);
-    const minOutputTokenAmount = 0;
     const maturationTimestamp = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC).plus(Date.now() / 1e3).plus(this.DEPOSIT_DELAY));
 
     if (tokenAddress === this.constants.ZERO_ADDR) {
       // ETH deposit
       const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(this.constants.PRECISION));
 
-      const funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
+      let funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
+        tokenAddress,
+        tokenAddress,
+        this.selectedPoolInfo.curveSwapAddress,
+        depositAmount,
+        0,
+        this.constants.ZERO_ADDR,
+        '0x',
+        this.constants.ZERO_ADDR
+      );
+
+      const curveOutputValue = new BigNumber(await funcZapIn.call({ from: this.wallet.userAddress, value: depositAmount }));
+      const minOutputTokenAmount = this.helpers.processWeb3Number(curveOutputValue.times(1 - slippage));
+      funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
         tokenAddress,
         tokenAddress,
         this.selectedPoolInfo.curveSwapAddress,
@@ -280,7 +293,20 @@ export class ModalDepositComponent implements OnInit {
       const tokenPrecision = Math.pow(10, tokenDecimals);
       const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(tokenPrecision));
 
-      const funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
+      let funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
+        tokenAddress,
+        tokenAddress,
+        this.selectedPoolInfo.curveSwapAddress,
+        depositAmount,
+        0,
+        this.constants.ZERO_ADDR,
+        '0x',
+        this.constants.ZERO_ADDR
+      );
+
+      const curveOutputValue = new BigNumber(await funcZapIn.call({ from: this.wallet.userAddress }));
+      const minOutputTokenAmount = this.helpers.processWeb3Number(curveOutputValue.times(1 - slippage));
+      funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
         tokenAddress,
         tokenAddress,
         this.selectedPoolInfo.curveSwapAddress,
