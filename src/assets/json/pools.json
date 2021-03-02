@@ -30,7 +30,7 @@
     "protocol": "Compound",
     "iconPath": "assets/img/token-icons/uni.svg",
     "moneyMarket": "0xb5d7BE07Cc7F03c8340A3F492357137438778aFF",
-    "vestPeriod": "7 days"
+    "vestPeriod": "14 days"
   },
   "yUSD": {
     "name": "yUSD",
@@ -171,7 +171,7 @@
     "protocol": "Aave",
     "iconPath": "assets/img/token-icons/dai.svg",
     "moneyMarket": "0x90757D5e68A725Fc5f7b13ecdD72cDdd5B8Fa979",
-    "vestPeriod": "7 days"
+    "vestPeriod": "30 days"
   },
   "harvestCRVOBTC": {
     "name": "harvestCRVOBTC",
