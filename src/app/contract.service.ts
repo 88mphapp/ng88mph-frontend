@@ -92,6 +92,7 @@ export interface PoolInfo {
   protocol: string;
   iconPath: string;
   moneyMarket: string;
+  vestPeriod: string;
   stakingPool?: string;
   curveSwapAddress?: string;
   zapDepositTokens?: string[];
