@@ -374,6 +374,8 @@ export class BondsComponent implements OnInit {
   }
 
   async updateNumDepositsToFund(newNum: number) {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const poolContract = this.contract.getPool(this.selectedPool.name, readonlyWeb3);
     if (newNum >= this.numFundableDeposits) {
       // fund all deposits
       this.numDepositsToFund = 'All';
@@ -384,9 +386,14 @@ export class BondsComponent implements OnInit {
       let debtToFundToken = new BigNumber(0);
       let amountToEarnOnToken = new BigNumber(0);
       for (const deposit of this.fundableDeposits.slice(0, newNum)) {
-        if (!deposit.active) continue;
-        debtToFundToken = debtToFundToken.plus(deposit.surplus.times(-1));
-        amountToEarnOnToken = amountToEarnOnToken.plus(deposit.amount);
+        if (deposit.active) {
+          debtToFundToken = debtToFundToken.plus(deposit.surplus.times(-1));
+          amountToEarnOnToken = amountToEarnOnToken.plus(deposit.amount);
+        } else {
+          const depositObj = await poolContract.methods.getDeposit(deposit.nftID).call();
+          const finalSurplus = new BigNumber(depositObj.finalSurplusAmount).times(depositObj.finalSurplusIsNegative ? -1 : 1).div(Math.pow(10, this.selectedPool.stablecoinDecimals));
+          debtToFundToken = debtToFundToken.plus(finalSurplus.times(-1));
+        }
       }
       this.debtToFundToken = debtToFundToken;
       this.amountToEarnOnToken = amountToEarnOnToken;
