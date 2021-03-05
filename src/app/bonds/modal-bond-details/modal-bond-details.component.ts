@@ -22,6 +22,7 @@ export class ModalBondDetailsComponent implements OnInit {
   estimatedProfitUSD: BigNumber;
   estimatedProfitToken: BigNumber;
   totalAmountMulTime: BigNumber;
+  interestFromLeftoverDeposits: BigNumber;
   @Input() public funderPool: FunderPool;
   @Input() public funding: Funding;
 
@@ -81,8 +82,14 @@ export class ModalBondDetailsComponent implements OnInit {
         };
         newDeposits = [...newDeposits, depositObj];
 
-        if (depositObj.active && depositObj.maturationTimestamp > now) {
-          newTotalAmountMulTime = newTotalAmountMulTime.plus(depositObj.amount.times(depositObj.maturationTimestamp - now));
+        if (depositObj.active) {
+          if (depositObj.maturationTimestamp > now) {
+            newTotalAmountMulTime = newTotalAmountMulTime.plus(depositObj.amount.times(depositObj.maturationTimestamp - now));
+          } else {
+            // mature but not withdrawn, compute current interest accumulated
+            const interestAccumulated = depositObj.amount.times(this.funding.pool.moneyMarketIncomeIndex).div(this.funding.recordedMoneyMarketIncomeIndex).minus(depositObj.amount);
+            this.interestFromLeftoverDeposits = this.interestFromLeftoverDeposits.plus(interestAccumulated);
+          }
         }
       }
 
@@ -99,6 +106,7 @@ export class ModalBondDetailsComponent implements OnInit {
     this.estimatedProfitUSD = new BigNumber(0);
     this.estimatedROI = new BigNumber(0);
     this.totalAmountMulTime = new BigNumber(0);
+    this.interestFromLeftoverDeposits = new BigNumber(0);
   }
 
   timestampToDateString(timestampSec: number): string {
@@ -109,7 +117,7 @@ export class ModalBondDetailsComponent implements OnInit {
     this.floatingRatePrediction = new BigNumber(newPrediction);
     const estimatedRemainingEarnings = this.totalAmountMulTime.times(newPrediction).div(100).div(this.constants.YEAR_IN_SEC);
     const cost = this.funding.deficitToken.minus(this.funding.refundAmountToken);
-    this.estimatedProfitToken = estimatedRemainingEarnings.plus(this.funding.interestEarnedToken).minus(cost);
+    this.estimatedProfitToken = estimatedRemainingEarnings.plus(this.funding.interestEarnedToken).plus(this.interestFromLeftoverDeposits).minus(cost);
     const tokenPrice = this.funding.deficitUSD.div(this.funding.deficitToken); // infer token price from funding, avoids network request
     this.estimatedProfitUSD = this.estimatedProfitToken.times(tokenPrice);
     this.estimatedROI = this.estimatedProfitToken.div(cost).times(100);
