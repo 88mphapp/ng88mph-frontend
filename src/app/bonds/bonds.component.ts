@@ -136,9 +136,6 @@ export class BondsComponent implements OnInit {
           oneYearInterestRate
           oracleInterestRate
           mphFunderRewardMultiplier
-          latestFundedDeposit: deposits(where: { fundingID_gt: 0 }, orderBy: nftID, orderDirection: desc, first: 1) {
-            nftID
-          }
           latestDeposit: deposits(orderBy: nftID, orderDirection: desc, first: 1) {
             nftID
           }
@@ -253,7 +250,8 @@ export class BondsComponent implements OnInit {
           // get MPH reward amount
           const mphRewardPerTokenPerSecond = new BigNumber(pool.mphFunderRewardMultiplier);
 
-          const latestFundedDeposit = pool.latestFundedDeposit.length ? +pool.latestFundedDeposit[0].nftID : 0;
+          const poolContract = this.contract.getPool(poolInfo.name);
+          const latestFundedDeposit = await poolContract.methods.latestFundedDepositID().call();
           const latestDeposit = pool.latestDeposit.length ? +pool.latestDeposit[0].nftID : 0;
           const dpoolObj: DPool = {
             name: poolInfo.name,
@@ -545,9 +543,6 @@ interface QueryResult {
     oneYearInterestRate: number;
     oracleInterestRate: number;
     mphFunderRewardMultiplier: number;
-    latestFundedDeposit: {
-      nftID: number;
-    }[];
     latestDeposit: {
       nftID: number;
     }[];
