@@ -251,7 +251,7 @@ export class BondsComponent implements OnInit {
           const mphRewardPerTokenPerSecond = new BigNumber(pool.mphFunderRewardMultiplier);
 
           const poolContract = this.contract.getPool(poolInfo.name);
-          const latestFundedDeposit = await poolContract.methods.latestFundedDepositID().call();
+          const latestFundedDeposit = +(await poolContract.methods.latestFundedDepositID().call());
           const latestDeposit = pool.latestDeposit.length ? +pool.latestDeposit[0].nftID : 0;
           const dpoolObj: DPool = {
             name: poolInfo.name,
