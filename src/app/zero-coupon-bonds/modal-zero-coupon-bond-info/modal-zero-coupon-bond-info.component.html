@@ -98,6 +98,13 @@
                     </app-withdraw-zero-coupon-bond>
                   </ng-template>
                 </li>
+                <li ngbNavItem>
+                  <a ngbNavLink>Liquidity mining</a>
+                  <ng-template ngbNavContent>
+                    <app-farm-zero-coupon-bond [zcbEntry]="zcbEntry">
+                    </app-farm-zero-coupon-bond>
+                  </ng-template>
+                </li>
               </ul>
               <div class="row justify-content-center pt-4">
                 <div [ngbNavOutlet]="nav"></div>
