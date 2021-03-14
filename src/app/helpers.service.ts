@@ -82,6 +82,26 @@ export class HelpersService {
     return lpTotalSupply.isZero() ? new BigNumber(0) : reserve0.times(token0PriceInUSD).plus(reserve1.times(token1PriceInUSD)).div(lpTotalSupply);
   }
 
+  async getZCBLPPriceUSD(lpTokenAddress: string, baseTokenAddress: string): Promise<BigNumber> {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const uniswapPair = this.contract.getContract(lpTokenAddress, 'MPHLP', readonlyWeb3);
+    const reservesObj = await uniswapPair.methods.getReserves().call();
+    const token0 = await uniswapPair.methods.token0().call();
+    const token1 = await uniswapPair.methods.token1().call();
+    let baseTokenReserve;
+    if (token0.toLowerCase() === baseTokenAddress.toLowerCase()) {
+      // base token is token0
+      baseTokenReserve = new BigNumber(reservesObj._reserve0).div(this.constants.PRECISION);
+    } else {
+      // base token is token1
+      baseTokenReserve = new BigNumber(reservesObj._reserve1).div(this.constants.PRECISION);
+    }
+    const baseTokenPriceInUSD = await this.getTokenPriceUSD(baseTokenAddress);
+    const totalValueLocked = baseTokenReserve.times(baseTokenPriceInUSD).times(2);
+    const lpTotalSupply = new BigNumber(await uniswapPair.methods.totalSupply().call()).div(this.constants.PRECISION);
+    return lpTotalSupply.isZero() ? new BigNumber(0) : totalValueLocked.div(lpTotalSupply);
+  }
+
   applyFeeToInterest(rawInterestAmount, poolInfo: PoolInfo): BigNumber {
     let interestFee = 0.1;
     if (poolInfo.interestFee) {
