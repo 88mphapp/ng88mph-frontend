@@ -252,6 +252,16 @@ export class Web3Enabled {
     }, _onError);
   }
 
+  async approveToken(token, to, amount, _onTxHash, _onReceipt, _onError) {
+    const maxAllowance = new BigNumber(2).pow(256).minus(1).integerValue().toFixed();
+    const allowance = new BigNumber(await token.methods.allowance(this.state.address, to).call());
+    if (allowance.gte(amount)) {
+      _onReceipt();
+      return;
+    }
+    return this.sendTx(token.methods.approve(to, maxAllowance), _onTxHash, _onReceipt, _onError);
+  }
+
   displayGenericError(error: Error) {
     let errorMessage;
     try {

@@ -259,6 +259,13 @@ export class ModalDepositComponent implements OnInit {
 
       const curveOutputValue = new BigNumber(await funcZapIn.call({ from: this.wallet.userAddress, value: depositAmount }));
       const minOutputTokenAmount = this.helpers.processWeb3Number(curveOutputValue.times(1 - slippage));
+
+      if (curveOutputValue.lt(this.minDepositAmount.times(this.constants.PRECISION))) {
+        // output curve tokens less than minimum threshold
+        this.wallet.displayGenericError(new Error('Output Curve LP token amount less than minimum deposit threshold.'));
+        return;
+      }
+
       funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
         tokenAddress,
         tokenAddress,
@@ -293,58 +300,67 @@ export class ModalDepositComponent implements OnInit {
       const tokenPrecision = Math.pow(10, tokenDecimals);
       const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(tokenPrecision));
 
-      let funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
-        tokenAddress,
-        tokenAddress,
-        this.selectedPoolInfo.curveSwapAddress,
-        depositAmount,
-        0,
-        this.constants.ZERO_ADDR,
-        '0x',
-        this.constants.ZERO_ADDR
-      );
+      this.wallet.approveToken(token, this.contract.getNamedContractAddress('CurveZapIn'), depositAmount, () => { }, async () => {
+        let funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
+          tokenAddress,
+          tokenAddress,
+          this.selectedPoolInfo.curveSwapAddress,
+          depositAmount,
+          0,
+          this.constants.ZERO_ADDR,
+          '0x',
+          this.constants.ZERO_ADDR
+        );
 
-      const curveOutputValue = new BigNumber(await funcZapIn.call({ from: this.wallet.userAddress }));
-      const minOutputTokenAmount = this.helpers.processWeb3Number(curveOutputValue.times(1 - slippage));
-      funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
-        tokenAddress,
-        tokenAddress,
-        this.selectedPoolInfo.curveSwapAddress,
-        depositAmount,
-        minOutputTokenAmount,
-        this.constants.ZERO_ADDR,
-        '0x',
-        this.constants.ZERO_ADDR
-      );
+        const curveOutputValue = new BigNumber(await funcZapIn.call({ from: this.wallet.userAddress }));
+        const minOutputTokenAmount = this.helpers.processWeb3Number(curveOutputValue.times(1 - slippage));
 
-      this.wallet.sendTxWithToken(funcZapIn, token, this.contract.getNamedContractAddress('CurveZapIn'), depositAmount, () => { }, (receipt) => {
-        let outputAmount;
-        for (const eventKey of Object.keys(receipt.events)) {
-          const event = receipt.events[eventKey];
-          if (event.address.toLowerCase() === this.selectedPoolInfo.stablecoin.toLowerCase()) {
-            // is mint event
-            outputAmount = event.raw.data;
-            break;
-          }
+        if (curveOutputValue.lt(this.minDepositAmount.times(Math.pow(10, this.selectedPoolInfo.stablecoinDecimals)))) {
+          // output curve tokens less than minimum threshold
+          this.wallet.displayGenericError(new Error('Output Curve LP token amount less than minimum deposit threshold.'));
+          return;
         }
 
-        const pool = this.contract.getPool(this.selectedPoolInfo.name);
-        const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
-        const funcDeposit = pool.methods.deposit(outputAmount, maturationTimestamp);
-        this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.selectedPoolInfo.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+        funcZapIn = this.contract.getNamedContract('CurveZapIn').methods.ZapIn(
+          tokenAddress,
+          tokenAddress,
+          this.selectedPoolInfo.curveSwapAddress,
+          depositAmount,
+          minOutputTokenAmount,
+          this.constants.ZERO_ADDR,
+          '0x',
+          this.constants.ZERO_ADDR
+        );
+
+        this.wallet.sendTx(funcZapIn, () => { }, (receipt) => {
+          let outputAmount;
+          for (const eventKey of Object.keys(receipt.events)) {
+            const event = receipt.events[eventKey];
+            if (event.address.toLowerCase() === this.selectedPoolInfo.stablecoin.toLowerCase()) {
+              // is mint event
+              outputAmount = event.raw.data;
+              break;
+            }
+          }
+
+          const pool = this.contract.getPool(this.selectedPoolInfo.name);
+          const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
+          const funcDeposit = pool.methods.deposit(outputAmount, maturationTimestamp);
+          this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.selectedPoolInfo.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+        }, (error) => { this.wallet.displayGenericError(error) });
       }, (error) => { this.wallet.displayGenericError(error) });
+
+      /*const func = this.contract.getNamedContract('ZapCurve').methods.zapCurveDeposit(
+        this.selectedPoolInfo.address,
+        this.selectedPoolInfo.curveSwapAddress,
+        tokenAddress,
+        depositAmount,
+        minOutputTokenAmount,
+        maturationTimestamp
+      );
+  
+      this.wallet.sendTxWithToken(func, token, this.contract.getNamedContractAddress('ZapCurve'), depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });*/
     }
-
-    /*const func = this.contract.getNamedContract('ZapCurve').methods.zapCurveDeposit(
-      this.selectedPoolInfo.address,
-      this.selectedPoolInfo.curveSwapAddress,
-      tokenAddress,
-      depositAmount,
-      minOutputTokenAmount,
-      maturationTimestamp
-    );
-
-    this.wallet.sendTxWithToken(func, token, this.contract.getNamedContractAddress('ZapCurve'), depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });*/
   }
 
   canContinue() {
