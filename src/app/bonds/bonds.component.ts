@@ -319,7 +319,7 @@ export class BondsComponent implements OnInit {
 
   selectPool(poolIdx: number) {
     this.selectedPool = this.allPoolList[poolIdx];
-    this.floatingRatePrediction = this.selectedPool.oneYearInterestRate.times(1 / 2);
+    this.floatingRatePrediction = this.selectedPool.oneYearInterestRate.times(2);
     this.numFundableDeposits = Math.min(this.selectedPool.latestDeposit - this.selectedPool.latestFundedDeposit, 20);
 
     const poolID = this.selectedPool.address.toLowerCase();
