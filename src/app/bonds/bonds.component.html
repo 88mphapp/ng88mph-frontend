@@ -305,9 +305,12 @@
                 <h5 class="text-uppercase text-white">
                   Estimated ROI
                 </h5>
-                <h2 class="display-2 mb-0 mb-md-4 glowing">
-                  {{estimatedROI.toFormat(4)}}%<span class="small align-top">(+{{mphROI.toFormat(4)}}% MPH)</span>
+                <h2 class="display-2 mb-0 glowing">
+                  0.0000%
                 </h2>
+                <h5 class="mb-0 mb-md-4 text-white">
+                  ({{estimatedROI.toFormat(4)}}% in {{selectedPool?.stablecoinSymbol}} + {{mphROI.toFormat(4)}}% in MPH)
+                </h5>
                 <div class="row">
                   <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
@@ -337,7 +340,7 @@
                     <h2 class="mb-1 glowing">
                       ${{estimatedProfitUSD.toFormat(4)}}
                     </h2>
-                    <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}} {{selectedPool?.stablecoinSymbol}}
+                    <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}} {{selectedPool?.stablecoinSymbol}} + 0.000 MPH
                     </h5>
                   </div>
                   <div class="col-6 mb-4">
