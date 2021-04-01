@@ -33,7 +33,7 @@
                   </h6>
                   <h2 class="mb-1 glowing pl-3">{{zcbEntry.userBalance.toFormat(18)}} ZCB</h2>
                   <div class="pl-3 mb-3 text-white d-block">${{zcbEntry.userBalanceUSD.isNaN() ? 'N/A' : zcbEntry.userBalanceUSD.toFormat(2)}}</div>
-                  <a class="mb-3 pl-3" href="https://app.sushiswap.fi/pair/{{zcbEntry.zcbInfo.sushiSwapPair}}"
+                  <a class="mb-3 pl-3" href="https://app.sushi.com/swap?inputCurrency={{zcbEntry.zcbInfo.sushiSwapPairBaseTokenAddress}}&outputCurrency={{zcbEntry.zcbInfo.address}}"
                   target="_blank">
                     <button type="button" class="card-link small px-1">
                       <i class="fe fe-refresh-ccw mr-2 align-bottom"></i>Trade
