@@ -67,6 +67,7 @@ export class BondsComponent implements OnInit {
   averageMaturationTime: BigNumber;
   medianMaturationTime: BigNumber;
   depositListIsCollapsed: boolean;
+  
 
   constructor(
     private modalService: NgbModal,
@@ -362,6 +363,8 @@ export class BondsComponent implements OnInit {
     });
   }
 
+
+
   selectedPoolHasDebt(): boolean {
     if (!this.selectedPool) {
       return false;
@@ -422,6 +425,7 @@ export class BondsComponent implements OnInit {
     if (this.mphROI.isNaN()) {
       this.mphROI = new BigNumber(0);
     }
+    
 
     // compute median maturation time
     const median = (values) => {
