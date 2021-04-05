@@ -46,24 +46,6 @@ export class FarmingComponent implements OnInit {
   sushiWeeklyROI: BigNumber;
   sushiDailyROI: BigNumber;
 
-  yflinkStakedLPBalance: BigNumber;
-  yflinkStakedLPPoolProportion: BigNumber;
-  yflinkClaimableRewardsYFL: BigNumber;
-  yflinkClaimableRewardsMPH: BigNumber;
-  yflinkRewardPerDayYFL: BigNumber;
-  yflinkRewardPerDayMPH: BigNumber;
-  yflinkTotalRewardPerSecondMPH: BigNumber;
-  yflinkTotalRewardPerSecondYFL: BigNumber;
-  yflinkRewardPerLPPerSecondMPH: BigNumber;
-  yflinkRewardPerLPPerSecondYFL: BigNumber;
-  yflinkTotalStakedLPBalance: BigNumber;
-  yflinkPriceUSD: BigNumber;
-  yflinkLPPriceUSD: BigNumber;
-  yflinkYearlyROI: BigNumber;
-  yflinkMonthlyROI: BigNumber;
-  yflinkWeeklyROI: BigNumber;
-  yflinkDailyROI: BigNumber;
-
   constructor(
     private modalService: NgbModal,
     public wallet: WalletService,
@@ -129,24 +111,6 @@ export class FarmingComponent implements OnInit {
       this.sushiMonthlyROI = sushiSecondROI.times(this.constants.MONTH_IN_SEC);
       this.sushiWeeklyROI = sushiSecondROI.times(this.constants.WEEK_IN_SEC);
       this.sushiDailyROI = sushiSecondROI.times(this.constants.DAY_IN_SEC);
-
-      // yflink
-      this.yflinkTotalStakedLPBalance = new BigNumber(await yflinkStaking.methods.totalSupply().call()).div(this.constants.PRECISION);
-      this.yflinkTotalRewardPerSecondYFL = new BigNumber(await yflinkStaking.methods.rewardRate(0).call()).div(this.constants.PRECISION);
-      this.yflinkTotalRewardPerSecondMPH = new BigNumber(await yflinkStaking.methods.rewardRate(1).call()).div(this.constants.PRECISION);
-      this.yflinkRewardPerLPPerSecondYFL = this.yflinkTotalRewardPerSecondYFL.div(this.yflinkTotalStakedLPBalance);
-      this.yflinkRewardPerLPPerSecondMPH = this.yflinkTotalRewardPerSecondMPH.div(this.yflinkTotalStakedLPBalance);
-      if (this.yflinkTotalStakedLPBalance.isZero()) {
-        this.yflinkRewardPerLPPerSecondYFL = new BigNumber(0);
-        this.yflinkRewardPerLPPerSecondMPH = new BigNumber(0);
-      }
-      this.yflinkPriceUSD = new BigNumber(await this.helpers.getTokenPriceUSD(this.constants.YFLINK));
-      this.yflinkLPPriceUSD = await this.helpers.getLPPriceUSD(this.constants.LINKSWAP_LP);
-      const yflinkSecondROI = this.yflinkTotalRewardPerSecondYFL.times(this.yflinkPriceUSD).plus(this.yflinkTotalRewardPerSecondMPH.times(this.mphPriceUSD)).div(this.yflinkTotalStakedLPBalance.times(this.yflinkLPPriceUSD)).times(100);
-      this.yflinkYearlyROI = yflinkSecondROI.times(this.constants.YEAR_IN_SEC);
-      this.yflinkMonthlyROI = yflinkSecondROI.times(this.constants.MONTH_IN_SEC);
-      this.yflinkWeeklyROI = yflinkSecondROI.times(this.constants.WEEK_IN_SEC);
-      this.yflinkDailyROI = yflinkSecondROI.times(this.constants.DAY_IN_SEC);
     }
 
     if (loadUser) {
@@ -170,19 +134,6 @@ export class FarmingComponent implements OnInit {
         this.sushiStakedLPPoolProportion = new BigNumber(0);
       }
       this.sushiRewardPerDay = this.sushiStakedLPBalance.times(this.sushiRewardPerLPPerSecond).times(this.constants.DAY_IN_SEC);
-
-      // yflink
-      await Promise.all([
-        this.yflinkClaimableRewardsYFL = new BigNumber(await yflinkStaking.methods.earned(this.wallet.userAddress, 0).call()).div(this.constants.PRECISION),
-        this.yflinkClaimableRewardsMPH = new BigNumber(await yflinkStaking.methods.earned(this.wallet.userAddress, 1).call()).div(this.constants.PRECISION),
-        this.yflinkStakedLPBalance = new BigNumber(await yflinkStaking.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION)
-      ]);
-      this.yflinkStakedLPPoolProportion = this.yflinkStakedLPBalance.div(this.yflinkTotalStakedLPBalance).times(100);
-      if (this.yflinkTotalStakedLPBalance.isZero()) {
-        this.yflinkStakedLPPoolProportion = new BigNumber(0);
-      }
-      this.yflinkRewardPerDayYFL = this.yflinkStakedLPBalance.times(this.yflinkRewardPerLPPerSecondYFL).times(this.constants.DAY_IN_SEC);
-      this.yflinkRewardPerDayMPH = this.yflinkStakedLPBalance.times(this.yflinkRewardPerLPPerSecondMPH).times(this.constants.DAY_IN_SEC);
     }
   }
 
@@ -197,13 +148,6 @@ export class FarmingComponent implements OnInit {
       this.sushiStakedLPPoolProportion = new BigNumber(0);
       this.sushiClaimableRewards = new BigNumber(0);
       this.sushiRewardPerDay = new BigNumber(0);
-
-      this.yflinkStakedLPBalance = new BigNumber(0);
-      this.yflinkStakedLPPoolProportion = new BigNumber(0);
-      this.yflinkClaimableRewardsYFL = new BigNumber(0);
-      this.yflinkClaimableRewardsMPH = new BigNumber(0);
-      this.yflinkRewardPerDayYFL = new BigNumber(0);
-      this.yflinkRewardPerDayMPH = new BigNumber(0);
     }
 
     if (resetGlobal) {
@@ -226,18 +170,6 @@ export class FarmingComponent implements OnInit {
       this.sushiMonthlyROI = new BigNumber(0);
       this.sushiWeeklyROI = new BigNumber(0);
       this.sushiDailyROI = new BigNumber(0);
-
-      this.yflinkTotalRewardPerSecondMPH = new BigNumber(0);
-      this.yflinkTotalRewardPerSecondYFL = new BigNumber(0);
-      this.yflinkRewardPerLPPerSecondMPH = new BigNumber(0);
-      this.yflinkRewardPerLPPerSecondYFL = new BigNumber(0);
-      this.yflinkTotalStakedLPBalance = new BigNumber(0);
-      this.yflinkPriceUSD = new BigNumber(0);
-      this.yflinkLPPriceUSD = new BigNumber(0);
-      this.yflinkYearlyROI = new BigNumber(0);
-      this.yflinkMonthlyROI = new BigNumber(0);
-      this.yflinkWeeklyROI = new BigNumber(0);
-      this.yflinkDailyROI = new BigNumber(0);
     }
   }
 
