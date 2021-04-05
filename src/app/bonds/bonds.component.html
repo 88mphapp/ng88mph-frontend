@@ -306,7 +306,7 @@
                   Estimated ROI
                 </h5>
                 <h2 class="display-2 mb-0 glowing">
-                  {{+estimatedROI.toFormat(4) + +mphROI.toFormat(4)}}%
+                  {{estimatedROI.plus(mphROI).toFormat(4)}}%
                   
                 </h2>
                 <h5 class="mb-0 mb-md-4 text-white">
@@ -339,7 +339,7 @@
                       Estimated profit
                     </h5>
                     <h2 class="mb-1 glowing">
-                      ${{+estimatedProfitUSD + +mphRewardAmount.times(mphPriceUSD)}} 
+                      ${{estimatedProfitUSD.plus(mphRewardAmount.times(mphPriceUSD)).toFormat(4)}} 
                     </h2>
                     <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}} {{selectedPool?.stablecoinSymbol}} + {{mphRewardAmount.toFormat(4)}} MPH
                     </h5>
@@ -355,7 +355,7 @@
                     <h2 class="mb-1 glowing">
                       ${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}
                     </h2>
-                    <h5 class="mb-3 text-white">{{mphRewardAmount.toFormat()}} MPH
+                    <h5 class="mb-3 text-white">{{mphRewardAmount.toFormat(4)}} MPH
                     </h5>
                   </div>
                 </div>
