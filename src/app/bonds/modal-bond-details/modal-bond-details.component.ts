@@ -23,8 +23,10 @@ export class ModalBondDetailsComponent implements OnInit {
   estimatedProfitToken: BigNumber;
   totalAmountMulTime: BigNumber;
   interestFromLeftoverDeposits: BigNumber;
+  totalMPHReward: BigNumber;
   @Input() public funderPool: FunderPool;
   @Input() public funding: Funding;
+  @Input() public mphPriceUSD: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -72,15 +74,20 @@ export class ModalBondDetailsComponent implements OnInit {
 
       let newDeposits: Array<Deposit> = [];
       let newTotalAmountMulTime = new BigNumber(0);
+      let newTotalMPHReward = new BigNumber(0);
       for (const deposit of deposits) {
+        const mphRewardTimeComponent = this.funding.creationTimestamp < deposit.maturationTimestamp ? deposit.maturationTimestamp - this.funding.creationTimestamp : 0;
+        const funderMPHReward = new BigNumber(deposit.amount).times(this.funding.pool.mphFunderRewardMultiplier).times(mphRewardTimeComponent);
         const depositObj: Deposit = {
           ...deposit,
           maturationTimestamp: +deposit.maturationTimestamp,
           amount: new BigNumber(deposit.amount),
           fundingInterestPaid: new BigNumber(deposit.fundingInterestPaid),
           fundingRefundAmount: new BigNumber(deposit.fundingRefundAmount),
+          funderMPHReward
         };
         newDeposits = [...newDeposits, depositObj];
+        newTotalMPHReward = newTotalMPHReward.plus(funderMPHReward);
 
         if (depositObj.active) {
           if (depositObj.maturationTimestamp > now) {
@@ -95,6 +102,7 @@ export class ModalBondDetailsComponent implements OnInit {
 
       this.deposits = newDeposits;
       this.totalAmountMulTime = newTotalAmountMulTime;
+      this.totalMPHReward = newTotalMPHReward;
       this.updateFloatingRatePrediction(this.funding.pool.oracleInterestRate);
     }
   }
@@ -107,6 +115,7 @@ export class ModalBondDetailsComponent implements OnInit {
     this.estimatedROI = new BigNumber(0);
     this.totalAmountMulTime = new BigNumber(0);
     this.interestFromLeftoverDeposits = new BigNumber(0);
+    this.totalMPHReward = new BigNumber(0);
   }
 
   timestampToDateString(timestampSec: number): string {
@@ -135,6 +144,7 @@ interface Deposit {
   fundingInterestPaid: BigNumber;
   fundingRefundAmount: BigNumber;
   active: boolean;
+  funderMPHReward: BigNumber;
 }
 
 interface FundingDepositResult {
