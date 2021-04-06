@@ -85,10 +85,10 @@
                             Estimated ROI
                           </h6>
                           <h4 class="mb-1 font-weight-normal glowing">
-                            {{estimatedROI.toFormat(4)}}%
+                            {{estimatedROI.plus(totalMPHReward.times(mphPriceUSD).div(funding.deficitUSD).times(100)).toFormat(4)}}%
                           </h4>
                           <h5 class="mb-3 text-white">
-                            0.0000% in {{funderPool.poolInfo.stablecoinSymbol}} + 0.0000% in MPH
+                            {{estimatedROI.toFormat(4)}}% in {{funderPool.poolInfo.stablecoinSymbol}} + {{totalMPHReward.times(mphPriceUSD).div(funding.deficitUSD).times(100).toFormat(4)}}% in MPH
                           </h5>
                         </div>
                         <div class="col mb-4">
@@ -96,10 +96,10 @@
                             Estimated profit
                           </h6>
                           <h4 class="mb-1 font-weight-normal glowing">
-                            ${{estimatedProfitUSD.toFormat(4)}}
+                            ${{estimatedProfitUSD.plus(totalMPHReward.times(mphPriceUSD)).toFormat(4)}}
                           </h4>
                           <h5 class="mb-3 text-white">
-                            {{estimatedProfitToken.toFormat(4)}} {{funderPool.poolInfo.stablecoinSymbol}} + 0.000 MPH
+                            {{estimatedProfitToken.toFormat(4)}} {{funderPool.poolInfo.stablecoinSymbol}} + {{totalMPHReward.toFormat(4)}} MPH
                           </h5>
                         </div>
                       </div>
@@ -151,7 +151,7 @@
                               {{deposit.fundingRefundAmount.toFormat(4)}}
                             </td>
                             <td>
-                              0.0000
+                              {{deposit.funderMPHReward.toFormat(4)}}
                             </td>
                           </tr>
                         </ng-container>

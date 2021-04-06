@@ -106,6 +106,7 @@ export class BondsComponent implements OnInit {
                 address
                 oracleInterestRate
                 moneyMarketIncomeIndex
+                mphFunderRewardMultiplier
               }
               fromDepositID
     					toDepositID
@@ -117,6 +118,7 @@ export class BondsComponent implements OnInit {
               totalInterestEarned
               mphRewardEarned
               refundAmount
+              creationTimestamp
             }
           }
           totalInterestByPool {
@@ -182,7 +184,8 @@ export class BondsComponent implements OnInit {
               pool: {
                 address: funding.pool.address,
                 oracleInterestRate: new BigNumber(funding.pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100),
-                moneyMarketIncomeIndex: new BigNumber(funding.pool.moneyMarketIncomeIndex)
+                moneyMarketIncomeIndex: new BigNumber(funding.pool.moneyMarketIncomeIndex),
+                mphFunderRewardMultiplier: new BigNumber(funding.pool.mphFunderRewardMultiplier)
               },
               nftID: funding.nftID,
               deficitToken: new BigNumber(funding.fundedDeficitAmount),
@@ -194,7 +197,8 @@ export class BondsComponent implements OnInit {
               mphRewardEarned: new BigNumber(funding.mphRewardEarned),
               refundAmountToken: new BigNumber(funding.refundAmount),
               refundAmountUSD: new BigNumber(funding.refundAmount).times(stablecoinPrice),
-              recordedMoneyMarketIncomeIndex: new BigNumber(funding.recordedMoneyMarketIncomeIndex)
+              recordedMoneyMarketIncomeIndex: new BigNumber(funding.recordedMoneyMarketIncomeIndex),
+              creationTimestamp: +funding.creationTimestamp
             }
             fundings.push(fundingObj)
           }
@@ -316,6 +320,7 @@ export class BondsComponent implements OnInit {
     const modalRef = this.modalService.open(ModalBondDetailsComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.funderPool = selectedFunderPool;
     modalRef.componentInstance.funding = selectedFunding;
+    modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
   }
 
   selectPool(poolIdx: number) {
@@ -518,6 +523,7 @@ interface QueryResult {
           address: string;
           oracleInterestRate: number;
           moneyMarketIncomeIndex: number;
+          mphFunderRewardMultiplier: number;
         };
         nftID: number;
         recordedFundedDepositAmount: number;
@@ -527,6 +533,7 @@ interface QueryResult {
         totalInterestEarned: number;
         mphRewardEarned: number;
         refundAmount: number;
+        creationTimestamp: number;
       }[];
     }[];
     totalInterestByPool: {
