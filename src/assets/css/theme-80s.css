@@ -12796,7 +12796,7 @@ body {
 }
 
 .table tbody td, .table tbody th, .table thead th {
-  vertical-align: middle
+  vertical-align: top
 }
 
 .table-sm {
