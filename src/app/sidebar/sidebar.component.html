@@ -64,21 +64,90 @@
               Liquidity mining
             </a>
           </li>
-          <li class="nav-item" ngbNavItem="/stats">
-            <a class="nav-link text-white" routerLink="stats" ngbNavLink>
-              Stats
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://snapshot.org/#/88mph.eth" target="_blank">
+              Governance
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="https://snapshot.org/#/88mph.eth" target="_blank">
-              Vote <span class="badge glowing mt-n1">
+            <a class="nav-link text-white" href="#sidebarPartners" data-toggle="collapse" role="button" aria-expanded="false"
+              aria-controls="sidebarPartners">
+              Partners <span class="badge glowing mt-n1">
                 NEW
               </span>
             </a>
-          </li>          
+            <div class="collapse" id="sidebarPartners">
+              <ul class="nav nav-sm flex-column">
+                <li class="nav-item">
+                  <a class="nav-link" href="https://app.nsure.network/#/cover/my"
+                    target="_blank">
+                    Buy insurance policies on Nsure Network
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://app.coverprotocol.com/app/marketplace/protocols/88MPH"
+                    target="_blank">
+                    Buy insurance policies on Cover Protocol
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://app.bancor.network/eth/swap?from=0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C&to=0x8888801aF4d980682e47f1A9036e589479e835C5" target="_blank">
+                    Trade MPH on Bancor
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://info.linkswap.app/pair/0x40f1068495ba9921d6c18cf1ac25f718df8ce69d" target="_blank">
+                    Trade MPH on Linkswap
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
+                    target="_blank">
+                    Trade MPH on Sushiswap
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://app.rari.capital/fuse/pool/3" target="_blank">
+                    Lend/borrow MPH on Rari.capital
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://app.mantradao.com/zenterest" target="_blank">
+                    Lend/borrow MPH on Mantradao.com
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://unit.xyz/?collateral=0x8888801af4d980682e47f1a9036e589479e835c5" target="_blank">
+                    Borrow USDP against MPH on Unit.xyz
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://www.dharma.io/token/0x8888801af4d980682e47f1a9036e589479e835c5" target="_blank">
+                    Buy MPH w/ USD
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item" ngbNavItem="/stats">
+            <a class="nav-link small" routerLink="stats" ngbNavLink>
+              Stats
+            </a>
+          </li>                    
           <li class="nav-item">
             <a class="nav-link small" href="https://forum.88mph.app/" target="_blank">
               Forum
+            </a>
+          </li>
+          <li class="nav-item" ngbNavItem="/funding">
+            <a class="nav-link small" routerLink="funding" ngbNavLink>
+              Funding
             </a>
           </li>
           <li class="nav-item">
@@ -91,15 +160,9 @@
               Docs
             </a>
           </li>
-          <li class="nav-item" ngbNavItem="/funding">
-            <a class="nav-link small" routerLink="funding" ngbNavLink>
-              Funding
-            </a>
-          </li>
           <li class="nav-item">
-            <a class="nav-link small" href="https://app.coverprotocol.com/app/marketplace/protocols/88MPH"
-              target="_blank">
-              Insurance
+            <a class="nav-link small" href="" target="_blank">
+              FAQ (soon)
             </a>
           </li>
           <li class="nav-item">
@@ -229,48 +292,6 @@
                   <a class="nav-link small"
                     href="https://info.uniswap.org/pair/0x4d96369002fc5b9687ee924d458a7e5baa5df34e" target="_blank">
                     Uniswap
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://app.bancor.network/eth/swap?from=0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C&to=0x8888801aF4d980682e47f1A9036e589479e835C5" target="_blank">
-                    Bancor
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://info.linkswap.app/pair/0x40f1068495ba9921d6c18cf1ac25f718df8ce69d" target="_blank">
-                    Linkswap
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small" href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
-                    target="_blank">
-                    Sushiswap
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://app.rari.capital/fuse/pool/3" target="_blank">
-                    Lend/borrow MPH on Rari.capital
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://app.mantradao.com/zenterest" target="_blank">
-                    Lend/borrow MPH on Mantradao.com
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://unit.xyz/?collateral=0x8888801af4d980682e47f1a9036e589479e835c5" target="_blank">
-                    Borrow USDP against MPH on Unit.xyz
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://www.dharma.io/token/0x8888801af4d980682e47f1a9036e589479e835c5" target="_blank">
-                    Buy MPH w/ USD
                   </a>
                 </li>
                 <li class="nav-item">
