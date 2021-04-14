@@ -72,6 +72,13 @@
                 <td>
                   <h4 class="mb-1 font-weight-normal glowing">{{vest.amount.toFormat(4)}} MPH</h4>
                   <span class="text-white">${{vest.amount.times(mphPriceUSD).toFormat(4)}}</span>
+                  <div class="mt-3">
+                    <!-- Button -->
+                    <button type="button" class="card-link small small px-1" (click)="withdraw(vest)"
+                    *ngIf="getCurrentWithdrawableAmount(vest).gt(0)">
+                      <i class="fe fe-arrow-down mr-2 align-bottom"></i>Withdraw
+                    </button>
+                  </div>
                 </td>
                 <td>
                   <h4 class="mb-1 font-weight-normal glowing">{{vest.withdrawnAmount.toFormat(4)}} MPH</h4>
@@ -82,13 +89,7 @@
                   </h4>
                   <span class="text-white">${{getCurrentWithdrawableAmount(vest).times(mphPriceUSD).toFormat(4)}}</span>
                 </td>
-                <td class="text-right">
-                  <!-- Button -->
-                  <button type="button" class="card-link small small px-1" (click)="withdraw(vest)"
-                    *ngIf="getCurrentWithdrawableAmount(vest).gt(0)">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Withdraw
-                  </button>
-                </td>
+                <td></td>
               </tr>
             </tbody>
           </table>

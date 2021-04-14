@@ -186,6 +186,14 @@
                       <h4 class="mb-1 font-weight-normal glowing">${{funding.deficitUSD.toFormat(4)}}</h4>
                       <span class="text-white">{{funding.deficitToken.toFormat(4)}}
                         {{funderPool.poolInfo.stablecoinSymbol}}</span>
+                      <div class="mt-3">
+                        <!-- Button -->
+                        <button type="button" class="card-link small small px-1"
+                        (click)="openBondDetailsModal(funderPool, funding)">
+                        <i class="fe fe-plus mr-2 align-bottom"></i>
+                          More
+                        </button>
+                      </div>
                     </td>
                     <td>
                       <h4 class="mb-1 font-weight-normal glowing">${{funding.currentDepositUSD.toFormat(4)}}</h4>
@@ -207,14 +215,7 @@
                       </h4>
                       <span class="text-white">{{funding.mphRewardEarned.toFormat(4)}} MPH</span>
                     </td>
-                    <td>
-                      <!-- Button -->
-                      <button type="button" class="card-link small small px-1"
-                        (click)="openBondDetailsModal(funderPool, funding)">
-                        <i class="fe fe-plus mr-2 align-bottom"></i>
-                          More
-                      </button>
-                    </td>
+                    <td></td>
                   </tr>
                 </ng-container>
               </ng-container>
