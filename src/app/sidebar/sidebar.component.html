@@ -244,7 +244,7 @@
               </ul>
             </div>
           </li>
-          <li class="nav-item">
+          <li class="nav-item mb-6">
             <a class="nav-link" href="#sidebarMore" data-toggle="collapse" role="button" aria-expanded="false"
               aria-controls="sidebarMore">
               More
@@ -329,7 +329,7 @@
           </li>
         </ul>
 
-        <div class="btn-group-toggle d-flex mt-3" data-toggle="buttons">
+        <div class="btn-group-toggle fixed-bottom fixed-bottom-switch bg-dark py-3 px-4 border-top" data-toggle="buttons">
           <ng-container *ngFor="let themeName of app.themes">
             <button class="card-link" (click)="app.setTheme(themeName)">
               <input type="radio" name="colorScheme" value={{themeName}} [checked]="app.themeName === themeName">

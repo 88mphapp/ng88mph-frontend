@@ -7313,7 +7313,9 @@ a.bg-white:focus, a.bg-white:hover, button.bg-white:focus, button.bg-white:hover
   left: 0;
   z-index: 1030
 }
-
+.fixed-bottom-switch{
+  width: 249px;
+}
 @supports ((position:-webkit-sticky) or (position:sticky)) {
   .sticky-top {
     position: -webkit-sticky;
