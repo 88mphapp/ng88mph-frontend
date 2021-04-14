@@ -7314,6 +7314,9 @@ a.bg-white:focus, a.bg-white:hover, button.bg-white:focus, button.bg-white:hover
   left: 0;
   z-index: 1030
 }
+.fixed-bottom-switch{
+  width: auto
+}
 
 @supports ((position:-webkit-sticky) or (position:sticky)) {
   .sticky-top {
@@ -8394,6 +8397,9 @@ a.bg-white:focus, a.bg-white:hover, button.bg-white:focus, button.bg-white:hover
 }
 
 @media (min-width:768px) {
+  .fixed-bottom-switch{
+    width: 249px;
+  }
   .m-md-0 {
     margin: 0!important
   }
