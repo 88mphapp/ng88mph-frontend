@@ -41,7 +41,7 @@ export class SidebarComponent implements OnInit {
       mphBalance = new BigNumber(await mphToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION),
       stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION)
     ])
-    this.mphBalance = new BigNumber(mphBalance).plus(stakedMPHBalance);
+    this.mphBalance = new BigNumber(mphBalance);
   }
 
   resetData(): void {

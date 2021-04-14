@@ -8,17 +8,31 @@
   <!-- User (xs) -->
   <div class="navbar-user d-md-none">
     <div class="d-block">
-      <div class="btn btn-sm btn-white mr-3">
-        {{mphBalance.toFormat(4)}} <img src="./assets/img/icon-default.png" class="ml-2" alt="..." width="20px">
-      </div>
-      <button type="button" name="web3Connect" class="btn btn-sm btn-white" (click)="connectWallet()">
-        <div *ngIf="wallet.connected">
-          {{wallet.userAddress.substring(0, 14)}}
-        </div>
-        <div *ngIf="!wallet.connected">
-          Connect Wallet
-        </div>
+      <button class="card-link mr-2" type="button" routerLink="/rewards">
+        {{mphBalance.toFormat(4)}}<img src="./assets/img/icon-default.png" class="ml-1" alt="MPH token logo" width="18px">
       </button>
+      <div class="btn-group">
+        <button type="button" name="web3Connect" class="card-link" (click)="connectWallet()">
+          <div *ngIf="wallet.connected">
+            {{wallet.userAddress.substring(0, 14)}}
+          </div>
+          <div *ngIf="!wallet.connected">
+            Connect Wallet
+          </div>
+        </button>
+        <button type="button" class="card-link dropdown-toggle dropdown-toggle-split px-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fe fe-chevron-down "></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px;">
+          <h6 class="dropdown-header px-0">Watch address</h6>
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control" id="TrackEthAddress" placeholder="Add ENS domain or Ethereum address">
+            </div>
+            <button type="submit" class="card-link">Add watched address</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 
