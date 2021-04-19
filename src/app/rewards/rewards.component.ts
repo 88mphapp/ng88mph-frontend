@@ -82,7 +82,7 @@ export class RewardsComponent implements OnInit {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
 
-    if (this.wallet.connected && loadUser) {
+    if (this.wallet.connected && loadUser && !this.wallet.watching) {
       rewards.methods.balanceOf(this.wallet.userAddress).call().then(async stakeBalance => {
         this.stakedMPHBalance = new BigNumber(stakeBalance).div(this.constants.PRECISION);
         const totalStakedMPHBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
@@ -95,6 +95,23 @@ export class RewardsComponent implements OnInit {
       });
 
       rewards.methods.earned(this.wallet.userAddress).call().then(claimableRewards => {
+        this.claimableRewards = new BigNumber(claimableRewards).div(this.constants.PRECISION);
+      });
+    }
+
+    if (loadUser && this.wallet.watching) {
+      rewards.methods.balanceOf(this.wallet.watchedAddress).call().then(async stakeBalance => {
+        this.stakedMPHBalance = new BigNumber(stakeBalance).div(this.constants.PRECISION);
+        const totalStakedMPHBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
+        this.stakedMPHPoolProportion = this.stakedMPHBalance.div(totalStakedMPHBalance).times(100);
+        if (this.stakedMPHPoolProportion.isNaN()) {
+          this.stakedMPHPoolProportion = new BigNumber(0);
+        }
+        const weekInSeconds = 7 * 24 * 60 * 60;
+        this.rewardPerWeek = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(weekInSeconds);
+      });
+
+      rewards.methods.earned(this.wallet.watchedAddress).call().then(claimableRewards => {
         this.claimableRewards = new BigNumber(claimableRewards).div(this.constants.PRECISION);
       });
     }

@@ -97,7 +97,15 @@ export class DepositComponent implements OnInit {
       this.mphPriceUSD = price;
     });
 
-    const userID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
+    let userID;
+    if (this.wallet.connected && !this.wallet.watching) {
+      userID = this.wallet.userAddress.toLowerCase();
+    } else if (this.wallet.watching) {
+      userID = this.wallet.watchedAddress.toLowerCase();
+    } else {
+      userID = '';
+    }
+
     const queryString = gql`
       {
         ${loadUser ? `user(id: "${userID}") {

@@ -26,7 +26,7 @@
                   ${{totalDepositUSD.toFormat(DECIMALS)}}
                 </h2>
                 <!-- Button -->
-                <button type="button" class="card-link small px-1 ml-3" (click)="openDepositModal()">
+                <button type="button" class="card-link small px-1 ml-3" (click)="openDepositModal()" [disabled]="wallet.watching">
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                 </button>
               </div>
@@ -143,7 +143,7 @@
                   <td>
                     <!-- Button -->
                     <button type="button" class="card-link small small px-1"
-                      (click)="openDepositModal(userPool.poolInfo.name)">
+                      (click)="openDepositModal(userPool.poolInfo.name)" [disabled]="wallet.watching">
                       <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                     </button>
                   </td>
@@ -218,7 +218,7 @@
                     <td class="text-right">
                       <!-- Button -->
                       <button type="button" class="card-link small small px-1"
-                        (click)="openWithdrawModal(deposit, userPool.poolInfo)">
+                        (click)="openWithdrawModal(deposit, userPool.poolInfo)"  [disabled]="wallet.watching">
                         <i class="fe fe-arrow-up mr-2 align-bottom"></i>
                         <ng-container *ngIf="deposit.locked">
                           Withdraw early
@@ -304,7 +304,7 @@
                 </td>
                 <td class="text-right">
                   <!-- Button -->
-                  <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)">
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)" [disabled]="wallet.watching">
                     <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                   </button>
                 </td>

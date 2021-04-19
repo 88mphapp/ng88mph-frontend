@@ -60,7 +60,15 @@ export class VestingComponent implements OnInit {
   }
 
   async loadData() {
-    const userID = this.wallet.userAddress.toLowerCase();
+    //const userID = this.wallet.userAddress.toLowerCase();
+    let userID;
+    if (this.wallet.connected && !this.wallet.watching) {
+      userID = this.wallet.userAddress.toLowerCase();
+    } else if (this.wallet.watching) {
+      userID = this.wallet.watchedAddress.toLowerCase();
+    } else {
+      userID = '';
+    }
     const queryString = gql`
       {
         vests(where: { user: "${userID}" }, orderBy: creationTimestamp, orderDirection: desc, first: 1000) {

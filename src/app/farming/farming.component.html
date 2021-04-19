@@ -30,14 +30,14 @@
                   (${{stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}})
                   ({{stakedMPHPoolProportion.toFormat(4)}}% of the pool)
                 </h5>
-                <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()" [disabled]="wallet.watching">
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
                 </button>
-                <button type="button" class="card-link small ml-3 px-1" (click)="openUnstakeModal()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="openUnstakeModal()" [disabled]="wallet.watching">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
                 </button>
                 <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()"
-                  [disabled]="!canContinue()">
+                  [disabled]="!canContinue() || wallet.watching" >
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
                 </button>
               </div>
@@ -61,7 +61,7 @@
                   (${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day)
                   ({{rewardPerDay.toFormat(4)}} MPH/day)
                 </h5>
-                <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue() || wallet.watching">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                 </button>
               </div>

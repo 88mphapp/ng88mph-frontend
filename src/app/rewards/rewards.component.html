@@ -30,14 +30,14 @@
                   (${{stakedMPHBalance.times(mphPriceUSD).toFormat(4)}})
                   ({{stakedMPHPoolProportion.toFormat(4)}}% of the pool)
                 </h5>
-                <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()" [disabled]="wallet.watching">
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
                 </button>
-                <button type="button" class="card-link small ml-3 px-1" (click)="openUntakeModal()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="openUntakeModal()" [disabled]="wallet.watching">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
                 </button>
                 <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()"
-                  [disabled]="!canContinue()">
+                  [disabled]="!canContinue() || wallet.watching">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
                 </button>
               </div>
@@ -57,7 +57,7 @@
                   {{claimableRewards.toFormat(4)}} DAI
                 </h2>
                 <h5 class="mb-3 text-white pl-3">({{rewardPerWeek.toFormat(4)}} DAI/week)</h5>
-                <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue()">
+                <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue() || wallet.watching">
                   <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                 </button>
               </div>
@@ -86,7 +86,7 @@
                         </h5>
                       </div>
                     </div>
-                  </li>                  
+                  </li>
                   <li class="list-group-item">
                     <div class="row">
                       <div class="col text-left">

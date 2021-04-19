@@ -79,9 +79,17 @@ export class FarmingComponent implements OnInit {
       this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
     }
 
-    if (loadUser) {
+    if (loadUser && !this.wallet.watching) {
       this.stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
       this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+      this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
+      if (this.totalStakedMPHBalance.isZero()) {
+        this.stakedMPHPoolProportion = new BigNumber(0);
+      }
+      this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
+    } else {
+      this.stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.watchedAddress).call()).div(this.constants.PRECISION);
+      this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.watchedAddress).call()).div(this.constants.PRECISION);
       this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
       if (this.totalStakedMPHBalance.isZero()) {
         this.stakedMPHPoolProportion = new BigNumber(0);
