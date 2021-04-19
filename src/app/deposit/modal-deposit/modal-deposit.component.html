@@ -79,16 +79,16 @@
                       <label class="col-form-label">Or custom duration</label>
                       <div class="input-group mb-3">
                         <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
-                        class="form-control text-right" [value]="depositTimeInDays"
-                        (input)="setDepositTime($event.target.value)">
+                          class="form-control text-right" [value]="depositTimeInDays"
+                          (input)="setDepositTime($event.target.value)">
                         <span class="input-group-text" for="inputGroupFile02">Days</span>
-                      </div>                      
+                      </div>
                       <small class="form-text text-white my-2">
                         Min: {{minDepositPeriod}}d
                         Max: {{maxDepositPeriod}}d
                       </small>
-                      
-                      
+
+
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -103,9 +103,13 @@
                             </button>
                           </td>
                           <td class="text-white text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">${{depositAmountUSD.toFormat(4)}}</h4>
-                            <span class="text-white">{{depositAmount.toFormat(4)}}
+                            <h4 class="mb-1 font-weight-normal glowing">${{helpers.applyDepositFee(depositAmountUSD,
+                              selectedPoolInfo).toFormat(4)}}</h4>
+                            <span class="text-white">{{helpers.applyDepositFee(depositAmount,
+                              selectedPoolInfo).toFormat(4)}}
                               {{selectedPoolInfo.stablecoinSymbol}}</span>
+                            <br>
+                            <small *ngIf="selectedPoolInfo.depositFee">Note: A {{selectedPoolInfo.depositFee * 100}}% fee is taken by the underlying yield protocol ({{selectedPoolInfo.protocol}})</small>
                           </td>
                         </tr>
                         <tr>
@@ -117,8 +121,8 @@
                             </button>
                           </td>
                           <td class="text-white text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">${{interestAmountUSD.toFormat(4)}}</h4>
-                            <span class="text-white">{{interestAmountToken.toFormat(4)}}
+                            <h4 class="mb-1 font-weight-normal glowing">${{helpers.applyDepositFee(interestAmountUSD, selectedPoolInfo).toFormat(4)}}</h4>
+                            <span class="text-white">{{helpers.applyDepositFee(interestAmountToken, selectedPoolInfo).toFormat(4)}}
                               {{selectedPoolInfo.stablecoinSymbol}}</span>
                           </td>
                         </tr>
@@ -136,7 +140,7 @@
                         </tr>
                         <tr>
                           <td class="px-0 text-white border-0">
-                            <strong>MPH rewards (7-day vesting)</strong>
+                            <strong>MPH rewards (Vested over {{selectedPoolInfo.vestPeriod}})</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                               ngbTooltip="Depositors get rewarded with MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens on external protocols, etc)">
                               [i]
@@ -254,7 +258,7 @@
 
                       <!-- Heading -->
                       <p class="mb-0 font-weight-bold">
-                        By depositing into 88mph, you earn MPH tokens, which are continuously vested to you for 7 days.
+                        By depositing into 88mph, you earn MPH tokens, which is continuously vested to you.
                       </p>
 
                     </div>

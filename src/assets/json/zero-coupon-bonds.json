@@ -1,0 +1,42 @@
+{
+  "cUNI": [
+    {
+      "series": "August 2021",
+      "symbol": "88MPH-COMP-UNI-AUG-2021",
+      "address": "0x557b8931bfb3650493fb4f434138f445af9229e8",
+      "sushiSwapPair": "0xe47acbd609ddecdd77dab56b930dee7b99a51704",
+      "sushiSwapPairBaseTokenSymbol": "UNI",
+      "sushiSwapPairBaseTokenAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "farmAddress": "0x7ee5af7ef47ce5be93846fdb8f633cce39696456"
+    },
+    {
+      "series": "February 2022",
+      "symbol": "88MPH-COMP-UNI-FEB-2022",
+      "address": "0x85034b3b2e292493d029443455cc62ab669573b3",
+      "sushiSwapPair": "0xcb556442104340490ecbf6af44909f59d4e7e509",
+      "sushiSwapPairBaseTokenSymbol": "UNI",
+      "sushiSwapPairBaseTokenAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "farmAddress": "0x01d58124a8202b3190f7e48cf3779f67643b6350"
+    }
+  ],
+  "harvest3CRV": [
+    {
+      "series": "August 2021",
+      "symbol": "88MPH-HARVEST-3CRV-AUG-2021",
+      "address": "0x23c6ab8b52975551448fbddf2e494ae57645c200",
+      "sushiSwapPair": "0x99ce63519b1c04192f4b75e5a701f3fd145adc2d",
+      "sushiSwapPairBaseTokenSymbol": "DAI",
+      "sushiSwapPairBaseTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "farmAddress": "0xec13bae736964c7d3685545cfa3b9cb84e34fbad"
+    },
+    {
+      "series": "February 2022",
+      "symbol": "88MPH-HARVEST-3CRV-FEB-2022",
+      "address": "0x6d6d543fe4e2f62dd0c9d4a79e18f0b43ddd12ea",
+      "sushiSwapPair": "0x24b1a18c22be432066f6d01a77f06c65a7bc5f83",
+      "sushiSwapPairBaseTokenSymbol": "DAI",
+      "sushiSwapPairBaseTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "farmAddress": "0xeb3efad1f2439d791763b914bbe3a468eb448044"
+    }
+  ]
+}

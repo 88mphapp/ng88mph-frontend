@@ -335,23 +335,23 @@ template {
 }
 
 .h1, h1 {
-  font-size: 1.625rem
+  font-size: 1.88rem
 }
 
 .h2, h2 {
-  font-size: 1.25rem
+  font-size: 1.5rem
 }
 
 .h3, h3 {
-  font-size: 1.0625rem
+  font-size: 1.125rem
 }
 
 .h4, h4 {
-  font-size: .9375rem
+  font-size: 1rem
 }
 
 .h5, h5 {
-  font-size: .8125rem
+  font-size: .88rem
 }
 
 .h6, h6 {
@@ -509,6 +509,27 @@ pre code {
 .pre-scrollable {
   max-height: 340px;
   overflow-y: scroll
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 2px rgb(146, 146, 146); 
+  border-radius: 3px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ffffff, #d4d4d4 72%)!important; 
+  border-radius: 3px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #ffffff, #d4d4d4 72%)!important;  
 }
 
 .container {
@@ -3883,9 +3904,9 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 }
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-  color: #fff;
+  color: #9575cd;
   background-color: transparent;
-  border-color: transparent transparent #2c7be5
+  border-color: transparent transparent #9575cd
 }
 
 .nav-tabs .dropdown-menu {
@@ -7292,7 +7313,9 @@ a.bg-white:focus, a.bg-white:hover, button.bg-white:focus, button.bg-white:hover
   left: 0;
   z-index: 1030
 }
-
+.fixed-bottom-switch{
+  width: 249px;
+}
 @supports ((position:-webkit-sticky) or (position:sticky)) {
   .sticky-top {
     position: -webkit-sticky;
@@ -12774,7 +12797,7 @@ body {
 }
 
 .table tbody td, .table tbody th, .table thead th {
-  vertical-align: middle
+  vertical-align: top
 }
 
 .table-sm {
@@ -14646,6 +14669,8 @@ input[type=range]:focus::-ms-fill-upper {
 
 .glowing {
   color: #fff;
+  font-weight: 600;
+  text-shadow: rgb(192 219 255 / 48%) 0px 0px 64px, rgb(65 120 255 / 24%) 0px 0px 16px;
 }
 
 .border-purple {

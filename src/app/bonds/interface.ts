@@ -11,6 +11,8 @@ export interface Funding {
   pool: {
     address: string;
     oracleInterestRate: BigNumber;
+    moneyMarketIncomeIndex: BigNumber;
+    mphFunderRewardMultiplier: BigNumber;
   };
   fromDepositID: number;
   toDepositID: number;
@@ -24,6 +26,8 @@ export interface Funding {
   mphRewardEarned: BigNumber;
   refundAmountToken: BigNumber;
   refundAmountUSD: BigNumber;
+  recordedMoneyMarketIncomeIndex: BigNumber;
+  creationTimestamp: number;
 }
 
 export interface Deposit {
