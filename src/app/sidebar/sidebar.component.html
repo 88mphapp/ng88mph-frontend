@@ -13,23 +13,53 @@
       </button>
       <div class="btn-group">
         <button type="button" name="web3Connect" class="card-link" (click)="connectWallet()">
-          <div *ngIf="wallet.connected">
+          <div *ngIf="wallet.connected && !wallet.watching">
             {{wallet.userAddress.substring(0, 14)}}
           </div>
-          <div *ngIf="!wallet.connected">
+          <div *ngIf="!wallet.connected && !wallet.watching">
             Connect Wallet
+          </div>
+          <div *ngIf="wallet.watching">
+            {{wallet.watchedAddress.substring(0, 14)}}
           </div>
         </button>
         <button type="button" class="card-link dropdown-toggle dropdown-toggle-split px-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fe fe-chevron-down "></i>
         </button>
         <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px;">
-          <h6 class="dropdown-header px-0">Watch address</h6>
-          <form>
+          <!-- Connected Wallet -->
+          <span *ngIf="wallet.connected">
+            <h6 class="dropdown-header px-0">Connected</h6>
+            <button type="button" class="card-link" (click)="switchFocus(false)">
+              {{wallet.userAddress.substring(0, 14)}}
+            </button>
+            <span *ngIf="!wallet.watching" class="badge">Viewing</span>
+          </span>
+          <!-- Watched Wallet -->
+          <span *ngIf="wallet.watchedAddress != null">
+            <h6 class="dropdown-header px-0">Watched</h6>
+            <button type="button" class="card-link" (click)="switchFocus(true)">
+              {{wallet.watchedAddress.substring(0, 14)}}
+            </button>
+            <span *ngIf="wallet.watching" class="badge">Viewing</span>
+          </span>
+          <!-- Add/Edit Watched Address -->
+          <span *ngIf="wallet.watchedAddress == null">
+            <h6 class="dropdown-header px-0">Watch address</h6>
+          </span>
+          <span *ngIf="wallet.watchedAddress != null">
+            <h6 class="dropdown-header px-0">Edit watched address</h6>
+          </span>
+          <form #watchForm="ngForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
-              <input type="text" class="form-control" id="TrackEthAddress" placeholder="Add ENS domain or Ethereum address">
+              <input type="text" [class.is-invalid]="address.invalid && address.dirty"
+               class="form-control" pattern="^0x[a-fA-F0-9]{40}$" required #address="ngModel" name="watchAddress"
+               id="TrackEthAddress"  placeholder="Add ENS domain or Ethereum address"
+               [(ngModel)]="watchedModel.address">
+               <small *ngIf="address.invalid && address.dirty" class="text-danger"> Please enter a valid address</small>
             </div>
-            <button type="submit" class="card-link">Add watched address</button>
+            <button *ngIf="wallet.watchedAddress == null" type="submit" class="card-link" [disabled]="watchForm.form.invalid">Add watched address</button>
+            <button *ngIf="wallet.watchedAddress != null" type="submit" class="card-link" [disabled]="watchForm.form.invalid">Edit watched address</button>
           </form>
         </div>
       </div>
@@ -77,7 +107,7 @@
             <a class="nav-link text-white" routerLink="stats" ngbNavLink>
               Stats
             </a>
-          </li>          
+          </li>
           <li class="nav-item">
             <a class="nav-link small" href="https://88mph.app/fm/" target="_blank">
               88.0 FM 📼
@@ -98,7 +128,7 @@
               Insurance
             </a>
           </li>
-          <li class="nav-item">          
+          <li class="nav-item">
             <a class="nav-link" href="#sidebarAudits" data-toggle="collapse" role="button" aria-expanded="false"
               aria-controls="sidebarAudits">
               Security audits
@@ -130,7 +160,7 @@
             </a>
             <div class="collapse" id="sidebarMore">
               <ul class="nav nav-sm flex-column">
-                
+
                 <li class="nav-item">
                   <a class="nav-link small" href="https://twitter.com/88mphapp" target="_blank">
                     Twitter
@@ -223,8 +253,8 @@
             </div>
           </li>
         </ul>
-        
-        <div class="btn-group-toggle d-flex mt-3" data-toggle="buttons">          
+
+        <div class="btn-group-toggle d-flex mt-3" data-toggle="buttons">
           <button class="card-link">
             <input type="radio" name="colorScheme" id="colorScheme80s" value="80s"> 80s
           </button>

@@ -85,7 +85,7 @@
                 <td class="text-right">
                   <!-- Button -->
                   <button type="button" class="card-link small small px-1" (click)="withdraw(vest)"
-                    *ngIf="getCurrentWithdrawableAmount(vest).gt(0)">
+                    *ngIf="getCurrentWithdrawableAmount(vest).gt(0)" [disabled]="wallet.watching">
                     <i class="fe fe-arrow-down mr-2 align-bottom"></i>Withdraw
                   </button>
                 </td>

@@ -91,7 +91,15 @@ export class BondsComponent implements OnInit {
   }
 
   loadData(loadUser: boolean, loadGlobal: boolean): void {
-    const funderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
+    //const funderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
+    let funderID;
+    if (this.wallet.connected && !this.wallet.watching) {
+      funderID = this.wallet.userAddress.toLowerCase();
+    } else if (this.wallet.watching) {
+      funderID = this.wallet.watchedAddress.toLowerCase();
+    } else {
+      funderID = '';
+    }
     const queryString = gql`
       {
         ${loadUser ? `funder(id: "${funderID}") {

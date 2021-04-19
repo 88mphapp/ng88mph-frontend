@@ -419,7 +419,7 @@
               </ng-container>
             </div>
 
-            <button class="card-link btn-block m-3" [disabled]="!canContinue()" (click)="buyBond()">
+            <button class="card-link btn-block m-3" [disabled]="!canContinue() || wallet.watching" (click)="buyBond()">
               Continue
             </button>
           </div>

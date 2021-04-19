@@ -7,6 +7,7 @@ import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
 import { HelpersService } from '../helpers.service';
 import { WalletService } from '../wallet.service';
+import { Watch } from '../watch';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,8 @@ export class HeaderComponent implements OnInit {
   depositValueLocked: BigNumber;
   farmingValueLocked: BigNumber;
   mphPriceUSD: BigNumber;
+
+  watchedModel = new Watch(false, "");
 
   constructor(private apollo: Apollo, public wallet: WalletService, public contract: ContractService,
     public constants: ConstantsService, public helpers: HelpersService) {
@@ -53,9 +56,14 @@ export class HeaderComponent implements OnInit {
 
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
-    if (loadUser && this.wallet.connected) {
+    if (loadUser && this.wallet.connected && !this.wallet.watching) {
       const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
       mphToken.methods.balanceOf(this.wallet.userAddress).call().then(mphBalance => {
+        this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
+      });
+    } else {
+      const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
+      mphToken.methods.balanceOf(this.wallet.watchedAddress).call().then(mphBalance => {
         this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
       });
     }
@@ -108,6 +116,17 @@ export class HeaderComponent implements OnInit {
   connectWallet() {
     this.wallet.connect(() => { }, () => { }, false);
   }
+
+  onSubmit() {
+    this.wallet.watchWallet(this.watchedModel.address);
+    this.loadData(true, true);
+  }
+
+  switchFocus(watching: boolean) {
+    this.wallet.watch.watching = watching;
+    this.loadData(true, true);
+  }
+
 }
 
 interface QueryResult {
