@@ -22,8 +22,11 @@ export class ModalBondDetailsComponent implements OnInit {
   estimatedProfitUSD: BigNumber;
   estimatedProfitToken: BigNumber;
   totalAmountMulTime: BigNumber;
+  interestFromLeftoverDeposits: BigNumber;
+  totalMPHReward: BigNumber;
   @Input() public funderPool: FunderPool;
   @Input() public funding: Funding;
+  @Input() public mphPriceUSD: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -71,23 +74,35 @@ export class ModalBondDetailsComponent implements OnInit {
 
       let newDeposits: Array<Deposit> = [];
       let newTotalAmountMulTime = new BigNumber(0);
+      let newTotalMPHReward = new BigNumber(0);
       for (const deposit of deposits) {
+        const mphRewardTimeComponent = this.funding.creationTimestamp < deposit.maturationTimestamp ? deposit.maturationTimestamp - this.funding.creationTimestamp : 0;
+        const funderMPHReward = new BigNumber(deposit.amount).times(this.funding.pool.mphFunderRewardMultiplier).times(mphRewardTimeComponent);
         const depositObj: Deposit = {
           ...deposit,
           maturationTimestamp: +deposit.maturationTimestamp,
           amount: new BigNumber(deposit.amount),
           fundingInterestPaid: new BigNumber(deposit.fundingInterestPaid),
           fundingRefundAmount: new BigNumber(deposit.fundingRefundAmount),
+          funderMPHReward
         };
         newDeposits = [...newDeposits, depositObj];
+        newTotalMPHReward = newTotalMPHReward.plus(funderMPHReward);
 
-        if (depositObj.active && depositObj.maturationTimestamp > now) {
-          newTotalAmountMulTime = newTotalAmountMulTime.plus(depositObj.amount.times(depositObj.maturationTimestamp - now));
+        if (depositObj.active) {
+          if (depositObj.maturationTimestamp > now) {
+            newTotalAmountMulTime = newTotalAmountMulTime.plus(depositObj.amount.times(depositObj.maturationTimestamp - now));
+          } else {
+            // mature but not withdrawn, compute current interest accumulated
+            const interestAccumulated = depositObj.amount.times(this.funding.pool.moneyMarketIncomeIndex).div(this.funding.recordedMoneyMarketIncomeIndex).minus(depositObj.amount);
+            this.interestFromLeftoverDeposits = this.interestFromLeftoverDeposits.plus(interestAccumulated);
+          }
         }
       }
 
       this.deposits = newDeposits;
       this.totalAmountMulTime = newTotalAmountMulTime;
+      this.totalMPHReward = newTotalMPHReward;
       this.updateFloatingRatePrediction(this.funding.pool.oracleInterestRate);
     }
   }
@@ -99,6 +114,8 @@ export class ModalBondDetailsComponent implements OnInit {
     this.estimatedProfitUSD = new BigNumber(0);
     this.estimatedROI = new BigNumber(0);
     this.totalAmountMulTime = new BigNumber(0);
+    this.interestFromLeftoverDeposits = new BigNumber(0);
+    this.totalMPHReward = new BigNumber(0);
   }
 
   timestampToDateString(timestampSec: number): string {
@@ -109,7 +126,7 @@ export class ModalBondDetailsComponent implements OnInit {
     this.floatingRatePrediction = new BigNumber(newPrediction);
     const estimatedRemainingEarnings = this.totalAmountMulTime.times(newPrediction).div(100).div(this.constants.YEAR_IN_SEC);
     const cost = this.funding.deficitToken.minus(this.funding.refundAmountToken);
-    this.estimatedProfitToken = estimatedRemainingEarnings.plus(this.funding.interestEarnedToken).minus(cost);
+    this.estimatedProfitToken = estimatedRemainingEarnings.plus(this.funding.interestEarnedToken).plus(this.interestFromLeftoverDeposits).minus(cost);
     const tokenPrice = this.funding.deficitUSD.div(this.funding.deficitToken); // infer token price from funding, avoids network request
     this.estimatedProfitUSD = this.estimatedProfitToken.times(tokenPrice);
     this.estimatedROI = this.estimatedProfitToken.div(cost).times(100);
@@ -127,6 +144,7 @@ interface Deposit {
   fundingInterestPaid: BigNumber;
   fundingRefundAmount: BigNumber;
   active: boolean;
+  funderMPHReward: BigNumber;
 }
 
 interface FundingDepositResult {

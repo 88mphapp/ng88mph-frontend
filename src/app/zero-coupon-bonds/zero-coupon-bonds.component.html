@@ -1,0 +1,115 @@
+<!-- HEADER -->
+<div class="header pt-4">
+  <div class="container-fluid">
+
+    <!-- Body -->
+    <div class="header-body border-0 p-0">
+      <div class="row align-items-center">
+        <div class="col-12 col-lg-10 order-2 order-lg-1">
+          <h1 class="mb-2">Zero coupon bonds</h1>
+          <p class="text-muted font-weight-bold mb-3">
+            Zero coupon bonds are a type of financial instrument that can be redeemed 1-to-1 for its underlying currency
+            upon maturation. Mint zero coupon bonds using your fixed-rate deposit, and get
+            instant liquidity on Sushiswap.
+          </p>
+        </div>
+        <div class="col-12 col-lg-2 order-1 order-lg-2 mb-4 mb-lg-0">
+          <a class="text-purple" href="https://app.rarible.com/token/0xd07dc4262bcdbf85190c01c996b4c06a461d2430:159366:0x4ddc4a3b6813436e5d2ca27a9ac0be92bf3df0d4" target="_blank">
+            <img class="img-fluid mb-2 border border-white" src="./assets/img/88mph_warakami_1k.gif" alt="88mph_warakami">
+            NFT 💜 <i class="fe fe-external-link"></i>
+          </a>
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .header-body -->
+
+  </div>
+</div> <!-- / .header -->
+
+<div class="container-fluid mb-6">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <h2 class="mt-n3 bg-dark mb-0 mx-3 pl-3">Explore our zero coupon bond offerings</h2>
+        <div class="alert alert-pink-blue rounded-0 mb-0 mt-3 pl-4">
+          Stake your ZCB SLP tokens and earn MPH rewards! Get started by clicking "Manage" in the ZCB series' row.
+        </div>
+        <div class="form-group m-4">
+          <label for="pool-select">Select pool</label>
+          <select class="custom-select" id="pool-select" data-toggle="select"
+            (change)="selectPool($event.target.value)">
+            <option value={{i}} *ngFor="let pool of allPoolList; index as i;">
+              {{pool.stablecoinSymbol}} ({{pool.protocol}})
+            </option>
+          </select>
+        </div>
+
+        <div class="table-responsive mb-0">
+          <table class="table table-sm table-nowrap card-table">
+            <thead>
+              <tr>
+                <th class="text-dark">
+                  Series
+                </th>
+                <th class="text-dark">
+                  Your balance
+                </th>
+                <th class="text-dark">
+                  Total Supply
+                </th>
+                <th class="text-dark">
+                  Implied Interest Rate
+                </th>
+                <th class="text-dark">
+
+                </th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              <tr class="border-left border-2 border-amber" *ngFor="let zcbEntry of selectedPoolZCBList">
+                <td>
+                  <h4 class="mb-0">{{zcbEntry.zcbInfo.series}}</h4>
+                  <span class="badge mb-1"
+                    [ngClass]="{'badge-soft-warning': zcbEntry.mature, 'badge-soft-success': !zcbEntry.mature}">
+                    <ng-container *ngIf="zcbEntry.mature">
+                      Mature
+                    </ng-container>
+                    <ng-container *ngIf="!zcbEntry.mature">
+                      Active
+                    </ng-container>
+                  </span>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">{{zcbEntry.userBalance.toFormat(2)}} ZCB</h4>
+                  <span class="text-white d-block">${{zcbEntry.userBalanceUSD.isNaN() ? 'N/A' :
+                    zcbEntry.userBalanceUSD.toFormat(2)}}</span>
+                  <div class="mt-3">
+                    <!-- Button -->
+                    <a class="mr-3" href="https://app.sushi.com/swap?inputCurrency={{zcbEntry.zcbInfo.sushiSwapPairBaseTokenAddress}}&outputCurrency={{zcbEntry.zcbInfo.address}}" target="_blank">
+                      <button type="button" class="card-link small px-1">
+                        <i class="fe fe-external-link mr-2 align-bottom"></i>Trade
+                      </button>
+                    </a>
+                    <!-- Button -->
+                    <button type="button" class="card-link small px-1" (click)="openZCBModal(zcbEntry)">
+                      <i class="fe fe-settings mr-2 align-bottom"></i>Manage
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">{{zcbEntry.totalSupply.toFormat(2)}} ZCB</h4>
+                  <span class="text-white d-block">${{zcbEntry.totalSupplyUSD.isNaN() ? 'N/A' :
+                    zcbEntry.totalSupplyUSD.toFormat(2)}}</span>
+                </td>
+                <td>
+                  <h4 class="mb-1 font-weight-normal glowing">{{zcbEntry.impliedInterestRate.isNaN() ? "N/A" :
+                    zcbEntry.impliedInterestRate.toFormat(2)}}%</h4>
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

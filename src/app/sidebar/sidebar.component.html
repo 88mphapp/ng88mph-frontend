@@ -80,12 +80,17 @@
         <ul class="navbar-nav" ngbNav [activeId]="route.url">
           <li class="nav-item" ngbNavItem="/deposits">
             <a class="nav-link text-white" routerLink="deposits" ngbNavLink>
-              Earn fixed APY
+              Fixed-interest rate bonds
             </a>
           </li>
           <li class="nav-item" ngbNavItem="/bonds">
             <a class="nav-link text-white" routerLink="bonds" ngbNavLink>
-              Buy floating-rate bonds
+              Floating-rate bonds
+            </a>
+          </li>
+          <li class="nav-item" ngbNavItem="/zero-coupon-bonds">
+            <a class="nav-link text-white" routerLink="zero-coupon-bonds" ngbNavLink>
+              Zero coupon bonds
             </a>
           </li>
           <li class="nav-item" ngbNavItem="/vesting">
@@ -103,14 +108,101 @@
               Liquidity mining
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://snapshot.org/#/88mph.eth" target="_blank">
+              Governance
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#sidebarPartners" data-toggle="collapse" role="button" aria-expanded="false"
+              aria-controls="sidebarPartners">
+              Partners <span class="badge glowing mt-n1">
+                NEW
+              </span>
+            </a>
+            <div class="collapse" id="sidebarPartners">
+              <ul class="nav nav-sm flex-column">
+                <li class="nav-item">
+                  <a class="nav-link" href="https://app.nsure.network/#/cover/my"
+                    target="_blank">
+                    Buy insurance policies on Nsure Network
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://app.coverprotocol.com/app/marketplace/protocols/88MPH"
+                    target="_blank">
+                    Buy insurance policies on Cover Protocol
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://app.bancor.network/eth/swap?from=0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C&to=0x8888801aF4d980682e47f1A9036e589479e835C5" target="_blank">
+                    Trade MPH on Bancor
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://info.uniswap.org/pair/0x4d96369002fc5b9687ee924d458a7e5baa5df34e" target="_blank">
+                    Trade MPH on Uniswap
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://info.linkswap.app/pair/0x40f1068495ba9921d6c18cf1ac25f718df8ce69d" target="_blank">
+                    Trade MPH on LinkSwap
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://app.sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
+                    target="_blank">
+                    Trade MPH on SushiSwap
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://app.rari.capital/fuse/pool/3" target="_blank">
+                    Lend/borrow MPH on Rari.capital
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://app.mantradao.com/zenterest" target="_blank">
+                    Lend/borrow MPH on Mantradao.com
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://unit.xyz/?collateral=0x8888801af4d980682e47f1a9036e589479e835c5" target="_blank">
+                    Borrow USDP against MPH on Unit.xyz
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="https://www.dharma.io/token/0x8888801af4d980682e47f1a9036e589479e835c5" target="_blank">
+                    Buy MPH w/ USD
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
           <li class="nav-item" ngbNavItem="/stats">
-            <a class="nav-link text-white" routerLink="stats" ngbNavLink>
+            <a class="nav-link small" routerLink="stats" ngbNavLink>
               Stats
+            </a>
+          </li>                    
+          <li class="nav-item">
+            <a class="nav-link small" href="https://forum.88mph.app/" target="_blank">
+              Forum
+            </a>
+          </li>
+          <li class="nav-item" ngbNavItem="/funding">
+            <a class="nav-link small" routerLink="funding" ngbNavLink>
+              Funding
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link small" href="https://88mph.app/fm/" target="_blank">
-              88.0 FM 📼
+              88.0 FM 📻
             </a>
           </li>
           <li class="nav-item">
@@ -119,24 +211,35 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link small" href="https://immunefi.com/bounty/88mph/" target="_blank">
-              Bug bounty
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link small" href="https://app.coverprotocol.com/app/marketplace/protocols/88MPH" target="_blank">
-              Insurance
+            <a class="nav-link small" href="" target="_blank">
+              FAQ (soon)
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#sidebarAudits" data-toggle="collapse" role="button" aria-expanded="false"
               aria-controls="sidebarAudits">
-              Security audits
+              Security
             </a>
             <div class="collapse" id="sidebarAudits">
               <ul class="nav nav-sm flex-column">
                 <li class="nav-item">
-                  <a class="nav-link small" href="https://github.com/peckshield/publications/blob/master/audit_reports/peckshield-audit-report-88mph-v1.0.pdf" target="_blank">
+                  <a class="nav-link small"
+                    href="https://gateway.pinata.cloud/ipfs/QmQq23FvF4dJNTjEyDGm1hDHBnLrpU1FmJJsch8kCSGt3U"
+                    target="_blank">
+                    Certik ZC bond audit
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link small"
+                    href="https://github.com/peckshield/publications/blob/master/audit_reports/peckshield-audit-report-88mph%20Zero%20Coupon%20Bonds-v1.0.pdf"
+                    target="_blank">
+                    PeckShield ZC bond audit
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link small"
+                    href="https://github.com/peckshield/publications/blob/master/audit_reports/peckshield-audit-report-88mph-v1.0.pdf"
+                    target="_blank">
                     PeckShield v2 audit
                   </a>
                 </li>
@@ -150,10 +253,48 @@
                     Defi Yield security analysis
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link small" href="https://immunefi.com/bounty/88mph/" target="_blank">
+                    Bug bounty
+                  </a>
+                </li>
               </ul>
             </div>
           </li>
+          
           <li class="nav-item">
+            <a class="nav-link" href="#sidebarCN" data-toggle="collapse" role="button" aria-expanded="false"
+              aria-controls="sidebarAudits">
+              加入中国社区
+            </a>
+            <div class="collapse" id="sidebarCN">
+              <ul class="nav nav-sm flex-column">
+                <li class="nav-item">
+                  <img style="margin-left: 52px" class="img-fluid" src="./assets/img/wechatbot.png" alt="WeChat 88mph" width="128px">
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link small"
+                    href="https://weibo.com/u/7550683535"
+                    target="_blank">
+                    微博
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link small"
+                    href="https://88mph.app/docs-chinese/"
+                    target="_blank">
+                    百科
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link small" href="https://t.me/join88mphchinese" target="_blank">
+                    电报
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item mb-6">
             <a class="nav-link" href="#sidebarMore" data-toggle="collapse" role="button" aria-expanded="false"
               aria-controls="sidebarMore">
               More
@@ -177,7 +318,8 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link small" href="https://www.youtube.com/channel/UCEr3cuwaggjkw8TajaPSpgg" target="_blank">
+                  <a class="nav-link small" href="https://www.youtube.com/channel/UCEr3cuwaggjkw8TajaPSpgg"
+                    target="_blank">
                     Youtube
                   </a>
                 </li>
@@ -192,31 +334,8 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link small" href="https://imgur.com/uJkDeyC" target="_blank">
-                    Wechat
-                  </a>
-                </li>
-                <li class="nav-item">
                   <a class="nav-link small" href="https://forms.gle/UqKQ1LqhwAFCBWGBA" target="_blank">
                     Feedback
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://info.uniswap.org/pair/0x4d96369002fc5b9687ee924d458a7e5baa5df34e" target="_blank">
-                    Uniswap
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://sushiswap.fi/pair/0xb2c29e311916a346304f83aa44527092d5bd4f0f" target="_blank">
-                    Sushiswap
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link small"
-                    href="https://www.dharma.io/token/0x8888801af4d980682e47f1a9036e589479e835c5" target="_blank">
-                    Buy MPH w/ USD
                   </a>
                 </li>
                 <li class="nav-item">
@@ -253,14 +372,13 @@
             </div>
           </li>
         </ul>
-
-        <div class="btn-group-toggle d-flex mt-3" data-toggle="buttons">
-          <button class="card-link">
-            <input type="radio" name="colorScheme" id="colorScheme80s" value="80s"> 80s
-          </button>
-          <button class="card-link ml-3">
-            <input type="radio" name="colorScheme" id="colorSchemeBoring" value="boring"> Boring
-          </button>
+        <div class="btn-group-toggle fixed-bottom fixed-bottom-switch bg-dark py-3 px-4 border-top" data-toggle="buttons">
+          <ng-container *ngFor="let themeName of app.themes">
+            <button class="card-link" (click)="app.setTheme(themeName)">
+              <input type="radio" name="colorScheme" value={{themeName}} [checked]="app.themeName === themeName">
+              {{themeName}}
+            </button>
+          </ng-container>
         </div>
       </div>
     </div>

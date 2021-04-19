@@ -6,22 +6,9 @@
     <div class="header-body border-0 p-0">
       <div class="row align-items-end">
         <div class="col">
-          <h1 class="mb-2">Buy floating-rate bonds.
-            Earn MPH rewards.</h1>
-          <p class="text-muted font-weight-bold">
-            Example: Chad purchases a floating-rate bond and fills up a debt of 5 tokens caused by Kevin's 1-year
-            deposit
-            of 100 tokens, to which a 5% fixed-rate interest was offered. Chad will earn floating-rate interest on 105
-            tokens
-            until
-            Kevin withdraws his assets.
-          </p>
-          <p class="text-muted font-weight-bold mb-5">
-            Because the fixed rate 88mph offers is 75% of the initial floating rate,
-            Chad will be in profit as long as the floating rate doesn't drop by >25%, and his profit increases when the
-            floating rate does. Chad is effectively longing the floating rate.
-            <a class="text-purple" href="https://88mph.app/docs/" target="_blank" rel="noopener noreferrer">
-              See how it works
+          <h1 class="mb-2">Fund a floating-rate bonds and earn MPH rewards.</h1>
+          <p class="text-muted font-weight-bold mb-5">Learn more in the FAQ below or on our <a class="text-purple" href="https://www.youtube.com/channel/UCEr3cuwaggjkw8TajaPSpgg" target="_blank">
+              Youtube channel.
             </a>
           </p>
           <div class="card-deck mt-4 mb-3">
@@ -29,7 +16,7 @@
               <div class="card-body pt-0">
                 <!-- Title -->
                 <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  You paid
+                  You funded
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="The amount of debt your active bonds have funded.">
                     [i]
@@ -117,7 +104,7 @@
               <tr>
                 <th></th>
                 <th class="text-white">
-                  Amount paid
+                  Amount funded
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="The amount of debt your bond have funded.">
                     [i]
@@ -147,7 +134,7 @@
                 <th class="text-white">
                   MPH rewards
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="Bond buyers earn upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
+                    ngbTooltip="MPH rewards are distributed to the FRB holders when the FIRB's holder withdraws the full face value of the FIRB linked with the FRB at maturity.">
                     [i]
                   </button>
                 </th>
@@ -199,6 +186,14 @@
                       <h4 class="mb-1 font-weight-normal glowing">${{funding.deficitUSD.toFormat(4)}}</h4>
                       <span class="text-white">{{funding.deficitToken.toFormat(4)}}
                         {{funderPool.poolInfo.stablecoinSymbol}}</span>
+                      <div class="mt-3">
+                        <!-- Button -->
+                        <button type="button" class="card-link small small px-1"
+                        (click)="openBondDetailsModal(funderPool, funding)">
+                        <i class="fe fe-plus mr-2 align-bottom"></i>
+                          More
+                        </button>
+                      </div>
                     </td>
                     <td>
                       <h4 class="mb-1 font-weight-normal glowing">${{funding.currentDepositUSD.toFormat(4)}}</h4>
@@ -220,14 +215,7 @@
                       </h4>
                       <span class="text-white">{{funding.mphRewardEarned.toFormat(4)}} MPH</span>
                     </td>
-                    <td>
-                      <!-- Button -->
-                      <button type="button" class="card-link small small px-1"
-                        (click)="openBondDetailsModal(funderPool, funding)">
-                        <i class="fe fe-plus mr-2 align-bottom"></i>
-                          More
-                      </button>
-                    </td>
+                    <td></td>
                   </tr>
                 </ng-container>
               </ng-container>
@@ -237,8 +225,8 @@
       </div>
 
       <!-- Deficit funding opportunities -->
-      <div class="card">
-        <h2 class="mt-n3 bg-dark mb-4 mx-3 pl-3">Buy floating-rate bonds</h2>
+      <div class="card mb-6">
+        <h2 class="mt-n3 bg-dark mb-4 mx-3 pl-3">Fund floating-rate bonds</h2>
         <div class="card-body">
           <h2 class="display-2 glowing text-center" *ngIf="loadingCalculator">
             Loading...
@@ -273,8 +261,7 @@
                         <small>0%</small>
                       </div>
                       <div class="col text-center">
-                        <small>{{selectedPool?.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate
-                          APY)</small>
+                        <small>{{selectedPool?.oracleInterestRate.toFormat(1)}}% <br> (Current <a href="https://88mph.app/docs/howitworks/#interest-rate-model" target="_blank">30d EMA floating-rate APY</a>)</small>
                       </div>
                       <div class="col text-right">
                         <small>{{selectedPool?.oracleInterestRate.times(2).toFormat(1)}}%</small>
@@ -307,13 +294,17 @@
                 <h5 class="text-uppercase text-white">
                   Estimated ROI
                 </h5>
-                <h2 class="display-2 mb-0 mb-md-4 glowing">
-                  {{estimatedROI.toFormat(4)}}%<span class="small align-top">(+{{mphROI.toFormat(4)}}% MPH)</span>
+                <h2 class="display-2 mb-0 glowing">
+                  {{estimatedROI.plus(mphROI).toFormat(4)}}%
+                  
                 </h2>
+                <h5 class="mb-0 mb-md-4 text-white">
+                  ({{estimatedROI.toFormat(4)}}% in {{selectedPool?.stablecoinSymbol}} + {{mphROI.toFormat(4)}}% in MPH)
+                </h5>
                 <div class="row">
                   <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
-                      You pay
+                      You fund
                     </h5>
                     <h2 class="mb-1 glowing">
                       ${{debtToFundUSD.toFormat(4)}}
@@ -337,23 +328,23 @@
                       Estimated profit
                     </h5>
                     <h2 class="mb-1 glowing">
-                      ${{estimatedProfitUSD.toFormat(4)}}
+                      ${{estimatedProfitUSD.plus(mphRewardAmount.times(mphPriceUSD)).toFormat(4)}} 
                     </h2>
-                    <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}} {{selectedPool?.stablecoinSymbol}}
+                    <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}} {{selectedPool?.stablecoinSymbol}} + {{mphRewardAmount.toFormat(4)}} MPH
                     </h5>
                   </div>
                   <div class="col-6 mb-4">
                     <h5 class="text-uppercase text-white">
                       MPH rewards
                       <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                        ngbTooltip="Bond buyers get rewarded with upfront MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
+                        ngbTooltip="MPH rewards are distributed to the FRB holders when the FIRB's holder withdraws the full face value of the FIRB linked with the FRB at maturity.">
                         [i]
                       </button>
                     </h5>
                     <h2 class="mb-1 glowing">
                       ${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}
                     </h2>
-                    <h5 class="mb-3 text-white">{{mphRewardAmount.toFormat()}} MPH
+                    <h5 class="mb-3 text-white">{{mphRewardAmount.toFormat(4)}} MPH
                     </h5>
                   </div>
                 </div>
@@ -427,7 +418,63 @@
         </div>
 
       </div>
-
+      <!-- FAQ -->
+      <div class="card">
+        <h2 class="mt-n3 bg-dark mb-4 mx-3 pl-3" id="faq">Frequently asked questions</h2>
+        <div class="card-body">
+          <div class="row mb-6">
+            <div class="col-12 col-lg-6">
+              <h3>What is a Floating-Rate Bond (FRB)?</h3>
+              <p>
+                The Floating-Rate Bond (FRB) allows you to fund the debt created by the Fixed-Interest Rate Bonds (FIRB). The debt is the fixed-interest rate promised to FIRB holders. You will earn the variable rate offered by the underlying protocol (Compound, Aave, etc.) on the debt funded + the FIRB initial deposit.
+              </p>
+              <p>As the FIRB takes 50% of the floating-rate’s 30-day exponential moving average from the underlying money market protocol like Compound, Aave, if this protocol’s floating-interest rate doesn't drop by more than 50%, you will be in profit. This profit can increase if the underlying variable-rate interest increases.</p>
+              <p>
+                To sum it up, funding floating-rate bonds allows someone to immediately fill up the debt of one or more FIRB, and in exchange they would receive the yield generated by those FIRB.
+              </p>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/HC0AYMaodOg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-12 col-lg-6">
+              <h3>Example of a Floating-Rate Bond (FRB)
+              </h3>
+              <ul class="p-3">
+                <li>You fund the debt of a 1-year 100 DAI FIRB deposit, on which a 5% fixed-interest rate was offered;</li>
+                <li>This FIRB is using Compound to generate the yield;</li>
+                <li>The FRB’s value is (100 DAI + 5 DAI of debt) 105 DAI, so in other words, you funded 5 DAI to earn a floating-rate interest on 105 DAI, effectively leverage-long the DAI floating-rate on Compound with only 5 DAI;</li>
+                <li>If the DAI market rate on Compound is 6% APY on average over the next year, as a FRB holder, you will receive 6.3 DAI when the FIRB will reach its maturity in 1 year;</li>
+                <li>The return on investment for you will be 26%;</li>
+              </ul>
+            </div>
+            <div class="col-12 col-lg-6">
+              <h3>MPH rewards</h3>
+              <p>FRB holders get rewarded with MPH tokens that can be staked to earn protocol's revenues.</p>
+              <p>MPH rewards are distributed to the FRB holders when the FIRB's holder withdraws the full face value of the FIRB linked with the FRB at maturity.</p>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-12 col-lg-6">
+              <h3><i class="fe fe-check-circle"></i> Pros</h3>
+              <ul class="p-3">
+                <li>Floating-rate bonds allow you to benefit from rising rates as the FRB's ROI adjusts to the market rates.</li>
+                <li>FRBs allow you to leverage their position without much capital requirements. Eg. pay 5 to earn on 105.</li>
+              </ul>
+            </div>
+            <div class="col-12 col-lg-6">
+              <h3><i class="fe fe-x-circle"></i> Cons</h3>
+              <ul class="p-3">
+                <li>FRBs can have temporary or permanent default risk if the FIRB's holder doesn't withdraw the full face value of the FIRB at maturity. The risk decreases if the FIRB holder minted a zero-coupon bond, allowing everyone to trigger the FIRB's full face value withdrawal.</li>
+                <li>If market interest rates fall, the FRB's ROI may fall as well.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div> <!-- / .row -->
 </div>

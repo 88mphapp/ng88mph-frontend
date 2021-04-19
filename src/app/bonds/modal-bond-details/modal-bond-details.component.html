@@ -57,7 +57,7 @@
                   </div>
                   <div class="row justify-content-center px-4 pt-4">
                     <div class="col-12 col-lg-6">
-                      <h3>Estimate ROI</h3>
+                      <h3>Estimate your ROI</h3>
                       <h4 class="mb-1">
                         Your avg. floating-rate APY prediction:
                         <strong>{{floatingRatePrediction.toFormat(1)}}%</strong>
@@ -71,8 +71,7 @@
                           <small>0%</small>
                         </div>
                         <div class="col text-center">
-                          <small>{{funding.pool.oracleInterestRate.toFormat(1)}}% <br> (Current floating-rate
-                            APY)</small>
+                          <small>{{funding.pool.oracleInterestRate.toFormat(1)}}% <br> (Current <a href="https://88mph.app/docs/howitworks/#interest-rate-model" target="_blank">30d EMA floating-rate APY</a>)</small>
                         </div>
                         <div class="col text-right">
                           <small>{{funding.pool.oracleInterestRate.times(2).toFormat(1)}}%</small>
@@ -86,18 +85,21 @@
                             Estimated ROI
                           </h6>
                           <h4 class="mb-1 font-weight-normal glowing">
-                            {{estimatedROI.toFormat(4)}}%
+                            {{estimatedROI.plus(totalMPHReward.times(mphPriceUSD).div(funding.deficitUSD).times(100)).toFormat(4)}}%
                           </h4>
+                          <h5 class="mb-3 text-white">
+                            {{estimatedROI.toFormat(4)}}% in {{funderPool.poolInfo.stablecoinSymbol}} + {{totalMPHReward.times(mphPriceUSD).div(funding.deficitUSD).times(100).toFormat(4)}}% in MPH
+                          </h5>
                         </div>
                         <div class="col mb-4">
                           <h6 class="header-pretitle mb-2">
                             Estimated profit
                           </h6>
                           <h4 class="mb-1 font-weight-normal glowing">
-                            ${{estimatedProfitUSD.toFormat(4)}}
+                            ${{estimatedProfitUSD.plus(totalMPHReward.times(mphPriceUSD)).toFormat(4)}}
                           </h4>
-                          <h5 class="mb-3 text-white">{{estimatedProfitToken.toFormat(4)}}
-                            {{funderPool.poolInfo.stablecoinSymbol}}
+                          <h5 class="mb-3 text-white">
+                            {{estimatedProfitToken.toFormat(4)}} {{funderPool.poolInfo.stablecoinSymbol}} + {{totalMPHReward.toFormat(4)}} MPH
                           </h5>
                         </div>
                       </div>
@@ -120,6 +122,9 @@
                         </th>
                         <th>
                           Refund amount
+                        </th>
+                        <th>
+                          MPH rewards
                         </th>
                       </thead>
                       <tbody class="list">
@@ -144,6 +149,9 @@
                             </td>
                             <td>
                               {{deposit.fundingRefundAmount.toFormat(4)}}
+                            </td>
+                            <td>
+                              {{deposit.funderMPHReward.toFormat(4)}}
                             </td>
                           </tr>
                         </ng-container>

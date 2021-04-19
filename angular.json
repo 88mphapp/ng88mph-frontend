@@ -26,8 +26,7 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css",
-              "src/assets/fonts/feather/feather.css",
-              "src/assets/css/theme-80s.css"
+              "src/assets/fonts/feather/feather.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

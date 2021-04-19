@@ -1,0 +1,72 @@
+<div class="row px-4 no-gutters">
+  <div class="col">
+    <h2>How it works</h2>
+      <p class="text-white">
+      When the zero coupon bond is mature, the individual deposits it contains must be withdrawn so that bond holders can
+      redeem their bonds for the underlying tokens.
+      </p>
+      <p class="text-white mb-4">When a deposit is withdrawn, the MPH reward is unlocked and given to
+      the deposit's owner, providing an incentive for the owners to withdraw their deposits. However, a deposit can be
+      withdrawn by anyone, so even if a deposit's owner is unresponsive, bond holders can still redeem their bonds.</p>
+  </div>
+</div>
+
+<div class="row px-4 justify-content-end align-items-center">
+  <input type="checkbox" id="showAllDeposits" (input)="loadActiveDeposits($event.target.checked)" />
+  <label for="showAllDeposits" class="ml-2 mb-0">
+    Show everyone's deposits
+  </label>
+</div>
+<div class="row justify-content-center">
+  <ng-container *ngIf="activeDeposits.length == 0">
+    <h3 class="glowing text-center">No withdrawable deposits</h3>
+  </ng-container>
+  <ng-container *ngIf="activeDeposits.length > 0">
+    <table class="table table-sm card-table">
+      <thead>
+        <tr>
+          <th class="text-dark">
+            #
+          </th>
+          <th class="text-dark">
+            {{poolInfo.stablecoinSymbol}} To Unlock
+          </th>
+          <th class="text-dark">
+            MPH To Unlock
+          </th>
+          <th class="text-dark">
+          </th>
+        </tr>
+      </thead>
+      <tbody class="list">
+        <tr *ngFor="let deposit of activeDeposits">
+          <td>
+            <h4 class="mb-0">#{{deposit.nftID}}</h4>
+          </td>
+          <td>
+            <h4 class="mb-1 font-weight-normal glowing">
+              ${{deposit.unlockStablecoinAmount.times(stablecoinPriceUSD).toFormat(DECIMALS)}}
+            </h4>
+            <span class="text-white d-block">{{deposit.unlockStablecoinAmount.toFormat(DECIMALS)}}
+              {{poolInfo.stablecoinSymbol}}</span>
+          </td>
+          <td>
+            <h4 class="mb-1 font-weight-normal glowing">
+              ${{deposit.unlockMPHAmount.times(mphPriceUSD).toFormat(DECIMALS)}}
+            </h4>
+            <span class="text-white d-block">{{deposit.unlockMPHAmount.toFormat(DECIMALS)}} MPH</span>
+          </td>
+          <td class="text-right">
+            <ng-container *ngIf="canContinue()">
+              <!-- Button -->
+              <button type="button" class="card-link small small px-1" (click)="withdraw(deposit)">
+                <i class="fe fe-dollar-sign mr-2 align-bottom"></i>
+                Withdraw
+              </button>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>

@@ -67,6 +67,7 @@ export class BondsComponent implements OnInit {
   averageMaturationTime: BigNumber;
   medianMaturationTime: BigNumber;
   depositListIsCollapsed: boolean;
+  
 
   constructor(
     private modalService: NgbModal,
@@ -112,6 +113,8 @@ export class BondsComponent implements OnInit {
               pool {
                 address
                 oracleInterestRate
+                moneyMarketIncomeIndex
+                mphFunderRewardMultiplier
               }
               fromDepositID
     					toDepositID
@@ -123,6 +126,7 @@ export class BondsComponent implements OnInit {
               totalInterestEarned
               mphRewardEarned
               refundAmount
+              creationTimestamp
             }
           }
           totalInterestByPool {
@@ -143,9 +147,6 @@ export class BondsComponent implements OnInit {
           oneYearInterestRate
           oracleInterestRate
           mphFunderRewardMultiplier
-          latestFundedDeposit: deposits(where: { fundingID_gt: 0 }, orderBy: nftID, orderDirection: desc, first: 1) {
-            nftID
-          }
           latestDeposit: deposits(orderBy: nftID, orderDirection: desc, first: 1) {
             nftID
           }
@@ -190,7 +191,9 @@ export class BondsComponent implements OnInit {
               toDepositID: funding.toDepositID,
               pool: {
                 address: funding.pool.address,
-                oracleInterestRate: new BigNumber(funding.pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100)
+                oracleInterestRate: new BigNumber(funding.pool.oracleInterestRate).times(this.constants.YEAR_IN_SEC).times(100),
+                moneyMarketIncomeIndex: new BigNumber(funding.pool.moneyMarketIncomeIndex),
+                mphFunderRewardMultiplier: new BigNumber(funding.pool.mphFunderRewardMultiplier)
               },
               nftID: funding.nftID,
               deficitToken: new BigNumber(funding.fundedDeficitAmount),
@@ -202,6 +205,8 @@ export class BondsComponent implements OnInit {
               mphRewardEarned: new BigNumber(funding.mphRewardEarned),
               refundAmountToken: new BigNumber(funding.refundAmount),
               refundAmountUSD: new BigNumber(funding.refundAmount).times(stablecoinPrice),
+              recordedMoneyMarketIncomeIndex: new BigNumber(funding.recordedMoneyMarketIncomeIndex),
+              creationTimestamp: +funding.creationTimestamp
             }
             fundings.push(fundingObj)
           }
@@ -258,7 +263,8 @@ export class BondsComponent implements OnInit {
           // get MPH reward amount
           const mphRewardPerTokenPerSecond = new BigNumber(pool.mphFunderRewardMultiplier);
 
-          const latestFundedDeposit = pool.latestFundedDeposit.length ? +pool.latestFundedDeposit[0].nftID : 0;
+          const poolContract = this.contract.getPool(poolInfo.name);
+          const latestFundedDeposit = +(await poolContract.methods.latestFundedDepositID().call());
           const latestDeposit = pool.latestDeposit.length ? +pool.latestDeposit[0].nftID : 0;
           const dpoolObj: DPool = {
             name: poolInfo.name,
@@ -322,11 +328,12 @@ export class BondsComponent implements OnInit {
     const modalRef = this.modalService.open(ModalBondDetailsComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.funderPool = selectedFunderPool;
     modalRef.componentInstance.funding = selectedFunding;
+    modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
   }
 
   selectPool(poolIdx: number) {
     this.selectedPool = this.allPoolList[poolIdx];
-    this.floatingRatePrediction = this.selectedPool.oneYearInterestRate.times(4 / 3);
+    this.floatingRatePrediction = this.selectedPool.oneYearInterestRate.times(2);
     this.numFundableDeposits = Math.min(this.selectedPool.latestDeposit - this.selectedPool.latestFundedDeposit, 20);
 
     const poolID = this.selectedPool.address.toLowerCase();
@@ -369,6 +376,8 @@ export class BondsComponent implements OnInit {
     });
   }
 
+
+
   selectedPoolHasDebt(): boolean {
     if (!this.selectedPool) {
       return false;
@@ -382,6 +391,8 @@ export class BondsComponent implements OnInit {
   }
 
   async updateNumDepositsToFund(newNum: number) {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const poolContract = this.contract.getPool(this.selectedPool.name, readonlyWeb3);
     if (newNum >= this.numFundableDeposits) {
       // fund all deposits
       this.numDepositsToFund = 'All';
@@ -392,9 +403,14 @@ export class BondsComponent implements OnInit {
       let debtToFundToken = new BigNumber(0);
       let amountToEarnOnToken = new BigNumber(0);
       for (const deposit of this.fundableDeposits.slice(0, newNum)) {
-        if (!deposit.active) continue;
-        debtToFundToken = debtToFundToken.plus(deposit.surplus.times(-1));
-        amountToEarnOnToken = amountToEarnOnToken.plus(deposit.amount);
+        if (deposit.active) {
+          debtToFundToken = debtToFundToken.plus(deposit.surplus.times(-1));
+          amountToEarnOnToken = amountToEarnOnToken.plus(deposit.amount);
+        } else {
+          const depositObj = await poolContract.methods.getDeposit(deposit.nftID).call();
+          const finalSurplus = new BigNumber(depositObj.finalSurplusAmount).times(depositObj.finalSurplusIsNegative ? -1 : 1).div(Math.pow(10, this.selectedPool.stablecoinDecimals));
+          debtToFundToken = debtToFundToken.plus(finalSurplus.times(-1));
+        }
       }
       this.debtToFundToken = debtToFundToken;
       this.amountToEarnOnToken = amountToEarnOnToken;
@@ -422,6 +438,7 @@ export class BondsComponent implements OnInit {
     if (this.mphROI.isNaN()) {
       this.mphROI = new BigNumber(0);
     }
+    
 
     // compute median maturation time
     const median = (values) => {
@@ -513,6 +530,8 @@ interface QueryResult {
         pool: {
           address: string;
           oracleInterestRate: number;
+          moneyMarketIncomeIndex: number;
+          mphFunderRewardMultiplier: number;
         };
         nftID: number;
         recordedFundedDepositAmount: number;
@@ -522,6 +541,7 @@ interface QueryResult {
         totalInterestEarned: number;
         mphRewardEarned: number;
         refundAmount: number;
+        creationTimestamp: number;
       }[];
     }[];
     totalInterestByPool: {
@@ -542,9 +562,6 @@ interface QueryResult {
     oneYearInterestRate: number;
     oracleInterestRate: number;
     mphFunderRewardMultiplier: number;
-    latestFundedDeposit: {
-      nftID: number;
-    }[];
     latestDeposit: {
       nftID: number;
     }[];
