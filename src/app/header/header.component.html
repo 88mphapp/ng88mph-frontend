@@ -32,15 +32,61 @@
     </div>
     <button class="card-link small px-1" type="button" routerLink="/rewards">
       {{mphBalance.toFormat(4)}} MPH <img src="./assets/img/icon-default.png" class="mx-1 icon-logo" alt="..."
-        width="18">
+        width="18px">
     </button>
-    <button type="button" class="card-link small px-1" (click)="connectWallet()">
-      <div *ngIf="wallet.connected">
-        {{wallet.userAddress.substring(0, 14)}}
+    <!-- Connect/watch button -->
+    <div class="btn-group ml-3">
+      <button type="button" class="card-link" (click)="connectWallet()">
+        <div *ngIf="wallet.connected && !wallet.watching">
+          {{wallet.userAddress.substring(0, 14)}}
+        </div>
+        <div *ngIf="!wallet.connected && !wallet.watching">
+          Connect Wallet
+        </div>
+        <div *ngIf="wallet.watching">
+          {{wallet.watchedAddress.substring(0, 14)}}
+        </div>
+      </button>
+      <button type="button" class="card-link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px;">
+        <!-- Connected Wallet -->
+        <span *ngIf="wallet.connected">
+          <h6 class="dropdown-header px-0">Connected</h6>
+          <button type="button" class="card-link" (click)="switchFocus(false)">
+            {{wallet.userAddress.substring(0, 14)}}
+          </button>
+          <span *ngIf="!wallet.watching" class="badge">Viewing</span>
+        </span>
+        <!-- Watched Wallet -->
+        <span *ngIf="wallet.watchedAddress != null">
+          <h6 class="dropdown-header px-0">Watched</h6>
+          <button type="button" class="card-link" (click)="switchFocus(true)">
+            {{wallet.watchedAddress.substring(0, 14)}}
+          </button>
+          <span *ngIf="wallet.watching" class="badge">Viewing</span>
+        </span>
+        <!-- Add/Edit Watched Address -->
+        <span *ngIf="wallet.watchedAddress == null">
+          <h6 class="dropdown-header px-0">Watch address</h6>
+        </span>
+        <span *ngIf="wallet.watchedAddress != null">
+          <h6 class="dropdown-header px-0">Edit watched address</h6>
+        </span>
+        <form #watchForm="ngForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <input type="text" [class.is-invalid]="address.invalid && address.dirty"
+             class="form-control" pattern="^0x[a-fA-F0-9]{40}$" required #address="ngModel" name="watchAddress"
+             id="TrackEthAddress"  placeholder="Add an Ethereum address"
+             [(ngModel)]="watchedModel.address">
+             <small *ngIf="address.invalid && address.dirty" class="text-danger"> Please enter a valid address</small>
+          </div>
+          <button *ngIf="wallet.watchedAddress == null" type="submit" class="card-link" [disabled]="watchForm.form.invalid">Add watched address</button>
+          <button *ngIf="wallet.watchedAddress != null" type="submit" class="card-link" [disabled]="watchForm.form.invalid">Edit watched address</button>
+        </form>
       </div>
-      <div *ngIf="!wallet.connected">
-        Connect Wallet
-      </div>
-    </button>
+    </div>
+
   </div>
 </div>

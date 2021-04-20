@@ -5,6 +5,7 @@ import { AppComponent } from '../app.component';
 import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
+import { Watch } from '../watch';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,6 +14,8 @@ import { WalletService } from '../wallet.service';
 })
 export class SidebarComponent implements OnInit {
   mphBalance: BigNumber;
+
+  watchedModel = new Watch(false, "");
 
   constructor(public route: Router, public wallet: WalletService, public contract: ContractService,
     public constants: ConstantsService, public app: AppComponent) {
@@ -37,12 +40,18 @@ export class SidebarComponent implements OnInit {
     const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
 
-    let mphBalance, stakedMPHBalance;
+    let mphBalance, stakedMPHBalance, address;
+
+    if (!this.wallet.watching) {
+      address = this.wallet.userAddress;
+    } else {
+      address = this.wallet.watchedAddress;
+    }
     await Promise.all([
-      mphBalance = new BigNumber(await mphToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION),
-      stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION)
+      mphBalance = new BigNumber(await mphToken.methods.balanceOf(address).call()).div(this.constants.PRECISION),
+      stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(address).call()).div(this.constants.PRECISION)
     ])
-    this.mphBalance = new BigNumber(mphBalance).plus(stakedMPHBalance);
+    this.mphBalance = new BigNumber(mphBalance);
   }
 
   resetData(): void {
@@ -52,4 +61,15 @@ export class SidebarComponent implements OnInit {
   connectWallet() {
     this.wallet.connect(() => { }, () => { }, false);
   }
+
+  onSubmit() {
+    this.wallet.watchWallet(this.watchedModel.address);
+    this.loadData();
+  }
+
+  switchFocus(watching: boolean) {
+    this.wallet.watch.watching = watching;
+    this.loadData();
+  }
+
 }
