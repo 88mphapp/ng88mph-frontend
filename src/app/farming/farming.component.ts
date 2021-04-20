@@ -112,10 +112,17 @@ export class FarmingComponent implements OnInit {
       this.sushiWeeklyROI = sushiSecondROI.times(this.constants.WEEK_IN_SEC);
       this.sushiDailyROI = sushiSecondROI.times(this.constants.DAY_IN_SEC);
     }
+    
+    let address;
+    if (!this.wallet.watching) {
+      address = this.wallet.userAddress;
+    } else {
+      address = this.wallet.watchedAddress;
+    }
 
     if (loadUser) {
-      this.stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
-      this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+      this.stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(address).call()).div(this.constants.PRECISION);
+      this.claimableRewards = new BigNumber(await rewards.methods.earned(address).call()).div(this.constants.PRECISION);
       this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
       if (this.totalStakedMPHBalance.isZero()) {
         this.stakedMPHPoolProportion = new BigNumber(0);
@@ -125,8 +132,8 @@ export class FarmingComponent implements OnInit {
       // sushi
       let sushiUserInfo;
       await Promise.all([
-        sushiUserInfo = await sushiMasterChef.methods.userInfo(this.constants.SUSHI_MPH_ONSEN_ID, this.wallet.userAddress).call(),
-        this.sushiClaimableRewards = new BigNumber(await sushiMasterChef.methods.pendingSushi(this.constants.SUSHI_MPH_ONSEN_ID, this.wallet.userAddress).call()).div(this.constants.PRECISION)
+        sushiUserInfo = await sushiMasterChef.methods.userInfo(this.constants.SUSHI_MPH_ONSEN_ID, address).call(),
+        this.sushiClaimableRewards = new BigNumber(await sushiMasterChef.methods.pendingSushi(this.constants.SUSHI_MPH_ONSEN_ID, address).call()).div(this.constants.PRECISION)
       ]);
       this.sushiStakedLPBalance = new BigNumber(sushiUserInfo.amount).div(this.constants.PRECISION);
       this.sushiStakedLPPoolProportion = this.sushiStakedLPBalance.div(this.sushiTotalStakedLPBalance).times(100);

@@ -25,7 +25,7 @@
                   ${{totalDepositUSD.toFormat(DECIMALS)}}
                 </h2>
                 <!-- Button -->
-                <button type="button" class="card-link small px-1 ml-3" (click)="openDepositModal()">
+                <button type="button" class="card-link small px-1 ml-3" (click)="openDepositModal()" [disabled]="wallet.watching">
                   <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                 </button>
               </div>
@@ -142,7 +142,7 @@
                   <td>
                     <!-- Button -->
                     <button type="button" class="card-link small small px-1"
-                      (click)="openDepositModal(userPool.poolInfo.name)">
+                      (click)="openDepositModal(userPool.poolInfo.name)" [disabled]="wallet.watching">
                       <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                     </button>
                   </td>
@@ -186,10 +186,10 @@
                       <div class="text-white d-block">{{deposit.amountToken.toFormat(DECIMALS)}}
                         {{userPool.poolInfo.stablecoinSymbol}}</div>
                       <div class="text-white mb-3">@ {{deposit.apy.toFormat(DECIMALS)}}% fixed APY</div>
-                      
+
                       <!-- Button -->
                       <button type="button" class="card-link small small px-1"
-                        (click)="openWithdrawModal(deposit, userPool.poolInfo)">
+                        (click)="openWithdrawModal(deposit, userPool.poolInfo)" [disabled]="wallet.watching">
                         <i class="fe fe-arrow-up mr-2 align-bottom"></i>
                         <ng-container *ngIf="deposit.locked">
                           Withdraw early
@@ -224,6 +224,19 @@
                       <span class="text-white">
                         {{deposit.mintMPHAmount.minus(deposit.realMPHReward).toFormat(DECIMALS)}} MPH
                       </span>
+                    </td>
+                    <td class="text-right">
+                      <!-- Button -->
+                      <button type="button" class="card-link small small px-1"
+                        (click)="openWithdrawModal(deposit, userPool.poolInfo)"  [disabled]="wallet.watching">
+                        <i class="fe fe-arrow-up mr-2 align-bottom"></i>
+                        <ng-container *ngIf="deposit.locked">
+                          Withdraw early
+                        </ng-container>
+                        <ng-container *ngIf="!deposit.locked">
+                          Withdraw
+                        </ng-container>
+                      </button>
                     </td>
                     <td></td>
                   </tr>
@@ -292,7 +305,7 @@
                   <span class="text-white">{{pool.totalDepositToken.toFormat(DECIMALS)}} {{pool.stablecoinSymbol}}</span>
                   <div class="mt-3">
                     <!-- Button -->
-                    <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)">
+                    <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)" [disabled]="wallet.watching">
                       <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                     </button>
                   </div>
@@ -305,6 +318,12 @@
                 </td>
                 <td class="glowing">
                   +{{pool.tempMPHAPY.toFormat(DECIMALS)}}%
+                </td>
+                <td class="text-right">
+                  <!-- Button -->
+                  <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)" [disabled]="wallet.watching">
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
+                  </button>
                 </td>
                 <td></td>
               </tr>
