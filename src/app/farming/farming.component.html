@@ -26,11 +26,11 @@
                       (${{stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}})
                       ({{stakedMPHPoolProportion.toFormat(4)}}% of the pool)
                     </h5>
-                    <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()">
-                      <i class="fe fe-arrow-down mr-2 align-bottom" [disabled]="wallet.watching"></i>Stake
+                    <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()" [disabled]="wallet.watching">
+                      <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
                     </button>
-                    <button type="button" class="card-link small ml-3 px-1" (click)="openUnstakeModal()">
-                      <i class="fe fe-arrow-up mr-2 align-bottom" [disabled]="wallet.watching"></i>Unstake
+                    <button type="button" class="card-link small ml-3 px-1" (click)="openUnstakeModal()" [disabled]="wallet.watching">
+                      <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
                     </button>
                     <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()"
                       [disabled]="!canContinue() || wallet.watching">
