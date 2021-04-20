@@ -225,19 +225,7 @@
                         {{deposit.mintMPHAmount.minus(deposit.realMPHReward).toFormat(DECIMALS)}} MPH
                       </span>
                     </td>
-                    <td class="text-right">
-                      <!-- Button -->
-                      <button type="button" class="card-link small small px-1"
-                        (click)="openWithdrawModal(deposit, userPool.poolInfo)"  [disabled]="wallet.watching">
-                        <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                        <ng-container *ngIf="deposit.locked">
-                          Withdraw early
-                        </ng-container>
-                        <ng-container *ngIf="!deposit.locked">
-                          Withdraw
-                        </ng-container>
-                      </button>
-                    </td>
+                    <td class="text-right"></td>
                     <td></td>
                   </tr>
                 </ng-container>
@@ -319,12 +307,7 @@
                 <td class="glowing">
                   +{{pool.tempMPHAPY.toFormat(DECIMALS)}}%
                 </td>
-                <td class="text-right">
-                  <!-- Button -->
-                  <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)" [disabled]="wallet.watching">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
-                  </button>
-                </td>
+                <td class="text-right"></td>
                 <td></td>
               </tr>
             </tbody>
