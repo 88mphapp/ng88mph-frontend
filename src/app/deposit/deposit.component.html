@@ -186,10 +186,10 @@
                       <div class="text-white d-block">{{deposit.amountToken.toFormat(DECIMALS)}}
                         {{userPool.poolInfo.stablecoinSymbol}}</div>
                       <div class="text-white mb-3">@ {{deposit.apy.toFormat(DECIMALS)}}% fixed APY</div>
-                      
+
                       <!-- Button -->
                       <button type="button" class="card-link small small px-1"
-                        (click)="openWithdrawModal(deposit, userPool.poolInfo)">
+                        (click)="openWithdrawModal(deposit, userPool.poolInfo)" [disabled]="wallet.watching">
                         <i class="fe fe-arrow-up mr-2 align-bottom"></i>
                         <ng-container *ngIf="deposit.locked">
                           Withdraw early
@@ -305,7 +305,7 @@
                   <span class="text-white">{{pool.totalDepositToken.toFormat(DECIMALS)}} {{pool.stablecoinSymbol}}</span>
                   <div class="mt-3">
                     <!-- Button -->
-                    <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)">
+                    <button type="button" class="card-link small small px-1" (click)="openDepositModal(pool.name)" [disabled]="wallet.watching">
                       <i class="fe fe-arrow-down mr-2 align-bottom"></i>Add
                     </button>
                   </div>
