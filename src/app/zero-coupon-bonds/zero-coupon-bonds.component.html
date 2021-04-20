@@ -85,12 +85,12 @@
                   <div class="mt-3">
                     <!-- Button -->
                     <a class="mr-3" href="https://app.sushi.com/swap?inputCurrency={{zcbEntry.zcbInfo.sushiSwapPairBaseTokenAddress}}&outputCurrency={{zcbEntry.zcbInfo.address}}" target="_blank">
-                      <button type="button" class="card-link small px-1">
+                      <button type="button" class="card-link small px-1" [disabled]="wallet.watching">
                         <i class="fe fe-external-link mr-2 align-bottom"></i>Trade
                       </button>
                     </a>
                     <!-- Button -->
-                    <button type="button" class="card-link small px-1" (click)="openZCBModal(zcbEntry)">
+                    <button type="button" class="card-link small px-1" (click)="openZCBModal(zcbEntry)" [disabled]="wallet.watching">
                       <i class="fe fe-settings mr-2 align-bottom"></i>Manage
                     </button>
                   </div>

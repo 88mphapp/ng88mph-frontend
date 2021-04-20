@@ -79,8 +79,13 @@ export class ZeroCouponBondsComponent implements OnInit {
       zcbEntry.totalSupplyUSD = zcbEntry.priceInUSD.times(zcbEntry.totalSupply);
       zcbEntry.maturationTimestamp = new Date(+(await zcbContract.methods.maturationTimestamp().call()) * 1e3);
       if (this.wallet.connected) {
-        zcbEntry.userBalance = new BigNumber(await zcbContract.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
-        zcbEntry.userBalanceUSD = zcbEntry.priceInUSD.times(zcbEntry.userBalance);
+        if (!this.wallet.watching) {
+          zcbEntry.userBalance = new BigNumber(await zcbContract.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
+          zcbEntry.userBalanceUSD = zcbEntry.priceInUSD.times(zcbEntry.userBalance);
+        } else {
+          zcbEntry.userBalance = new BigNumber(await zcbContract.methods.balanceOf(this.wallet.watchedAddress).call()).div(tokenPrecision);
+          zcbEntry.userBalanceUSD = zcbEntry.priceInUSD.times(zcbEntry.userBalance);
+        }
       }
       zcbEntry.impliedInterestRate = await this.computeImpliedInterestRate(zcbEntry);
       zcbEntry.mature = zcbEntry.maturationTimestamp <= new Date();
