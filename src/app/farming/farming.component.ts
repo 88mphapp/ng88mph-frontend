@@ -15,6 +15,7 @@ import { ModalUnstakeLPComponent } from './modal-unstake-lp/modal-unstake-lp.com
 })
 export class FarmingComponent implements OnInit {
   PERIOD = 14; // 14 days
+  BLOCK_TIME_IN_SEC = 14.256 // used for sushi APY
 
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
@@ -99,7 +100,7 @@ export class FarmingComponent implements OnInit {
       const sushiLPToken = this.contract.getERC20(this.constants.SUSHI_LP, readonlyWeb3);
       const sushiPoolInfo = await sushiMasterChef.methods.poolInfo(this.constants.SUSHI_MPH_ONSEN_ID).call();
       this.sushiTotalStakedLPBalance = new BigNumber(await sushiLPToken.methods.balanceOf(this.constants.SUSHI_MASTERCHEF).call()).div(this.constants.PRECISION);
-      this.sushiTotalRewardPerSecond = new BigNumber(await sushiMasterChef.methods.sushiPerBlock().call()).div(5).div(this.constants.PRECISION).times(sushiPoolInfo.allocPoint).div(await sushiMasterChef.methods.totalAllocPoint().call());
+      this.sushiTotalRewardPerSecond = new BigNumber(await sushiMasterChef.methods.sushiPerBlock().call()).div(this.BLOCK_TIME_IN_SEC).div(this.constants.PRECISION).times(sushiPoolInfo.allocPoint).div(await sushiMasterChef.methods.totalAllocPoint().call());
       this.sushiRewardPerLPPerSecond = this.sushiTotalRewardPerSecond.div(this.sushiTotalStakedLPBalance);
       if (this.sushiTotalStakedLPBalance.isZero()) {
         this.sushiRewardPerLPPerSecond = new BigNumber(0);
