@@ -47,7 +47,7 @@ export class VestingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.wallet.connected) {
+    if (this.wallet.connected || this.wallet.watching) {
       this.loadData();
     }
     this.wallet.connectedEvent.subscribe(() => {
