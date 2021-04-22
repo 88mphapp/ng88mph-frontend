@@ -58,7 +58,7 @@ export class FarmingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData(this.wallet.connected, true);
+    this.loadData(this.wallet.connected || this.wallet.watching, true);
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
       this.loadData(true, true);
@@ -113,7 +113,7 @@ export class FarmingComponent implements OnInit {
       this.sushiWeeklyROI = sushiSecondROI.times(this.constants.WEEK_IN_SEC);
       this.sushiDailyROI = sushiSecondROI.times(this.constants.DAY_IN_SEC);
     }
-    
+
     let address;
     if (!this.wallet.watching) {
       address = this.wallet.userAddress;
