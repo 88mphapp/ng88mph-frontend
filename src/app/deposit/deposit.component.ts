@@ -82,7 +82,7 @@ export class DepositComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData(this.wallet.connected, true);
+    this.loadData(this.wallet.connected || this.wallet.watching, true);
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, false);
       this.loadData(true, false);
