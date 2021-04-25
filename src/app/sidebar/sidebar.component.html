@@ -374,7 +374,7 @@
         </ul>
         <div class="btn-group-toggle fixed-bottom fixed-bottom-switch bg-dark py-3 px-4 border-top" data-toggle="buttons">
           <ng-container *ngFor="let themeName of app.themes">
-            <button class="card-link" (click)="app.setTheme(themeName)">
+            <button class="card-link mr-3" (click)="app.setTheme(themeName)">
               <input type="radio" name="colorScheme" value={{themeName}} [checked]="app.themeName === themeName">
               {{themeName}}
             </button>
