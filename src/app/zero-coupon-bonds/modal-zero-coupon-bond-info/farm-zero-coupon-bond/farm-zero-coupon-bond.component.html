@@ -6,7 +6,7 @@
           <h5 class="text-uppercase text-amber mt-n3 pl-3">
             <a class="text-purple" href="https://analytics.sushi.com/pairs/{{zcbEntry.zcbInfo.sushiSwapPair}}"
               target="_blank">Provide
-              liquidity</a> to the Sushiswap pair and earn MPH
+              liquidity</a>, stake & earn MPH / Unstake & <a class="text-purple" href="https://app.sushi.com/remove/{{zcbEntry.zcbInfo.sushiSwapPairBaseTokenAddress}}/{{zcbEntry.zcbInfo.address}}">Remove liquidity</a>
           </h5>
           <!-- Heading -->
           <h2 class="mt-4 mb-2 glowing pl-3">
@@ -26,6 +26,7 @@
             [disabled]="!canContinue()">
             <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
           </button>
+
           <div class="row pl-3 mt-4">
             <div class="col-12 col-lg-6">
               <h5 class="text-uppercase">
