@@ -145,6 +145,72 @@
               <div class="card-body pt-0">
                 <!-- Title -->
                 <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                  <a class="text-purple"
+                    href="https://app.bancor.network/eth/data"
+                    target="_blank">Provide
+                    liquidity</a> to the Bancor MPH-BNT pair and earn BNT
+                </h5>
+                <div class="row">
+                  <div class="col">
+                    <!-- Heading -->
+                    <h2 class="mt-4 mb-2 glowing pl-3">
+                      {{bancorStakedMPHBalance.toFormat(4)}} MPH in MPH-BNT
+                    </h2>
+                    <h5 class="mb-3 text-white pl-3">
+                      (${{bancorStakedMPHBalance.times(mphPriceUSD).toFormat(4)}})
+                      ({{bancorStakedMPHPoolProportion.toFormat(4)}}% of the pool)
+                    </h5>
+                  </div>
+                  <div class="col">
+                    <!-- Heading -->
+                    <h2 class="mt-4 mb-2 glowing pl-3">
+                      {{bancorStakedBNTBalance.toFormat(4)}} BNT in MPH-BNT
+                    </h2>
+                    <h5 class="mb-3 text-white pl-3">
+                      (${{bancorStakedBNTBalance.times(bntPriceUSD).toFormat(4)}})
+                      ({{bancorStakedBNTPoolProportion.toFormat(4)}}% of the pool)
+                    </h5>
+                  </div>
+                </div>
+                <a class="text-purple pl-3"
+                  href="https://app.bancor.network/eth/portfolio" target="_blank">Manage
+                  liquidity <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+                <div class="row pl-3 mt-4">
+                  <div class="col-12 col-lg-6">
+                    <h5 class="text-uppercase">
+                      Claimable rewards
+                    </h5>
+                    <!-- Heading -->
+                    <h2 class="mb-3 glowing">
+                      {{bancorClaimableRewards.toFormat(4)}} BNT
+                    </h2>
+                    <h5 class="mb-3 text-white">
+                      ${{bancorClaimableRewards.times(bntPriceUSD).toFormat(4)}}
+                    </h5>
+                    <a class="text-purple"
+                      href="https://app.bancor.network/eth/portfolio"
+                      target="_blank">Manage rewards <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <h5 class="text-uppercase">
+                      Estimated ROI (y) to provide
+                    </h5>
+                    <!-- Heading -->
+                    <h2 class="mb-1 glowing">
+                      MPH {{bancorMPHYearlyROI.toFormat(4)}}%
+                    </h2>
+                    <!-- Heading -->
+                    <h2 class="mb-3 glowing">
+                      BNT {{bancorBNTYearlyROI.toFormat(4)}}%
+                    </h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body pt-0">
+                <!-- Title -->
+                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
                   🍣 <a class="text-purple"
                     href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
                     target="_blank">Provide
