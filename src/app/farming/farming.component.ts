@@ -47,6 +47,23 @@ export class FarmingComponent implements OnInit {
   sushiWeeklyROI: BigNumber;
   sushiDailyROI: BigNumber;
 
+  bancorStakedMPHBalance: BigNumber;
+  bancorStakedBNTBalance: BigNumber;
+  bancorTotalStakedMPH: BigNumber;
+  bancorTotalStakedBNT: BigNumber;
+  bancorClaimableRewards: BigNumber;
+  bancorTotalRewardPerSecond: BigNumber;
+  bancorRewardPerMPHPerSecond: BigNumber;
+  bancorRewardPerBNTPerSecond: BigNumber;
+  bancorStakedMPHPoolProportion: BigNumber;
+  bancorStakedBNTPoolProportion: BigNumber;
+  bancorTotalRewardPerDay: BigNumber;
+  bancorMPHRewardPerDay: BigNumber;
+  bancorBNTRewardPerDay: BigNumber;
+  bancorMPHYearlyROI: BigNumber;
+  bancorBNTYearlyROI: BigNumber;
+  bntPriceUSD: BigNumber;
+
   constructor(
     private modalService: NgbModal,
     public wallet: WalletService,
@@ -74,6 +91,9 @@ export class FarmingComponent implements OnInit {
 
     const sushiMasterChef = this.contract.getContract(this.constants.SUSHI_MASTERCHEF, 'MasterChef', readonlyWeb3);
     const yflinkStaking = this.contract.getContract(this.constants.LINKSWAP_STAKING, 'LinkSwapStaking', readonlyWeb3);
+    const bancorLiquidityProtectionStats = this.contract.getContract(this.constants.BANCOR_LP_STATS, 'LiquidityProtectionStats', readonlyWeb3);
+    const bancorStaking = this.contract.getContract(this.constants.BANCOR_STAKING_REWARDS, 'BancorStaking', readonlyWeb3);
+    const bancorStakingStore = this.contract.getContract(this.constants.BANCOR_STAKING_REWARDS_STORE, 'BancorStakingStore', readonlyWeb3);
 
     if (loadGlobal) {
       this.totalStakedMPHBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
@@ -112,6 +132,24 @@ export class FarmingComponent implements OnInit {
       this.sushiMonthlyROI = sushiSecondROI.times(this.constants.MONTH_IN_SEC);
       this.sushiWeeklyROI = sushiSecondROI.times(this.constants.WEEK_IN_SEC);
       this.sushiDailyROI = sushiSecondROI.times(this.constants.DAY_IN_SEC);
+
+      // bancor
+      this.bancorTotalStakedMPH = new BigNumber(await bancorLiquidityProtectionStats.methods.totalReserveAmount(this.constants.BANCOR_MPHBNT_POOL, this.constants.MPH).call()).div(this.constants.PRECISION);
+      this.bancorTotalStakedBNT = new BigNumber(await bancorLiquidityProtectionStats.methods.totalReserveAmount(this.constants.BANCOR_MPHBNT_POOL, this.constants.BNT).call()).div(this.constants.PRECISION);
+      let poolProgram: [number, number, number, string[], number[]] = await bancorStakingStore.methods.poolProgram(this.constants.BANCOR_MPHBNT_POOL).call();
+      this.bancorTotalRewardPerSecond = new BigNumber(poolProgram[2]);
+      if (poolProgram[3][0].toLowerCase() === this.constants.MPH) {
+        this.bancorRewardPerMPHPerSecond = new BigNumber(poolProgram[2] * poolProgram[4][0] / 1e6 / this.constants.PRECISION);
+        this.bancorRewardPerBNTPerSecond = new BigNumber(poolProgram[2] * poolProgram[4][1] / 1e6 / this.constants.PRECISION);
+      } else {
+        this.bancorRewardPerMPHPerSecond = new BigNumber(poolProgram[2] * poolProgram[4][1] / 1e6 / this.constants.PRECISION);
+        this.bancorRewardPerBNTPerSecond = new BigNumber(poolProgram[2] * poolProgram[4][0] / 1e6 / this.constants.PRECISION);
+      }
+      this.bntPriceUSD = new BigNumber(await this.helpers.getTokenPriceUSD(this.constants.BNT));
+      const bancorMPHSecondROI = this.bancorRewardPerMPHPerSecond.times(this.bntPriceUSD).div(this.bancorTotalStakedMPH.times(this.mphPriceUSD)).times(100).times(2); // based on 2x multiplier
+      this.bancorMPHYearlyROI = bancorMPHSecondROI.times(this.constants.YEAR_IN_SEC);
+      const bancorBNTSecondROI = this.bancorRewardPerBNTPerSecond.times(this.bntPriceUSD).div(this.bancorTotalStakedBNT.times(this.bntPriceUSD)).times(100).times(2); // based on 2x multiplier
+      this.bancorBNTYearlyROI = bancorBNTSecondROI.times(this.constants.YEAR_IN_SEC);
     }
 
     let address;
@@ -142,6 +180,17 @@ export class FarmingComponent implements OnInit {
         this.sushiStakedLPPoolProportion = new BigNumber(0);
       }
       this.sushiRewardPerDay = this.sushiStakedLPBalance.times(this.sushiRewardPerLPPerSecond).times(this.constants.DAY_IN_SEC);
+
+      // bancor
+      this.bancorStakedMPHBalance = new BigNumber(await bancorLiquidityProtectionStats.methods.totalProviderAmount(address, this.constants.BANCOR_MPHBNT_POOL, this.constants.MPH).call()).div(this.constants.PRECISION);
+      this.bancorStakedBNTBalance = new BigNumber(await bancorLiquidityProtectionStats.methods.totalProviderAmount(address, this.constants.BANCOR_MPHBNT_POOL, this.constants.BNT).call()).div(this.constants.PRECISION);
+      this.bancorClaimableRewards = new BigNumber(await bancorStaking.methods.pendingPoolRewards(address, this.constants.BANCOR_MPHBNT_POOL).call()).div(this.constants.PRECISION);
+      this.bancorStakedMPHPoolProportion = this.bancorStakedMPHBalance.div(this.bancorTotalStakedMPH).times(100);
+      this.bancorStakedBNTPoolProportion = this.bancorStakedBNTBalance.div(this.bancorTotalStakedBNT).times(100);
+      this.bancorMPHRewardPerDay = this.bancorRewardPerMPHPerSecond.times(this.constants.DAY_IN_SEC).times(this.bancorStakedMPHBalance).div(this.bancorTotalStakedMPH);
+      this.bancorBNTRewardPerDay = this.bancorRewardPerBNTPerSecond.times(this.constants.DAY_IN_SEC).times(this.bancorStakedBNTBalance).div(this.bancorTotalStakedBNT);
+      this.bancorTotalRewardPerDay = this.bancorMPHRewardPerDay.plus(this.bancorBNTRewardPerDay);
+
     }
   }
 
@@ -156,6 +205,15 @@ export class FarmingComponent implements OnInit {
       this.sushiStakedLPPoolProportion = new BigNumber(0);
       this.sushiClaimableRewards = new BigNumber(0);
       this.sushiRewardPerDay = new BigNumber(0);
+
+      this.bancorStakedMPHBalance = new BigNumber(0);
+      this.bancorStakedBNTBalance = new BigNumber(0);
+      this.bancorClaimableRewards = new BigNumber(0);
+      this.bancorStakedMPHPoolProportion = new BigNumber(0);
+      this.bancorStakedBNTPoolProportion = new BigNumber(0);
+      this.bancorTotalRewardPerDay = new BigNumber(0);
+      this.bancorMPHRewardPerDay = new BigNumber(0);
+      this.bancorBNTRewardPerDay = new BigNumber(0);
     }
 
     if (resetGlobal) {
@@ -178,6 +236,17 @@ export class FarmingComponent implements OnInit {
       this.sushiMonthlyROI = new BigNumber(0);
       this.sushiWeeklyROI = new BigNumber(0);
       this.sushiDailyROI = new BigNumber(0);
+
+      this.bntPriceUSD = new BigNumber(0);
+      this.bancorTotalRewardPerSecond = new BigNumber(0);
+      this.bancorRewardPerMPHPerSecond = new BigNumber(0);
+      this.bancorRewardPerBNTPerSecond = new BigNumber(0);
+      this.bancorTotalStakedMPH = new BigNumber(0);
+      this.bancorTotalStakedBNT = new BigNumber(0);
+
+      this.bancorMPHYearlyROI = new BigNumber(0);
+
+      this.bancorBNTYearlyROI = new BigNumber(0);
     }
   }
 
