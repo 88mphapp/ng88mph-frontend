@@ -17,7 +17,7 @@
       </h6>
       <!-- Heading -->
       <span class="h4 mb-0 glowing">
-        ${{farmingValueLocked.toFormat(4)}}
+        ${{farmingValueLocked.plus(sushiFarmingValueLocked).plus(bancorFarmingValueLocked).toFormat(4)}}
       </span>
     </div>
     <div class="mr-4 text-white d-inline-block">

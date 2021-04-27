@@ -154,19 +154,21 @@
                   <div class="col">
                     <!-- Heading -->
                     <h2 class="mt-4 mb-2 glowing pl-3">
-                      0 MPH in MPH-BNT
+                      {{bancorStakedMPHBalance.toFormat(4)}} MPH in MPH-BNT
                     </h2>
                     <h5 class="mb-3 text-white pl-3">
-                      $0.0000
+                      (${{bancorStakedMPHBalance.times(mphPriceUSD).toFormat(4)}})
+                      ({{bancorStakedMPHPoolProportion.toFormat(4)}}% of the pool)
                     </h5>
                   </div>
                   <div class="col">
                     <!-- Heading -->
                     <h2 class="mt-4 mb-2 glowing pl-3">
-                      0 BNT in MPH-BNT
+                      {{bancorStakedBNTBalance.toFormat(4)}} BNT in MPH-BNT
                     </h2>
                     <h5 class="mb-3 text-white pl-3">
-                      $0.0000
+                      (${{bancorStakedBNTBalance.times(bntPriceUSD).toFormat(4)}})
+                      ({{bancorStakedBNTPoolProportion.toFormat(4)}}% of the pool)
                     </h5>
                   </div>
                 </div>
@@ -180,10 +182,10 @@
                     </h5>
                     <!-- Heading -->
                     <h2 class="mb-3 glowing">
-                      0.0000 BNT
+                      {{bancorClaimableRewards.toFormat(4)}} BNT
                     </h2>
                     <h5 class="mb-3 text-white">
-                      $0.0000
+                      ${{bancorClaimableRewards.times(bntPriceUSD).toFormat(4)}}
                     </h5>
                     <a class="text-purple"
                       href="https://app.bancor.network/eth/portfolio"
@@ -195,11 +197,11 @@
                     </h5>
                     <!-- Heading -->
                     <h2 class="mb-1 glowing">
-                      MPH 0.0000%
+                      MPH {{bancorMPHYearlyROI.toFormat(4)}}%
                     </h2>
                     <!-- Heading -->
                     <h2 class="mb-3 glowing">
-                      BNT 0.0000%
+                      BNT {{bancorBNTYearlyROI.toFormat(4)}}%
                     </h2>
                   </div>
                 </div>
