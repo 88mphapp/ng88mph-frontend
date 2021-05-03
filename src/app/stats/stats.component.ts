@@ -8,6 +8,12 @@ import { ContractService } from '../contract.service';
 import { HelpersService } from '../helpers.service';
 import { WalletService } from '../wallet.service';
 
+// dev area
+
+import { MphSupplyDistributionComponent } from './components/mph-supply-distribution/mph-supply-distribution.component';
+
+// end dev area
+
 @Component({
   selector: 'app-stats',
   templateUrl: './stats.component.html',
