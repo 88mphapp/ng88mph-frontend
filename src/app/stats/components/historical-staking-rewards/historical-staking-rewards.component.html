@@ -1,1 +1,10 @@
-<p>historical-staking-rewards works!</p>
+<div style="display: block"  *ngIf="barChartData">
+  <canvas baseChart
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [legend]="barChartLegend"
+          [chartType]="barChartType">
+  </canvas>
+  <canvas id="barChart" width="600" height="200"></canvas>
+</div>
