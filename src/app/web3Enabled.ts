@@ -91,7 +91,9 @@ export class Web3Enabled {
           apiKey: this.fortmaticKey,
           networkId: this.networkID
         },
-        { walletName: 'authereum', networkId: this.networkID },
+        {
+          walletName: 'torus'
+        },
         {
           walletName: 'portis',
           apiKey: this.portisAPIKey,
