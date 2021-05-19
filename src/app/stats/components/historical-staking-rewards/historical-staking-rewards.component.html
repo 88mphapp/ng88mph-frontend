@@ -1,10 +1,12 @@
-<div style="display: block"  *ngIf="barChartData">
-  <canvas baseChart
+<div style="display: block; width: 400px;"  *ngIf="barChartData">
+  <h5 class="text-uppercase text-amber mt-n3 bg-dark pb-3">
+    Historical Staking Rewards (cumulative)
+  </h5>
+  <canvas baseChart height="250" width="400"
           [datasets]="barChartData"
           [labels]="barChartLabels"
           [options]="barChartOptions"
           [legend]="barChartLegend"
           [chartType]="barChartType">
   </canvas>
-  <canvas id="barChart" width="600" height="200"></canvas>
 </div>

@@ -16,7 +16,8 @@ import { Chart } from 'chart.js';
 export class HistoricalStakingRewardsComponent implements OnInit {
 
   // constants
-  FIRST_INDEX: number = 1606176000;
+  FIRST_INDEX: number = 1607990400; // unix timestamp in seconds
+  PERIOD: number = this.constants.WEEK_IN_SEC;
 
   // data variables
   timeseriesdata: number[][] = [];
@@ -55,28 +56,33 @@ export class HistoricalStakingRewardsComponent implements OnInit {
     };
     this.barChartLabels = this.readable;
     this.barChartType = 'bar';
-    this.barChartLegend = true;
+    this.barChartLegend = false;
     this.barChartData = [
-      {data: this.data, label: 'Historical Staking Rewards'}
+      {
+      data:
+        this.data,
+        backgroundColor: "rgba(107, 94, 174, 0.3)",
+        borderColor: "rgba(107, 94, 174, 1)",
+        hoverBackgroundColor: "rgba(107, 94, 174, 1)"
+      }
     ];
   }
 
   async loadData() {
 
     // wait to fetch timeseries data
-    this.timeseriesdata =  await this.timeseries.getCustomTimeSeries(this.FIRST_INDEX, this.constants.WEEK_IN_SEC);
+    this.timeseriesdata =  await this.timeseries.getCustomTimeSeries(this.FIRST_INDEX, this.PERIOD);
 
     // populate timestamps and blocks arrays
     this.timestamps = this.timeseriesdata[0];
     this.blocks = this.timeseriesdata[1];
 
-    // transfor timestamps to readable format
-    let newstamps: string[] = [];
+    // transform timestamps to readable format
+    let readable: string[] = [];
     for (let i in this.timestamps) {
-      newstamps.push((new Date(this.timestamps[i]*1000)).toLocaleString("en-US", {month: "short", day: "numeric", year: "numeric"}));
+      readable.push((new Date(this.timestamps[i]*1000)).toLocaleString("en-US", {month: "short", day: "numeric"}));
     }
-    console.log(newstamps);
-    this.readable = newstamps;
+    this.readable = readable;
 
     // then generate the query
     let queryString = `query HistoricalStakingRewards {`;
@@ -106,7 +112,6 @@ export class HistoricalStakingRewardsComponent implements OnInit {
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
     if (!queryResult.loading) {
       let rewards = queryResult.data;
-      console.log(rewards);
       for (let i in rewards) {
         if(rewards[i] != null) {
           this.data.push(parseInt(rewards[i].totalHistoricalReward));
@@ -115,10 +120,6 @@ export class HistoricalStakingRewardsComponent implements OnInit {
         }
       }
     }
-  }
-
-  toDate() {
-
   }
 
 }
