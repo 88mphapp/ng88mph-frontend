@@ -1,0 +1,12 @@
+<div style="display: block; width: 400px;"  *ngIf="barChartData" class="p-3">
+  <h5 class="text-uppercase text-amber mt-n3 bg-dark pb-3">
+    Historical Asset TVL (USD)
+  </h5>
+  <canvas baseChart
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [legend]="barChartLegend"
+          [chartType]="barChartType">
+  </canvas>
+</div>
