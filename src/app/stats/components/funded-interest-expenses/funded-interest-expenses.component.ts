@@ -140,7 +140,8 @@ export class FundedInterestExpensesComponent implements OnInit {
           data: [],
           interestExpenses: [],
           unfundedExpenses: [],
-          borderColor: this.getRandomColor()
+          borderColor: this.getRandomColor(),
+          fill: false
         }
         this.data.push(dataobj);
       }
@@ -220,4 +221,5 @@ interface DataObject {
   interestExpenses: Array<number>;
   unfundedExpenses: Array<number>;
   borderColor: any;
+  fill: any;
 }
