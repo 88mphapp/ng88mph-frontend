@@ -41,6 +41,28 @@ export class HelpersService {
     return rawResult.prices[0][1];
   }
 
+  async getHistoricalTokenPriceUSD(address: string, days: string): Promise<Array<any>> {
+    if (address.toLowerCase() === '0xb19059ebb43466C323583928285a49f558E572Fd'.toLowerCase()) {
+      // crvHBTC
+      address = '0x0316EB71485b0Ab14103307bf65a021042c6d380';
+    } else if (address.toLowerCase() === '0x2fE94ea3d5d4a175184081439753DE15AeF9d614'.toLowerCase()) {
+      // crvOBTC
+      address = '0x8064d9Ae6cDf087b1bcd5BDf3531bD5d8C537a68';
+    } else if (address.toLowerCase() === '0x06325440D014e39736583c165C2963BA99fAf14E'.toLowerCase()) {
+      // CRV:STETH
+      address = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+    } else if (address.toLowerCase() === '0x49849C98ae39Fff122806C06791Fa73784FB3675'.toLowerCase()) {
+      // CRV:RENWBTC
+      address = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+    } else if (address.toLowerCase() === '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3'.toLowerCase()) {
+      // CRV:RENWSBTC
+      address = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+    }
+    const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=${days}`;
+    const rawResult = await this.httpsGet(apiStr, 300);
+    return rawResult.prices;
+  }
+
   processWeb3Number(number): string {
     return new BigNumber(number).integerValue().toFixed();
   }
@@ -48,6 +70,12 @@ export class HelpersService {
   async httpsGet(apiStr, cacheMaxAge: number = 60) {
     const request = await fetch(apiStr, { headers: { 'Cache-Control': `max-age=${cacheMaxAge}` } });
     return await request.json();
+  }
+
+  async getHistoricalMPHMarketCap(days: string): Promise<Array<any>> {
+    const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${this.constants.MPH}/market_chart/?vs_currency=usd&days=${days}`;
+    const rawResult = await this.httpsGet(apiStr, 300);
+    return rawResult.market_caps;
   }
 
   async getMPHPriceUSD(): Promise<BigNumber> {
