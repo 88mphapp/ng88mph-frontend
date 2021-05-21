@@ -58,8 +58,19 @@ export class HistoricalAssetTvlComponent implements OnInit {
       scaleShowVerticalLines: false,
       responsive: true,
       scales: {
-          xAxes: [{ stacked: true }],
-          yAxes: [{ stacked: true }]
+          xAxes: [{
+            stacked: true,
+            gridLines: {
+              display: false
+            }
+          }],
+          yAxes: [{
+            stacked: true,
+            gridLines: {
+              display: true,
+              color: "#242526"
+            }
+          }]
       }
     };
     this.barChartLabels = this.readable;

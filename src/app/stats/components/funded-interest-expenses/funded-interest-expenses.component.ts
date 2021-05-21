@@ -55,7 +55,20 @@ export class FundedInterestExpensesComponent implements OnInit {
     // then draw the chart
     this.barChartOptions = {
       scaleShowVerticalLines: false,
-      responsive: true
+      responsive: true,
+      scales: {
+          xAxes: [{
+            gridLines: {
+              display: false
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: true,
+              color: "#242526"
+            }
+          }]
+      }
     };
     this.barChartLabels = this.readable;
     this.barChartType = 'line';
