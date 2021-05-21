@@ -16,7 +16,8 @@ import { Chart } from 'chart.js';
 })
 export class MphLiquidityComponent implements OnInit {
 
-  FIRST_INDEX: number = 1609372800; // Jan 1 2021 @ 00:00 UTC
+  FIRST_INDEX: number = 1605744000;
+  PERIOD: number = this.constants.DAY_IN_SEC;
 
   // data variables
   timeseriesdata: number[][] = [];
@@ -101,7 +102,7 @@ export class MphLiquidityComponent implements OnInit {
   async loadData() {
 
     // wait to fetch timeseries data
-    this.timeseriesdata =  await this.timeseries.getCustomTimeSeries(this.FIRST_INDEX, this.constants.DAY_IN_SEC);
+    this.timeseriesdata =  await this.timeseries.getCustomTimeSeries(this.FIRST_INDEX, this.PERIOD);
 
     // populate timestamps, blocks, and readable arrays
     this.timestamps = this.timeseriesdata[0];
@@ -187,7 +188,11 @@ export class MphLiquidityComponent implements OnInit {
     if (!queryResult.loading) {
       let result = queryResult.data;
       for(let i in result) {
-        this.uniswap.push(parseInt(result[i].reserveUSD));
+        if (result[i] !== null) {
+          this.uniswap.push(parseInt(result[i].reserveUSD));
+        } else {
+          this.uniswap.push(0);
+        }
       }
     }
   }
@@ -196,7 +201,12 @@ export class MphLiquidityComponent implements OnInit {
     if (!queryResult.loading) {
       let result = queryResult.data;
       for(let i in result) {
-        this.sushiswap.push(parseInt(result[i].reserveUSD));
+        if (result[i] !== null) {
+          this.sushiswap.push(parseInt(result[i].reserveUSD));
+        } else {
+          this.sushiswap.push(0);
+        }
+
       }
     }
   }
