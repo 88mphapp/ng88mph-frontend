@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-mph-supply-distribution',
@@ -7,9 +7,8 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class MphSupplyDistributionComponent implements OnInit {
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
 }
