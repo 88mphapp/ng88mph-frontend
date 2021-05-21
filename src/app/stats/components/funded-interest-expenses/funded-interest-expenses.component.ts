@@ -18,7 +18,7 @@ export class FundedInterestExpensesComponent implements OnInit {
 
   // constants
   FIRST_INDEX: number = 1606262400;
-  PERIOD: number = this.constants.WEEK_IN_SEC;
+  PERIOD: number = this.constants.MONTH_IN_SEC;
 
   // data variables
   timeseriesdata: number[][] = [];
