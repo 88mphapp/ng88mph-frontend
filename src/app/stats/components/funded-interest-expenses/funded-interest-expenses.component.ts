@@ -19,6 +19,18 @@ export class FundedInterestExpensesComponent implements OnInit {
   // constants
   FIRST_INDEX: number = 1606262400;
   PERIOD: number = this.constants.MONTH_IN_SEC;
+  COLORS: string[] = [
+    "44, 123, 229",
+    "255, 103, 155",
+    "107, 94, 174",
+    "114, 124, 245",
+    "230, 55, 87",
+    "253, 126, 20",
+    "246, 195, 67",
+    "0, 217, 126",
+    "2, 168, 181",
+    "57, 175, 209"
+  ];
 
   // data variables
   timeseriesdata: number[][] = [];
@@ -74,15 +86,6 @@ export class FundedInterestExpensesComponent implements OnInit {
     this.barChartType = 'line';
     this.barChartLegend = false;
     this.barChartData = this.data;
-  }
-
-  getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
   }
 
   async loadData() {
@@ -153,7 +156,7 @@ export class FundedInterestExpensesComponent implements OnInit {
           data: [],
           interestExpenses: [],
           unfundedExpenses: [],
-          borderColor: this.getRandomColor(),
+          borderColor: "rgba(" + (this.COLORS[parseInt(i) % this.COLORS.length]) + ", 0.5)",
           fill: false
         }
         this.data.push(dataobj);
