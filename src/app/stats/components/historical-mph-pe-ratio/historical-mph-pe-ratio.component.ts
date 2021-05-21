@@ -58,6 +58,19 @@ export class HistoricalMphPeRatioComponent implements OnInit {
       responsive: true,
       point: {
         backgroundColor: 'blue'
+      },
+      scales: {
+          xAxes: [{
+            gridLines: {
+              display: false
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: true,
+              color: "#242526"
+            }
+          }]
       }
     };
     this.barChartLabels = this.readable;
