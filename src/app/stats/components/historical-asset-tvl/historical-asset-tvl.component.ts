@@ -20,6 +20,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
   // constants
   FIRST_INDEX: number = 1606262400;
   PERIOD: number = this.constants.DAY_IN_SEC;
+  COLORS: string[] = ["#2C7BE5", "#727cf5", "#6b5eae", "#ff679b", "#E63757", "#fd7e14", "#F6C343", "#00D97E", "#02a8b5", "#39afd1"];
 
   // data variables
   timeseriesdata: number[][] = [];
@@ -79,16 +80,6 @@ export class HistoricalAssetTvlComponent implements OnInit {
     this.barChartData = this.data;
   }
 
-  getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
-
-
   async loadData() {
     // wait to fetch timeseries data
     this.timeseriesdata =  await this.timeseries.getCustomTimeSeries(this.FIRST_INDEX, this.PERIOD);
@@ -141,7 +132,6 @@ export class HistoricalAssetTvlComponent implements OnInit {
         // for each dpool in the result
         // some dpools may not exist at each timestamp
         for (let k in result[i]) {
-
           let dpoolsnapshot = result[i][k];
           added.push(dpoolsnapshot.address);
           let entry = this.data.find(x => x.label === dpoolsnapshot.address);
@@ -158,7 +148,8 @@ export class HistoricalAssetTvlComponent implements OnInit {
               data: arr,
               dataUSD: [],
               label: dpoolsnapshot.address,
-              backgroundColor: this.getRandomColor(),
+              // backgroundColor: this.getRandomColor(),
+              backgroundColor: this.COLORS[parseInt(k) % this.COLORS.length],
               stablecoin: dpoolsnapshot.stablecoin
             }
             this.data.push(dataobj);
