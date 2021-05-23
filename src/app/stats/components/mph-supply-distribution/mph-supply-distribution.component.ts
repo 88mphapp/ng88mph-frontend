@@ -137,10 +137,6 @@ export class MphSupplyDistributionComponent implements OnInit {
     }
     this.readable = readable;
 
-    console.log(this.timestamps);
-    console.log(this.blocks);
-    console.log(this.readable);
-
     const client = new ApolloClient({
       uri: 'https://api.thegraph.com/subgraphs/name/0xszeth/eighty-eight-mph',
       cache: new InMemoryCache(),
@@ -182,7 +178,6 @@ export class MphSupplyDistributionComponent implements OnInit {
   handleData(queryResult: ApolloQueryResult<QueryResult>): void {
     if (!queryResult.loading) {
       let result = queryResult.data;
-      console.log(result);
 
       for (let i = 0; i < this.blocks.length; i++) {
           this.govTreasury.push(0);
