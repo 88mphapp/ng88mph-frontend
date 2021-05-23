@@ -95,7 +95,6 @@ export class NetInterestMarginComponent implements OnInit {
     // populate timestamps and blocks arrays
     this.timestamps = this.timeseriesdata[0];
     this.blocks = this.timeseriesdata[1];
-    console.log(this.blocks);
     // transform timestamps to readable format
     let readable: string[] = [];
     for (let i in this.timestamps) {
@@ -150,7 +149,6 @@ export class NetInterestMarginComponent implements OnInit {
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
     if (!queryResult.loading) {
       let result = queryResult.data;
-      console.log(result);
       let dpools = result.dpools;
 
       // build empty data structure
