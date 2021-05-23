@@ -27,8 +27,6 @@ export class MphSupplyDistributionComponent implements OnInit {
     "0x307ba97323907ef811f3cc6b4c6ac8580aecb1bb"
   ];
 
-  addr: string = "0x307ba97323907ef811f3cc6b4c6ac8580aecb1bb";
-
   // data variables
   timeseriesdata: number[][] = [];
   timestamps: number[] = [];
