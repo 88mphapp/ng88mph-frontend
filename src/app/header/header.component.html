@@ -1,42 +1,164 @@
-<div class="container-fluid justify-content-end px-4">
-  <div class="d-inline-flex">
-    <div class="mr-4 text-white d-inline-block">
-      <!-- Title -->
-      <h6 class="text-uppercase text-secondary mb-2">
-        Deposit TVL
-      </h6>
-      <!-- Heading -->
-      <span class="h4 mb-0 glowing">
-        ${{depositValueLocked.toFormat(4)}}
-      </span>
-    </div>
-    <div class="mr-4 text-white d-inline-block">
-      <!-- Title -->
-      <h6 class="text-uppercase text-secondary mb-2">
-        Liquidity Mining TVL
-      </h6>
-      <!-- Heading -->
-      <span class="h4 mb-0 glowing">
-        ${{farmingValueLocked.plus(sushiFarmingValueLocked).plus(bancorFarmingValueLocked).toFormat(4)}}
-      </span>
-    </div>
-    <div class="mr-4 text-white d-inline-block">
-      <!-- Title -->
-      <h6 class="text-uppercase text-secondary mb-2">
-        MPH Price
-      </h6>
-      <!-- Heading -->
-      <span class="h4 mb-0 glowing">
-        ${{mphPriceUSD.toFormat(4)}}
-      </span>
-    </div>
-    <button class="card-link small px-1" type="button" routerLink="/rewards">
-      {{mphBalance.toFormat(4)}} MPH <img src="./assets/img/icon-default.png" class="mx-1 icon-logo" alt="..."
-        width="18px">
+
+<div class="container">
+
+  <!-- Toggler -->
+  <button class="navbar-toggler mr-auto" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Brand -->
+  <a class="navbar-brand mr-3" href="./index.html">
+    <img src="./assets/img/logo.svg" alt="..." class="navbar-brand-img">
+  </a>
+
+  
+  <!-- Collapse -->
+  <div class="collapse navbar-collapse mr-lg-auto" id="navbar">
+
+    <!-- Navigation -->
+    <ul class="navbar-nav mr-lg-auto" ngbNav [activeId]="route.url">
+      <li class="nav-item" ngbNavItem="/deposits">
+        <a class="nav-link text-white" routerLink="deposits" ngbNavLink>
+          Earn
+        </a>
+      </li>
+      <li class="nav-item" ngbNavItem="/bonds">
+        <a class="nav-link text-white" routerLink="bonds" ngbNavLink>
+          Yield
+        </a>
+      </li>
+      <li class="nav-item" ngbNavItem="/vesting">
+        <a class="nav-link text-white" routerLink="vesting" ngbNavLink>
+          Vesting
+        </a>
+      </li>
+      <li class="nav-item" ngbNavItem="/rewards">
+        <a class="nav-link text-white" routerLink="rewards" ngbNavLink>
+          Stake
+        </a>
+      </li>
+      <li class="nav-item" ngbNavItem="/farming">
+        <a class="nav-link text-white" routerLink="farming" ngbNavLink>
+          LM
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="https://snapshot.org/#/88mph.eth" target="_blank">
+          Gov
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" href="#" id="topnavPartners" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fe fe-more-horizontal"></i>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="topnavPartners">
+          <li>
+            <a class="dropdown-item" href="https://docs.88mph.app/" target="_blank">
+              Documentations
+            </a>
+          </li>
+          <li ngbNavItem="/stats">
+            <a class="dropdown-item" routerLink="stats">
+              Stats
+            </a>
+          </li>                    
+          <li>
+            <a class="dropdown-item" href="https://forum.88mph.app/" target="_blank">
+              Forum
+            </a>
+          </li>
+          <li ngbNavItem="/funding">
+            <a class="dropdown-item" routerLink="funding">
+              Funding
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="https://88mph.app/fm/" target="_blank">
+              88.0 FM 📻
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" href="https://twitter.com/88mphapp" target="_blank">
+              Twitter
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" href="https://t.me/join_88mphapp" target="_blank">
+              Telegram
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" href="https://discord.gg/95pw2uQ7PE" target="_blank">
+              Discord
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" href="https://www.youtube.com/channel/UCEr3cuwaggjkw8TajaPSpgg"
+              target="_blank">
+              Youtube
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" href="https://medium.com/88mphapp" target="_blank">
+              Medium
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" href="https://github.com/88mphapp" target="_blank">
+              GitHub
+            </a>
+          </li>          
+          <li class="nav-item">
+            <a class="dropdown-item" href="https://forms.gle/UqKQ1LqhwAFCBWGBA" target="_blank">
+              Feedback
+            </a>
+          </li>
+          <li class="nav-item">
+            <img style="margin-left: 16px" class="img-fluid rounded my-3" src="./assets/img/wechatbot.png" alt="WeChat 88mph" width="128px">
+          </li>
+          
+          <li class="nav-item">
+            <a class="dropdown-item"
+              href="https://weibo.com/u/7550683535"
+              target="_blank">
+              微博
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item"
+              href="https://docs.cn.88mph.app"
+              target="_blank">
+              百科
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" href="https://t.me/join88mphchinese" target="_blank">
+              电报
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+  </div>
+  <!-- User -->
+  <div class="navbar-user">
+    <select class="custom-select custom-select-sm mr-3" style="width: auto;" data-toggle="select">
+      <option>v3</option>
+      <option>v2</option>
+      <option>v1</option>
+    </select>
+    <button class="btn btn-sm btn-dark mr-1" type="button" routerLink="/rewards">
+      {{mphBalance.toFormat(2)}} MPH <img src="./assets/img/token-icons/mph-token-logo-28x28.svg" class="mx-1 icon-logo" alt="MPH logo"
+        width="24px">
+    </button>   
+    <button class="btn btn-sm btn-dark" type="button" routerLink="/rewards">
+      {{mphBalance.toFormat(2)}} xMPH <img src="./assets/img/token-icons/xmph-token-logo-28x28.svg" class="mx-1 icon-logo" alt="xMPH logo"
+        width="24px">
     </button>
     <!-- Connect/watch button -->
-    <div class="btn-group ml-3">
-      <button type="button" class="card-link" (click)="connectWallet()">
+    <div class="btn-group btn-group-sm ml-3">
+      <button type="button" class="btn btn-dark border-right-0" (click)="connectWallet()">
         <div *ngIf="wallet.connected && !wallet.watching">
           {{wallet.userAddress.substring(0, 14)}}
         </div>
@@ -47,14 +169,14 @@
           {{wallet.watchedAddress.substring(0, 14)}}
         </div>
       </button>
-      <button type="button" class="card-link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="sr-only">Toggle Dropdown</span>
+      <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="fe fe-chevron-down"></span>
       </button>
       <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px;">
         <!-- Connected Wallet -->
-        <span *ngIf="wallet.connected">
+        <span class="d-block mb-3" *ngIf="wallet.connected">
           <h6 class="dropdown-header px-0">Connected</h6>
-          <button type="button" class="card-link" (click)="switchFocus(false)">
+          <button type="button" class="btn btn-dark" (click)="switchFocus(false)">
             {{wallet.userAddress.substring(0, 14)}}
           </button>
           <span *ngIf="!wallet.watching" class="badge">Viewing</span>
@@ -62,7 +184,7 @@
         <!-- Watched Wallet -->
         <span *ngIf="wallet.watchedAddress != null">
           <h6 class="dropdown-header px-0">Watched</h6>
-          <button type="button" class="card-link" (click)="switchFocus(true)">
+          <button type="button" class="btn btn-dark" (click)="switchFocus(true)">
             {{wallet.watchedAddress.substring(0, 14)}}
           </button>
           <span *ngIf="wallet.watching" class="badge">Viewing</span>
@@ -75,18 +197,20 @@
           <h6 class="dropdown-header px-0">Edit watched address</h6>
         </span>
         <form #watchForm="ngForm" (ngSubmit)="onSubmit()">
-          <div class="form-group">
+          <div class="form-group mb-2">
             <input type="text" [class.is-invalid]="address.invalid && address.dirty"
              class="form-control" pattern="^0x[a-fA-F0-9]{40}$" required #address="ngModel" name="watchAddress"
              id="TrackEthAddress"  placeholder="Add an Ethereum address"
              [(ngModel)]="watchedModel.address">
              <small *ngIf="address.invalid && address.dirty" class="text-danger"> Please enter a valid address</small>
           </div>
-          <button *ngIf="wallet.watchedAddress == null" type="submit" class="card-link" [disabled]="watchForm.form.invalid">Add watched address</button>
-          <button *ngIf="wallet.watchedAddress != null" type="submit" class="card-link" [disabled]="watchForm.form.invalid">Edit watched address</button>
+          <button *ngIf="wallet.watchedAddress == null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Add watched address</button>
+          <button *ngIf="wallet.watchedAddress != null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Edit watched address</button>
         </form>
       </div>
     </div>
 
   </div>
-</div>
+
+
+</div> <!-- / .container -->

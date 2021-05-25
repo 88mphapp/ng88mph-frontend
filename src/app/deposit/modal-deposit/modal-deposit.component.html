@@ -3,27 +3,27 @@
 <div class="modal-dialog modal-dialog-vertical" role="document">
   <div class="modal-content">
     <div class="modal-body pt-0 py-lg-0">
+      <div class="row no-gutters align-items-center">
+        <div class="col-auto">
+          <a class="btn btn-link border-0 text-white pl-0" data-dismiss="modal"
+            aria-label="Close" (click)="activeModal.dismiss()">
+            <i class="fe fe-arrow-left h2 mb-0"></i>
+        </a>
+        </div>
+        <div class="col">
+          <h1 class="mb-0 h3">Deposit</h1>
+        </div>
+      </div>
       <div class="row justify-content-center">
-        <div class="col-12 col-lg-6 col-xl-6 pt-0 pr-lg-5">
-          <div class="row no-gutters">
-            <div class="col-auto mr-auto">
-              <button class="btn btn-link text-white pl-0" type="button" name="button" data-dismiss="modal"
-                aria-label="Close" (click)="activeModal.dismiss()">
-                <i class="fe fe-arrow-left h2 mb-0"></i>
-              </button>
-            </div>
-          </div>
-          <div class="row justify-content-center no-gutters">
-            <div class="col-12 col-lg-10 pt-3 pb-5">
-              <h1 class="display-4 text-center">
-                How much would you like to deposit?
-              </h1>
-              <div class="card">
-                <div class="card-body">
-                  <div class="form-row">
-                    <div class="form-group col-12 col-lg-12 mb-0">
+        <div class="col-6 pt-0">
+          <div class="card mb-8">
+            <div class="card-body">
+              <form>
+                <div class="form-row mb-2">
+                  <div class="col">
+                    <div class="form-group">
                       <label>Lending pool</label>
-                      <div class="input-group input-group-lg mb-2">
+                      <div class="input-group input-group-lg">
                         <select class="custom-select" (change)="selectPool($event.target.value)">
                           <option value={{pool.name}} *ngFor="let pool of poolList"
                             [selected]="pool.name === selectedPoolInfo.name">{{pool.stablecoinSymbol}}
@@ -31,21 +31,19 @@
                         </select>
                       </div>
                     </div>
-                  </div>
-                  <div class="form-row">
-                    <div class="form-group col mb-0">
+                    <div class="form-group mb-2">
                       <label>Deposit amount ({{selectedDepositToken}})</label>
-                      <div class="input-group mb-2">
+                      <div class="input-group">
                         <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
                           aria-describedby="" [value]="depositAmount.toFixed()"
                           (input)="setDepositAmount($event.target.value)">
                         <div class="input-group-append">
-                          <button class="card-link small px-1" type="button"
+                          <button class="btn btn-lg border-gradient" type="button"
                             (click)="setMaxDepositAmount()">Max</button>
                         </div>
                       </div>
                     </div>
-                    <div class="form-group col mb-0" *ngIf="shouldDisplayZap">
+                    <div class="form-group mb-2" *ngIf="shouldDisplayZap">
                       <label>Deposit token</label>
                       <div class="input-group input-group-lg">
                         <select class="custom-select" (change)="selectZapDepositToken($event.target.value)">
@@ -54,260 +52,150 @@
                         </select>
                       </div>
                     </div>
-                  </div>
-                  <small class="form-text text-white">{{depositTokenBalance.toFormat()}}
-                    {{selectedDepositToken}}
-                    available</small>
-                  <small class="form-text text-white mb-4">
-                    Min: {{minDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}}
-                    Max: {{maxDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}}
-                    (per deposit)
-                  </small>
-                  <div class="form-group row no-gutters">
-                    <div class="col-12 col-lg-8">
-                      <label for="colFormLabel" class="col-form-label">Preset lending duration</label>
-                      <div>
-                        <ng-container *ngFor="let period of DEPOSIT_PERIOD_PRESETS">
-                          <ng-container *ngIf="period >= minDepositPeriod && maxDepositPeriod >= period">
-                            <button class="card-link small px-1 ml-0 mr-2" type="button"
-                              (click)="setDepositTime(period)">{{period}}d</button>
-                          </ng-container>
-                        </ng-container>
+                    <div class="row mb-4">
+                      <div class="col">
+                        <small class="form-text text-muted">{{depositTokenBalance.toFormat()}}
+                          {{selectedDepositToken}}
+                          available | Min: {{minDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}} <> Max: {{maxDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}} per deposit</small>
                       </div>
                     </div>
-                    <div class="col-12 col-lg-4">
-                      <label class="col-form-label">Or custom duration</label>
-                      <div class="input-group mb-3">
-                        <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
-                          class="form-control text-right" [value]="depositTimeInDays"
+                  </div>
+                </div>
+                <div class="form-row mb-2">
+                  <div class="col">
+                    <h4 class="mb-2">Maturity</h4>
+                    <small class="text-muted">You will be able to redeem your principal & fixed interest on the corresponding maturity selected.</small>
+                   
+                  </div>
+                </div>
+                <div class="form-row">
+                   
+                  <div class="col-6">
+                    <div class="form-group"> 
+                      <label>Select a custom maturity</label>
+                      <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
+                          class="form-control form-control-lg text-right pr-3" [value]="depositTimeInDays"
                           (input)="setDepositTime($event.target.value)">
-                        <span class="input-group-text" for="inputGroupFile02">Days</span>
-                      </div>
-                      <small class="form-text text-white my-2">
-                        Min: {{minDepositPeriod}}d
+                      <small class="form-text text-muted my-2">
+                        Min: {{minDepositPeriod}}d / 
                         Max: {{maxDepositPeriod}}d
                       </small>
-
-
                     </div>
                   </div>
-                  <div class="table-responsive">
-                    <table class="table mb-0">
-                      <tbody>
-                        <tr>
-                          <td class="px-0 text-white border-0">
-                            <strong>Deposit amount</strong>
-                            <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="The amount that will be deposited to earn fixed-rate interest.">
-                              [i]
-                            </button>
-                          </td>
-                          <td class="text-white text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">${{helpers.applyDepositFee(depositAmountUSD,
-                              selectedPoolInfo).toFormat(4)}}</h4>
-                            <span class="text-white">{{helpers.applyDepositFee(depositAmount,
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="">OR a preset maturity</label>
+                      <div class="input-group input-group-lg">
+                        <select class="form-select custom-select" id="">
+                          <option>None</option>
+                          <option>Aug 1 2021</option>
+                          <option>Fev 1 2022</option>
+                        </select>
+                      </div>
+                      <small class="form-text text-muted my-2">
+                        Unlike custom maturity, preset maturity doesn't allow early withdrawal of the principal. But you can sell the principal at a discounted market price on xx before it has reached its maturity.
+                      </small>
+                    </div>                    
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          Fixed-interest rate
+                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                            ngbTooltip="Fixed APY according to lending duration">
+                            <i class="fe fe-info"></i>
+                          </button>
+                        </td>
+                        <td class="px-0 py-2 text-white text-right border-0 small">
+                          <h4 class="mb-1 glowing">{{apy.toFormat(4)}}%</h4>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          Interest earned
+                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                            ngbTooltip="Fixed-rate interest you'll receive when lending period is over.">
+                            <i class="fe fe-info"></i>
+                          </button>
+                        </td>
+                        <td class="px-0 py-2 text-white text-right border-0 small">
+                          <h4 class="mb-1 glowing">${{helpers.applyDepositFee(interestAmountUSD, selectedPoolInfo).toFormat(4)}}</h4>
+                          <h5 class="text-muted">
+                            ${{helpers.applyDepositFee(interestAmountToken, selectedPoolInfo).toFormat(4)}}
+                            {{selectedPoolInfo.stablecoinSymbol}}
+                          </h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          Total Earned at Maturity | month dd yyyy
+                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                            ngbTooltip="The amount that will be deposited to earn fixed-rate interest.">
+                            <i class="fe fe-info"></i>
+                          </button>
+                        </td>
+                        <td class="px-0 py-2 text-white text-right border-0 small">
+                          <h4 class="mb-1 glowing">${{helpers.applyDepositFee(depositAmountUSD,
+                            selectedPoolInfo).toFormat(4)}}
+                          </h4>
+                          <h5 class="text-muted">
+                            {{helpers.applyDepositFee(depositAmount,
                               selectedPoolInfo).toFormat(4)}}
-                              {{selectedPoolInfo.stablecoinSymbol}}</span>
-                            <br>
-                            <small *ngIf="selectedPoolInfo.depositFee">Note: A {{selectedPoolInfo.depositFee * 100}}% fee is taken by the underlying yield protocol ({{selectedPoolInfo.protocol}})</small>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-0 text-white border-0">
-                            <strong>Fixed-rate interest</strong>
-                            <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Fixed-rate interest you'll receive when lending period is over.">
-                              [i]
-                            </button>
-                          </td>
-                          <td class="text-white text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">${{helpers.applyDepositFee(interestAmountUSD, selectedPoolInfo).toFormat(4)}}</h4>
-                            <span class="text-white">{{helpers.applyDepositFee(interestAmountToken, selectedPoolInfo).toFormat(4)}}
-                              {{selectedPoolInfo.stablecoinSymbol}}</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-0 border-0 text-white">
-                            <strong>Fixed APY</strong>
-                            <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Fixed APY according to lending duration">
-                              [i]
-                            </button>
-                          </td>
-                          <td class="text-right glowing border-0">
-                            {{apy.toFormat(4)}}%
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-0 text-white border-0">
-                            <strong>MPH rewards (Vested over {{selectedPoolInfo.vestPeriod}})</strong>
-                            <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Depositors get rewarded with MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens on external protocols, etc)">
-                              [i]
-                            </button>
-                          </td>
-                          <td class="text-white text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">
-                              ${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}</h4>
-                            <span class="text-white">{{mphRewardAmount.toFormat(4)}} MPH</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-0 text-white border-0">
-                            <strong>MPH to repay upon withdraw</strong>
-                            <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Depositors need to repay {{mphDepositorRewardTakeBackMultiplier.times(100).toString()}}% of their MPH tokens when they want to withdraw. Relax! Keep them warm by staking them to earn rewards (protocol fees, harvested tokens on external protocols, etc).">
-                              [i]
-                            </button>
-                          </td>
-                          <td class="text-white text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">
-                              ${{mphTakeBackAmount.times(mphPriceUSD).toFormat(4)}}</h4>
-                            <span class="text-white">{{mphTakeBackAmount.toFormat(4)}} MPH</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-0 text-white border-0">
-                            <strong>MPH APY</strong>
-                            <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Annualized MPH reward rate">
-                              [i]
-                            </button>
-                          </td>
-                          <td class="glowing text-right border-0">
-                            +{{mphAPY.toFormat(4)}}%
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="px-0 text-white border-0">
-                            <strong>MPH APY (temporary)</strong>
-                            <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Annualized temporary MPH reward rate. Depositors need to pay back {{mphDepositorRewardTakeBackMultiplier.times(100).toString()}}% of the temporary MPH reward received when they withdraw.">
-                              [i]
-                            </button>
-                          </td>
-                          <td class="glowing text-right border-0">
-                            +{{tempMPHAPY.toFormat(4)}}%
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <button class="card-link btn-block" type="button" (click)="deposit()" [disabled]="!canContinue()">
-                    Continue
-                  </button>
+                              {{selectedPoolInfo.stablecoinSymbol}}
+                          </h5>
+                          <small *ngIf="selectedPoolInfo.depositFee">Note: A {{selectedPoolInfo.depositFee * 100}}% fee is taken by the underlying yield protocol ({{selectedPoolInfo.protocol}})</small>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          MPH rewards (Vested over {{selectedPoolInfo.vestPeriod}})
+                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                            ngbTooltip="Depositors get rewarded with MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens on external protocols, etc)">
+                            <i class="fe fe-info"></i>
+                          </button>
+                        </td>
+                        <td class="px-0 py-2 text-white text-right border-0 small">
+                          <h4 class="mb-1 glowing">${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}</h4>
+                          <h5 class="text-muted">
+                            {{mphRewardAmount.toFormat(4)}} MPH
+                          </h5>
+                        </td>
+                      </tr>
+                      <!--displayed if preset maturity selected-->
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          MPH APR (earned by <a href="">providing liquidity</a>)
+                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                            ngbTooltip="Annualized MPH reward rate">
+                            <i class="fe fe-info"></i>
+                          </button>
+                        </td>
+                        <td class="px-0 py-2 text-white text-right border-0 small">
+                          <h4 class="mb-1 glowing">+{{mphAPY.toFormat(4)}}%</h4>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          MPH APR
+                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                            ngbTooltip="Annualized MPH reward rate">
+                            <i class="fe fe-info"></i>
+                          </button>
+                        </td>
+                        <td class="px-0 py-2 text-white text-right border-0 small">
+                          <h4 class="mb-1 glowing">+{{mphAPY.toFormat(4)}}%</h4>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-lg-6 col-xl-6 bg-dark p-4 px-lg-5 mr-lg-n4 minvh100 d-none d-lg-flex">
-          <div class="row justify-content-center">
-            <div class="col-10">
-              <div class="list-group list-group-flush list-group-activity my-5">
-                <div class="list-group-item">
-                  <div class="row">
-                    <div class="col-auto">
-
-                      <h2 class="text-center">
-                        <1>
-                      </h2>
-
-                    </div>
-                    <div class="col ml-n2 d-flex align-items-center">
-
-                      <!-- Heading -->
-                      <p class="mb-0 font-weight-bold">
-                        Deposit plain stablecoins or tokens - USDC/UNI/yCRV/crvSBTC - which will be put into DeFi yield
-                        protocols such as Compound, Aave, and yEarn.
-                      </p>
-
-                    </div>
-                  </div> <!-- / .row -->
-                </div>
-                <div class="list-group-item">
-                  <div class="row">
-                    <div class="col-auto text-center">
-
-                      <h2 class="text-center">
-                        <2>
-                      </h2>
-
-                    </div>
-                    <div class="col ml-n2 d-flex align-items-center">
-
-                      <!-- Heading -->
-                      <p class="mb-0 font-weight-bold">
-                        After depositing in the pool, you receive a ERC-721 non-fungible token that represents your
-                        deposit. You may transfer it to another account, or even sell it on NFT markets such as OpenSea.
-                      </p>
-
-                    </div>
-                  </div> <!-- / .row -->
-                </div>
-                <div class="list-group-item">
-                  <div class="row">
-                    <div class="col-auto text-center">
-
-                      <h2 class="text-center">
-                        <3>
-                      </h2>
-
-                    </div>
-                    <div class="col ml-n2 d-flex align-items-center">
-
-                      <!-- Heading -->
-                      <p class="mb-0 font-weight-bold">
-                        By depositing into 88mph, you earn MPH tokens, which is continuously vested to you.
-                      </p>
-
-                    </div>
-                  </div> <!-- / .row -->
-                </div>
-                <div class="list-group-item">
-                  <div class="row">
-                    <div class="col-auto text-center">
-
-                      <h2 class="text-center">
-                        <4>
-                      </h2>
-
-                    </div>
-                    <div class="col ml-n2 d-flex align-items-center">
-
-                      <!-- Heading -->
-                      <p class="mb-0 font-weight-bold">
-                        By staking your MPH, you can claim your share of rewards from the 88mph reward pool where
-                        the protocol fees and yield-farming rewards are collected.
-                      </p>
-
-                    </div>
-                  </div> <!-- / .row -->
-                </div>
-                <div class="list-group-item">
-                  <div class="row">
-                    <div class="col-auto text-center">
-
-                      <h2 class="text-center">
-                        <5>
-                      </h2>
-
-                    </div>
-                    <div class="col ml-n2 d-flex align-items-center">
-
-                      <!-- Heading -->
-                      <p class="mb-0 font-weight-bold">
-                        When your lending period is over, you withdraw your principal together with the fixed-rate
-                        interest
-                        earned. When you withdraw, you need to return
-                        {{mphDepositorRewardTakeBackMultiplier.times(100).toString()}}% of the
-                        MPH tokens received at the time of deposit.
-                      </p>
-
-                    </div>
-                  </div> <!-- / .row -->
-                </div>
-              </div>
+                <button class="btn btn-lg btn-bg-gradient btn-block" type="button" (click)="deposit()" [disabled]="!canContinue()">
+                  Deposit
+                </button>
+              </form>
             </div>
           </div>
         </div>

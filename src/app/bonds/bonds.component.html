@@ -1,98 +1,95 @@
-<!-- HEADER -->
-<div class="header pt-4">
-  <div class="container-fluid">
+<div class="container">
 
-    <!-- Body -->
-    <div class="header-body border-0 p-0">
-      <div class="row align-items-end">
-        <div class="col">
-          <h1 class="mb-2">Fund a floating-rate bonds and earn MPH rewards.</h1>
-          <p class="text-muted font-weight-bold mb-5">Learn more in the FAQ below or on our <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
-            Help center <i class="fe fe-external-link"></i>
-          </a>
-          </p>
-          <div class="card-deck mt-4 mb-3">
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
-                <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  You funded
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="The amount of debt your active bonds have funded.">
-                    [i]
-                  </button>
-                </h5>
+  <!-- Body -->
+  <div class="header-body border-0 p-0">
+    <div class="row align-items-end">
+      <div class="col">
+        <h1 class="mb-2">Fund a floating-rate bonds and earn MPH rewards.</h1>
+        <p class="text-muted font-weight-bold mb-5">Learn more in the FAQ below or on our <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
+          Help center <i class="fe fe-external-link"></i>
+        </a>
+        </p>
+        <div class="card-deck mt-4 mb-3">
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body pt-0">
+              <!-- Title -->
+              <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                You funded
+                <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                  ngbTooltip="The amount of debt your active bonds have funded.">
+                  [i]
+                </button>
+              </h5>
 
-                <!-- Heading -->
-                <h2 class="mb-0 glowing pl-3">
-                  ${{totalDeficitFundedUSD.toFormat(4)}}
-                </h2>
-              </div>
+              <!-- Heading -->
+              <h2 class="mb-0 glowing pl-3">
+                ${{totalDeficitFundedUSD.toFormat(4)}}
+              </h2>
             </div>
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
-                <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  You earn on
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="The amount of deposits you're earning interest on.">
-                    [i]
-                  </button>
-                </h5>
+          </div>
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body pt-0">
+              <!-- Title -->
+              <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                You earn on
+                <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                  ngbTooltip="The amount of deposits you're earning interest on.">
+                  [i]
+                </button>
+              </h5>
 
-                <!-- Heading -->
-                <h2 class="mb-1 glowing pl-3">
-                  ${{totalCurrentDepositUSD.toFormat(4)}}
-                </h2>
-              </div>
+              <!-- Heading -->
+              <h2 class="mb-1 glowing pl-3">
+                ${{totalCurrentDepositUSD.toFormat(4)}}
+              </h2>
             </div>
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
-                <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  Interest paid out
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="The amount of interests you have earned so far from your active bonds. Interests will be automatically sent to your wallet when the depositors withdraw their deposits.">
-                    [i]
-                  </button>
-                </h5>
+          </div>
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body pt-0">
+              <!-- Title -->
+              <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                Interest paid out
+                <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                  ngbTooltip="The amount of interests you have earned so far from your active bonds. Interests will be automatically sent to your wallet when the depositors withdraw their deposits.">
+                  [i]
+                </button>
+              </h5>
 
-                <!-- Heading -->
-                <h2 class="mb-1 glowing pl-3">
-                  ${{totalInterestUSD.toFormat(4)}}
-                </h2>
-                <h5 class="mb-0 text-white pl-3 d-none">Est. ROI 0.00%</h5>
-              </div>
+              <!-- Heading -->
+              <h2 class="mb-1 glowing pl-3">
+                ${{totalInterestUSD.toFormat(4)}}
+              </h2>
+              <h5 class="mb-0 text-white pl-3 d-none">Est. ROI 0.00%</h5>
             </div>
+          </div>
 
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
-                <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  MPH earned
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="Bond buyers earn MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
-                    [i]
-                  </button>
-                </h5>
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body pt-0">
+              <!-- Title -->
+              <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                MPH earned
+                <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
+                  ngbTooltip="Bond buyers earn MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
+                  [i]
+                </button>
+              </h5>
 
-                <!-- Heading -->
-                <h2 class="mb-1 glowing pl-3">
-                  {{totalMPHEarned.toFormat(4)}} MPH
-                </h2>
-                <h5 class="mb-0 text-white pl-3">${{totalMPHEarned.times(mphPriceUSD).toFormat(4)}}</h5>
-              </div>
+              <!-- Heading -->
+              <h2 class="mb-1 glowing pl-3">
+                {{totalMPHEarned.toFormat(4)}} MPH
+              </h2>
+              <h5 class="mb-0 text-white pl-3">${{totalMPHEarned.times(mphPriceUSD).toFormat(4)}}</h5>
             </div>
           </div>
         </div>
-      </div> <!-- / .row -->
-    </div> <!-- / .header-body -->
+      </div>
+    </div> <!-- / .row -->
+  </div> <!-- / .header-body -->
 
-  </div>
-</div> <!-- / .header -->
+</div>
 
 <!-- CARDS -->
-<div class="container-fluid mb-6">
+<div class="container mb-6">
   <div class="row">
     <div class="col-12">
       <!-- Current deposits -->

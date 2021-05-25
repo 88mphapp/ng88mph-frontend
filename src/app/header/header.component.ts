@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApolloQueryResult } from '@apollo/client/core';
+import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
@@ -25,10 +26,11 @@ export class HeaderComponent implements OnInit {
 
   watchedModel = new Watch(false, "");
 
-  constructor(private apollo: Apollo, public wallet: WalletService, public contract: ContractService,
+  constructor(public route: Router, private apollo: Apollo, public wallet: WalletService, public contract: ContractService,
     public constants: ConstantsService, public helpers: HelpersService) {
     this.resetData(true, true);
   }
+  
 
   ngOnInit(): void {
     this.loadData(this.wallet.connected, true);
