@@ -1,148 +1,212 @@
-<!-- HEADER -->
-<div class="header pt-4">
-  <div class="container-fluid">
-
-    <!-- Body -->
-    <div class="header-body border-0 p-0">
-      <div class="row align-items-end">
-        <div class="col">
-          <h1 class="mb-2">Stake your MPH tokens to earn your rewards</h1>
-          <p class="text-muted font-weight-bold mb-5">If you stake your MPH, you are eligible to collect two kinds of
-            rewards: 88mph protocol fees, and yield-farmed tokens earned from the protocols 88mph is connected to (COMP,
-            CRV, etc.). Rewards are distributed in DAI. <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
-              Help <i class="fe fe-external-link"></i>
-            </a></p>
-          <div class="card-deck my-4">
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
-                <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  Staked MPH
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="Stake MPH tokens to earn rewards">
-                    [i]
-                  </button>
-                </h5>
-                <!-- Heading -->
-                <h2 class="mb-3 glowing pl-3">
-                  {{stakedMPHBalance.toFormat(4)}} MPH
-                </h2>
-                <h5 class="mb-3 text-white pl-3">
-                  (${{stakedMPHBalance.times(mphPriceUSD).toFormat(4)}})
-                  ({{stakedMPHPoolProportion.toFormat(4)}}% of the pool)
-                </h5>
-                <button type="button" class="card-link small ml-3 px-1" (click)="openStakeModal()" [disabled]="wallet.watching">
-                  <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
-                </button>
-                <button type="button" class="card-link small ml-3 px-1" (click)="openUntakeModal()" [disabled]="wallet.watching">
-                  <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
-                </button>
-                <button type="button" class="card-link small ml-3 px-1" (click)="unstakeAndClaim()"
-                  [disabled]="!canContinue() || wallet.watching">
-                  <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
-                </button>
-              </div>
+<div class="container mt-4 mb-6">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="title-bg-gradient display-2">Stake MPH for xMPH
+      </h1>     
+      <p class="text-white font-weight-bold mb-5 lead">
+        By staking your MPH, you are eligible to collect two kinds of rewards distributed as MPH: 88mph protocol fees, and yield-farmed tokens earned from the protocols 88mph is connected to (COMP, FARM, stkAAVE, etc.). These protocol's revenues are then used to purchase MPH (bi-weekly buyback), think stock dividends without dilution.<br>
+        When your MPH is staked, you receive xMPH in return for voting rights. This fully composable token is continuously compounding, when you unstake you will receive all the originally deposited MPH and any additional from protocol revenues.
+        <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
+        Learn more <i class="fe fe-external-link"></i>
+        </a>
+      </p>
+      <div class="row">
+        <div class="col-12 col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-header-title">
+                Stake MPH for xMPH
+              </h4>
             </div>
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
-                <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  Claimable rewards
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="Amount of claimable rewards in DAI">
-                    [i]
+            <div class="card-body">
+              <div class="form-group">
+                <label>Amount to stake
+                </label>
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control form-control-lg" placeholder="0.00"
+                    aria-label="stake-amount">
+                  <div class="input-group-append">
+                    <button class="btn btn-lg border-gradient" type="button">Max</button>
+                  </div>
+                </div>
+                <small class="form-text text-white">0.00 MPH available</small>
+              </div>
+              
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td class="px-0 py-1 text-white border-0 small">
+                        Staked balance
+                      </td>
+                      <td class="px-0 py-1 text-white text-right border-0 small">
+                        <h4 class="mb-0 glowing">{{stakedMPHBalance.toFormat(4)}} xMPH</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-1 text-white border-0 small">
+                        Staked balance value
+                      </td>
+                      <td class="px-0 py-1 text-white text-right border-0 small">
+                        <h4 class="mb-0 glowing">${{stakedMPHBalance.times(mphPriceUSD).toFormat(4)}}</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-1 text-white border-0 small">
+                        <strong>Variable APR
+                        </strong>
+                      </td>
+                      <td class="px-0 py-1 text-white text-right border-0 small">
+                        <h4 class="mb-0 glowing">{{yearlyROI.toFormat(4)}}%</h4>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <button type="button" class="btn btn-lg btn-block btn-bg-gradient mb-3" (click)="openStakeModal()" [disabled]="wallet.watching">
+                <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake MPH
+              </button>
+              <div class="row">
+                <div class="col-6">
+                  <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUntakeModal()" [disabled]="wallet.watching">
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
                   </button>
-                </h5>
-                <!-- Heading -->
-                <h2 class="mb-3 glowing pl-3">
-                  {{claimableRewards.toFormat(4)}} DAI
-                </h2>
-                <h5 class="mb-3 text-white pl-3">({{rewardPerWeek.toFormat(4)}} DAI/week)</h5>
-                <button type="button" class="card-link small ml-3 px-1" (click)="claim()" [disabled]="!canContinue() || wallet.watching">
-                  <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
-                </button>
+                </div>
+                <div class="col-6">
+                  <button type="button" class="btn btn-block btn-lg border-gradient" (click)="unstakeAndClaim()"
+                    [disabled]="!canContinue() || wallet.watching">
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-
-          <div class="card-deck my-4">
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
-                <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  Overall statistics
-                </h5>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col text-left">
-                        <h3 class="text-white">Total value staked</h3>
-                      </div>
-                      <div class="col text-right">
-                        <h3 class="glowing">
-                          {{totalStakedMPHBalance.toFormat(4)}} MPH
-                        </h3>
-                        <h5 class="text-white">
-                          ${{totalStakedMPHBalance.times(mphPriceUSD).toFormat(4)}}
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card mb-6">
+            <div class="card-header">
+              <h4 class="card-header-title">
+                Next protocol's revenues to distribute
+              </h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Protocol fees accumulated
+                      </td>
+                      <td class="px-0 py-2 text-white text-right border-0 small">
+                        <h4 class="mb-0 glowing">${{protocolFeesUSD.toFormat(4)}}</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        stkAAVE accumulated
+                      </td>
+                      <td class="px-0 py-2 text-white text-right border-0 small">
+                        <h4 class="mb-1 glowing">0.00 stkAAVE</h4>
+                        <h5 class="text-muted">
+                          $0.00
                         </h5>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col text-left">
-                        <h3 class="text-white">Current distribution period</h3>
-                      </div>
-                      <div class="col text-right">
-                        <h3 class="glowing">
-                          {{rewardStartTime}} to {{rewardEndTime}}
-                        </h3>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col text-left">
-                        <h3 class="text-white">Current period reward</h3>
-                      </div>
-                      <div class="col text-right">
-                        <h3 class="glowing">
-                          {{totalRewardPerSecond.times(PERIOD).times(constants.DAY_IN_SEC).toFormat(4)}} DAI
-                        </h3>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col text-left">
-                        <h3 class="text-white">Daily reward</h3>
-                      </div>
-                      <div class="col text-right">
-                        <h3 class="glowing">
-                          {{totalRewardPerSecond.times(constants.DAY_IN_SEC).toFormat(4)}} DAI
-                        </h3>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col text-left">
-                        <h3 class="text-white">Historical MPH staking rewards distributed</h3>
-                      </div>
-                      <div class="col text-right">
-                        <h3 class="glowing">
-                          {{totalHistoricalReward.toFormat(4)}} DAI
-                        </h3>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        COMP accumulated
+                      </td>
+                      <td class="px-0 py-2 text-white text-right border-0 small">
+                        <h4 class="mb-1 glowing">{{compRewardsToken.toFormat(4)}} COMP</h4>
+                        <h5 class="text-muted">
+                          ${{compRewardsUSD.toFormat(4)}}
+                        </h5>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        FARM accumulated
+                      </td>
+                      <td class="px-0 py-2 text-white text-right border-0 small">
+                        <h4 class="mb-1 glowing">{{farmRewardsToken.toFormat(4)}} FARM</h4>
+                        <h5 class="text-muted">
+                          ${{farmRewardsUSD.toFormat(4)}}
+                        </h5>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-header-title">
+                Things you can do
+              </h4>
+            </div>
+            <div class="card-body p-0">
+              <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action px-4">
+                  <h4 class="mb-1">Earn up to 8% fixed APY</h4>
+                  <small class="text-muted">Deposit your crypto or stablecoin to start earning fixed-interest rates. Boost your APY with MPH tokens. Exit anytime.</small>
+                  <small class="text-primary ml-2">Learn more</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action px-4">
+                  <h4 class="mb-1">Buy crypto at a discount</h4>
+                  <small class="text-muted">Buy crypto and stablecoin at a discount by purchasing zero-coupon bonds, and earn high fixed-interest yields by redeeming the zeros one-to-one with their underlying asset when they have reached their maturity. Exit anytime without penalties.</small>
+                  <small class="text-primary ml-2">Learn more</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action px-4">
+                  <h4 class="mb-1">Provide liquidity & boost your yield</h4>
+                  <small class="text-muted">Provide liquidity on our trading pools, and get rewarded by doing so from trading fees and liquidity mining rewards paid in $MPH.</small>
+                  <small class="text-primary ml-2">Learn more</small>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="card-deck mb-6 d-none">
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 col-lg-6">
                 <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
+                <h5 class="text-uppercase">
+                  Staked Balance
+                </h5>
+                <!-- Heading -->
+                <h2 class="mb-3 glowing">
+                  {{stakedMPHBalance.toFormat(4)}} xMPH
+                </h2>
+                <h5 class="mb-5 text-muted">
+                  (${{stakedMPHBalance.times(mphPriceUSD).toFormat(4)}})
+                  ({{stakedMPHPoolProportion.toFormat(4)}}% of the pool)
+                </h5>
+                <button type="button" class="btn btn-lg btn-block btn-bg-gradient mb-3" (click)="openStakeModal()" [disabled]="wallet.watching">
+                  <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake MPH
+                </button>
+                <div class="row">
+                  <div class="col-6">
+                    <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUntakeModal()" [disabled]="wallet.watching">
+                      <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button type="button" class="btn btn-block btn-lg border-gradient" (click)="unstakeAndClaim()"
+                      [disabled]="!canContinue() || wallet.watching">
+                      <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <!-- Title -->
+                <h5 class="text-uppercase">
                   Estimated ROI
                 </h5>
                 <ul class="list-group list-group-flush">
@@ -190,75 +254,150 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="card-deck my-4">
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body pt-0">
-                <!-- Title -->
-                <h5 class="text-uppercase text-amber mt-n3 bg-dark pl-3">
-                  Protocol reward accumulation statistics
-                  <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="Accumulated protocol fees & yield-farmed rewards that are not yet sent to the MPH staking pool as rewards.">
-                    [i]
-                  </button>
-                </h5>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col text-left">
-                        <h3 class="text-white">
-                          Protocol fees accumulated
-                          <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                            ngbTooltip="88mph charges a 10% on fixed-rate interest offered to depositors. This fee is charged upon deposit maturation, so its accumulation is not continuous.">
-                            [i]
-                          </button>
-                        </h3>
-                      </div>
-                      <div class="col text-right">
-                        <h3 class="glowing">
-                          ${{protocolFeesUSD.toFormat(4)}}
-                        </h3>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col text-left">
-                        <h3 class="text-white">COMP accumulated</h3>
-                      </div>
-                      <div class="col text-right">
-                        <h3 class="glowing">
-                          {{compRewardsToken.toFormat(4)}} COMP
-                        </h3>
-                        <h5 class="text-white">
-                          ${{compRewardsUSD.toFormat(4)}}
-                        </h5>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col text-left">
-                        <h3 class="text-white">FARM accumulated</h3>
-                      </div>
-                      <div class="col text-right">
-                        <h3 class="glowing">
-                          {{farmRewardsToken.toFormat(4)}} FARM
-                        </h3>
-                        <h5 class="text-white">
-                          ${{farmRewardsUSD.toFormat(4)}}
-                        </h5>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
+      <div class="card-deck mb-6 d-none">
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase">
+              Overall statistics
+            </h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col text-left">
+                    <h3 class="text-white">Total value staked</h3>
+                  </div>
+                  <div class="col text-right">
+                    <h3 class="glowing">
+                      {{totalStakedMPHBalance.toFormat(4)}} xMPH
+                    </h3>
+                    <h5 class="text-muted">
+                      ${{totalStakedMPHBalance.times(mphPriceUSD).toFormat(4)}}
+                    </h5>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col text-left">
+                    <h3 class="text-white">Current distribution period</h3>
+                  </div>
+                  <div class="col text-right">
+                    <h3 class="glowing">
+                      {{rewardStartTime}} to {{rewardEndTime}}
+                    </h3>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col text-left">
+                    <h3 class="text-white">Current period reward</h3>
+                  </div>
+                  <div class="col text-right">
+                    <h3 class="glowing">
+                      {{totalRewardPerSecond.times(PERIOD).times(constants.DAY_IN_SEC).toFormat(4)}} xMPH
+                    </h3>
+                    <h5 class="text-muted">
+                      ${{totalStakedMPHBalance.times(mphPriceUSD).toFormat(4)}}
+                    </h5>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col text-left">
+                    <h3 class="text-white">Daily reward</h3>
+                  </div>
+                  <div class="col text-right">
+                    <h3 class="glowing">
+                      {{totalRewardPerSecond.times(constants.DAY_IN_SEC).toFormat(4)}} xMPH
+                    </h3>
+                    <h5 class="text-muted">
+                      ${{totalStakedMPHBalance.times(mphPriceUSD).toFormat(4)}}
+                    </h5>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col text-left">
+                    <h3 class="text-white">Historical MPH staking rewards distributed</h3>
+                  </div>
+                  <div class="col text-right">
+                    <h3 class="glowing">
+                      {{totalHistoricalReward.toFormat(4)}} xMPH
+                    </h3>
+                    <h5 class="text-muted">
+                      ${{totalStakedMPHBalance.times(mphPriceUSD).toFormat(4)}}
+                    </h5>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
-      </div> <!-- / .row -->
+      </div>
 
-    </div> <!-- / .header-body -->
-
+      <div class="card-deck d-none">
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase">
+              Protocol reward accumulation statistics
+            </h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col text-left">
+                    <h3 class="text-white">
+                      Protocol fees accumulated
+                    </h3>
+                  </div>
+                  <div class="col text-right">
+                    <h3 class="glowing">
+                      ${{protocolFeesUSD.toFormat(4)}}
+                    </h3>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col text-left">
+                    <h3 class="text-white">COMP accumulated</h3>
+                  </div>
+                  <div class="col text-right">
+                    <h3 class="glowing">
+                      {{compRewardsToken.toFormat(4)}} COMP
+                    </h3>
+                    <h5 class="text-muted">
+                      ${{compRewardsUSD.toFormat(4)}}
+                    </h5>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col text-left">
+                    <h3 class="text-white">FARM accumulated</h3>
+                  </div>
+                  <div class="col text-right">
+                    <h3 class="glowing">
+                      {{farmRewardsToken.toFormat(4)}} FARM
+                    </h3>
+                    <h5 class="text-muted">
+                      ${{farmRewardsUSD.toFormat(4)}}
+                    </h5>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div> <!-- / .header -->
+</div>

@@ -3,87 +3,240 @@
 <div class="modal-dialog modal-dialog-vertical" role="document">
   <div class="modal-content">
     <div class="modal-body pt-0 py-lg-0">
-      <div class="row no-gutters">
-        <div class="col-auto mr-auto">
-          <button class="btn btn-link text-white pl-0" type="button" name="button" data-dismiss="modal"
+      <div class="row no-gutters align-items-center">
+        <div class="col-auto">
+          <a class="btn btn-link border-0 text-white pl-0" data-dismiss="modal"
             aria-label="Close" (click)="activeModal.dismiss()">
             <i class="fe fe-arrow-left h2 mb-0"></i>
-          </button>
+          </a>
+        </div>
+        <div class="col">
+          <ng-container *ngIf="userDeposit.locked">
+            <h1 class="mb-0 h3">Withdraw early</h1>
+          </ng-container>
+          <ng-container *ngIf="!userDeposit.locked">
+            <h1 class="display-4 text-center">
+              Withdraw
+            </h1>
+          </ng-container>
         </div>
       </div>
       <div class="row justify-content-center">
-        <div class="col-12 col-lg-6 col-xl-6 pt-0 ">
-          <div class="row justify-content-center no-gutters">
-            <div class="col-12 col-lg-10 pt-3 pb-5">
+        <div class="col-6 pt-0">
+          <div class="card mb-8">
+            <div class="card-body">
               <ng-container *ngIf="userDeposit.locked">
-                <h1 class="display-4 text-center">
-                  Withdraw early
-                </h1>
-                <p class="text-white small text-center mb-5">Withdraw your principal before the maturation date by
-                  giving up your interest & MPH rewards.</p>
+                <div class="alert border-gradient mb-4">
+                  Warning: by withdrawing your principal before the maturation date, you'll forfeit your interest and MPH tokens earned so far.
+                </div>
               </ng-container>
               <ng-container *ngIf="!userDeposit.locked">
-                <h1 class="display-4 text-center">
-                  Withdraw
-                </h1>
-                <p class="text-white small text-center mb-5">It's time to get your fixed yield.</p>
+                <p class="text-white">Withdraw your principal and interest earned or extend its duration.</p>
               </ng-container>
-
-              <div class="card">
-                <div class="card-body">
-                  <div class="row justify-content-center mb-4">
-                    <div class="col">
-                      <h6 class="header-pretitle mb-2">
-                        Principal to withdraw
-                      </h6>
-                      <h4 class="mb-1 font-weight-normal glowing">${{userDeposit.amountUSD.toFormat(4)}}</h4>
-                      <div class="text-white small d-block">{{userDeposit.amountToken.toFormat()}}
-                        {{poolInfo.stablecoinSymbol}}</div>
-                    </div>
-                    <div class="col" *ngIf="!userDeposit.locked">
-                      <h6 class="header-pretitle mb-2">
-                        Interest to withdraw
-                      </h6>
-                      <h4 class="mb-1 font-weight-normal glowing">${{userDeposit.interestEarnedUSD.toFormat(4)}}</h4>
-                      <div class="text-white small d-block">{{userDeposit.interestEarnedToken.toFormat()}}
-                        {{poolInfo.stablecoinSymbol}}</div>
+              <div class="form-group mb-0">
+                <label>Amount</label>
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control form-control-lg" placeholder="0.00"
+                    aria-label="withdraw-amount">
+                  <div class="input-group-append">
+                    <button class="btn btn-lg border-gradient" type="button">Max</button>
+                  </div>
+                </div>
+              </div>
+              <small class="form-text text-white mb-4">${{userDeposit.amountUSD.toFormat(4)}} ({{userDeposit.amountToken.toFormat()}}
+                {{poolInfo.stablecoinSymbol}}) available</small>
+              <div class="row justify-content-center mb-4">
+                <div class="col-6">
+                  <h6 class="header-pretitle mb-2">
+                    MPH reward received
+                  </h6>
+                  <h4 class="mb-1 glowing">{{mphRewardAmount.toFormat()}} MPH</h4>
+                  <div class="text-white small d-block">${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}</div>
+                </div>
+                <div class="col-6">
+                  <h6 class="header-pretitle mb-2">
+                    MPH to pay back
+                  </h6>
+                  <h4 class="mb-1 glowing">{{mphTakeBackAmount.toFormat()}} MPH</h4>
+                  <div class="text-white small d-block">Your balance: {{mphBalance.toFormat()}}</div>
+                  <a class="text-primary small" routerLink="/vesting" (click)="activeModal.dismiss()">
+                    Check your vested MPH
+                  </a>
+                </div>
+              </div>
+              <!--
+                <h3 class="title-bg-gradient">OR Extend deposit's duration</h3>
+                <div class="form-row">
+                <div class="col">
+                  <div class="form-group">
+                    <label>Lending pool</label>
+                    <div class="input-group input-group-lg">
+                      <select class="custom-select" (change)="selectPool($event.target.value)">
+                        <option value={{pool.name}} *ngFor="let pool of poolList"
+                          [selected]="pool.name === selectedPoolInfo.name">{{pool.stablecoinSymbol}}
+                          ({{pool.protocol}})</option>
+                      </select>
                     </div>
                   </div>
-                  <div class="row justify-content-center mb-4">
-                    <div class="col-6">
-                      <h6 class="header-pretitle mb-2">
-                        Temporary MPH reward received
-                      </h6>
-                      <h4 class="mb-1 font-weight-normal glowing">{{mphRewardAmount.toFormat()}} MPH</h4>
-                      <div class="text-white small d-block">${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}</div>
-                    </div>
-                    <div class="col-6">
-                      <h6 class="header-pretitle mb-2">
-                        MPH to pay back
-                      </h6>
-                      <h4 class="mb-1 font-weight-normal glowing">{{mphTakeBackAmount.toFormat()}} MPH</h4>
-                      <div class="text-white small d-block">Your balance: {{mphBalance.toFormat()}}</div>
-                      <a class="text-white small" routerLink="/vesting" (click)="activeModal.dismiss()">
-                        <u>
-                          Check your vested MPH
-                        </u>
-                      </a>
+                  <div class="form-group mb-2">
+                    <label>Deposit amount ({{selectedDepositToken}})</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
+                        aria-describedby="" [value]="depositAmount.toFixed()"
+                        (input)="setDepositAmount($event.target.value)">
+                      <div class="input-group-append">
+                        <button class="btn btn-lg border-gradient" type="button"
+                          (click)="setMaxDepositAmount()">Max</button>
+                      </div>
                     </div>
                   </div>
-                  <div class="row justify-content-center">
+                  <div class="form-group" *ngIf="shouldDisplayZap">
+                    <label>Deposit token</label>
+                    <div class="input-group input-group-lg">
+                      <select class="custom-select" (change)="selectZapDepositToken($event.target.value)">
+                        <option value={{token}} *ngFor="let token of zapDepositTokens"
+                          [selected]="token === selectedDepositToken">{{token}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
                     <div class="col">
-                      <button class="card-link btn-block" type="button" (click)="earlyWithdraw()"
-                        *ngIf="userDeposit.locked">
-                        Withdraw early
-                      </button>
-                      <button class="card-link btn-block" type="button" (click)="withdraw()"
-                        *ngIf="!userDeposit.locked">
-                        Withdraw
-                      </button>
+                      <small class="form-text text-white">{{depositTokenBalance.toFormat()}}
+                        {{selectedDepositToken}}
+                        available</small>
+                    </div>
+                    <div class="col">
+                      <small class="form-text text-white">
+                        Min: {{minDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}}
+                        Max: {{maxDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}}
+                        (per deposit)
+                      </small>
                     </div>
                   </div>
                 </div>
               </div>
+              <div class="form-row">
+                <div class="col-8">
+                  <div class="form-group">
+                    <label for="colFormLabel" class="col-form-label">Preset lending duration</label>
+                    <div>
+                      <ng-container *ngFor="let period of DEPOSIT_PERIOD_PRESETS">
+                        <ng-container *ngIf="period >= minDepositPeriod && maxDepositPeriod >= period">
+                          <button class="btn btn-sm border-gradient ml-0 mr-2" type="button"
+                            (click)="setDepositTime(period)">{{period}}d</button>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group"> 
+                    <label class="col-form-label">Or custom duration</label>
+                    <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
+                        class="form-control text-right pr-3" [value]="depositTimeInDays"
+                        (input)="setDepositTime($event.target.value)">
+                    <small class="form-text text-white my-2">
+                      Min: {{minDepositPeriod}}d / 
+                      Max: {{maxDepositPeriod}}d
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table mb-0">
+                  <tbody>
+                    <tr>
+                      <td class="px-0 text-white border-0">
+                        <strong>Deposit amount</strong>
+                        <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                          ngbTooltip="The amount that will be deposited to earn fixed-rate interest.">
+                          <i class="fe fe-info"></i>
+                        </button>
+                      </td>
+                      <td class="text-white text-right border-0">
+                        <h4 class="mb-1 glowing">${{helpers.applyDepositFee(depositAmountUSD,
+                          selectedPoolInfo).toFormat(4)}}</h4>
+                        <span class="text-white">{{helpers.applyDepositFee(depositAmount,
+                          selectedPoolInfo).toFormat(4)}}
+                          {{selectedPoolInfo.stablecoinSymbol}}</span>
+                        <br>
+                        <small *ngIf="selectedPoolInfo.depositFee">Note: A {{selectedPoolInfo.depositFee * 100}}% fee is taken by the underlying yield protocol ({{selectedPoolInfo.protocol}})</small>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 border-0 text-white">
+                        <strong>Fixed APY</strong>
+                        <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                          ngbTooltip="Fixed APY according to lending duration">
+                          <i class="fe fe-info"></i>
+                        </button>
+                      </td>
+                      <td class="text-right glowing border-0">
+                        {{apy.toFormat(4)}}%
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 text-white border-0">
+                        <strong>Fixed-rate interest</strong>
+                        <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                          ngbTooltip="Fixed-rate interest you'll receive when lending period is over.">
+                          <i class="fe fe-info"></i>
+                        </button>
+                      </td>
+                      <td class="text-white text-right border-0">
+                        <h4 class="mb-1 glowing">${{helpers.applyDepositFee(interestAmountUSD, selectedPoolInfo).toFormat(4)}}</h4>
+                        <span class="text-white">{{helpers.applyDepositFee(interestAmountToken, selectedPoolInfo).toFormat(4)}}
+                          {{selectedPoolInfo.stablecoinSymbol}}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 text-white border-0">
+                        <strong>MPH rewards (Vested over {{selectedPoolInfo.vestPeriod}})</strong>
+                        <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                          ngbTooltip="Depositors get rewarded with MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens on external protocols, etc)">
+                          <i class="fe fe-info"></i>
+                        </button>
+                      </td>
+                      <td class="text-white text-right border-0">
+                        <h4 class="mb-1 glowing">
+                          ${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}</h4>
+                        <span class="text-white">{{mphRewardAmount.toFormat(4)}} MPH</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 text-white border-0">
+                        <strong>MPH APY</strong>
+                        <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
+                          ngbTooltip="Annualized MPH reward rate">
+                          <i class="fe fe-info"></i>
+                        </button>
+                      </td>
+                      <td class="glowing text-right border-0">
+                        +{{mphAPY.toFormat(4)}}%
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-lg btn-bg-gradient btn-block" type="button" (click)="deposit()" [disabled]="!canContinue()">
+                    Extend duration
+                  </button>
+                </div>
+                <div class="col">
+                  <button class="btn btn-lg border-gradient btn-block" type="button" (click)="withdraw()"
+                    *ngIf="!userDeposit.locked">
+                    Withdraw
+                  </button>
+                </div>
+              </div>
+              -->
+              <button class="btn btn-lg btn-bg-gradient btn-block" type="button" (click)="earlyWithdraw()"
+                *ngIf="userDeposit.locked">
+                Withdraw early
+              </button>
             </div>
           </div>
         </div>
