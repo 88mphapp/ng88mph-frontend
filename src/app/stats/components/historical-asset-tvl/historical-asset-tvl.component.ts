@@ -62,6 +62,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
   }
 
   async drawChart() {
+
     // wait for data to load
     await this.loadData();
 
@@ -108,7 +109,13 @@ export class HistoricalAssetTvlComponent implements OnInit {
 
     // then generate the query
     let queryString = `query HistoricalAssetTVL {`;
-    for (let i = this.blocks.length - 1; i >= 0; i--) { // go backwards
+    queryString +=
+    `dpools {
+      address
+      stablecoin
+      totalActiveDeposit
+    }`;
+    for (let i = 0; i < this.blocks.length; i++) {
       queryString +=
       `t${i}: dpools(
         block: {
@@ -117,7 +124,6 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ) {
         address
         stablecoin
-        totalHistoricalDeposit
         totalActiveDeposit
       }`;
     }
@@ -136,106 +142,88 @@ export class HistoricalAssetTvlComponent implements OnInit {
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
     if (!queryResult.loading) {
       let result = queryResult.data;
-      for (let i in result) { // for each timestamp result
+      let dpools = result.dpools;
 
-        let added: string[] = [];
-
-        // for each dpool in the result
-        // some dpools may not exist at each timestamp
-        for (let k in result[i]) {
-          let dpoolsnapshot = result[i][k];
-          added.push(dpoolsnapshot.address);
-          let entry = this.data.find(x => x.label === dpoolsnapshot.address);
-          let dataobj: DataObject;
-          if (entry) { // if it exists in our data structure
-
-            entry.data.unshift(parseInt(dpoolsnapshot.totalActiveDeposit));
-
-          } else { // if it doesn't exist in data structure
-
-            let arr: number[] = [];
-            arr.push(parseInt(dpoolsnapshot.totalActiveDeposit));
-            dataobj = {
-              data: arr,
-              dataUSD: [],
-              label: dpoolsnapshot.address,
-              backgroundColor: "rgba(" + (this.COLORS[parseInt(k) % this.COLORS.length]) + ", 0.5)",
-              hoverBackgroundColor: "rgba(" + (this.COLORS[parseInt(k) % this.COLORS.length]) + ", 1)",
-              stablecoin: dpoolsnapshot.stablecoin
-            }
-            this.data.push(dataobj);
-
-          }
+      // build empty data structure
+      for (let pool in dpools) {
+        let dataobj: DataObject;
+        dataobj = {
+          label: dpools[pool].address,
+          data: [],
+          dataTVL: [],
+          dataUSD: [],
+          backgroundColor: "rgba(" + (this.COLORS[parseInt(pool) % this.COLORS.length]) + ", 0.5)",
+          hoverBackgroundColor: "rgba(" + (this.COLORS[parseInt(pool) % this.COLORS.length]) + ", 1)",
+          stablecoin: dpools[pool].stablecoin
         }
-
-        // if a dpool doesn't exist at the specific timestamp
-        // push TVL of 0 to the data structure to maintain symmetry
-        let notAdded: string[] = [];
-        let existing: string[] = [];
-        for(let m in this.data) {
-          existing.push(this.data[m].label)
-        }
-        for (let i = 0; i < existing.length; i++) {
-          if(!added.includes(existing[i])) {
-            notAdded.push(existing[i]);
-          }
-        }
-        for (let i = 0; i < notAdded.length; i++) { //for each that wasn't added
-          let entry = this.data.find(x => x.label === notAdded[i]);
-          entry.data.unshift(0);
-        }
-
+        this.data.push(dataobj);
       }
 
-      // get USD data for each asset over time
+      for (let t in result) { // for each timestamp result
+        if (t !== "dpools") {
+
+          // initialize the dataTVL array
+          for (let pool in this.data) {
+            if(this.data[pool].label) {
+              this.data[pool].dataTVL.push(0);
+            }
+          }
+
+          // populate the dataTVL array
+          for (let pool in result[t]) {
+            let dpool = result[t][pool];
+            let entry = this.data.find(pool => pool.label === dpool.address);
+            entry.dataTVL[parseInt(t.substring(1))] = parseFloat(dpool.totalActiveDeposit);
+          }
+        }
+      }
+
+      // populate the dataUSD array
       let days = (this.timeseries.getLatestUTCDate() - this.FIRST_INDEX + this.constants.DAY_IN_SEC) / this.constants.DAY_IN_SEC;
-      for (let i in this.data) {
-        if (this.data[i].label && this.data[i].label != "0xb1abaac351e06d40441cf2cd97f6f0098e6473f2") { // if it's not the weird chartjs thing
+      for (let pool in this.data) {
+        if (this.data[pool].label && this.data[pool].label !== "0xb1abaac351e06d40441cf2cd97f6f0098e6473f2") {
 
           // fetch historical token prices from coingecko API
           let apiResult: number[][] = [];
-          let prices: number[] = [];
-          apiResult = await this.helpers.getHistoricalTokenPriceUSD(this.data[i].stablecoin, `${days}`);
+          apiResult = await this.helpers.getHistoricalTokenPriceUSD(this.data[pool].stablecoin, `${days}`);
 
-          // push historical TVL in USD to the DataObject
-          for (let j in this.timestamps) {
+          for (let t in this.timestamps) {
             // find the historical price in the api result
-            let found = apiResult.find(price => price[0] == this.timestamps[j] * 1000);
+            let found = apiResult.find(price => price[0] === this.timestamps[t] * 1000);
             if (found) { // if a historical price is found
-              prices.push(found[1]);
-              this.data[i].dataUSD.push(this.data[i].data[j] * found[1]);
-            } else { // if no historical price is found
-              prices.push(0);
-              this.data[i].dataUSD.push(0);
+              this.data[pool].dataUSD.push(found[1]);
+            } else {
+              this.data[pool].dataUSD.push(0);
             }
           }
-
-        } else if (this.data[i].label == "0xb1abaac351e06d40441cf2cd97f6f0098e6473f2") {
-          // crvHUSD
-          this.data[i].dataUSD = this.data[i].data;
+        } else if (this.data[pool].label === "0xb1abaac351e06d40441cf2cd97f6f0098e6473f2") {
+          for (let t in this.timestamps) {
+            this.data[pool].dataUSD.push(1);
+          }
         }
       }
 
-      // swap data and dataUSD in dataobject for chart display
-      for (let i in this.data) {
-        if(this.data[i].label) {
-          let swap = this.data[i].dataUSD;
-          this.data[i].data = this.data[i].dataUSD;
+      // populate the data array to be charted
+      for (let pool in this.data) {
+        if (this.data[pool].label) {
+          let dpool = this.data[pool];
+          for (let t in this.timestamps) {
+            dpool.data.push(dpool.dataTVL[t] * dpool.dataUSD[t]);
+          }
         }
       }
 
       // get human readable labels
-      for (let i in this.data) {
-        if(this.data[i].label) {
-          let poolInfo = this.contract.getPoolInfoFromAddress(this.data[i].label);
+      for (let pool in this.data) {
+        if(this.data[pool].label) {
+          let poolInfo = this.contract.getPoolInfoFromAddress(this.data[pool].label);
           let name = poolInfo.name;
-          this.data[i].label = name;
+          this.data[pool].label = name;
         }
       }
 
     }
   }
-
 }
 
 interface QueryResult {
@@ -243,14 +231,14 @@ interface QueryResult {
     address: string;
     stablecoin: string;
     totalActiveDeposit: number;
-    totalHistoricalDeposit: number;
   }[];
 }
 
 interface DataObject {
-  data: Array<number>;
-  dataUSD: Array<number>;
   label: string;
+  data: Array<number>;
+  dataTVL: Array<number>;
+  dataUSD: Array<number>;
   backgroundColor: string;
   hoverBackgroundColor: string;
   stablecoin: string;
