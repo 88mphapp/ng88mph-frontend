@@ -18,13 +18,16 @@ import { Chart } from 'chart.js';
 export class MphSupplyDistributionComponent implements OnInit {
 
   // constants
-  FIRST_INDEX: number = 1606262400;
+  FIRST_INDEX: number = 1605744000;
   PERIOD: number = this.constants.WEEK_IN_SEC;
   ADDRESSES: string[] = [
-    this.constants.GOV_TREASURY,
-    this.constants.DEV_WALLET,
-    this.constants.MPH_MERKLE_DISTRIBUTOR,
-    "0x307ba97323907ef811f3cc6b4c6ac8580aecb1bb"
+    this.constants.GOV_TREASURY.toLowerCase(),
+    this.constants.DEV_WALLET.toLowerCase(),
+    this.constants.MPH_MERKLE_DISTRIBUTOR.toLowerCase(),
+    this.constants.UNISWAP_LP.toLowerCase(),
+    this.constants.SUSHI_LP.toLowerCase(),
+    this.constants.BANCOR_LP.toLowerCase(),
+    this.constants.REWARDS.toLowerCase(),
   ];
 
   // data variables
@@ -32,12 +35,15 @@ export class MphSupplyDistributionComponent implements OnInit {
   timestamps: number[] = [];
   readable: string[] = [];
   blocks: number[] = [];
-  data: number[] = [];
-
   govTreasury: number[] = [];
   devWallet: number[] = [];
   merkleDistributor: number[] = [];
-  test: number[] = [];
+  uniswap: number[] = [];
+  sushiswap: number[] = [];
+  bancor: number[] = [];
+  rewards: number[] = [];
+  users: number[] = [];
+  other: number[] = [];
 
 
   // chart variables
@@ -90,33 +96,61 @@ export class MphSupplyDistributionComponent implements OnInit {
     this.barChartLegend = false;
     this.barChartData = [
       {
-      data: this.govTreasury,
-      label: "Gov Treasury",
-      backgroundColor: "rgba(221, 107, 229, 0.3)",
-      borderColor: "rgba(221, 107, 229, 1)",
-      hoverBackgroundColor: "rgba(221, 107, 229, 1)"
+        data: this.govTreasury,
+        label: "Gov Treasury",
+        backgroundColor: "rgba(107, 94, 174, 0.3)",
+        borderColor: "rgba(107, 94, 174, 1)",
+        hoverBackgroundColor: "rgba(107, 94, 174, 1)"
       },
       {
         data: this.devWallet,
         label: "Dev Wallet",
+        backgroundColor: "rgba(114, 125, 245, 0.3)",
+        borderColor: "rgba(114, 125, 245, 1)",
+        hoverBackgroundColor: "rgba(114, 125, 245, 1)"
+      },
+      {
+        data: this.merkleDistributor,
+        label: "Merkle Distributor",
+        backgroundColor: "rgba(230, 55, 87, 0.3)",
+        borderColor: "rgba(230, 55, 87, 1)",
+        hoverBackgroundColor: "rgba(230, 55, 87, 1)"
+      },
+      {
+        data: this.sushiswap,
+        label: "Sushiswap",
         backgroundColor: "rgba(3, 184, 255, 0.3)",
         borderColor: "rgba(3, 184, 255, 1)",
         hoverBackgroundColor: "rgba(3, 184, 255, 1)"
       },
       {
-        data: this.merkleDistributor,
-        label: "Merkle Distributor",
+        data: this.uniswap,
+        label: "Uniswap",
+        backgroundColor: "rgba(255, 103, 155, 0.3)",
+        borderColor: "rgba(255, 103, 155, 1)",
+        hoverBackgroundColor: "rgba(255, 103, 155, 1)"
+      },
+      {
+        data: this.bancor,
+        label: "Bancor",
         backgroundColor: "rgba(255, 255, 255, 0.3)",
         borderColor: "rgba(255, 255, 255, 1)",
         hoverBackgroundColor: "rgba(255, 255, 255, 1)"
       },
       {
-        data: this.test,
-        label: "TEST",
-        backgroundColor: "rgba(205, 205, 205, 0.3)",
-        borderColor: "rgba(205, 205, 205, 1)",
-        hoverBackgroundColor: "rgba(205, 205, 205, 1)"
-      }
+        data: this.rewards,
+        label: "Rewards",
+        backgroundColor: "rgba(246, 195, 67, 0.3)",
+        borderColor: "rgba(246, 195, 67, 1)",
+        hoverBackgroundColor: "rgba(246, 195, 67, 1)"
+      },
+      {
+        data: this.other,
+        label: "Community",
+        backgroundColor: "rgba(149, 170, 201, 0.3)",
+        borderColor: "rgba(149, 170, 201, 1)",
+        hoverBackgroundColor: "rgba(149, 170, 201, 1)"
+      },
     ];
   }
 
@@ -135,66 +169,127 @@ export class MphSupplyDistributionComponent implements OnInit {
     }
     this.readable = readable;
 
+    // create the apollo client
     const client = new ApolloClient({
-      uri: 'https://api.thegraph.com/subgraphs/name/0xszeth/eighty-eight-mph',
+      uri: 'https://api.thegraph.com/subgraphs/name/0xszeth/mph-token',
       cache: new InMemoryCache(),
     });
 
-    // *******FOR DEMO PURPOSES********
-    this.blocks = [11324170];
-
-    // then generate the query
-    let queryString = `query MPHSupplyDistribution {`;
+    // generate query for total MPH supply
+    let supplyQueryString = `query Supply {`;
     for (let i = 0; i < this.blocks.length; i++) {
-      // for each address we need
-      for (let a = 0; a < this.ADDRESSES.length; a++) {
-        queryString +=
-        `t${i}${a}: mphholders(
-          where: {
-            address: "${this.ADDRESSES[a]}"
-          }
-          block: {
-            number: ${this.blocks[i]}
-          }
-        ) {
-          address
-          mphBalance
-        }`;
-      }
+      supplyQueryString +=
+      `t${i}: mph(
+        id: "0"
+        block: {
+          number: ${this.blocks[i]}
+        }
+      ) {
+        totalSupply
+      }`;
     }
-    queryString += `}`;
-    const query = gql`${queryString}`;
+    supplyQueryString += `}`;
+    const supplyQuery = gql`${supplyQueryString}`;
+
+    // run the total MPH supply query
+    client.query<QueryResult>({
+      query: supplyQuery
+    }).then(result =>
+      this.handleSupplyData(result)
+    );
+
+    // then generate array of addresses as a string
+    let ids = `[`;
+      for (let address in this.ADDRESSES) {
+        ids += `"${this.ADDRESSES[address]}",`
+      }
+    ids += `]`
+
+    // generate query for address specific balances
+    let addressQueryString = `query AddressDistribution {`;
+    for (let i = 0; i < this.blocks.length; i++) {
+      addressQueryString +=
+      `t${i}: mphholders(
+        where: {
+          id_in: ${ids}
+        }
+        block: {
+          number: ${this.blocks[i]}
+        }
+      ) {
+        address
+        mphBalance
+      }`;
+    }
+    addressQueryString += `}`;
+    const addressQuery = gql`${addressQueryString}`;
 
     client.query<QueryResult>({
-      query: query
+      query: addressQuery
     }).then(result =>
-      this.handleData(result)
+      this.handleAddressData(result)
     );
 
   }
 
-  handleData(queryResult: ApolloQueryResult<QueryResult>): void {
+  handleSupplyData(queryResult: ApolloQueryResult<QueryResult>): void {
     if (!queryResult.loading) {
       let result = queryResult.data;
 
+      // initialize the data array
+      for (let i = 0; i < this.blocks.length; i++) {
+        this.other.push(0);
+      }
+
+      // populate the data array
+      for (let t in result) {
+        let mph = result[t];
+        if (mph !== null) {
+          this.other[parseInt(t.substring(1))] = parseFloat(mph.totalSupply);
+        }
+      }
+    }
+  }
+
+  handleAddressData(queryResult: ApolloQueryResult<QueryResult>): void {
+    if (!queryResult.loading) {
+      let result = queryResult.data;
+
+      // initialize the data arrays
       for (let i = 0; i < this.blocks.length; i++) {
           this.govTreasury.push(0);
           this.devWallet.push(0);
           this.merkleDistributor.push(0);
-          this.test.push(0);
+          this.uniswap.push(0);
+          this.sushiswap.push(0);
+          this.bancor.push(0);
+          this.rewards.push(0);
       }
 
-      for (let i in result) {
-        if (result[i][0]) { // if the query returned a value
-          let address = result[i][0].address;
-          if (address === this.constants.GOV_TREASURY) {
-            this.govTreasury[parseInt(i.substring(1, 2))] = parseFloat(result[i][0].mphBalance);
-          } else if (address === this.constants.DEV_WALLET) {
-            this.devWallet[parseInt(i.substring(1, 2))] = parseFloat(result[i][0].mphBalance);
-          } else if (address === this.constants.MPH_MERKLE_DISTRIBUTOR) {
-            this.merkleDistributor[parseInt(i.substring(1, 2))] = parseFloat(result[i][0].mphBalance);
-          } else if (address === "0x307ba97323907ef811f3cc6b4c6ac8580aecb1bb") {
-            this.test[parseInt(i.substring(1, 2))] = parseFloat(result[i][0].mphBalance);
+      // populate the data arrays
+      for (let t in result) {
+        for (let a in this.ADDRESSES) {
+          let address = this.ADDRESSES[a];
+          let holder = result[t].find(holder => holder.address === address);
+
+          if (holder !== undefined) {
+            if (address === this.constants.GOV_TREASURY.toLowerCase()) {
+              this.govTreasury[parseInt(t.substring(1))] = parseFloat(holder.mphBalance);
+            } else if (address === this.constants.DEV_WALLET.toLowerCase()) {
+              this.devWallet[parseInt(t.substring(1))] = parseFloat(holder.mphBalance);
+            } else if (address === this.constants.MPH_MERKLE_DISTRIBUTOR.toLowerCase()) {
+              this.merkleDistributor[parseInt(t.substring(1))] = parseFloat(holder.mphBalance);
+            } else if (address === this.constants.UNISWAP_LP.toLowerCase()) {
+              this.uniswap[parseInt(t.substring(1))] = parseFloat(holder.mphBalance);
+            } else if (address === this.constants.SUSHI_LP.toLowerCase()) {
+              this.sushiswap[parseInt(t.substring(1))] = parseFloat(holder.mphBalance);
+            } else if (address === this.constants.BANCOR_LP.toLowerCase()) {
+              this.bancor[parseInt(t.substring(1))] = parseFloat(holder.mphBalance);
+            } else if (address === this.constants.REWARDS.toLowerCase()) {
+              this.rewards[parseInt(t.substring(1))] = parseFloat(holder.mphBalance);
+            }
+
+            this.other[parseInt(t.substring(1))] -= parseFloat(holder.mphBalance);
           }
         }
       }
@@ -203,6 +298,9 @@ export class MphSupplyDistributionComponent implements OnInit {
 }
 
 interface QueryResult {
+  mph: {
+    totalSupply: number;
+  };
   mphholders: {
     address: string;
     mphBalance: number;
