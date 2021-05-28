@@ -34,6 +34,16 @@ import { WithdrawZeroCouponBondComponent } from './zero-coupon-bonds/modal-zero-
 import { FarmZeroCouponBondComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/farm-zero-coupon-bond/farm-zero-coupon-bond.component';
 import { ModalStakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/farm-zero-coupon-bond/modal-stake-zcblp/modal-stake-zcblp.component';
 import { ModalUnstakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/farm-zero-coupon-bond/modal-unstake-zcblp/modal-unstake-zcblp.component';
+import { MphSupplyDistributionComponent } from './stats/components/mph-supply-distribution/mph-supply-distribution.component';
+import { ChartsModule } from 'ng2-charts';
+import { HistoricalStakingRewardsComponent } from './stats/components/historical-staking-rewards/historical-staking-rewards.component';
+import { HistoricalFixedInterestRatesComponent } from './stats/components/historical-fixed-interest-rates/historical-fixed-interest-rates.component';
+import { HistoricalAssetTvlComponent } from './stats/components/historical-asset-tvl/historical-asset-tvl.component';
+import { HistoricalMphPeRatioComponent } from './stats/components/historical-mph-pe-ratio/historical-mph-pe-ratio.component';
+import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liquidity.component';
+import { NetInterestMarginComponent } from './stats/components/net-interest-margin/net-interest-margin.component';
+import { FundedInterestExpensesComponent } from './stats/components/funded-interest-expenses/funded-interest-expenses.component';
+import { LossProvisionComponent } from './stats/components/loss-provision/loss-provision.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +74,16 @@ import { ModalUnstakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupo
     WithdrawZeroCouponBondComponent,
     FarmZeroCouponBondComponent,
     ModalStakeZCBLPComponent,
-    ModalUnstakeZCBLPComponent
+    ModalUnstakeZCBLPComponent,
+    MphSupplyDistributionComponent,
+    HistoricalStakingRewardsComponent,
+    HistoricalFixedInterestRatesComponent,
+    HistoricalAssetTvlComponent,
+    HistoricalMphPeRatioComponent,
+    MphLiquidityComponent,
+    NetInterestMarginComponent,
+    FundedInterestExpensesComponent,
+    LossProvisionComponent
   ],
   imports: [
     BrowserModule,
@@ -72,7 +91,8 @@ import { ModalUnstakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupo
     GraphQLModule,
     HttpClientModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

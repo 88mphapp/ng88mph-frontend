@@ -1,0 +1,14 @@
+<div *ngIf="barChartData" class="card mb-4 mb-lg-0">
+  <div class="card-body pt-0">
+    <h5 class="text-uppercase text-amber text-center mt-n3 bg-dark pb-3">
+      Historical Staking Rewards (cumulative)
+    </h5>
+    <canvas baseChart
+            [datasets]="barChartData"
+            [labels]="barChartLabels"
+            [options]="barChartOptions"
+            [legend]="barChartLegend"
+            [chartType]="barChartType">
+    </canvas>
+  </div>
+</div>
