@@ -1,7 +1,7 @@
 <div class="container mt-4 mb-6">
   <div class="row">
     <div class="col-12">
-      <h1 class="title-bg-gradient display-2">Provide liquidity & boost your yield</h1>     
+      <h1 class="title-bg-gradient display-2">Provide liquidity & boost your yield</h1>
       <p class="text-white font-weight-bold mb-5 lead">Provide liquidity on our trading pools, and get rewarded by doing so from trading fees and liquidity mining rewards paid in $MPH.
         <a class="text-primary" href="https://docs.88mph.app/" target="_blank">
         Learn more <i class="fe fe-external-link"></i>
@@ -18,10 +18,8 @@
             <div class="card-body">
               <div class="form-group">
                 <label for="LiquidityPool">Select a liquidity pool</label>
-                <select class="custom-select custom-select-lg" data-toggle="select" id="LiquidityPool">
-                  <option>option</option>
-                  <option>option</option>
-                  <option>option</option>
+                <select [(ngModel)]="selectedPool" class="custom-select custom-select-lg" data-toggle="select" id="LiquidityPool">
+                  <option *ngFor="let pool of liquidityPools" [ngValue]="pool">{{pool}}</option>
                 </select>
               </div>
               <!-- display if UNI-v2 pool option selected -->
@@ -79,7 +77,7 @@
                 </div>
                 <small class="form-text text-white">0.00 tkn available</small>
               </div>
-              
+
               <div class="table-responsive">
                 <table class="table">
                   <tbody>
