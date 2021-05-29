@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgModule } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
 import { ContractService } from '../contract.service';
@@ -15,7 +15,11 @@ import { ModalUnstakeLPComponent } from './modal-unstake-lp/modal-unstake-lp.com
 })
 export class FarmingComponent implements OnInit {
   PERIOD = 14; // 14 days
-  BLOCK_TIME_IN_SEC = 14.256 // used for sushi APY
+  BLOCK_TIME_IN_SEC = 14.256; // used for sushi APY
+
+  // liquidity mining pool select options
+  selectedPool: string = "Uniswap v2";
+  liquidityPools: Array<string> = ["Uniswap v2", "Sushiswap", "Bancor"];
 
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
