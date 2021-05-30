@@ -25,28 +25,32 @@
               <!-- display if UNI-v2 pool option selected -->
               <div class="form-group">
                 <label>Stake LP tokens <br>
-                  <small class="text-muted">🦄 <a class="text-primary"
+                  <small class="text-muted" *ngIf="selectedPool=='Uniswap v2'">🦄 <a class="text-primary"
                     href="https://uniswap.exchange/add/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH"
                     target="_blank">Provide liquidity</a> to the Uniswap MPH-ETH pair and earn MPH
                   </small>
-                  <small class="text-muted d-none"><a class="text-primary"
+                  <small class="text-muted" *ngIf="selectedPool=='Bancor'"><a class="text-primary"
                     href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
                     target="_blank">Provide liquidity</a> to the Bancor MPH-BNT pair and earn BNT
                   </small>
-                  <small class="text-muted d-none">🍣 <a class="text-primary"
+                  <small class="text-muted" *ngIf="selectedPool=='SushiSwap'">🍣 <a class="text-primary"
                     href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
                     target="_blank">Provide liquidity</a> to the SushiSwap MPH-ETH pair and earn SUSHI
                   </small>
                 </label>
                 <div class="input-group mb-2">
                   <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                    aria-label="stake-amount">
+                    aria-label="stake-amount" [value]="stakeAmount.toString()"
+                    (input)="setStakeAmount($event.target.value)">
                   <div class="input-group-append">
-                    <button class="btn btn-lg border-gradient" type="button">Max</button>
+                    <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='Uniswap v2'" type="button" (click)="this.setStakeAmount(this.unstakedMPHBalance.toFixed(18))" >Max</button>
+                    <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='SushiSwap'" type="button" (click)="this.setStakeAmount(this.sushiUnstakedLPBalance.toFixed(18))" >Max</button>
                   </div>
                 </div>
-                <small class="form-text text-white">0.00 tkn available</small>
+                <small class="form-text text-white" *ngIf="selectedPool=='Uniswap v2'">{{unstakedMPHBalance.toFormat(4)}} MPH-ETH UNI-V2 available</small>
+                <small class="form-text text-white" *ngIf="selectedPool=='SushiSwap'">{{sushiUnstakedLPBalance.toFormat(4)}} MPH-ETH SLP available</small>
               </div>
+
               <!-- display if ZCB pool option selected -->
               <div class="form-group d-none">
                 <label>Add base asset</label>
@@ -86,7 +90,8 @@
                         Staked LP tokens
                       </td>
                       <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">{{stakedMPHBalance.toFormat(4)}}</h4>
+                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Uniswap v2'">{{stakedMPHBalance.toFormat(4)}}</h4>
+                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='SushiSwap'">{{sushiStakedLPBalance.toFormat(4)}}</h4>
                       </td>
                     </tr>
                     <tr>
@@ -94,7 +99,8 @@
                         Staked LP Value
                       </td>
                       <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">${{stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}}</h4>
+                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Uniswap v2'">${{stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}}</h4>
+                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='SushiSwap'">${{sushiStakedLPBalance.times(sushiLPPriceUSD).toFormat(4)}}</h4>
                       </td>
                     </tr>
                     <tr>
@@ -103,7 +109,8 @@
                         </strong>
                       </td>
                       <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">{{claimableRewards.toFormat(4)}} MPH</h4>
+                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Uniswap v2'">{{claimableRewards.toFormat(4)}} MPH</h4>
+                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='SushiSwap'">{{sushiClaimableRewards.toFormat(4)}} SUSHI</h4>
                       </td>
                     </tr>
                     <tr>
@@ -112,7 +119,8 @@
                         </strong>
                       </td>
                       <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">{{yearlyROI.toFormat(4)}}%</h4>
+                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Uniswap v2'">{{yearlyROI.toFormat(4)}}%</h4>
+                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='SushiSwap'">{{sushiYearlyROI.toFormat(4)}}%</h4>
                       </td>
                     </tr>
                     <tr class="d-none">
