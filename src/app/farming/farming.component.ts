@@ -19,8 +19,10 @@ export class FarmingComponent implements OnInit {
 
   // liquidity mining pool select options
   selectedPool: string = "Uniswap v2";
-  liquidityPools: Array<string> = ["Uniswap v2", "Sushiswap", "Bancor"];
+  liquidityPools: Array<string> = ["Uniswap v2", "SushiSwap", "Bancor"];
+  stakeAmount: BigNumber;
 
+  unstakedMPHBalance: BigNumber;
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
   claimableRewards: BigNumber;
@@ -37,6 +39,7 @@ export class FarmingComponent implements OnInit {
   rewardStartTime: string;
   rewardEndTime: string;
 
+  sushiUnstakedLPBalance: BigNumber;
   sushiStakedLPBalance: BigNumber;
   sushiStakedLPPoolProportion: BigNumber;
   sushiClaimableRewards: BigNumber;
@@ -92,6 +95,7 @@ export class FarmingComponent implements OnInit {
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const rewards = this.contract.getNamedContract('Farming', readonlyWeb3);
+    const uniLPToken = this.contract.getNamedContract('MPHLP', readonlyWeb3);
 
     const sushiMasterChef = this.contract.getContract(this.constants.SUSHI_MASTERCHEF, 'MasterChef', readonlyWeb3);
     const yflinkStaking = this.contract.getContract(this.constants.LINKSWAP_STAKING, 'LinkSwapStaking', readonlyWeb3);
@@ -121,7 +125,7 @@ export class FarmingComponent implements OnInit {
       this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
 
       // sushi
-      const sushiLPToken = this.contract.getERC20(this.constants.SUSHI_LP, readonlyWeb3);
+      let sushiLPToken = this.contract.getERC20(this.constants.SUSHI_LP, readonlyWeb3);
       const sushiPoolInfo = await sushiMasterChef.methods.poolInfo(this.constants.SUSHI_MPH_ONSEN_ID).call();
       this.sushiTotalStakedLPBalance = new BigNumber(await sushiLPToken.methods.balanceOf(this.constants.SUSHI_MASTERCHEF).call()).div(this.constants.PRECISION);
       this.sushiTotalRewardPerSecond = new BigNumber(await sushiMasterChef.methods.sushiPerBlock().call()).div(this.BLOCK_TIME_IN_SEC).div(this.constants.PRECISION).times(sushiPoolInfo.allocPoint).div(await sushiMasterChef.methods.totalAllocPoint().call());
@@ -164,6 +168,7 @@ export class FarmingComponent implements OnInit {
     }
 
     if (loadUser) {
+      this.unstakedMPHBalance = new BigNumber(await uniLPToken.methods.balanceOf(address).call()).div(this.constants.PRECISION);
       this.stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(address).call()).div(this.constants.PRECISION);
       this.claimableRewards = new BigNumber(await rewards.methods.earned(address).call()).div(this.constants.PRECISION);
       this.stakedMPHPoolProportion = this.stakedMPHBalance.div(this.totalStakedMPHBalance).times(100);
@@ -173,6 +178,9 @@ export class FarmingComponent implements OnInit {
       this.rewardPerDay = this.stakedMPHBalance.times(this.rewardPerMPHPerSecond).times(this.constants.DAY_IN_SEC);
 
       // sushi
+      let sushiLPToken = this.contract.getERC20(this.constants.SUSHI_LP, readonlyWeb3);
+      this.sushiUnstakedLPBalance = new BigNumber(await sushiLPToken.methods.balanceOf(address).call()).div(this.constants.PRECISION);
+
       let sushiUserInfo;
       await Promise.all([
         sushiUserInfo = await sushiMasterChef.methods.userInfo(this.constants.SUSHI_MPH_ONSEN_ID, address).call(),
@@ -200,11 +208,13 @@ export class FarmingComponent implements OnInit {
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
+      this.unstakedMPHBalance = new BigNumber(0);
       this.stakedMPHBalance = new BigNumber(0);
       this.stakedMPHPoolProportion = new BigNumber(0);
       this.claimableRewards = new BigNumber(0);
       this.rewardPerDay = new BigNumber(0);
 
+      this.sushiUnstakedLPBalance = new BigNumber(0);
       this.sushiStakedLPBalance = new BigNumber(0);
       this.sushiStakedLPPoolProportion = new BigNumber(0);
       this.sushiClaimableRewards = new BigNumber(0);
@@ -221,6 +231,9 @@ export class FarmingComponent implements OnInit {
     }
 
     if (resetGlobal) {
+
+      this.stakeAmount = new BigNumber(0);
+
       this.totalStakedMPHBalance = new BigNumber(0);
       this.rewardPerMPHPerSecond = new BigNumber(0);
       this.totalRewardPerSecond = new BigNumber(0);
@@ -247,9 +260,7 @@ export class FarmingComponent implements OnInit {
       this.bancorRewardPerBNTPerSecond = new BigNumber(0);
       this.bancorTotalStakedMPH = new BigNumber(0);
       this.bancorTotalStakedBNT = new BigNumber(0);
-
       this.bancorMPHYearlyROI = new BigNumber(0);
-
       this.bancorBNTYearlyROI = new BigNumber(0);
     }
   }
@@ -272,6 +283,13 @@ export class FarmingComponent implements OnInit {
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerDay = this.rewardPerDay;
     modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
+  }
+
+  setStakeAmount(amount: number | string) {
+    this.stakeAmount = new BigNumber(amount);
+    if (this.stakeAmount.isNaN()) {
+      this.stakeAmount = new BigNumber(0);
+    }
   }
 
   unstakeAndClaim() {
