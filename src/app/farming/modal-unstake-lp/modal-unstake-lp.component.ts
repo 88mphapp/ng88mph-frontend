@@ -53,17 +53,13 @@ export class ModalUnstakeLPComponent implements OnInit {
   }
 
   async loadData() {
-    console.log(this.selectedPool);
     if (this.selectedPool === "Uniswap v2") {
       this.setUnstakeAmount(this.stakedMPHBalance.toFixed(18));
-      console.log(this.stakedMPHBalance);
       this.stakedAmount = this.stakedMPHBalance;
     } else if (this.selectedPool === "SushiSwap") {
       this.setUnstakeAmount(this.sushiStakedLPBalance.toFixed(18));
-      console.log(this.sushiStakedLPBalance);
       this.stakedAmount = this.sushiStakedLPBalance;
-    } 
-    console.log(this.stakedAmount);
+    }
   }
 
   resetData(): void {
