@@ -315,6 +315,7 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.defaultPoolName = poolName;
   }
 
+
   openWithdrawModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
     const modalRef = this.modalService.open(ModalWithdrawComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.userDeposit = userDeposit;
