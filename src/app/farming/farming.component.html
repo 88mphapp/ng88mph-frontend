@@ -16,72 +16,102 @@
               </h4>
             </div>
             <div class="card-body">
-              <div class="form-group">
-                <label for="LiquidityPool">Select a liquidity pool</label>
-                <select [(ngModel)]="selectedPool" class="custom-select custom-select-lg" data-toggle="select" id="LiquidityPool">
-                  <option *ngFor="let pool of liquidityPools" [ngValue]="pool">{{pool}}</option>
-                </select>
-              </div>
-              <!-- display if UNI-v2 pool option selected -->
-              <div class="form-group">
-                <label>Stake LP tokens <br>
-                  <small class="text-muted" *ngIf="selectedPool=='Uniswap v2'">🦄 <a class="text-primary"
-                    href="https://uniswap.exchange/add/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH"
-                    target="_blank">Provide liquidity</a> to the Uniswap MPH-ETH pair and earn MPH
-                  </small>
-                  <small class="text-muted" *ngIf="selectedPool=='Bancor'"><a class="text-primary"
-                    href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
-                    target="_blank">Provide liquidity</a> to the Bancor MPH-BNT pair and earn BNT
-                  </small>
-                  <small class="text-muted" *ngIf="selectedPool=='SushiSwap'">🍣 <a class="text-primary"
-                    href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
-                    target="_blank">Provide liquidity</a> to the SushiSwap MPH-ETH pair and earn SUSHI
-                  </small>
-                </label>
-                <div class="input-group mb-2">
-                  <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                    aria-label="stake-amount" [value]="stakeAmount.toString()"
-                    (input)="setStakeAmount($event.target.value)">
-                  <div class="input-group-append">
-                    <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='Uniswap v2'" type="button" (click)="this.setStakeAmount(this.unstakedMPHBalance.toFixed(18))" >Max</button>
-                    <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='SushiSwap'" type="button" (click)="this.setStakeAmount(this.sushiUnstakedLPBalance.toFixed(18))" >Max</button>
-                  </div>
+              <div class="list-group list-group-flush list-group-activity mb-4">
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto">
+        
+                      <div class="avatar avatar-sm">
+                        <div class="avatar-title font-size-lg bg-dark rounded-circle text-white border-gradient">
+                          1
+                        </div>
+                      </div>
+        
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group">
+                        <label for="LiquidityPool">Select a liquidity pool</label>
+                        <select [(ngModel)]="selectedPool" class="custom-select custom-select-lg" data-toggle="select" id="LiquidityPool">
+                          <option *ngFor="let pool of liquidityPools" [ngValue]="pool">{{pool}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div> <!-- / .row -->
                 </div>
-                <small class="form-text text-white" *ngIf="selectedPool=='Uniswap v2'">{{unstakedMPHBalance.toFormat(4)}} MPH-ETH UNI-V2 available</small>
-                <small class="form-text text-white" *ngIf="selectedPool=='SushiSwap'">{{sushiUnstakedLPBalance.toFormat(4)}} MPH-ETH SLP available</small>
-              </div>
-
-              <!-- display if ZCB pool option selected -->
-              <div class="form-group d-none">
-                <label>Add base asset</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text small">USDC</span>
-                  </div>
-                  <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                    aria-label="stake-amount">
-                  <div class="input-group-append">
-                    <button class="btn btn-lg border-gradient" type="button" >Max</button>
-                  </div>
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+        
+                      <div class="avatar avatar-sm">
+                        <div class="avatar-title font-size-lg bg-dark rounded-circle text-white border-gradient">
+                          2
+                        </div>
+                      </div>
+        
+                    </div>
+                    <div class="col ml-n2">
+                      <!-- display if UNI-v2 pool option selected -->
+                      <div class="form-group">
+                        <label>Stake LP tokens <br>
+                          <small class="text-muted" *ngIf="selectedPool=='Uniswap v2'">🦄 <a class="text-primary"
+                            href="https://uniswap.exchange/add/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH"
+                            target="_blank">Provide liquidity</a> to the Uniswap MPH-ETH pair and earn MPH
+                          </small>
+                          <small class="text-muted" *ngIf="selectedPool=='Bancor'"><a class="text-primary"
+                            href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
+                            target="_blank">Provide liquidity</a> to the Bancor MPH-BNT pair and earn BNT
+                          </small>
+                          <small class="text-muted" *ngIf="selectedPool=='SushiSwap'">🍣 <a class="text-primary"
+                            href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
+                            target="_blank">Provide liquidity</a> to the SushiSwap MPH-ETH pair and earn SUSHI
+                          </small>
+                        </label>
+                        <div class="input-group mb-2">
+                          <input type="text" class="form-control form-control-lg" placeholder="0.00"
+                            aria-label="stake-amount" [value]="stakeAmount.toString()"
+                            (input)="setStakeAmount($event.target.value)">
+                          <div class="input-group-append">
+                            <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='Uniswap v2'" type="button" (click)="this.setStakeAmount(this.unstakedMPHBalance.toFixed(18))" >Max</button>
+                            <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='SushiSwap'" type="button" (click)="this.setStakeAmount(this.sushiUnstakedLPBalance.toFixed(18))" >Max</button>
+                          </div>
+                        </div>
+                        <small class="form-text text-white" *ngIf="selectedPool=='Uniswap v2'">{{unstakedMPHBalance.toFormat(4)}} MPH-ETH UNI-V2 available</small>
+                        <small class="form-text text-white" *ngIf="selectedPool=='SushiSwap'">{{sushiUnstakedLPBalance.toFormat(4)}} MPH-ETH SLP available</small>
+                      </div>
+                      <!-- display if ZCB pool option selected -->
+                      <div class="form-group d-none">
+                        <label>Add base asset</label>
+                        <div class="input-group mb-2">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text small">USDC</span>
+                          </div>
+                          <input type="text" class="form-control form-control-lg" placeholder="0.00"
+                            aria-label="stake-amount">
+                          <div class="input-group-append">
+                            <button class="btn btn-lg border-gradient" type="button" >Max</button>
+                          </div>
+                        </div>
+                        <small class="form-text text-white">0.00 tkn available</small>
+                      </div>
+                      <!-- display if ZCB pool option selected -->
+                      <div class="form-group d-none">
+                        <label>Add ZCB asset</label>
+                        <div class="input-group mb-2">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text small">USDC-ZCB0821</span>
+                          </div>
+                          <input type="text" class="form-control form-control-lg" placeholder="0.00"
+                            aria-label="stake-amount">
+                          <div class="input-group-append">
+                            <button class="btn btn-lg border-gradient" type="button" >Max</button>
+                          </div>
+                        </div>
+                        <small class="form-text text-white">0.00 tkn available</small>
+                      </div>
+                    </div>
+                  </div> <!-- / .row -->
                 </div>
-                <small class="form-text text-white">0.00 tkn available</small>
               </div>
-              <!-- display if ZCB pool option selected -->
-              <div class="form-group d-none">
-                <label>Add ZCB asset</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text small">USDC-ZCB0821</span>
-                  </div>
-                  <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                    aria-label="stake-amount">
-                  <div class="input-group-append">
-                    <button class="btn btn-lg border-gradient" type="button" >Max</button>
-                  </div>
-                </div>
-                <small class="form-text text-white">0.00 tkn available</small>
-              </div>
-
               <div class="table-responsive">
                 <table class="table">
                   <tbody>
