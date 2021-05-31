@@ -299,9 +299,27 @@ export class FarmingComponent implements OnInit {
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
-  claim() {
+  stake() {
     const rewards = this.contract.getNamedContract('Farming');
-    const func = rewards.methods.getReward();
+    const lpToken = this.contract.getNamedContract('MPHLP');
+    const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
+    console.log(stakeAmount);
+    const func = rewards.methods.stake(stakeAmount);
+
+    this.wallet.sendTxWithToken(func, lpToken, rewards.options.address, stakeAmount, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
+  }
+
+  claim() {
+    let rewards;
+    let func;
+
+    if (this.selectedPool === "Uniswap v2") {
+      rewards = this.contract.getNamedContract('Farming');
+      func = rewards.methods.getReward();
+    } else if (this.selectedPool === "SushiSwap") {
+      rewards = this.contract.getNamedContract('MasterChef');
+      func = rewards.methods.deposit(this.constants.SUSHI_MPH_ONSEN_ID, 0);
+    }
 
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
