@@ -19,83 +19,126 @@
           <div class="card mb-8">
             <div class="card-body">
               <form>
-                <div class="form-row mb-2">
-                  <div class="col">
-                    <div class="form-group">
-                      <label>Lending pool</label>
-                      <div class="input-group input-group-lg">
-                        <select class="custom-select" (change)="selectPool($event.target.value)">
-                          <option value={{pool.name}} *ngFor="let pool of poolList"
-                            [selected]="pool.name === selectedPoolInfo.name">{{pool.stablecoinSymbol}}
-                            ({{pool.protocol}})</option>
-                        </select>
+                <div class="list-group list-group-flush list-group-activity mb-4">
+                  <div class="list-group-item">
+                    <div class="row">
+                      <div class="col-auto">
+          
+                        <div class="avatar avatar-sm">
+                          <div class="avatar-title font-size-lg bg-dark rounded-circle text-white border-gradient">
+                            1
+                          </div>
+                        </div>
+          
                       </div>
-                    </div>
-                    <div class="form-group mb-2">
-                      <label>Deposit amount ({{selectedDepositToken}})</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
-                          aria-describedby="" [value]="depositAmount.toFixed()"
-                          (input)="setDepositAmount($event.target.value)">
-                        <div class="input-group-append">
-                          <button class="btn btn-lg border-gradient" type="button"
-                            (click)="setMaxDepositAmount()">Max</button>
+                      <div class="col ml-n2">
+                        <div class="form-group">
+                          <label>Lending pool</label>
+                          <div class="input-group input-group-lg">
+                            <select class="custom-select" (change)="selectPool($event.target.value)">
+                              <option value={{pool.name}} *ngFor="let pool of poolList"
+                                [selected]="pool.name === selectedPoolInfo.name">{{pool.stablecoinSymbol}}
+                                ({{pool.protocol}})</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="form-group mb-2" *ngIf="shouldDisplayZap">
-                      <label>Deposit token</label>
-                      <div class="input-group input-group-lg">
-                        <select class="custom-select" (change)="selectZapDepositToken($event.target.value)">
-                          <option value={{token}} *ngFor="let token of zapDepositTokens"
-                            [selected]="token === selectedDepositToken">{{token}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row mb-4">
-                      <div class="col">
-                        <small class="form-text text-muted">{{depositTokenBalance.toFormat()}}
-                          {{selectedDepositToken}}
-                          available | Min: {{minDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}} <> Max: {{maxDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}} per deposit</small>
-                      </div>
-                    </div>
+                    </div> <!-- / .row -->
                   </div>
-                </div>
-                <div class="form-row mb-2">
-                  <div class="col">
-                    <h4 class="mb-2">Maturity</h4>
-                    <small class="text-muted">You will be able to redeem your principal & fixed interest on the corresponding maturity selected.</small>
-                   
-                  </div>
-                </div>
-                <div class="form-row">
-                   
-                  <div class="col-6">
-                    <div class="form-group"> 
-                      <label>Select a custom maturity</label>
-                      <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
-                          class="form-control form-control-lg text-right pr-3" [value]="depositTimeInDays"
-                          (input)="setDepositTime($event.target.value)">
-                      <small class="form-text text-muted my-2">
-                        Min: {{minDepositPeriod}}d / 
-                        Max: {{maxDepositPeriod}}d
-                      </small>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="">OR a preset maturity</label>
-                      <div class="input-group input-group-lg">
-                        <select class="form-select custom-select" id="">
-                          <option>None</option>
-                          <option>Aug 1 2021</option>
-                          <option>Fev 1 2022</option>
-                        </select>
+                  <div class="list-group-item">
+                    <div class="row">
+                      <div class="col-auto text-center">
+          
+                        <div class="avatar avatar-sm">
+                          <div class="avatar-title font-size-lg bg-dark rounded-circle text-white border-gradient">
+                            2
+                          </div>
+                        </div>
+          
                       </div>
-                      <small class="form-text text-muted my-2">
-                        Unlike custom maturity, preset maturity doesn't allow early withdrawal of the principal. But you can sell the principal at a discounted market price on xx before it has reached its maturity.
-                      </small>
-                    </div>                    
+                      <div class="col ml-n2">
+                        <div class="form-group mb-2">
+                          <label>Deposit amount ({{selectedDepositToken}})</label>
+                          <div class="input-group">
+                            <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
+                              aria-describedby="" [value]="depositAmount.toFixed()"
+                              (input)="setDepositAmount($event.target.value)">
+                            <div class="input-group-append">
+                              <button class="btn btn-lg border-gradient" type="button"
+                                (click)="setMaxDepositAmount()">Max</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group mb-2" *ngIf="shouldDisplayZap">
+                          <label>Deposit token</label>
+                          <div class="input-group input-group-lg">
+                            <select class="custom-select" (change)="selectZapDepositToken($event.target.value)">
+                              <option value={{token}} *ngFor="let token of zapDepositTokens"
+                                [selected]="token === selectedDepositToken">{{token}}</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="row mb-4">
+                          <div class="col">
+                            <small class="form-text text-muted">{{depositTokenBalance.toFormat()}}
+                              {{selectedDepositToken}}
+                              available | Min: {{minDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}} <> Max: {{maxDepositAmount.toFormat()}} {{selectedPoolInfo.stablecoinSymbol}} per deposit</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div> <!-- / .row -->
+                  </div>
+                  <div class="list-group-item">
+                    <div class="row">
+                      <div class="col-auto text-center">
+          
+                        <div class="avatar avatar-sm">
+                          <div class="avatar-title font-size-lg bg-dark rounded-circle text-white border-gradient">
+                            3
+                          </div>
+                        </div>
+          
+                      </div>
+                      <div class="col ml-n2">
+                        <div class="form-row mb-2">
+                          <div class="col">
+                            <h4 class="mb-2">Maturity</h4>
+                            <small class="text-muted">You will be able to redeem your principal & fixed interest on the corresponding maturity selected. Early withdrawal of your principal is allowed. <a href="https://docs.88mph.app" target="_blank" rel="noopener noreferrer">Learn more.</a></small>
+                           
+                          </div>
+                        </div>
+                        <div class="form-row">
+                           
+                          <div class="col-6">
+                            <div class="form-group"> 
+                              <label>Select a custom maturity</label>
+                              <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
+                                  class="form-control form-control-lg text-right pr-3" [value]="depositTimeInDays"
+                                  (input)="setDepositTime($event.target.value)">
+                              <small class="form-text text-muted my-2">
+                                Min: {{minDepositPeriod}}d / 
+                                Max: {{maxDepositPeriod}}d
+                              </small>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="form-group">
+                              <label for="">OR a preset maturity</label>
+                              <div class="input-group input-group-lg">
+                                <select class="form-select custom-select" id="">
+                                  <option>None</option>
+                                  <option>Aug 1 2021</option>
+                                  <option>Fev 1 2022</option>
+                                </select>
+                              </div>
+                              <small class="form-text text-muted my-2">
+                                Unlike custom maturity, preset maturity doesn't allow early withdrawal of the principal. But you can sell the principal at a discounted market price on xx before it has reached its maturity.
+                              </small>
+                            </div>                    
+                          </div>
+                        </div>
+                      </div>
+                    </div> <!-- / .row -->
                   </div>
                 </div>
                 <div class="table-responsive">
