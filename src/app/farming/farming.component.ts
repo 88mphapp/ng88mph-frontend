@@ -267,12 +267,25 @@ export class FarmingComponent implements OnInit {
 
   openStakeModal() {
     const modalRef = this.modalService.open(ModalStakeLPComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.selectedPool = this.selectedPool;
+
+    //uni v2
+    modalRef.componentInstance.unstakedMPHBalance = this.unstakedMPHBalance;
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerDay = this.rewardPerDay;
     modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
+
+    // sushi
+    modalRef.componentInstance.sushiUnstakedLPBalance = this.sushiUnstakedLPBalance;
+    modalRef.componentInstance.sushiStakedLPPoolProportion = this.sushiStakedLPPoolProportion;
+    modalRef.componentInstance.sushiStakedLPBalance = this.sushiStakedLPBalance;
+    modalRef.componentInstance.sushiTotalStakedLPBalance = this.sushiTotalStakedLPBalance;
+    modalRef.componentInstance.sushiTotalRewardPerSecond = this.sushiTotalRewardPerSecond;
+    modalRef.componentInstance.sushiRewardPerDay = this.sushiRewardPerDay;
+    modalRef.componentInstance.sushiPriceUSD = this.sushiPriceUSD;
   }
 
   openUnstakeModal() {
@@ -300,11 +313,20 @@ export class FarmingComponent implements OnInit {
   }
 
   stake() {
-    const rewards = this.contract.getNamedContract('Farming');
-    const lpToken = this.contract.getNamedContract('MPHLP');
+    let rewards;
+    let lpToken;
+    let func;
     const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
-    console.log(stakeAmount);
-    const func = rewards.methods.stake(stakeAmount);
+
+    if (this.selectedPool === "Uniswap v2") {
+      rewards = this.contract.getNamedContract('Farming');
+      lpToken = this.contract.getNamedContract('MPHLP');
+      func = rewards.methods.stake(stakeAmount);
+    } else if (this.selectedPool === "SushiSwap") {
+      rewards = this.contract.getNamedContract('MasterChef');
+      lpToken = this.contract.getNamedContract('SushiLP');
+      func = rewards.methods.deposit(this.constants.SUSHI_MPH_ONSEN_ID, stakeAmount);
+    }
 
     this.wallet.sendTxWithToken(func, lpToken, rewards.options.address, stakeAmount, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
