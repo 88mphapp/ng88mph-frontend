@@ -12,12 +12,19 @@ import { WalletService } from 'src/app/wallet.service';
   styleUrls: ['./modal-unstake-lp.component.css']
 })
 export class ModalUnstakeLPComponent implements OnInit {
+  @Input() selectedPool: string;
+
+
   @Input() stakedMPHPoolProportion: BigNumber;
   @Input() stakedMPHBalance: BigNumber;
   @Input() totalStakedMPHBalance: BigNumber;
   @Input() totalRewardPerSecond: BigNumber;
   @Input() rewardPerDay: BigNumber;
   @Input() mphPriceUSD: BigNumber;
+
+  @Input() sushiStakedLPBalance: BigNumber;
+
+  stakedAmount: BigNumber;
   unstakeAmount: BigNumber;
   newStakedMPHPoolProportion: BigNumber;
   newRewardPerDay: BigNumber;
@@ -46,10 +53,21 @@ export class ModalUnstakeLPComponent implements OnInit {
   }
 
   async loadData() {
-    this.setUnstakeAmount(this.stakedMPHBalance.toFixed(18));
+    console.log(this.selectedPool);
+    if (this.selectedPool === "Uniswap v2") {
+      this.setUnstakeAmount(this.stakedMPHBalance.toFixed(18));
+      console.log(this.stakedMPHBalance);
+      this.stakedAmount = this.stakedMPHBalance;
+    } else if (this.selectedPool === "SushiSwap") {
+      this.setUnstakeAmount(this.sushiStakedLPBalance.toFixed(18));
+      console.log(this.sushiStakedLPBalance);
+      this.stakedAmount = this.sushiStakedLPBalance;
+    } 
+    console.log(this.stakedAmount);
   }
 
   resetData(): void {
+    this.stakedAmount = new BigNumber(0);
     this.unstakeAmount = new BigNumber(0);
     this.newStakedMPHPoolProportion = new BigNumber(0);
     this.newRewardPerDay = new BigNumber(0);
@@ -71,14 +89,22 @@ export class ModalUnstakeLPComponent implements OnInit {
   }
 
   unstake() {
-    const rewards = this.contract.getNamedContract('Farming');
     const unstakeAmount = this.helpers.processWeb3Number(this.unstakeAmount.times(this.constants.PRECISION));
-    const func = rewards.methods.withdraw(unstakeAmount);
+    let rewards;
+    let func;
+
+    if (this.selectedPool === "Uniswap v2") {
+      rewards = this.contract.getNamedContract('Farming');
+      func = rewards.methods.withdraw(unstakeAmount);
+    } else if (this.selectedPool === "SushiSwap") {
+      rewards = this.contract.getNamedContract('MasterChef');
+      func = rewards.methods.withdraw(this.constants.SUSHI_MPH_ONSEN_ID, unstakeAmount);
+    }
 
     this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 
   canContinue() {
-    return this.wallet.connected && this.unstakeAmount.gt(0);
+    return this.wallet.connected && this.unstakeAmount.gt(0) && this.unstakeAmount.lte(this.stakedAmount);
   }
 }

@@ -25,19 +25,26 @@
                     (input)="setUnstakeAmount($event.target.value)">
                   <div class="input-group-append">
                     <button class="btn btn-lg border-gradient" type="button"
-                      (click)="setUnstakeAmount(this.stakedMPHBalance.toFixed(18))">Max</button>
+                      (click)="setUnstakeAmount(this.stakedMPHBalance.toFixed(18))"
+                      *ngIf="this.selectedPool=='Uniswap v2'">Max</button>
+                    <button class="btn btn-lg border-gradient" type="button"
+                      (click)="setUnstakeAmount(this.sushiStakedLPBalance.toFixed(18))"
+                      *ngIf="this.selectedPool=='SushiSwap'">Max</button>
                   </div>
                 </div>
               </div>
-              <small class="form-text text-white mb-4">{{stakedMPHBalance.toFormat()}} MPH staked</small>
-              
+              <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Uniswap v2'">
+                {{stakedMPHBalance.toFormat()}} MPH-ETH UNI-V2 staked</small>
+              <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='SushiSwap'">
+                {{sushiStakedLPBalance.toFormat()}} MPH-ETH SLP staked</small>
+
               <button class="btn btn-lg btn-block btn-bg-gradient" (click)="unstake()" [disabled]="!canContinue()">Unstake</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div> 
+  </div>
 </div>
 
 <!--v2 code-->

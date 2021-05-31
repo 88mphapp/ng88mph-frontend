@@ -270,7 +270,6 @@ export class FarmingComponent implements OnInit {
     modalRef.componentInstance.selectedPool = this.selectedPool;
 
     //uni v2
-    modalRef.componentInstance.unstakedMPHBalance = this.unstakedMPHBalance;
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
@@ -278,24 +277,21 @@ export class FarmingComponent implements OnInit {
     modalRef.componentInstance.rewardPerDay = this.rewardPerDay;
     modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
 
-    // sushi
-    modalRef.componentInstance.sushiUnstakedLPBalance = this.sushiUnstakedLPBalance;
-    modalRef.componentInstance.sushiStakedLPPoolProportion = this.sushiStakedLPPoolProportion;
-    modalRef.componentInstance.sushiStakedLPBalance = this.sushiStakedLPBalance;
-    modalRef.componentInstance.sushiTotalStakedLPBalance = this.sushiTotalStakedLPBalance;
-    modalRef.componentInstance.sushiTotalRewardPerSecond = this.sushiTotalRewardPerSecond;
-    modalRef.componentInstance.sushiRewardPerDay = this.sushiRewardPerDay;
-    modalRef.componentInstance.sushiPriceUSD = this.sushiPriceUSD;
   }
 
   openUnstakeModal() {
     const modalRef = this.modalService.open(ModalUnstakeLPComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.selectedPool = this.selectedPool;
+
+
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerDay = this.rewardPerDay;
     modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
+
+    modalRef.componentInstance.sushiStakedLPBalance = this.sushiStakedLPBalance;
   }
 
   setStakeAmount(amount: number | string) {
