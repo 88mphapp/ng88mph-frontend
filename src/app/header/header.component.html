@@ -37,6 +37,11 @@
           LM
         </a>
       </li>
+      <li class="nav-item" ngbNavItem="/stats">
+        <a class="nav-link text-white" routerLink="stats" ngbNavLink>
+          Stats
+        </a>
+      </li> 
       <li class="nav-item">
         <a class="nav-link text-white" href="https://snapshot.org/#/88mph.eth" target="_blank">
           Gov
@@ -52,11 +57,6 @@
               Documentations
             </a>
           </li>
-          <li ngbNavItem="/stats">
-            <a class="dropdown-item" routerLink="stats">
-              Stats
-            </a>
-          </li>                    
           <li>
             <a class="dropdown-item" href="https://forum.88mph.app/" target="_blank">
               Forum
@@ -138,11 +138,21 @@
   </div>
   <!-- User -->
   <div class="navbar-user">
-    <select class="custom-select custom-select-sm mr-3" style="width: auto;" data-toggle="select">
-      <option>v3</option>
-      <option>v2</option>
-      <option>v1</option>
-    </select>
+    <div class="dropdown">
+      <button class="btn btn-sm btn-dark dropdown-toggle mr-3 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div> Ethereum
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
+        <h6 class="dropdown-header">Select Network (88mph v3)</h6>
+        <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
+        <button class="dropdown-item d-flex align-items-center mr-2" type="button"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button>
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header">Select 88mph legacy version</h6>
+        <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v2</button>
+        <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v1</button>
+        <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v0</button>
+      </div>
+    </div>
     <button class="btn btn-sm btn-dark mr-1" type="button" routerLink="/rewards">
       {{mphBalance.toFormat(2)}} MPH <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
         width="24px">

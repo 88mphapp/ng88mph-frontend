@@ -10592,8 +10592,16 @@ a:focus, button:focus {
 .avatar-online::before {
   background-color: #00D97E; }
 
+.avatar-online.rinkeby::before {
+  background-color: #F6C343; }
+
 .avatar-offline::before {
   background-color: #B1C2D9; }
+
+.avatar-xxs {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.54167rem; }
 
 .avatar-xs {
   width: 1.625rem;
