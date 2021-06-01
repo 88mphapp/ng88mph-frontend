@@ -19,7 +19,7 @@ export class FarmingComponent implements OnInit {
 
   // liquidity mining pool select options
   selectedPool: string = "Uniswap v2";
-  liquidityPools: Array<string> = ["Uniswap v2", "SushiSwap", "Bancor", "USDC-ZCB0821"];
+  liquidityPools: Array<string> = ["Uniswap v2", "SushiSwap", "Bancor"];
   bancorSelectedToken: string = "MPH";
   bancorTokens: Array<string> = ["MPH", "BNT"];
   stakeAmount: BigNumber;
