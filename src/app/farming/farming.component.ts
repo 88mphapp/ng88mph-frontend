@@ -19,7 +19,9 @@ export class FarmingComponent implements OnInit {
 
   // liquidity mining pool select options
   selectedPool: string = "Uniswap v2";
-  liquidityPools: Array<string> = ["Uniswap v2", "SushiSwap", "Bancor"];
+  liquidityPools: Array<string> = ["Uniswap v2", "SushiSwap", "Bancor", "USDC-ZCB0821"];
+  bancorSelectedToken: string = "MPH";
+  bancorTokens: Array<string> = ["MPH", "BNT"];
   stakeAmount: BigNumber;
 
   unstakedMPHBalance: BigNumber;
@@ -54,6 +56,8 @@ export class FarmingComponent implements OnInit {
   sushiWeeklyROI: BigNumber;
   sushiDailyROI: BigNumber;
 
+  bancorUnstakedMPHBalance: BigNumber;
+  bancorUnstakedBNTBalance: BigNumber;
   bancorStakedMPHBalance: BigNumber;
   bancorStakedBNTBalance: BigNumber;
   bancorTotalStakedMPH: BigNumber;
@@ -194,6 +198,10 @@ export class FarmingComponent implements OnInit {
       this.sushiRewardPerDay = this.sushiStakedLPBalance.times(this.sushiRewardPerLPPerSecond).times(this.constants.DAY_IN_SEC);
 
       // bancor
+      let mph = this.contract.getERC20(this.constants.MPH, readonlyWeb3);
+      let bnt = this.contract.getERC20(this.constants.BNT, readonlyWeb3);
+      this.bancorUnstakedMPHBalance = new BigNumber(await mph.methods.balanceOf(address).call()).div(this.constants.PRECISION);
+      this.bancorUnstakedBNTBalance = new BigNumber(await bnt.methods.balanceOf(address).call()).div(this.constants.PRECISION);
       this.bancorStakedMPHBalance = new BigNumber(await bancorLiquidityProtectionStats.methods.totalProviderAmount(address, this.constants.BANCOR_MPHBNT_POOL, this.constants.MPH).call()).div(this.constants.PRECISION);
       this.bancorStakedBNTBalance = new BigNumber(await bancorLiquidityProtectionStats.methods.totalProviderAmount(address, this.constants.BANCOR_MPHBNT_POOL, this.constants.BNT).call()).div(this.constants.PRECISION);
       this.bancorClaimableRewards = new BigNumber(await bancorStaking.methods.pendingPoolRewards(address, this.constants.BANCOR_MPHBNT_POOL).call()).div(this.constants.PRECISION);
@@ -220,6 +228,8 @@ export class FarmingComponent implements OnInit {
       this.sushiClaimableRewards = new BigNumber(0);
       this.sushiRewardPerDay = new BigNumber(0);
 
+      this.bancorUnstakedMPHBalance = new BigNumber(0);
+      this.bancorUnstakedBNTBalance = new BigNumber(0);
       this.bancorStakedMPHBalance = new BigNumber(0);
       this.bancorStakedBNTBalance = new BigNumber(0);
       this.bancorClaimableRewards = new BigNumber(0);
@@ -282,8 +292,7 @@ export class FarmingComponent implements OnInit {
   openUnstakeModal() {
     const modalRef = this.modalService.open(ModalUnstakeLPComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.selectedPool = this.selectedPool;
-
-
+    modalRef.componentInstance.bancorSelectedToken = this.bancorSelectedToken;
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
@@ -292,6 +301,8 @@ export class FarmingComponent implements OnInit {
     modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
 
     modalRef.componentInstance.sushiStakedLPBalance = this.sushiStakedLPBalance;
+    modalRef.componentInstance.bancorStakedMPHBalance = this.bancorStakedMPHBalance;
+    modalRef.componentInstance.bancorStakedBNTBalance = this.bancorStakedBNTBalance;
   }
 
   setStakeAmount(amount: number | string) {
