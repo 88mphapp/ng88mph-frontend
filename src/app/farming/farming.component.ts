@@ -368,6 +368,30 @@ export class FarmingComponent implements OnInit {
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
+  canStake() {
+    if (this.selectedPool === "Uniswap v2") {
+      return this.stakeAmount <= this.unstakedMPHBalance && this.stakeAmount.gt(0);
+    } else if (this.selectedPool === "SushiSwap") {
+      return this.stakeAmount <= this.sushiUnstakedLPBalance && this.stakeAmount.gt(0);
+    } else if (this.selectedPool === "Bancor") {
+      if (this.bancorSelectedToken === "MPH") {
+        return this.stakeAmount <= this.bancorUnstakedMPHBalance && this.stakeAmount.gt(0);
+      } else if (this.bancorSelectedToken === "BNT") {
+        return this.stakeAmount <= this.bancorUnstakedBNTBalance && this.stakeAmount.gt(0);
+      }
+    }
+  }
+
+  canClaim() {
+    if (this.selectedPool === "Uniswap v2") {
+      return this.claimableRewards.gt(0);
+    } else if (this.selectedPool === "SushiSwap") {
+      return this.sushiClaimableRewards.gt(0);
+    } else if (this.selectedPool === "Bancor") {
+      return this.bancorClaimableRewards.gt(0);
+    }
+  }
+
   canContinue() {
     return this.wallet.connected;
   }
