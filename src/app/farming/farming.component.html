@@ -31,7 +31,8 @@
                     <div class="col ml-n2">
                       <div class="form-group">
                         <label for="LiquidityPool">Select a liquidity pool</label>
-                        <select [(ngModel)]="selectedPool" class="custom-select custom-select-lg" data-toggle="select" id="LiquidityPool">
+                        <select [(ngModel)]="selectedPool" class="custom-select custom-select-lg"
+                        data-toggle="select" id="LiquidityPool" (ngModelChange)="setStakeAmount(0)">
                           <option *ngFor="let pool of liquidityPools" [ngValue]="pool">{{pool}}</option>
                         </select>
                       </div>
@@ -68,7 +69,8 @@
                         </label>
                         <div class="form-group" *ngIf="selectedPool=='Bancor'">
                           <label for="LiquidityPool">Select a token</label>
-                          <select [(ngModel)]="bancorSelectedToken" class="custom-select custom-select-lg" data-toggle="select" id="LiquidityToken">
+                          <select [(ngModel)]="bancorSelectedToken" class="custom-select custom-select-lg"
+                          data-toggle="select" id="LiquidityToken" (ngModelChange)="setStakeAmount(0)">
                             <option *ngFor="let token of bancorTokens" [ngValue]="token">{{token}}</option>
                           </select>
                         </div>
