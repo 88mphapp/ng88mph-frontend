@@ -293,6 +293,8 @@ export class FarmingComponent implements OnInit {
     const modalRef = this.modalService.open(ModalUnstakeLPComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.selectedPool = this.selectedPool;
     modalRef.componentInstance.bancorSelectedToken = this.bancorSelectedToken;
+    modalRef.componentInstance.bancorTokens = this.bancorTokens;
+
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
@@ -333,6 +335,16 @@ export class FarmingComponent implements OnInit {
       rewards = this.contract.getNamedContract('MasterChef');
       lpToken = this.contract.getNamedContract('SushiLP');
       func = rewards.methods.deposit(this.constants.SUSHI_MPH_ONSEN_ID, stakeAmount);
+    } else if (this.selectedPool === "Bancor") {
+      rewards = this.contract.getNamedContract('BancorLP');
+      if (this.bancorSelectedToken === "MPH") {
+        lpToken = this.contract.getNamedContract('MPHToken');
+        func = rewards.methods.addLiquidity(this.constants.BANCOR_MPHBNT_POOL, this.constants.MPH, stakeAmount);
+      } else if (this.bancorSelectedToken === "BNT") {
+        lpToken = this.contract.getNamedContract('BNTToken');
+        func = rewards.methods.addLiquidity(this.constants.BANCOR_MPHBNT_POOL, this.constants.BNT, stakeAmount);
+      }
+
     }
 
     this.wallet.sendTxWithToken(func, lpToken, rewards.options.address, stakeAmount, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
@@ -348,6 +360,9 @@ export class FarmingComponent implements OnInit {
     } else if (this.selectedPool === "SushiSwap") {
       rewards = this.contract.getNamedContract('MasterChef');
       func = rewards.methods.deposit(this.constants.SUSHI_MPH_ONSEN_ID, 0);
+    } else if (this.selectedPool === "Bancor") {
+      rewards = this.contract.getNamedContract('BancorStaking');
+      func = rewards.methods.claimRewards();
     }
 
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
