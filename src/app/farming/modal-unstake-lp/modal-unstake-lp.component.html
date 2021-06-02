@@ -56,13 +56,13 @@
                 </div>
               </div>
               <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Uniswap v2'">
-                {{stakedMPHBalance.toFormat()}} MPH-ETH UNI-V2 staked</small>
+                {{stakedMPHBalance.toFormat(4)}} MPH-ETH UNI-V2 staked</small>
               <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='SushiSwap'">
-                {{sushiStakedLPBalance.toFormat()}} MPH-ETH SLP staked</small>
+                {{sushiStakedLPBalance.toFormat(4)}} MPH-ETH SLP staked</small>
               <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='MPH'">
-                {{stakedAmount.toFormat()}} MPH staked</small>
+                {{stakedAmount.toFormat(4)}} MPH staked</small>
               <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='BNT'">
-                {{stakedAmount.toFormat()}} BNT staked</small>
+                {{stakedAmount.toFormat(4)}} BNT staked</small>
               <button class="btn btn-lg btn-block btn-bg-gradient" (click)="unstake()" [disabled]="!canContinue()">Unstake</button>
             </div>
           </div>
