@@ -209,6 +209,9 @@
           <h2 class="glowing text-center py-4 mb-0" *ngIf="loadingCalculator">
             Loading...
           </h2>
+          <h2 class="glowing text-center py-4 mb-0" *ngIf="!(debtToFundToken.gt(0) && selectedPoolHasDebt())">
+            No debt available. Select another pool.
+          </h2>
           <div class="table-responsive mb-0" *ngIf="selectedPoolHasDebt()">
             <table class="table table-sm table-nowrap card-table">
               <thead>
