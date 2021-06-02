@@ -329,6 +329,10 @@ h6, .h6 {
   font-size: 1.17188rem;
   font-weight: 300; }
 
+@media (max-width: 992px) {
+  .lead {
+    font-size: 0.875rem;
+    font-weight: 600;}}
 .display-1 {
   font-size: 4rem;
   font-weight: 600;
@@ -338,6 +342,11 @@ h6, .h6 {
   font-size: 3.25rem;
   font-weight: 600;
   line-height: 1.1; }
+
+
+@media (max-width: 992px) {
+  .display-2 {
+    font-size: 1.625rem;}}
 
 .display-3 {
   font-size: 2.625rem;
