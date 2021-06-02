@@ -19,6 +19,8 @@ import { ModalUnstakeComponent } from './modal-unstake/modal-unstake.component';
 export class RewardsComponent implements OnInit {
   PERIOD = 7; // 7 days
 
+  stakeAmount: BigNumber;
+  unstakedMPHBalance: BigNumber;
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
   claimableRewards: BigNumber;
@@ -81,6 +83,7 @@ export class RewardsComponent implements OnInit {
 
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
+    const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
 
     if (this.wallet.connected && loadUser && !this.wallet.watching) {
       rewards.methods.balanceOf(this.wallet.userAddress).call().then(async stakeBalance => {
@@ -96,6 +99,10 @@ export class RewardsComponent implements OnInit {
 
       rewards.methods.earned(this.wallet.userAddress).call().then(claimableRewards => {
         this.claimableRewards = new BigNumber(claimableRewards).div(this.constants.PRECISION);
+      });
+
+      mph.methods.balanceOf(this.wallet.userAddress).call().then(unstakedMPHBalance => {
+        this.unstakedMPHBalance = new BigNumber(unstakedMPHBalance).div(this.constants.PRECISION);
       });
     }
 
@@ -113,6 +120,10 @@ export class RewardsComponent implements OnInit {
 
       rewards.methods.earned(this.wallet.watchedAddress).call().then(claimableRewards => {
         this.claimableRewards = new BigNumber(claimableRewards).div(this.constants.PRECISION);
+      });
+
+      mph.methods.balanceOf(this.wallet.watchedAddress).call().then(unstakedMPHBalance => {
+        this.unstakedMPHBalance = new BigNumber(unstakedMPHBalance).div(this.constants.PRECISION);
       });
     }
 
@@ -154,6 +165,8 @@ export class RewardsComponent implements OnInit {
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
+      this.stakeAmount = new BigNumber(0);
+      this.unstakedMPHBalance = new BigNumber(0);
       this.stakedMPHBalance = new BigNumber(0);
       this.stakedMPHPoolProportion = new BigNumber(0);
       this.claimableRewards = new BigNumber(0);
@@ -250,6 +263,13 @@ export class RewardsComponent implements OnInit {
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
+  }
+
+  setStakeAmount(amount: number | string) {
+    this.stakeAmount = new BigNumber(amount);
+    if (this.stakeAmount.isNaN()) {
+      this.stakeAmount = new BigNumber(0);
+    }
   }
 
   unstakeAndClaim() {
