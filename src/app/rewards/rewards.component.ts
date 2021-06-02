@@ -286,6 +286,14 @@ export class RewardsComponent implements OnInit {
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
+  canStake() {
+    return this.wallet.connected && this.stakeAmount <= this.unstakedMPHBalance && this.stakeAmount.gt(0);
+  }
+
+  canUnstake() {
+    return this.wallet.connected;
+  }
+
   canContinue() {
     return this.wallet.connected;
   }
