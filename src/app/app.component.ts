@@ -9,11 +9,11 @@ import { WalletService } from './wallet.service';
 })
 export class AppComponent {
   title = 'ng88mph-frontend';
-  themeName = '80s'
+  themeName = 'boring'
   themeURL = this.getThemeURL();
   themes = [
-    '80s',
-    'boring'
+    'boring',
+    '80s'
   ];
 
   constructor(public wallet: WalletService, public sanitizer: DomSanitizer) {

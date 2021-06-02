@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
+import { AppComponent } from '../app.component';
 import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
 import { HelpersService } from '../helpers.service';
@@ -27,7 +28,7 @@ export class HeaderComponent implements OnInit {
   watchedModel = new Watch(false, "");
 
   constructor(public route: Router, private apollo: Apollo, public wallet: WalletService, public contract: ContractService,
-    public constants: ConstantsService, public helpers: HelpersService) {
+    public constants: ConstantsService, public helpers: HelpersService, public app: AppComponent) {
     this.resetData(true, true);
   }
   
