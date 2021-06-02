@@ -1,14 +1,14 @@
 
-<div class="container">
+<div class="container justify-content-start justify-content-lg-between">
 
   <!-- Toggler -->
-  <button class="navbar-toggler mr-auto" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler mr-3" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <!-- Brand -->
-  <a class="navbar-brand mr-3" href="./index.html">
-    <img src="./assets/img/logo.svg" alt="..." class="navbar-brand-img">
+  <a class="navbar-brand mr-lg-3" href="./index.html">
+    <img src="./assets/img/logo.svg" alt="..." class="navbar-brand-img mr-2"> <span class="h4 text-white d-lg-none">88mph</span>
   </a>
 
   
@@ -134,10 +134,105 @@
         </ul>
       </li>
     </ul>
+    <div>
+
+    </div>
+    <div class="d-lg-none">
+      
+      <!-- Connect/watch button -->
+      <div class="btn-group btn-block mr-3 mb-3">
+        <button type="button" class="btn btn-dark border-right-0" (click)="connectWallet()">
+          <div *ngIf="wallet.connected && !wallet.watching">
+            {{wallet.userAddress.substring(0, 14)}}
+          </div>
+          <div *ngIf="!wallet.connected && !wallet.watching">
+            Connect Wallet
+          </div>
+          <div *ngIf="wallet.watching">
+            {{wallet.watchedAddress.substring(0, 14)}}
+          </div>
+        </button>
+        <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        </button>
+        <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px;">
+          <!-- Connected Wallet -->
+          <span class="d-block mb-3" *ngIf="wallet.connected">
+            <h6 class="dropdown-header px-0">Connected</h6>
+            <button type="button" class="btn btn-dark" (click)="switchFocus(false)">
+              {{wallet.userAddress.substring(0, 14)}}
+            </button>
+            <span *ngIf="!wallet.watching" class="badge">Viewing</span>
+          </span>
+          <!-- Watched Wallet -->
+          <span *ngIf="wallet.watchedAddress != null">
+            <h6 class="dropdown-header px-0">Watched</h6>
+            <button type="button" class="btn btn-dark" (click)="switchFocus(true)">
+              {{wallet.watchedAddress.substring(0, 14)}}
+            </button>
+            <span *ngIf="wallet.watching" class="badge">Viewing</span>
+          </span>
+          <!-- Add/Edit Watched Address -->
+          <span *ngIf="wallet.watchedAddress == null">
+            <h6 class="dropdown-header px-0">Watch address</h6>
+          </span>
+          <span *ngIf="wallet.watchedAddress != null">
+            <h6 class="dropdown-header px-0">Edit watched address</h6>
+          </span>
+          <form #watchForm="ngForm" (ngSubmit)="onSubmit()">
+            <div class="form-group mb-2">
+              <input type="text" [class.is-invalid]="address.invalid && address.dirty"
+               class="form-control" pattern="^0x[a-fA-F0-9]{40}$" required #address="ngModel" name="watchAddress"
+               id="TrackEthAddress"  placeholder="Add an Ethereum address"
+               [(ngModel)]="watchedModel.address">
+               <small *ngIf="address.invalid && address.dirty" class="text-danger"> Please enter a valid address</small>
+            </div>
+            <button *ngIf="wallet.watchedAddress == null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Add watched address</button>
+            <button *ngIf="wallet.watchedAddress != null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Edit watched address</button>
+          </form>
+        </div>
+      </div>
+      <div class="dropdown">
+        <button class="btn btn-block mb-3 btn-dark dropdown-toggle mr-3 d-flex align-items-center justify-content-center " type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div> Ethereum
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
+          <h6 class="dropdown-header">Select Network (88mph v3)</h6>
+          <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
+          <button class="dropdown-item d-flex align-items-center mr-2" type="button"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Select 88mph legacy version</h6>
+          <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v2</button>
+          <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v1</button>
+          <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v0</button>
+        </div>
+      </div>
+      <button class="btn btn-block btn-dark mr-1 mb-3" type="button" routerLink="/rewards">
+        {{mphBalance.toFormat(2)}} MPH <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
+          width="24px">
+      </button>   
+      <button class="btn btn-block btn-dark mr-3 mb-3" type="button" routerLink="/rewards">
+        {{mphBalance.toFormat(2)}} xMPH <img src="./assets/img/token-icons/xmph-logo-24.svg" class="mx-1 icon-logo" alt="xMPH logo"
+          width="24px">
+      </button>
+      
+      <div class="dropdown">
+        <button class="btn btn-block btn-dark dropdown-toggle mr-3 mb-3 d-flex align-items-center justify-content-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img class="img-fluid" src="./assets/img/language_white_24dp.svg" alt="Language icon" width="24px"> Language
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownNetwork">
+          <h6 class="dropdown-header">Select language</h6>
+          <button class="dropdown-item d-flex align-items-center" type="button">English</button>
+          <button class="dropdown-item d-flex align-items-center" type="button">Spanish</button>
+          <button class="dropdown-item d-flex align-items-center" type="button">Chinese</button>
+        </div>
+      </div>
+  
+    </div>
+    
 
   </div>
-  <!-- User -->
-  <div class="navbar-user">
+  <!-- User desktop -->
+  <div class="navbar-user d-none d-lg-flex">
     <div class="dropdown">
       <button class="btn btn-sm btn-dark dropdown-toggle mr-3 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div> Ethereum
@@ -228,6 +323,7 @@
     </div>
 
   </div>
+  
 
 
 </div> <!-- / .container -->
