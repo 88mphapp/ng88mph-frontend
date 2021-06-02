@@ -41,6 +41,9 @@ export class RewardsComponent implements OnInit {
   compRewardsUSD: BigNumber;
   farmRewardsToken: BigNumber;
   farmRewardsUSD: BigNumber;
+  stkaaveRewardsToken: BigNumber;
+  stkaaveRewardsUSD: BigNumber;
+  totalRewardsUSD: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -188,6 +191,9 @@ export class RewardsComponent implements OnInit {
       this.compRewardsUSD = new BigNumber(0);
       this.farmRewardsToken = new BigNumber(0);
       this.farmRewardsUSD = new BigNumber(0);
+      this.stkaaveRewardsToken = new BigNumber(0);
+      this.stkaaveRewardsUSD = new BigNumber(0);
+      this.totalRewardsUSD = new BigNumber(0);
     }
   }
 
@@ -209,6 +215,7 @@ export class RewardsComponent implements OnInit {
       protocolFeesUSD = protocolFeesUSD.plus(poolFeesToken.times(stablecoinPrice));
     })).then(() => {
       this.protocolFeesUSD = protocolFeesUSD;
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(protocolFeesUSD);
     });
 
     // compute COMP rewards
@@ -227,6 +234,7 @@ export class RewardsComponent implements OnInit {
       this.compRewardsToken = compRewardsToken;
       const compPriceUSD = await this.helpers.getTokenPriceUSD(this.constants.COMP);
       this.compRewardsUSD = compRewardsToken.times(compPriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(compRewardsToken.times(compPriceUSD));
     });
 
     // compute FARM rewards
@@ -244,9 +252,12 @@ export class RewardsComponent implements OnInit {
       this.farmRewardsToken = farmRewardsToken;
       const farmPriceUSD = await this.helpers.getTokenPriceUSD(this.constants.FARM);
       this.farmRewardsUSD = farmRewardsToken.times(farmPriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(farmRewardsToken.times(farmPriceUSD));
     });
+
   }
 
+  // @dev delete for v3
   openStakeModal() {
     const modalRef = this.modalService.open(ModalStakeComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
@@ -272,6 +283,7 @@ export class RewardsComponent implements OnInit {
     }
   }
 
+  // @dev delete for v3
   unstakeAndClaim() {
     const rewards = this.contract.getNamedContract('Rewards');
     const func = rewards.methods.exit();
@@ -279,6 +291,7 @@ export class RewardsComponent implements OnInit {
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
+  // @dev delete for v3
   claim() {
     const rewards = this.contract.getNamedContract('Rewards');
     const func = rewards.methods.getReward();
@@ -286,14 +299,21 @@ export class RewardsComponent implements OnInit {
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
+  // @dev needs implementation
+  stake() {
+    console.log("This is where you implement contract interaction");
+  }
+
   canStake() {
     return this.wallet.connected && this.stakeAmount <= this.unstakedMPHBalance && this.stakeAmount.gt(0);
   }
 
+  // @dev needs additional implementation
   canUnstake() {
     return this.wallet.connected;
   }
 
+  // @dev delete for v3
   canContinue() {
     return this.wallet.connected;
   }

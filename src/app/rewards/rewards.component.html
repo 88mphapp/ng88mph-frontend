@@ -66,7 +66,7 @@
                 </table>
               </div>
               <button type="button" class="btn btn-lg btn-block btn-bg-gradient mb-3"
-              (click)="openStakeModal()" [disabled]="!canStake() || wallet.watching">
+              (click)="stake()" [disabled]="!canStake() || wallet.watching">
                 <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake MPH
               </button>
               <div class="row">
@@ -137,7 +137,7 @@
                         Total
                       </td>
                       <td class="px-0 py-2 text-white text-right border-0 small">
-                        <h4 class="mb-1 glowing">$0.00</h4>
+                        <h4 class="mb-1 glowing">${{totalRewardsUSD.toFormat(4)}}</h4>
                       </td>
                     </tr>
                   </tbody>
