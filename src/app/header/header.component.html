@@ -157,12 +157,12 @@
       {{mphBalance.toFormat(2)}} MPH <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
         width="24px">
     </button>   
-    <button class="btn btn-sm btn-dark" type="button" routerLink="/rewards">
+    <button class="btn btn-sm btn-dark mr-3" type="button" routerLink="/rewards">
       {{mphBalance.toFormat(2)}} xMPH <img src="./assets/img/token-icons/xmph-logo-24.svg" class="mx-1 icon-logo" alt="xMPH logo"
         width="24px">
     </button>
     <!-- Connect/watch button -->
-    <div class="btn-group btn-group-sm ml-3">
+    <div class="btn-group btn-group-sm mr-3">
       <button type="button" class="btn btn-dark border-right-0" (click)="connectWallet()">
         <div *ngIf="wallet.connected && !wallet.watching">
           {{wallet.userAddress.substring(0, 14)}}
@@ -212,6 +212,18 @@
           <button *ngIf="wallet.watchedAddress == null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Add watched address</button>
           <button *ngIf="wallet.watchedAddress != null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Edit watched address</button>
         </form>
+      </div>
+    </div>
+    
+    <div class="dropdown">
+      <button class="btn btn-sm btn-dark dropdown-toggle mr-3 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <img class="img-fluid" src="./assets/img/language_white_24dp.svg" alt="Language icon" width="24px">
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownNetwork">
+        <h6 class="dropdown-header">Select language</h6>
+        <button class="dropdown-item d-flex align-items-center" type="button">English</button>
+        <button class="dropdown-item d-flex align-items-center" type="button">Spanish</button>
+        <button class="dropdown-item d-flex align-items-center" type="button">Chinese</button>
       </div>
     </div>
 
