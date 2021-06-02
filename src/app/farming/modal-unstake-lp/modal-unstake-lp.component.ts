@@ -127,6 +127,7 @@ export class ModalUnstakeLPComponent implements OnInit {
       if (this.bancorSelectedToken === "MPH") {
         let portion = this.unstakeAmount.div(this.stakedAmount).times(1000000);
         func = rewards.methods.removeLiquidity(this.bancorSelectedDeposit, this.helpers.processWeb3Number(portion));
+        console.log(func);
       } else if (this.bancorSelectedToken === "BNT") {
         let portion = this.unstakeAmount.div(this.stakedAmount).times(1000000);
         func = rewards.methods.removeLiquidity(this.bancorSelectedDeposit, this.helpers.processWeb3Number(portion));
