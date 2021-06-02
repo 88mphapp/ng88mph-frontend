@@ -67,12 +67,12 @@
                 <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake MPH
               </button>
               <div class="row">
-                <div class="col-6">
+                <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                   <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUntakeModal()" [disabled]="wallet.watching">
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
                   </button>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-lg-6">
                   <button type="button" class="btn btn-block btn-lg border-gradient" (click)="unstakeAndClaim()"
                     [disabled]="!canContinue() || wallet.watching">
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
@@ -182,7 +182,7 @@
       </div>
 
 
-
+      <!--v2 code-->
       <div class="card-deck mb-6 d-none">
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
