@@ -25,7 +25,7 @@
                         aria-label="stake-amount" [value]="unstakeAmount.toString()"
                         (input)="setUnstakeAmount($event.target.value)">
                       <div class="input-group-append">
-                        <button class="card-link small px-1" type="button"
+                        <button class="btn btn-lg border-gradient" type="button"
                           (click)="setUnstakeAmount(this.stakedMPHBalance.toFixed(18))">Max</button>
                       </div>
                     </div>
@@ -75,7 +75,7 @@
                       </tbody>
                     </table>
                   </div>
-                  <button class="card-link btn-block" (click)="unstake()" [disabled]="!canContinue()">Unstake</button>
+                  <button class="btn btn-lg btn-block btn-bg-gradient" (click)="unstake()" [disabled]="!canContinue()">Unstake</button>
                 </div>
               </div>
             </div>
