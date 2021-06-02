@@ -17,6 +17,22 @@
         <div class="col-6 pt-0">
           <div class="card mb-6">
             <div class="card-body">
+              <div class="form-group" *ngIf="selectedPool=='Bancor'">
+                <label for="LiquidityToken">Select a token</label>
+                <select [(ngModel)]="bancorSelectedToken" class="custom-select custom-select-lg" data-toggle="select" id="LiquidityToken" (ngModelChange)="loadData()">
+                  <option *ngFor="let token of bancorTokens" [ngValue]="token">{{token}}</option>
+                </select>
+              </div>
+              <div class="form-group" *ngIf="selectedPool=='Bancor'">
+                <label for="DepositId">Select a deposit ID</label>
+                <select *ngIf="bancorSelectedToken=='MPH'" [(ngModel)]="bancorSelectedDeposit" class="custom-select custom-select-lg"
+                (change)="getClaimAmount()" data-toggle="select" id="DepositID">
+                  <option *ngFor="let id of bancorMPHDeposits" [ngValue]="id">{{id}}</option>
+                </select>
+                <select *ngIf="bancorSelectedToken=='BNT'" [(ngModel)]="bancorSelectedDeposit" class="custom-select custom-select-lg" data-toggle="select" id="DepositID">
+                  <option *ngFor="let id of bancorBNTDeposits" [ngValue]="id">{{id}}</option>
+                </select>
+              </div>
               <div class="form-group mb-0">
                 <label>Amount</label>
                 <div class="input-group mb-2">
@@ -30,6 +46,12 @@
                     <button class="btn btn-lg border-gradient" type="button"
                       (click)="setUnstakeAmount(this.sushiStakedLPBalance.toFixed(18))"
                       *ngIf="this.selectedPool=='SushiSwap'">Max</button>
+                    <button class="btn btn-lg border-gradient" type="button"
+                      (click)="setUnstakeAmount(this.stakedAmount.toFixed(18))"
+                      *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='MPH'">Max</button>
+                    <button class="btn btn-lg border-gradient" type="button"
+                      (click)="setUnstakeAmount(this.stakedAmount.toFixed(18))"
+                      *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='BNT'">Max</button>
                   </div>
                 </div>
               </div>
@@ -37,7 +59,10 @@
                 {{stakedMPHBalance.toFormat()}} MPH-ETH UNI-V2 staked</small>
               <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='SushiSwap'">
                 {{sushiStakedLPBalance.toFormat()}} MPH-ETH SLP staked</small>
-
+              <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='MPH'">
+                {{stakedAmount.toFormat()}} MPH staked</small>
+              <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='BNT'">
+                {{stakedAmount.toFormat()}} BNT staked</small>
               <button class="btn btn-lg btn-block btn-bg-gradient" (click)="unstake()" [disabled]="!canContinue()">Unstake</button>
             </div>
           </div>

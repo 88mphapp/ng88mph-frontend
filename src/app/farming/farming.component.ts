@@ -74,6 +74,9 @@ export class FarmingComponent implements OnInit {
   bancorMPHYearlyROI: BigNumber;
   bancorBNTYearlyROI: BigNumber;
   bntPriceUSD: BigNumber;
+  bancorDepositIDs: Array<string>;
+  bancorMPHDeposits: Array<number>;
+  bancorBNTDeposits: Array<number>;
 
   constructor(
     private modalService: NgbModal,
@@ -104,6 +107,7 @@ export class FarmingComponent implements OnInit {
     const sushiMasterChef = this.contract.getContract(this.constants.SUSHI_MASTERCHEF, 'MasterChef', readonlyWeb3);
     const yflinkStaking = this.contract.getContract(this.constants.LINKSWAP_STAKING, 'LinkSwapStaking', readonlyWeb3);
     const bancorLiquidityProtectionStats = this.contract.getContract(this.constants.BANCOR_LP_STATS, 'LiquidityProtectionStats', readonlyWeb3);
+    const bancorLPStore = this.contract.getNamedContract('BancorLPStore', readonlyWeb3);
     const bancorStaking = this.contract.getContract(this.constants.BANCOR_STAKING_REWARDS, 'BancorStaking', readonlyWeb3);
     const bancorStakingStore = this.contract.getContract(this.constants.BANCOR_STAKING_REWARDS_STORE, 'BancorStakingStore', readonlyWeb3);
 
@@ -210,7 +214,19 @@ export class FarmingComponent implements OnInit {
       this.bancorMPHRewardPerDay = this.bancorRewardPerMPHPerSecond.times(this.constants.DAY_IN_SEC).times(this.bancorStakedMPHBalance).div(this.bancorTotalStakedMPH);
       this.bancorBNTRewardPerDay = this.bancorRewardPerBNTPerSecond.times(this.constants.DAY_IN_SEC).times(this.bancorStakedBNTBalance).div(this.bancorTotalStakedBNT);
       this.bancorTotalRewardPerDay = this.bancorMPHRewardPerDay.plus(this.bancorBNTRewardPerDay);
+      this.bancorDepositIDs = await bancorLPStore.methods.protectedLiquidityIds(address).call();
 
+      let deposit;
+      for (let id in this.bancorDepositIDs) {
+        deposit = await bancorLPStore.methods.protectedLiquidity(this.bancorDepositIDs[id]).call();
+        if (deposit[1].toLowerCase() === this.constants.BANCOR_MPHBNT_POOL.toLowerCase()) {
+          if(deposit[2].toLowerCase() === this.constants.MPH.toLowerCase()) {
+            this.bancorMPHDeposits.push(parseInt(this.bancorDepositIDs[id]));
+          } else if (deposit[2].toLowerCase() === this.constants.BNT.toLowerCase()) {
+            this.bancorBNTDeposits.push(parseInt(this.bancorDepositIDs[id]));
+          }
+        }
+      }
     }
   }
 
@@ -272,6 +288,9 @@ export class FarmingComponent implements OnInit {
       this.bancorTotalStakedBNT = new BigNumber(0);
       this.bancorMPHYearlyROI = new BigNumber(0);
       this.bancorBNTYearlyROI = new BigNumber(0);
+      this.bancorDepositIDs = [];
+      this.bancorMPHDeposits = [];
+      this.bancorBNTDeposits = [];
     }
   }
 
@@ -305,6 +324,9 @@ export class FarmingComponent implements OnInit {
     modalRef.componentInstance.sushiStakedLPBalance = this.sushiStakedLPBalance;
     modalRef.componentInstance.bancorStakedMPHBalance = this.bancorStakedMPHBalance;
     modalRef.componentInstance.bancorStakedBNTBalance = this.bancorStakedBNTBalance;
+    modalRef.componentInstance.bancorMPHDeposits = this.bancorMPHDeposits;
+    modalRef.componentInstance.bancorBNTDeposits = this.bancorBNTDeposits;
+
   }
 
   setStakeAmount(amount: number | string) {
@@ -378,6 +400,20 @@ export class FarmingComponent implements OnInit {
         return this.stakeAmount <= this.bancorUnstakedMPHBalance && this.stakeAmount.gt(0);
       } else if (this.bancorSelectedToken === "BNT") {
         return this.stakeAmount <= this.bancorUnstakedBNTBalance && this.stakeAmount.gt(0);
+      }
+    }
+  }
+
+  canUnstake() {
+    if (this.selectedPool === "Uniswap v2") {
+      return this.stakedMPHBalance.gt(0);
+    } else if (this.selectedPool === "SushiSwap") {
+      return this.sushiStakedLPBalance.gt(0);
+    } else if (this.selectedPool === "Bancor") {
+      if (this.bancorSelectedToken === "MPH") {
+        return this.bancorStakedMPHBalance.gt(0);
+      } else if (this.bancorSelectedToken === "BNT") {
+        return this.bancorStakedBNTBalance.gt(0);
       }
     }
   }
