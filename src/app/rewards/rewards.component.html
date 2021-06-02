@@ -65,12 +65,14 @@
                   </tbody>
                 </table>
               </div>
-              <button type="button" class="btn btn-lg btn-block btn-bg-gradient mb-3" (click)="openStakeModal()" [disabled]="wallet.watching">
+              <button type="button" class="btn btn-lg btn-block btn-bg-gradient mb-3"
+              (click)="openStakeModal()" [disabled]="!canStake() || wallet.watching">
                 <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake MPH
               </button>
               <div class="row">
                 <div class="col-12 col-lg-6 mb-3 mb-lg-0">
-                  <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUntakeModal()" [disabled]="wallet.watching">
+                  <button type="button" class="btn btn-block btn-lg border-gradient"
+                  (click)="openUntakeModal()" [disabled]="!canUnstake() || wallet.watching">
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
                   </button>
                 </div>
