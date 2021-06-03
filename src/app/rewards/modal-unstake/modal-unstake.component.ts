@@ -12,15 +12,13 @@ import { WalletService } from 'src/app/wallet.service';
   styleUrls: ['./modal-unstake.component.css']
 })
 export class ModalUnstakeComponent implements OnInit {
-  @Input() stakedMPHPoolProportion: BigNumber;
-  @Input() stakedMPHBalance: BigNumber;
-  @Input() totalStakedMPHBalance: BigNumber;
-  @Input() totalRewardPerSecond: BigNumber;
-  @Input() rewardPerWeek: BigNumber;
   @Input() xMPHBalance: BigNumber;
+  @Input() xMPHTotalSupply: BigNumber;
+
   unstakeAmount: BigNumber;
-  newStakedMPHPoolProportion: BigNumber;
-  newRewardPerWeek: BigNumber;
+  pricePerFullShare: BigNumber;
+  poolProportion: BigNumber;
+  newPoolProportion: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -51,22 +49,29 @@ export class ModalUnstakeComponent implements OnInit {
 
   resetData(): void {
     this.unstakeAmount = new BigNumber(0);
-    this.newStakedMPHPoolProportion = new BigNumber(0);
-    this.newRewardPerWeek = new BigNumber(0);
+    this.pricePerFullShare = new BigNumber(0);
+    this.poolProportion = new BigNumber(0);
+    this.newPoolProportion = new BigNumber(0);
   }
 
   setUnstakeAmount(amount: number | string) {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const xmph = this.contract.getNamedContract('xMPHToken', readonlyWeb3);
+
     this.unstakeAmount = new BigNumber(amount);
     if (this.unstakeAmount.isNaN()) {
       this.unstakeAmount = new BigNumber(0);
     }
-    this.newStakedMPHPoolProportion = this.stakedMPHBalance.minus(this.unstakeAmount).div(this.totalStakedMPHBalance.minus(this.unstakeAmount)).times(100);
-    if (this.newStakedMPHPoolProportion.isNaN()) {
-      this.newStakedMPHPoolProportion = new BigNumber(0);
-    }
-    this.newRewardPerWeek = this.stakedMPHBalance.minus(this.unstakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.minus(this.unstakeAmount))).times(this.constants.WEEK_IN_SEC);
-    if (this.newRewardPerWeek.isNaN()) {
-      this.newRewardPerWeek = new BigNumber(0);
+
+    // @dev uncomment when xMPH contract has been deployed
+    // xmph.methods.getPricePerFullShare().call().then(pricePerFullShare => {
+    //   this.pricePerFullShare = new BigNumber(pricePerFullShare).div(this.constants.PRECISION);
+    // });
+
+    this.poolProportion = this.xMPHBalance.div(this.xMPHTotalSupply).times(100);
+    this.newPoolProportion = this.xMPHBalance.minus(this.unstakeAmount).div(this.xMPHTotalSupply.minus(this.unstakeAmount)).times(100);
+    if (this.newPoolProportion.isNaN()) {
+      this.newPoolProportion = new BigNumber(0);
     }
   }
 
