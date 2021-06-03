@@ -22,7 +22,7 @@ export class RewardsComponent implements OnInit {
   stakeAmount: BigNumber;
   unstakedMPHBalance: BigNumber;
   xMPHBalance: BigNumber;
-
+  xMPHTotalSupply: BigNumber;
 
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
@@ -118,6 +118,7 @@ export class RewardsComponent implements OnInit {
       xmph.methods.balanceOf(this.wallet.userAddress).call().then(xMPHBalance => {
         this.xMPHBalance = new BigNumber(xMPHBalance).div(this.constants.PRECISION);
       });
+
     }
 
     if (loadUser && this.wallet.watching) {
@@ -143,6 +144,7 @@ export class RewardsComponent implements OnInit {
       xmph.methods.balanceOf(this.wallet.watchedAddress).call().then(xMPHBalance => {
         this.xMPHBalance = new BigNumber(xMPHBalance).div(this.constants.PRECISION);
       });
+
     }
 
     if (loadGlobal) {
@@ -180,6 +182,11 @@ export class RewardsComponent implements OnInit {
       // @dev xMPH needs to be listed on coingecko in order for this to work
       this.xMPHPriceUSD = new BigNumber(await this.helpers.getTokenPriceUSD(this.constants.XMPH));
 
+      xmph.methods.totalSupply().call().then(xMPHTotalSupply => {
+        this.xMPHTotalSupply = new BigNumber(xMPHTotalSupply).div(this.constants.PRECISION);
+      });
+
+
     }
   }
 
@@ -205,6 +212,7 @@ export class RewardsComponent implements OnInit {
     }
 
     if (resetGlobal) {
+      this.xMPHTotalSupply = new BigNumber(0);
       this.totalStakedMPHBalance = new BigNumber(0);
       this.rewardPerMPHPerSecond = new BigNumber(0);
       this.rewardPerWeek = new BigNumber(0);
@@ -291,15 +299,10 @@ export class RewardsComponent implements OnInit {
 
   }
 
-  // @dev clean for v3, don't need all these things passed
   openUnstakeModal() {
     const modalRef = this.modalService.open(ModalUnstakeComponent, { windowClass: 'fullscreen' });
-    modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
-    modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
-    modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
-    modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
-    modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
     modalRef.componentInstance.xMPHBalance = this.xMPHBalance;
+    modalRef.componentInstance.xMPHTotalSupply = this.xMPHTotalSupply;
   }
 
   setStakeAmount(amount: number | string) {
