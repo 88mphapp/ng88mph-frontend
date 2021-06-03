@@ -139,6 +139,10 @@ export class RewardsComponent implements OnInit {
       mph.methods.balanceOf(this.wallet.watchedAddress).call().then(unstakedMPHBalance => {
         this.unstakedMPHBalance = new BigNumber(unstakedMPHBalance).div(this.constants.PRECISION);
       });
+
+      xmph.methods.balanceOf(this.wallet.watchedAddress).call().then(xMPHBalance => {
+        this.xMPHBalance = new BigNumber(xMPHBalance).div(this.constants.PRECISION);
+      });
     }
 
     if (loadGlobal) {
@@ -287,16 +291,6 @@ export class RewardsComponent implements OnInit {
 
   }
 
-  // @dev delete for v3
-  openStakeModal() {
-    const modalRef = this.modalService.open(ModalStakeComponent, { windowClass: 'fullscreen' });
-    modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
-    modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
-    modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
-    modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
-    modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
-  }
-
   // @dev clean for v3, don't need all these things passed
   openUnstakeModal() {
     const modalRef = this.modalService.open(ModalUnstakeComponent, { windowClass: 'fullscreen' });
@@ -313,22 +307,6 @@ export class RewardsComponent implements OnInit {
     if (this.stakeAmount.isNaN()) {
       this.stakeAmount = new BigNumber(0);
     }
-  }
-
-  // @dev delete for v3
-  unstakeAndClaim() {
-    const rewards = this.contract.getNamedContract('Rewards');
-    const func = rewards.methods.exit();
-
-    this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
-  }
-
-  // @dev delete for v3
-  claim() {
-    const rewards = this.contract.getNamedContract('Rewards');
-    const func = rewards.methods.getReward();
-
-    this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
   // @dev update assets/abis/xMPHToken.json to correct ABI for xMPH
@@ -353,10 +331,6 @@ export class RewardsComponent implements OnInit {
     return this.wallet.connected && this.xMPHBalance.gt(0);
   }
 
-  // @dev delete for v3
-  canContinue() {
-    return this.wallet.connected;
-  }
 }
 
 interface QueryResult {
