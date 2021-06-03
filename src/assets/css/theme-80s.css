@@ -14622,7 +14622,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .list-group-activity .list-group-item:not(:last-child)::before {
-  left: 14px;
+  left: 20px;
   border-image-source: linear-gradient(to bottom, #743ad5, #d53a9d 72%)!important;
   border-image-slice: 1;
   border-width: 2px;
@@ -14676,13 +14676,15 @@ input[type=range]:focus::-ms-fill-upper {
   text-shadow: 0 0 3px #ffe0b2, 0 0 10px #ffb74d, 0 0 20px #fb8c00, 0 0 30px #f57c00
 }
 .btn-bg-gradient {
-  background: linear-gradient(90deg,#352db8,#ff5ea7)!important;
-  background-size: 400% 400%;
+  background: #161522;
   border: 2px;
   border-style: outset;
-  border-color: #ff5ea7;
+  border-color: #888;
 }
-
+.border-gradient{
+  background: #161522;
+  border: 1px solid #242526;
+}
 .border-purple {
   border-color: #9575cd!important
 }
