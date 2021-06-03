@@ -72,7 +72,7 @@
               <div class="row">
                 <div class="col-12 mb-3 mb-lg-0">
                   <button type="button" class="btn btn-block btn-lg border-gradient"
-                  (click)="openUntakeModal()" [disabled]="!canUnstake() || wallet.watching">
+                  (click)="openUnstakeModal()" [disabled]="!canUnstake() || wallet.watching">
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
                   </button>
                 </div>
@@ -203,7 +203,7 @@
                 </button>
                 <div class="row">
                   <div class="col-6">
-                    <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUntakeModal()" [disabled]="wallet.watching">
+                    <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUnstakeModal()" [disabled]="wallet.watching">
                       <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
                     </button>
                   </div>

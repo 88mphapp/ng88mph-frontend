@@ -111,6 +111,7 @@ export class RewardsComponent implements OnInit {
 
       mph.methods.balanceOf(this.wallet.userAddress).call().then(unstakedMPHBalance => {
         this.unstakedMPHBalance = new BigNumber(unstakedMPHBalance).div(this.constants.PRECISION);
+        this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
       });
 
       xmph.methods.balanceOf(this.wallet.userAddress).call().then(xMPHBalance => {
@@ -233,6 +234,10 @@ export class RewardsComponent implements OnInit {
       this.totalRewardsUSD = this.totalRewardsUSD.plus(protocolFeesUSD);
     });
 
+    // compute stkAAVE rewards
+    const aavePools = allPools.filter(poolInfo => poolInfo.protocol === 'Aave');
+    const stkaaveToken = this.contract.getERC20(this.constants.STKAAVE, readonlyWeb3);
+
     // compute COMP rewards
     const compoundPools = allPools.filter(poolInfo => poolInfo.protocol === 'Compound');
     const compoundLens = this.contract.getNamedContract('CompoundLens', readonlyWeb3);
@@ -283,13 +288,14 @@ export class RewardsComponent implements OnInit {
   }
 
   // @dev clean for v3, don't need all these things passed
-  openUntakeModal() {
+  openUnstakeModal() {
     const modalRef = this.modalService.open(ModalUnstakeComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
+    modalRef.componentInstance.xMPHBalance = this.xMPHBalance;
   }
 
   setStakeAmount(amount: number | string) {
@@ -334,7 +340,7 @@ export class RewardsComponent implements OnInit {
 
   // @dev needs additional implementation
   canUnstake(): boolean {
-    return this.wallet.connected;
+    return this.wallet.connected && this.xMPHBalance.gt(0);
   }
 
   // @dev delete for v3
