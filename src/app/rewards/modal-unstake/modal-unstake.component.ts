@@ -17,6 +17,7 @@ export class ModalUnstakeComponent implements OnInit {
   @Input() totalStakedMPHBalance: BigNumber;
   @Input() totalRewardPerSecond: BigNumber;
   @Input() rewardPerWeek: BigNumber;
+  @Input() xMPHBalance: BigNumber;
   unstakeAmount: BigNumber;
   newStakedMPHPoolProportion: BigNumber;
   newRewardPerWeek: BigNumber;
@@ -45,7 +46,7 @@ export class ModalUnstakeComponent implements OnInit {
   }
 
   async loadData() {
-    this.setUnstakeAmount(this.stakedMPHBalance.toFixed(18));
+    this.setUnstakeAmount(this.xMPHBalance.toFixed(18));
   }
 
   resetData(): void {
@@ -69,15 +70,19 @@ export class ModalUnstakeComponent implements OnInit {
     }
   }
 
+  // @dev update assets/abis/xMPHToken.json to correct ABI for xMPH
+  // @dev update assets/json/contracts.json to correct address for xMPH
+  // @dev update constants.service.ts to correct address for xMPH
+  // @dev needs testing once xMPH contract has been deployed on mainnet
   unstake() {
-    const rewards = this.contract.getNamedContract('Rewards');
+    const xmph = this.contract.getNamedContract('xMPHToken');
     const unstakeAmount = this.helpers.processWeb3Number(this.unstakeAmount.times(this.constants.PRECISION));
-    const func = rewards.methods.withdraw(unstakeAmount);
+    const func = xmph.methods.withdraw(unstakeAmount);
 
     this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
   }
 
   canContinue() {
-    return this.wallet.connected && this.unstakeAmount.gt(0);
+    return this.wallet.connected && this.xMPHBalance.gte(this.unstakeAmount) && this.unstakeAmount.gt(0);
   }
 }
