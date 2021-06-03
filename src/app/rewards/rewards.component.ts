@@ -21,6 +21,9 @@ export class RewardsComponent implements OnInit {
 
   stakeAmount: BigNumber;
   unstakedMPHBalance: BigNumber;
+  xMPHBalance: BigNumber;
+
+
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
   claimableRewards: BigNumber;
@@ -36,6 +39,7 @@ export class RewardsComponent implements OnInit {
   weeklyROI: BigNumber;
   dailyROI: BigNumber;
   mphPriceUSD: BigNumber;
+  xMPHPriceUSD: BigNumber;
   protocolFeesUSD: BigNumber;
   compRewardsToken: BigNumber;
   compRewardsUSD: BigNumber;
@@ -87,6 +91,7 @@ export class RewardsComponent implements OnInit {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
     const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
+    const xmph = this.contract.getNamedContract('xMPHToken', readonlyWeb3);
 
     if (this.wallet.connected && loadUser && !this.wallet.watching) {
       rewards.methods.balanceOf(this.wallet.userAddress).call().then(async stakeBalance => {
@@ -106,6 +111,10 @@ export class RewardsComponent implements OnInit {
 
       mph.methods.balanceOf(this.wallet.userAddress).call().then(unstakedMPHBalance => {
         this.unstakedMPHBalance = new BigNumber(unstakedMPHBalance).div(this.constants.PRECISION);
+      });
+
+      xmph.methods.balanceOf(this.wallet.userAddress).call().then(xMPHBalance => {
+        this.xMPHBalance = new BigNumber(xMPHBalance).div(this.constants.PRECISION);
       });
     }
 
@@ -152,6 +161,10 @@ export class RewardsComponent implements OnInit {
         this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
         this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
       });
+
+      // @dev xMPH needs to be listed on coingecko in order for this to work
+      this.xMPHPriceUSD = new BigNumber(await this.helpers.getTokenPriceUSD(this.constants.XMPH));
+
     }
   }
 
@@ -170,6 +183,7 @@ export class RewardsComponent implements OnInit {
     if (resetUser) {
       this.stakeAmount = new BigNumber(0);
       this.unstakedMPHBalance = new BigNumber(0);
+      this.xMPHBalance = new BigNumber(0);
       this.stakedMPHBalance = new BigNumber(0);
       this.stakedMPHPoolProportion = new BigNumber(0);
       this.claimableRewards = new BigNumber(0);
@@ -182,6 +196,7 @@ export class RewardsComponent implements OnInit {
       this.totalRewardPerSecond = new BigNumber(0);
       this.totalHistoricalReward = new BigNumber(0);
       this.mphPriceUSD = new BigNumber(0);
+      this.xMPHPriceUSD = new BigNumber(0);
       this.yearlyROI = new BigNumber(0);
       this.monthlyROI = new BigNumber(0);
       this.weeklyROI = new BigNumber(0);
@@ -267,6 +282,7 @@ export class RewardsComponent implements OnInit {
     modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
   }
 
+  // @dev clean for v3, don't need all these things passed
   openUntakeModal() {
     const modalRef = this.modalService.open(ModalUnstakeComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
@@ -299,17 +315,25 @@ export class RewardsComponent implements OnInit {
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
-  // @dev needs implementation
+  // @dev update assets/abis/xMPHToken.json to correct ABI for xMPH
+  // @dev update assets/json/contracts.json to correct address for xMPH
+  // @dev update constants.service.ts to correct address for xMPH
+  // @dev needs testing once xMPH contract has been deployed on mainnet
   stake() {
-    console.log("This is where you implement contract interaction");
+    const mph = this.contract.getNamedContract('MPHToken');
+    const xmph = this.contract.getNamedContract('xMPHToken');
+    const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
+    const func = xmph.methods.deposit(stakeAmount);
+
+    this.wallet.sendTxWithToken(func, mph, xmph.options.address, stakeAmount, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
-  canStake() {
-    return this.wallet.connected && this.stakeAmount <= this.unstakedMPHBalance && this.stakeAmount.gt(0);
+  canStake(): boolean {
+    return this.wallet.connected && this.unstakedMPHBalance.gte(this.stakeAmount) && this.stakeAmount.gt(0);
   }
 
   // @dev needs additional implementation
-  canUnstake() {
+  canUnstake(): boolean {
     return this.wallet.connected;
   }
 
