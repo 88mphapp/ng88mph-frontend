@@ -1,5 +1,63 @@
 <div class="container mt-4">
+  <div class="alert alert-dark alert-dismissible fade show p-4" role="alert">
+    
+    <h6 class="text-uppercase text-muted">
+      Get started (<span class="text-white">1 of 3</span> complete)
+    </h6>
+    <p class="lead"><strong>Let's get you set up.</strong> Follow the steps below to leverage the full potential of 88mph.</p>
+    <div class="row">
+      <div class="col-4">
+        <div class="row">
+          <div class="col-auto">
+            <div class="avatar avatar-xs">
+              <span class="avatar-title rounded-circle bg-success text-dark">1</span>
+            </div>
+          </div>
+          <div class="col">
+            <p><strong>Deposit</strong> a crypto or stablecoin below to start earning fixed-interest rates and MPH rewards.</p>
+            <!-- Button -->
+            <button type="button" class="btn btn-sm btn-dark" (click)="openDepositModal()" [disabled]="wallet.watching">
+              <i class="fe fe-arrow-down mr-2 align-bottom"></i>Deposit
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="row">
+          <div class="col-auto">
+            <div class="avatar avatar-xs">
+              <span class="avatar-title rounded-circle border-gradient bg-light">2</span>
+            </div>
+          </div>
+          <div class="col">
+            <p><strong>Claim</strong> you first MPH rewards linked to each of your deposit.</p>
+          </div>
 
+        </div>
+      </div>
+      
+      <div class="col-4">
+        <div class="row">
+          <div class="col-auto">
+            <div class="avatar avatar-xs">
+              <span class="avatar-title rounded-circle border-gradient bg-light">3</span>
+            </div>
+          </div>
+          <div class="col">
+            <p><strong>Stake</strong> your MPH rewards to get your protocol earnings share.</p>
+            <!-- Button -->
+            <button type="button" class="btn btn-sm btn-dark">
+              <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true"><i class="fe fe-x text-muted"></i></span>
+    </button>
+  </div>
   <div class="row align-items-end">
     <div class="col">
       <h1 class="title-bg-gradient display-2">Earn up to 8% fixed APY on your crypto.
