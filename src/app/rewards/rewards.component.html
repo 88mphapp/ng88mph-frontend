@@ -42,7 +42,7 @@
                         Staked balance
                       </td>
                       <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">{{stakedMPHBalance.toFormat(4)}} xMPH</h4>
+                        <h4 class="mb-0 glowing">{{xMPHBalance.toFormat(4)}} xMPH</h4>
                       </td>
                     </tr>
                     <tr>
@@ -50,7 +50,7 @@
                         Staked balance value
                       </td>
                       <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">${{stakedMPHBalance.times(mphPriceUSD).toFormat(4)}}</h4>
+                        <h4 class="mb-0 glowing">${{xMPHBalance.times(xMPHPriceUSD).toFormat(4)}}</h4>
                       </td>
                     </tr>
                     <tr>
@@ -66,13 +66,13 @@
                 </table>
               </div>
               <button type="button" class="btn btn-lg btn-block btn-bg-gradient mb-3"
-              (click)="openStakeModal()" [disabled]="!canStake() || wallet.watching">
+              (click)="stake()" [disabled]="!canStake() || wallet.watching">
                 <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake MPH
               </button>
               <div class="row">
                 <div class="col-12 mb-3 mb-lg-0">
                   <button type="button" class="btn btn-block btn-lg border-gradient"
-                  (click)="openUntakeModal()" [disabled]="!canUnstake() || wallet.watching">
+                  (click)="openUnstakeModal()" [disabled]="!canUnstake() || wallet.watching">
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
                   </button>
                 </div>
@@ -137,7 +137,7 @@
                         Total
                       </td>
                       <td class="px-0 py-2 text-white text-right border-0 small">
-                        <h4 class="mb-1 glowing">$0.00</h4>
+                        <h4 class="mb-1 glowing">${{totalRewardsUSD.toFormat(4)}}</h4>
                       </td>
                     </tr>
                   </tbody>
@@ -203,7 +203,7 @@
                 </button>
                 <div class="row">
                   <div class="col-6">
-                    <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUntakeModal()" [disabled]="wallet.watching">
+                    <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUnstakeModal()" [disabled]="wallet.watching">
                       <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
                     </button>
                   </div>
