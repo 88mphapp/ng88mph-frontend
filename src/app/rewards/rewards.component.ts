@@ -34,6 +34,7 @@ export class RewardsComponent implements OnInit {
   totalHistoricalReward: BigNumber;
   rewardStartTime: string;
   rewardEndTime: string;
+  distributionEndTime: string;
   yearlyROI: BigNumber;
   monthlyROI: BigNumber;
   weeklyROI: BigNumber;
@@ -149,6 +150,15 @@ export class RewardsComponent implements OnInit {
         this.rewardStartTime = new Date((+endTime - this.PERIOD * 24 * 60 * 60) * 1e3).toLocaleString();
         this.rewardEndTime = new Date(+endTime * 1e3).toLocaleString();
       });
+
+      // @dev placeholder - delete once xMPH contract has been deployed on mainnet
+      this.distributionEndTime = new Date(1625346438 * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'});
+      // @dev end placeholder
+
+      // @dev uncomment once xMPH contract has been deployed on mainnet
+      // xmph.methods.currentUnlockEndTimestamp().call().then(distributionEndTime => {
+      //   this.distributionEndTime = new Date(distributionEndTime * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'});
+      // });
 
       rewards.methods.totalSupply().call().then(async totalSupply => {
         this.totalStakedMPHBalance = new BigNumber(totalSupply).div(this.constants.PRECISION);
