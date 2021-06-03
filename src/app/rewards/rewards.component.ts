@@ -21,6 +21,9 @@ export class RewardsComponent implements OnInit {
 
   stakeAmount: BigNumber;
   unstakedMPHBalance: BigNumber;
+  xMPHBalance: BigNumber;
+
+
   stakedMPHBalance: BigNumber;
   stakedMPHPoolProportion: BigNumber;
   claimableRewards: BigNumber;
@@ -36,11 +39,15 @@ export class RewardsComponent implements OnInit {
   weeklyROI: BigNumber;
   dailyROI: BigNumber;
   mphPriceUSD: BigNumber;
+  xMPHPriceUSD: BigNumber;
   protocolFeesUSD: BigNumber;
   compRewardsToken: BigNumber;
   compRewardsUSD: BigNumber;
   farmRewardsToken: BigNumber;
   farmRewardsUSD: BigNumber;
+  stkaaveRewardsToken: BigNumber;
+  stkaaveRewardsUSD: BigNumber;
+  totalRewardsUSD: BigNumber;
 
   constructor(
     private apollo: Apollo,
@@ -84,6 +91,7 @@ export class RewardsComponent implements OnInit {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
     const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
+    const xmph = this.contract.getNamedContract('xMPHToken', readonlyWeb3);
 
     if (this.wallet.connected && loadUser && !this.wallet.watching) {
       rewards.methods.balanceOf(this.wallet.userAddress).call().then(async stakeBalance => {
@@ -103,6 +111,11 @@ export class RewardsComponent implements OnInit {
 
       mph.methods.balanceOf(this.wallet.userAddress).call().then(unstakedMPHBalance => {
         this.unstakedMPHBalance = new BigNumber(unstakedMPHBalance).div(this.constants.PRECISION);
+        this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
+      });
+
+      xmph.methods.balanceOf(this.wallet.userAddress).call().then(xMPHBalance => {
+        this.xMPHBalance = new BigNumber(xMPHBalance).div(this.constants.PRECISION);
       });
     }
 
@@ -149,6 +162,10 @@ export class RewardsComponent implements OnInit {
         this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
         this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
       });
+
+      // @dev xMPH needs to be listed on coingecko in order for this to work
+      this.xMPHPriceUSD = new BigNumber(await this.helpers.getTokenPriceUSD(this.constants.XMPH));
+
     }
   }
 
@@ -167,6 +184,7 @@ export class RewardsComponent implements OnInit {
     if (resetUser) {
       this.stakeAmount = new BigNumber(0);
       this.unstakedMPHBalance = new BigNumber(0);
+      this.xMPHBalance = new BigNumber(0);
       this.stakedMPHBalance = new BigNumber(0);
       this.stakedMPHPoolProportion = new BigNumber(0);
       this.claimableRewards = new BigNumber(0);
@@ -179,6 +197,7 @@ export class RewardsComponent implements OnInit {
       this.totalRewardPerSecond = new BigNumber(0);
       this.totalHistoricalReward = new BigNumber(0);
       this.mphPriceUSD = new BigNumber(0);
+      this.xMPHPriceUSD = new BigNumber(0);
       this.yearlyROI = new BigNumber(0);
       this.monthlyROI = new BigNumber(0);
       this.weeklyROI = new BigNumber(0);
@@ -188,6 +207,9 @@ export class RewardsComponent implements OnInit {
       this.compRewardsUSD = new BigNumber(0);
       this.farmRewardsToken = new BigNumber(0);
       this.farmRewardsUSD = new BigNumber(0);
+      this.stkaaveRewardsToken = new BigNumber(0);
+      this.stkaaveRewardsUSD = new BigNumber(0);
+      this.totalRewardsUSD = new BigNumber(0);
     }
   }
 
@@ -209,7 +231,12 @@ export class RewardsComponent implements OnInit {
       protocolFeesUSD = protocolFeesUSD.plus(poolFeesToken.times(stablecoinPrice));
     })).then(() => {
       this.protocolFeesUSD = protocolFeesUSD;
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(protocolFeesUSD);
     });
+
+    // compute stkAAVE rewards
+    const aavePools = allPools.filter(poolInfo => poolInfo.protocol === 'Aave');
+    const stkaaveToken = this.contract.getERC20(this.constants.STKAAVE, readonlyWeb3);
 
     // compute COMP rewards
     const compoundPools = allPools.filter(poolInfo => poolInfo.protocol === 'Compound');
@@ -227,6 +254,7 @@ export class RewardsComponent implements OnInit {
       this.compRewardsToken = compRewardsToken;
       const compPriceUSD = await this.helpers.getTokenPriceUSD(this.constants.COMP);
       this.compRewardsUSD = compRewardsToken.times(compPriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(compRewardsToken.times(compPriceUSD));
     });
 
     // compute FARM rewards
@@ -244,9 +272,12 @@ export class RewardsComponent implements OnInit {
       this.farmRewardsToken = farmRewardsToken;
       const farmPriceUSD = await this.helpers.getTokenPriceUSD(this.constants.FARM);
       this.farmRewardsUSD = farmRewardsToken.times(farmPriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(farmRewardsToken.times(farmPriceUSD));
     });
+
   }
 
+  // @dev delete for v3
   openStakeModal() {
     const modalRef = this.modalService.open(ModalStakeComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
@@ -256,13 +287,15 @@ export class RewardsComponent implements OnInit {
     modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
   }
 
-  openUntakeModal() {
+  // @dev clean for v3, don't need all these things passed
+  openUnstakeModal() {
     const modalRef = this.modalService.open(ModalUnstakeComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.stakedMPHPoolProportion = this.stakedMPHPoolProportion;
     modalRef.componentInstance.stakedMPHBalance = this.stakedMPHBalance;
     modalRef.componentInstance.totalStakedMPHBalance = this.totalStakedMPHBalance;
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerWeek = this.rewardPerWeek;
+    modalRef.componentInstance.xMPHBalance = this.xMPHBalance;
   }
 
   setStakeAmount(amount: number | string) {
@@ -272,6 +305,7 @@ export class RewardsComponent implements OnInit {
     }
   }
 
+  // @dev delete for v3
   unstakeAndClaim() {
     const rewards = this.contract.getNamedContract('Rewards');
     const func = rewards.methods.exit();
@@ -279,6 +313,7 @@ export class RewardsComponent implements OnInit {
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
+  // @dev delete for v3
   claim() {
     const rewards = this.contract.getNamedContract('Rewards');
     const func = rewards.methods.getReward();
@@ -286,14 +321,29 @@ export class RewardsComponent implements OnInit {
     this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
-  canStake() {
-    return this.wallet.connected && this.stakeAmount <= this.unstakedMPHBalance && this.stakeAmount.gt(0);
+  // @dev update assets/abis/xMPHToken.json to correct ABI for xMPH
+  // @dev update assets/json/contracts.json to correct address for xMPH
+  // @dev update constants.service.ts to correct address for xMPH
+  // @dev needs testing once xMPH contract has been deployed on mainnet
+  stake() {
+    const mph = this.contract.getNamedContract('MPHToken');
+    const xmph = this.contract.getNamedContract('xMPHToken');
+    const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
+    const func = xmph.methods.deposit(stakeAmount);
+
+    this.wallet.sendTxWithToken(func, mph, xmph.options.address, stakeAmount, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
   }
 
-  canUnstake() {
-    return this.wallet.connected;
+  canStake(): boolean {
+    return this.wallet.connected && this.unstakedMPHBalance.gte(this.stakeAmount) && this.stakeAmount.gt(0);
   }
 
+  // @dev needs additional implementation
+  canUnstake(): boolean {
+    return this.wallet.connected && this.xMPHBalance.gt(0);
+  }
+
+  // @dev delete for v3
   canContinue() {
     return this.wallet.connected;
   }
