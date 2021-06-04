@@ -23,6 +23,7 @@ export class RewardsComponent implements OnInit {
   mphPriceUSD: BigNumber;
   xMPHPriceUSD: BigNumber;
   xMPHTotalSupply: BigNumber;
+  pricePerFullShare: BigNumber;
   yearlyROI: BigNumber;
 
   distributionEndTime: string;
@@ -85,22 +86,26 @@ export class RewardsComponent implements OnInit {
       // load reward accumulation stats
       this.loadRewardAccumulationStats();
 
-      // load MPH and xMPH price data
+      // load MPH and xMPH data
+      // @dev will throw an error until xMPH abi and address have been updated
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
-      this.xMPHPriceUSD = new BigNumber(await this.helpers.getTokenPriceUSD(this.constants.XMPH));
+      xmph.methods.getPricePerFullShare().call().then(pricePerFullShare => {
+        this.pricePerFullShare = new BigNumber(pricePerFullShare).div(this.constants.PRECISION);
+      });
+      this.xMPHPriceUSD = this.pricePerFullShare.times(this.mphPriceUSD);
 
       xmph.methods.totalSupply().call().then(xMPHTotalSupply => {
         this.xMPHTotalSupply = new BigNumber(xMPHTotalSupply).div(this.constants.PRECISION);
       });
 
       // load distribution end date
-      // @dev will throw an error until xMPH abi and addresses have been updated
+      // @dev will throw an error until xMPH abi and address have been updated
       xmph.methods.currentUnlockEndTimestamp().call().then(distributionEndTime => {
         this.distributionEndTime = new Date(distributionEndTime * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'});
       });
 
       // load xMPH rewards data
-      // @dev will throw an error until xMPH abi and addresses have been updated
+      // @dev will throw an error until xMPH abi and address have been updated
       const rewardsEndDate = new BigNumber(await xmph.methods.currentUnlockEndTimestamp().call());
       const rewardsStartDate = new BigNumber(await xmph.methods.lastRewardTimestamp().call());
       const rewardsAmount = new BigNumber(await xmph.methods.lastRewardAmount().call()).div(this.constants.PRECISION);
@@ -123,6 +128,7 @@ export class RewardsComponent implements OnInit {
 
     if (resetGlobal) {
       this.xMPHTotalSupply = new BigNumber(0);
+      this.pricePerFullShare = new BigNumber(0);
       this.mphPriceUSD = new BigNumber(0);
       this.xMPHPriceUSD = new BigNumber(0);
       this.yearlyROI = new BigNumber(0);
@@ -230,6 +236,7 @@ export class RewardsComponent implements OnInit {
     const modalRef = this.modalService.open(ModalUnstakeComponent, { windowClass: 'fullscreen' });
     modalRef.componentInstance.xMPHBalance = this.xMPHBalance;
     modalRef.componentInstance.xMPHTotalSupply = this.xMPHTotalSupply;
+    modalRef.componentInstance.pricePerFullShare = this.pricePerFullShare;
   }
 
   setStakeAmount(amount: number | string) {
