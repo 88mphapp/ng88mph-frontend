@@ -14,9 +14,9 @@ import { WalletService } from 'src/app/wallet.service';
 export class ModalUnstakeComponent implements OnInit {
   @Input() xMPHBalance: BigNumber;
   @Input() xMPHTotalSupply: BigNumber;
+  @Input() pricePerFullShare: BigNumber;
 
   unstakeAmount: BigNumber;
-  pricePerFullShare: BigNumber;
   poolProportion: BigNumber;
   newPoolProportion: BigNumber;
 
@@ -49,7 +49,6 @@ export class ModalUnstakeComponent implements OnInit {
 
   resetData(): void {
     this.unstakeAmount = new BigNumber(0);
-    this.pricePerFullShare = new BigNumber(0);
     this.poolProportion = new BigNumber(0);
     this.newPoolProportion = new BigNumber(0);
   }
@@ -62,11 +61,6 @@ export class ModalUnstakeComponent implements OnInit {
     if (this.unstakeAmount.isNaN()) {
       this.unstakeAmount = new BigNumber(0);
     }
-
-    // @dev uncomment when xMPH contract has been deployed
-    // xmph.methods.getPricePerFullShare().call().then(pricePerFullShare => {
-    //   this.pricePerFullShare = new BigNumber(pricePerFullShare).div(this.constants.PRECISION);
-    // });
 
     this.poolProportion = this.xMPHBalance.div(this.xMPHTotalSupply).times(100);
     this.newPoolProportion = this.xMPHBalance.minus(this.unstakeAmount).div(this.xMPHTotalSupply.minus(this.unstakeAmount)).times(100);
