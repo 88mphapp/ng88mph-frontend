@@ -11,7 +11,6 @@ import { DepositComponent } from './deposit/deposit.component';
 import { ModalDepositComponent } from './deposit/modal-deposit/modal-deposit.component';
 import { ModalWithdrawComponent } from './deposit/modal-withdraw/modal-withdraw.component';
 import { RewardsComponent } from './rewards/rewards.component';
-import { ModalStakeComponent } from './rewards/modal-stake/modal-stake.component';
 import { BondsComponent } from './bonds/bonds.component';
 import { ModalBondDetailsComponent } from './bonds/modal-bond-details/modal-bond-details.component';
 import { StatsComponent } from './stats/stats.component';
@@ -42,7 +41,6 @@ import { ModalUnstakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupo
     ModalDepositComponent,
     ModalWithdrawComponent,
     RewardsComponent,
-    ModalStakeComponent,
     BondsComponent,
     ModalBondDetailsComponent,
     StatsComponent,

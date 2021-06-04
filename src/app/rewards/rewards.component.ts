@@ -3,7 +3,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
 import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
-import { ModalStakeComponent } from './modal-stake/modal-stake.component';
 import { ConstantsService } from '../constants.service';
 import { HelpersService } from '../helpers.service';
 import { ModalUnstakeComponent } from './modal-unstake/modal-unstake.component';
