@@ -235,7 +235,7 @@ export class RewardsComponent implements OnInit {
     }
   }
 
-  loadRewardAccumulationStats() {
+  async loadRewardAccumulationStats() {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
     // compute protocol fees
@@ -257,8 +257,33 @@ export class RewardsComponent implements OnInit {
     });
 
     // compute stkAAVE rewards
+    // @dev confirm poolInfo.address is correct vs poolInfo.moneyMarket once v3 is live
+    // @notice 1 AAVE = 1 stkAAVE, so price will be the same
     const aavePools = allPools.filter(poolInfo => poolInfo.protocol === 'Aave');
+    const aaveDataProvider = this.contract.getNamedContract('AaveProtocolDataProvider', readonlyWeb3);
+    const stkaaveController = this.contract.getNamedContract('StakedAaveController', readonlyWeb3);
     const stkaaveToken = this.contract.getERC20(this.constants.STKAAVE, readonlyWeb3);
+
+    let aTokens: Array<string> = [];
+    const aTokenData = await aaveDataProvider.methods.getAllATokens().call();
+    for (let token in aTokenData) {
+      aTokens.push(aTokenData[token].tokenAddress);
+    }
+
+    let stkaaveRewardsToken = new BigNumber(0);
+    Promise.all(aavePools.map(async poolInfo => {
+      const rewardUnclaimed = new BigNumber(await stkaaveController.methods.getRewardsBalance(aTokens, poolInfo.address).call()).div(this.constants.PRECISION);
+      const rewardClaimed = new BigNumber(await stkaaveToken.methods.balanceOf(poolInfo.address).call()).div(this.constants.PRECISION);
+      stkaaveRewardsToken = stkaaveRewardsToken.plus(rewardUnclaimed).plus(rewardClaimed);
+    })).then(async () => {
+      const rewardInDumper = new BigNumber(await stkaaveToken.methods.balanceOf(this.constants.DUMPER).call()).div(this.constants.PRECISION);
+      stkaaveRewardsToken = stkaaveRewardsToken.plus(rewardInDumper);
+
+      this.stkaaveRewardsToken = stkaaveRewardsToken;
+      const stkaavePriceUSD = await this.helpers.getTokenPriceUSD(this.constants.AAVE); // 1 aave = 1 stkaave
+      this.stkaaveRewardsUSD = stkaaveRewardsToken.times(stkaavePriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(stkaaveRewardsToken.times(stkaavePriceUSD));
+    });
 
     // compute COMP rewards
     const compoundPools = allPools.filter(poolInfo => poolInfo.protocol === 'Compound');
@@ -329,7 +354,6 @@ export class RewardsComponent implements OnInit {
     return this.wallet.connected && this.unstakedMPHBalance.gte(this.stakeAmount) && this.stakeAmount.gt(0);
   }
 
-  // @dev needs additional implementation
   canUnstake(): boolean {
     return this.wallet.connected && this.xMPHBalance.gt(0);
   }

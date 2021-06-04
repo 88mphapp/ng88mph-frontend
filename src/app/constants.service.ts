@@ -35,6 +35,7 @@ export class ConstantsService {
   XMPH = "0x8888801af4d980682e47f1a9036e589479e835c5"; // @dev update after contract is deployed
   COMP = '0xc00e94cb662c3520282e6f5717214004a7f26888';
   FARM = '0xa0246c9032bC3A600820415aE600c6388619A14D';
+  AAVE = '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9';
   STKAAVE = '0x4da27a545c0c5b758a6ba100e3a049001de870f5';
   SUSHI = '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2';
   BNT = '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c';
