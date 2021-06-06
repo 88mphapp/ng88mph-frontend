@@ -187,7 +187,7 @@
                   </td>
                 </tr>
 
-              <!-- Deposit rows -->
+                <!-- Deposit rows -->
                 <ng-container *ngFor="let userPool of userPools">
                   <ng-container *ngIf="userPool.poolInfo.name===pool.name">
                     <ng-container *ngFor="let deposit of userPool.deposits">
@@ -234,8 +234,55 @@
                     </ng-container>
                   </ng-container>
                 </ng-container>
+                <!-- ZCB rows -->
+                <ng-container *ngFor="let userZCBPool of userZCBPools">
+                  <ng-container *ngIf="userZCBPool.poolName===pool.name">
+                    <tr class="multi-collapse collapse show" id={{userZCBPool.poolName}}>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div>
+                            <h6 class="text-muted text-uppercase mb-1">Preset maturity</h6>
+                            <!-- badge -->
+                            <span class="badge mb-1 badge-soft-danger">
+                                Locked
+                            </span>
+                            <!-- Text -->
+                            <small class="text-muted d-block">month dd yyyy</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <h4 class="mb-1 font-weight-bold glowing">$0.00</h4>
+                        <div class="text-muted d-block">0.00 TKN</div>
+                      </td>
+                      <td>
+                        <h4 class="mb-1 font-weight-bold glowing">0.00% APY <span class="badge badge-dark border border-light py-0 pl-0 ml-2 mt-n1" style="
+                          border-radius: 14px;" placement="top"
+                          ngbTooltip="Deposits with preset maturity can be used to provide liquidity on our trading pools, and earn trading fees and liquidity mining rewards ($MPH).">
+                            <div class="avatar avatar-xs">
+                              <img src="./assets/img/token-icons/mph-logo-24.svg" width="16" alt="..." class="avatar-img rounded-circle">
+                            </div>
+                            +0.00% APR
+                          </span></h4>
+                        <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH) <a class="text-primary" href="">Claim</a></span>
+                      </td>
+                      <td class="text-right">
+                        <button type="button" class="btn btn-sm btn-dark mr-3">
+                          <i class="fe fe-arrow-down mr-2 align-bottom"></i>Top up
+                        </button>
+                        <button type="button" class="btn btn-sm btn-dark mr-3">
+                          <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
+                        </button>
+                        <button type="button" class="btn btn-sm btn-dark">
+                          <i class="fe fe-arrow-up mr-2 align-bottom"></i>
+                            Sell
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
               </ng-container>
-              
+
               <!-- ZCB rows -->
               <tr class="multi-collapse collapse show" id="multiCollapseaDAI">
                 <td>
