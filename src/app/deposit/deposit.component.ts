@@ -7,8 +7,8 @@ import gql from 'graphql-tag';
 import { ModalDepositComponent } from './modal-deposit/modal-deposit.component';
 import { ModalWithdrawComponent } from './modal-withdraw/modal-withdraw.component';
 import { WalletService } from '../wallet.service';
-import { ContractService, PoolInfo } from '../contract.service';
-import { DPool, UserPool, UserDeposit } from './types';
+import { ContractService, PoolInfo, ZeroCouponBondInfo } from '../contract.service';
+import { DPool, UserPool, UserDeposit, UserZCBPool } from './types';
 import { HelpersService } from '../helpers.service';
 import { Timer } from '../timer';
 import { ConstantsService } from '../constants.service';
@@ -67,7 +67,9 @@ export class DepositComponent implements OnInit {
   totalInterestUSD: BigNumber;
   totalMPHEarned: BigNumber;
   allPoolList: DPool[];
+  allZCBPoolList: ZeroCouponBondInfo[];
   userPools: UserPool[];
+  userZCBPools: UserZCBPool[];
   mphPriceUSD: BigNumber;
 
   constructor(
@@ -93,9 +95,8 @@ export class DepositComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    await this.helpers.getMPHPriceUSD().then((price) => {
-      this.mphPriceUSD = price;
-    });
+
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
 
     let userID;
     if (this.wallet.connected && !this.wallet.watching) {
@@ -105,6 +106,30 @@ export class DepositComponent implements OnInit {
     } else {
       userID = '';
     }
+
+    // load Zero Coupon Bond data
+    const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
+    const zcbPoolList = zcbPoolNameList.map(poolName => this.contract.getZeroCouponBondPool(poolName));
+    this.allZCBPoolList = zcbPoolList.concat.apply([],zcbPoolList);
+    for (let pool in this.allZCBPoolList) {
+      const zcbPool = this.allZCBPoolList[pool];
+      const zcbContract = this.contract.getZeroCouponBondContract(zcbPool.address ,readonlyWeb3);
+      const userBalance = await zcbContract.methods.balanceOf(userID).call();
+      if(userBalance > 0) {
+        const poolInfo = this.contract.getPoolInfoFromAddress(await zcbContract.methods.pool().call());
+        let userZCB: UserZCBPool = {
+          zcbPoolInfo: zcbPool,
+          poolName: poolInfo.name,
+          poolAddress: poolInfo.address,
+          amountToken: userBalance
+        }
+        this.userZCBPools.push(userZCB);
+      }
+    }
+
+    await this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
 
     const queryString = gql`
       {
@@ -285,6 +310,7 @@ export class DepositComponent implements OnInit {
       this.totalInterestUSD = new BigNumber(0);
       this.totalMPHEarned = new BigNumber(0);
       this.userPools = [];
+      this.userZCBPools = [];
     }
 
     if (resetGlobal) {
@@ -306,6 +332,7 @@ export class DepositComponent implements OnInit {
         allPoolList.push(dpoolObj);
       }
       this.allPoolList = allPoolList;
+      this.allZCBPoolList = [];
       this.mphPriceUSD = new BigNumber(0);
     }
   }

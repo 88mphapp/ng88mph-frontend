@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { PoolInfo } from '../contract.service';
+import { PoolInfo, ZeroCouponBondInfo } from '../contract.service';
 import { Timer } from '../timer';
 
 export interface DPool {
@@ -34,4 +34,11 @@ export interface UserDeposit {
   realMPHReward: BigNumber;
   mphAPY: BigNumber;
   tempMPHAPY: BigNumber;
+}
+
+export interface UserZCBPool {
+  zcbPoolInfo: ZeroCouponBondInfo;
+  poolName: string;
+  poolAddress: string;
+  amountToken: BigNumber;
 }
