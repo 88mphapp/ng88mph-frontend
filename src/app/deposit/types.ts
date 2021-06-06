@@ -41,4 +41,5 @@ export interface UserZCBPool {
   poolName: string;
   poolAddress: string;
   amountToken: BigNumber;
+  maturation: string;
 }

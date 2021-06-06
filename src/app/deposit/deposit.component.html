@@ -202,7 +202,9 @@
                               </span>
 
                               <!-- Text -->
-                              <small class="text-muted d-block">d h m s</small>
+                              <small class="text-muted d-block">{{deposit.countdownTimer.days}}d
+                                {{deposit.countdownTimer.hours}}h {{deposit.countdownTimer.minutes}}m
+                                {{deposit.countdownTimer.seconds}}s</small>
                             </div>
                           </div>
                         </td>
@@ -234,6 +236,7 @@
                     </ng-container>
                   </ng-container>
                 </ng-container>
+
                 <!-- ZCB rows -->
                 <ng-container *ngFor="let userZCBPool of userZCBPools">
                   <ng-container *ngIf="userZCBPool.poolName===pool.name">
@@ -247,7 +250,7 @@
                                 Locked
                             </span>
                             <!-- Text -->
-                            <small class="text-muted d-block">month dd yyyy</small>
+                            <small class="text-muted d-block">{{userZCBPool.maturation}}</small>
                           </div>
                         </div>
                       </td>

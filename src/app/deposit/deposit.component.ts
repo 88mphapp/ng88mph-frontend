@@ -107,7 +107,7 @@ export class DepositComponent implements OnInit {
       userID = '';
     }
 
-    // load Zero Coupon Bond data
+    // load Zero Coupon Bond / Preset Maturity data
     const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
     const zcbPoolList = zcbPoolNameList.map(poolName => this.contract.getZeroCouponBondPool(poolName));
     this.allZCBPoolList = zcbPoolList.concat.apply([],zcbPoolList);
@@ -117,11 +117,14 @@ export class DepositComponent implements OnInit {
       const userBalance = await zcbContract.methods.balanceOf(userID).call();
       if(userBalance > 0) {
         const poolInfo = this.contract.getPoolInfoFromAddress(await zcbContract.methods.pool().call());
+        const maturationTimestamp = await zcbContract.methods.maturationTimestamp().call();
+        const maturationDate = new Date(maturationTimestamp * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
         let userZCB: UserZCBPool = {
           zcbPoolInfo: zcbPool,
           poolName: poolInfo.name,
           poolAddress: poolInfo.address,
-          amountToken: userBalance
+          amountToken: userBalance,
+          maturation: maturationDate
         }
         this.userZCBPools.push(userZCB);
       }
