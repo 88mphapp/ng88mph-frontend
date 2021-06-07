@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
-import { ContractService, PoolInfo } from '../../contract.service';
+import { ContractService, PoolInfo, ZeroCouponBondInfo } from '../../contract.service';
 
 @Component({
   selector: 'app-modal-deposit',
@@ -25,6 +25,7 @@ export class ModalDepositComponent implements OnInit {
   depositAmount: BigNumber;
   depositAmountUSD: BigNumber;
   depositTimeInDays: BigNumber;
+  depositMaturation: string;
   interestAmountToken: BigNumber;
   interestAmountUSD: BigNumber;
   apy: BigNumber;
@@ -42,6 +43,9 @@ export class ModalDepositComponent implements OnInit {
   shouldDisplayZap: boolean;
   selectedDepositToken: string;
   zapDepositTokens: string[];
+
+  presetMaturity: ZeroCouponBondInfo;
+  selectedZCBPools: ZeroCouponBondInfo[];
 
   constructor(
     private apollo: Apollo,
@@ -77,6 +81,7 @@ export class ModalDepositComponent implements OnInit {
     this.poolList = [];
     this.depositTokenBalance = new BigNumber(0);
     this.depositTimeInDays = new BigNumber(365);
+    this.depositMaturation = new Date(Date.now() + this.depositTimeInDays.times(this.constants.DAY_IN_SEC).times(1e3).toNumber()).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
     this.depositAmount = new BigNumber(0);
     this.depositAmountUSD = new BigNumber(0);
     this.interestAmountToken = new BigNumber(0);
@@ -96,10 +101,14 @@ export class ModalDepositComponent implements OnInit {
     this.shouldDisplayZap = false;
     this.selectedDepositToken = '';
     this.zapDepositTokens = [];
+
+    this.presetMaturity = null;
+    this.selectedZCBPools = [];
   }
 
   async selectPool(poolName: string) {
     this.selectedPoolInfo = this.contract.getPoolInfo(poolName);
+    this.selectedZCBPools = this.contract.getZeroCouponBondPool(poolName);
     this.shouldDisplayZap = !!this.selectedPoolInfo.zapDepositTokens;
     this.selectedDepositToken = this.selectedPoolInfo.stablecoinSymbol;
     this.zapDepositTokens = [this.selectedPoolInfo.stablecoinSymbol].concat(this.selectedPoolInfo.zapDepositTokens);
@@ -129,10 +138,17 @@ export class ModalDepositComponent implements OnInit {
       this.mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
     });
 
+    let userAddress: string;
+    if (this.wallet.connected && !this.wallet.watching) {
+      userAddress = this.wallet.userAddress.toLowerCase();
+    } else if (this.wallet.connected && this.wallet.watching) {
+      userAddress = this.wallet.watchedAddress.toLowerCase();
+    }
+
     if (this.wallet.connected) {
       const stablecoin = this.contract.getPoolStablecoin(poolName);
       const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
-      this.depositTokenBalance = new BigNumber(await stablecoin.methods.balanceOf(this.wallet.userAddress).call()).div(stablecoinPrecision);
+      this.depositTokenBalance = new BigNumber(await stablecoin.methods.balanceOf(userAddress).call()).div(stablecoinPrecision);
     }
 
     this.updateAPY();
@@ -172,8 +188,20 @@ export class ModalDepositComponent implements OnInit {
   }
 
   setDepositTime(timeInDays: number | string): void {
+    this.presetMaturity = null;
     this.depositTimeInDays = new BigNumber(+timeInDays);
+    this.depositMaturation = new Date(Date.now() + this.depositTimeInDays.times(this.constants.DAY_IN_SEC).times(1e3).toNumber()).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
     this.updateAPY();
+  }
+
+  async setPresetMaturity() {
+    if (this.presetMaturity) {
+      const zcb = this.contract.getZeroCouponBondContract(this.presetMaturity.address);
+      const maturationTimestamp = new BigNumber(await zcb.methods.maturationTimestamp().call());
+      this.depositTimeInDays = new BigNumber(maturationTimestamp.minus(new BigNumber(Date.now()).div(1e3)).div(this.constants.DAY_IN_SEC).dp(0));
+      this.depositMaturation = new Date(Date.now() + this.depositTimeInDays.times(this.constants.DAY_IN_SEC).times(1e3).toNumber()).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+      this.updateAPY();
+    }
   }
 
   async updateAPY() {
@@ -358,7 +386,7 @@ export class ModalDepositComponent implements OnInit {
         minOutputTokenAmount,
         maturationTimestamp
       );
-  
+
       this.wallet.sendTxWithToken(func, token, this.contract.getNamedContractAddress('ZapCurve'), depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });*/
     }
   }
