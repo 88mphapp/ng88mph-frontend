@@ -147,10 +147,6 @@
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           Fixed-interest rate
-                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
-                            ngbTooltip="Fixed APY according to lending duration">
-                            <i class="fe fe-info"></i>
-                          </button>
                         </td>
                         <td class="px-0 py-2 text-white text-right border-0 small">
                           <h4 class="mb-1 glowing">{{apy.toFormat(4)}}%</h4>
@@ -159,10 +155,6 @@
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           Interest earned
-                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
-                            ngbTooltip="Fixed-rate interest you'll receive when lending period is over.">
-                            <i class="fe fe-info"></i>
-                          </button>
                         </td>
                         <td class="px-0 py-2 text-white text-right border-0 small">
                           <h4 class="mb-1 glowing">${{helpers.applyDepositFee(interestAmountUSD, selectedPoolInfo).toFormat(4)}}</h4>
@@ -175,10 +167,6 @@
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           Total Earned at Maturity | month dd yyyy
-                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
-                            ngbTooltip="The amount that will be deposited to earn fixed-rate interest.">
-                            <i class="fe fe-info"></i>
-                          </button>
                         </td>
                         <td class="px-0 py-2 text-white text-right border-0 small">
                           <h4 class="mb-1 glowing">${{helpers.applyDepositFee(depositAmountUSD,
@@ -195,10 +183,6 @@
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           MPH rewards (Vested over {{selectedPoolInfo.vestPeriod}})
-                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
-                            ngbTooltip="Depositors get rewarded with MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens on external protocols, etc)">
-                            <i class="fe fe-info"></i>
-                          </button>
                         </td>
                         <td class="px-0 py-2 text-white text-right border-0 small">
                           <h4 class="mb-1 glowing">${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}</h4>
@@ -211,10 +195,6 @@
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           MPH APR (earned by <a href="">providing liquidity</a>)
-                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
-                            ngbTooltip="Annualized MPH reward rate">
-                            <i class="fe fe-info"></i>
-                          </button>
                         </td>
                         <td class="px-0 py-2 text-white text-right border-0 small">
                           <h4 class="mb-1 glowing">+{{mphAPY.toFormat(4)}}%</h4>
@@ -223,10 +203,6 @@
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           MPH APR
-                          <button type="button" class="btn btn-sm btn-link p-0 text-white ml-2" placement="top"
-                            ngbTooltip="Annualized MPH reward rate">
-                            <i class="fe fe-info"></i>
-                          </button>
                         </td>
                         <td class="px-0 py-2 text-white text-right border-0 small">
                           <h4 class="mb-1 glowing">+{{mphAPY.toFormat(4)}}%</h4>
