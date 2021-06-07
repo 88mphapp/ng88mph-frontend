@@ -34,7 +34,6 @@ export class HeaderComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log(this.wallet.connected);
     this.loadData(this.wallet.connected, true);
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
