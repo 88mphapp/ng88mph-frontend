@@ -293,6 +293,7 @@ export class DepositComponent implements OnInit {
           userPools.push(userPool);
         })).then(() => {
           this.userPools = userPools;
+          console.log(this.userPools);
         });
 
         // compute total deposit & interest in USD
