@@ -187,7 +187,7 @@
                   </td>
                 </tr>
 
-              <!-- Deposit rows -->
+                <!-- Deposit rows -->
                 <ng-container *ngFor="let userPool of userPools">
                   <ng-container *ngIf="userPool.poolInfo.name===pool.name">
                     <ng-container *ngFor="let deposit of userPool.deposits">
@@ -202,7 +202,9 @@
                               </span>
 
                               <!-- Text -->
-                              <small class="text-muted d-block">d h m s</small>
+                              <small class="text-muted d-block">{{deposit.countdownTimer.days}}d
+                                {{deposit.countdownTimer.hours}}h {{deposit.countdownTimer.minutes}}m
+                                {{deposit.countdownTimer.seconds}}s</small>
                             </div>
                           </div>
                         </td>
@@ -234,176 +236,55 @@
                     </ng-container>
                   </ng-container>
                 </ng-container>
+
+                <!-- ZCB rows -->
+                <ng-container *ngFor="let userZCBPool of userZCBPools">
+                  <ng-container *ngIf="userZCBPool.poolName===pool.name">
+                    <tr class="multi-collapse collapse show" id={{userZCBPool.poolName}}>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div>
+                            <h6 class="text-muted text-uppercase mb-1">Preset maturity</h6>
+                            <!-- badge -->
+                            <span class="badge mb-1 badge-soft-danger">
+                                Locked
+                            </span>
+                            <!-- Text -->
+                            <small class="text-muted d-block">{{userZCBPool.maturation}}</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <h4 class="mb-1 font-weight-bold glowing">$0.00</h4>
+                        <div class="text-muted d-block">0.00 TKN</div>
+                      </td>
+                      <td>
+                        <h4 class="mb-1 font-weight-bold glowing">0.00% APY <span class="badge badge-dark border border-light py-0 pl-0 ml-2 mt-n1" style="
+                          border-radius: 14px;" placement="top"
+                          ngbTooltip="Deposits with preset maturity can be used to provide liquidity on our trading pools, and earn trading fees and liquidity mining rewards ($MPH).">
+                            <div class="avatar avatar-xs">
+                              <img src="./assets/img/token-icons/mph-logo-24.svg" width="16" alt="..." class="avatar-img rounded-circle">
+                            </div>
+                            +0.00% APR
+                          </span></h4>
+                        <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH) <a class="text-primary" href="">Claim</a></span>
+                      </td>
+                      <td class="text-right">
+                        <button type="button" class="btn btn-sm btn-dark mr-3">
+                          <i class="fe fe-arrow-down mr-2 align-bottom"></i>Top up
+                        </button>
+                        <button type="button" class="btn btn-sm btn-dark mr-3">
+                          <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
+                        </button>
+                        <button type="button" class="btn btn-sm btn-dark">
+                          <i class="fe fe-arrow-up mr-2 align-bottom"></i>
+                            Sell
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
               </ng-container>
-              
-              <!-- ZCB rows -->
-              <tr class="multi-collapse collapse show" id="multiCollapseaDAI">
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div>
-                      <h6 class="text-muted text-uppercase mb-1">Preset maturity</h6>
-                      <!-- badge -->
-                      <span class="badge mb-1 badge-soft-danger">
-                          Locked
-                      </span>
-                      <!-- Text -->
-                      <small class="text-muted d-block">month dd yyyy</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <h4 class="mb-1 font-weight-bold glowing">$0.00</h4>
-                  <div class="text-muted d-block">0.00 TKN</div>
-                </td>
-                <td>
-                  <h4 class="mb-1 font-weight-bold glowing">0.00% APY <span class="badge badge-dark border border-light py-0 pl-0 ml-2 mt-n1" style="
-                    border-radius: 14px;" placement="top"
-                    ngbTooltip="Deposits with preset maturity can be used to provide liquidity on our trading pools, and earn trading fees and liquidity mining rewards ($MPH).">
-                      <div class="avatar avatar-xs">
-                        <img src="./assets/img/token-icons/mph-logo-24.svg" width="16" alt="..." class="avatar-img rounded-circle">
-                      </div>
-                      +0.00% APR
-                    </span></h4>
-                  <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH) <a class="text-primary" href="">Claim</a></span>
-                </td>
-                <td class="text-right">
-                  <button type="button" class="btn btn-sm btn-dark mr-3">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Top up
-                  </button>
-                  <button type="button" class="btn btn-sm btn-dark mr-3">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
-                  </button>
-                  <button type="button" class="btn btn-sm btn-dark">
-                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                      Sell
-                  </button>
-                </td>
-              </tr>
-              <!-- Pool rows -->
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-
-                    <!-- Image -->
-                    <div class="avatar avatar-xs">
-                      <img class="avatar-img rounded-circle mr-3" src="./assets/img/token-icons/usdc.svg" alt="...">
-                    </div>
-
-                    <div class="ml-3">
-
-                      <!-- Heading -->
-                      <h4 class="font-weight-normal mb-1">USDC</h4>
-
-                      <!-- Text -->
-                      <small class="text-muted">Aave</small>
-
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <h4 class="mb-1 glowing">$0.00</h4>
-                  <span class="text-white">0.00 TKN</span>
-                </td>
-                <td>
-                  <span class="h4 mb-0 glowing">Up to 0.00%</span>
-                  <span  class="badge badge-dark border border-light py-0 pl-0 mt-n2 ml-2" style="
-                  border-radius: 14px;" placement="top"
-                  ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
-                    <div class="avatar avatar-xs">
-                      <img src="./assets/img/token-icons/mph-logo-24.svg" width="16" alt="..." class="avatar-img rounded-circle">
-                    </div>
-                    +0.00% APR
-                  </span>
-                </td>
-                <td class="text-right">
-                  <!-- Button -->
-                  <button type="button" class="btn btn-sm btn-bg-gradient mr-3">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Deposit
-                  </button>
-                  <button class="btn btn-sm btn-dark btn-rounded-circle" type="button" data-toggle="collapse" data-target="#multiCollapseaUSDC" aria-expanded="false" aria-controls="multiCollapseaUSDC">
-                    <i class="fe fe-chevron-down"></i>
-                  </button>
-                </td>
-              </tr>
-              <!-- Deposit rows -->
-              <tr class="multi-collapse collapse" id="multiCollapseaUSDC">
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div>
-                      <!-- badge -->
-                      <span class="badge mb-1 badge-soft-danger">
-                          Locked
-                      </span>
-
-                      <!-- Text -->
-                      <small class="text-muted d-block">d h m s</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <h4 class="mb-1 font-weight-bold glowing">$0.00</h4>
-                  <div class="text-muted d-block">0.00 TKN</div>
-                </td>
-                <td>
-                  <h4 class="mb-1 font-weight-bold glowing">0.00% APY <span class="badge badge-dark border border-light py-0 pl-0 ml-2 mt-n1" style="
-                    border-radius: 14px;" placement="top"
-                    ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
-                      <div class="avatar avatar-xs">
-                        <img src="./assets/img/token-icons/mph-logo-24.svg" width="16" alt="..." class="avatar-img rounded-circle">
-                      </div>
-                      +0.00% APR
-                    </span></h4>
-                  <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH) <a class="text-primary" href="">Claim</a></span>
-                </td>
-                <td class="text-right">
-                  <button type="button" class="btn btn-sm btn-dark mr-3">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Top up
-                  </button>
-                  <button type="button" class="btn btn-sm btn-dark">
-                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                      Withdraw early
-                  </button>
-                </td>
-              </tr>
-              <tr class="multi-collapse collapse" id="multiCollapseaUSDC">
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div>
-                      <!-- badge -->
-                      <span class="badge mb-1 badge-soft-danger">
-                          Locked
-                      </span>
-
-                      <!-- Text -->
-                      <small class="text-muted d-block">d h m s</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <h4 class="mb-1 font-weight-bold glowing">$0.00</h4>
-                  <div class="text-muted d-block">0.00 TKN</div>
-                </td>
-                <td>
-                  <h4 class="mb-1 font-weight-bold glowing">0.00% APY <span class="badge badge-dark border border-light py-0 pl-0 ml-2 mt-n1" style="
-                    border-radius: 14px;" placement="top"
-                    ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
-                      <div class="avatar avatar-xs">
-                        <img src="./assets/img/token-icons/mph-logo-24.svg" width="16" alt="..." class="avatar-img rounded-circle">
-                      </div>
-                      +0.00% APR
-                    </span></h4>
-                  <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH) <a class="text-primary" href="">Claim</a></span>
-                </td>
-                <td class="text-right">
-                  <button type="button" class="btn btn-sm btn-dark mr-3">
-                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Top up
-                  </button>
-                  <button type="button" class="btn btn-sm btn-dark">
-                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                      Withdraw early
-                  </button>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
