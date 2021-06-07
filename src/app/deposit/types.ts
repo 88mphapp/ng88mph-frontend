@@ -13,6 +13,8 @@ export interface DPool {
   oneYearInterestRate: BigNumber;
   mphAPY: BigNumber;
   tempMPHAPY: BigNumber;
+  totalUserDeposits: BigNumber;
+  totalUserDepositsUSD: BigNumber;
 }
 
 export interface UserPool {

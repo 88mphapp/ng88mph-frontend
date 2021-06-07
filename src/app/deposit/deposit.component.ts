@@ -131,6 +131,7 @@ export class DepositComponent implements OnInit {
           maturation: maturationDate
         }
         this.userZCBPools.push(userZCB);
+        this.totalDepositUSD = this.totalDepositUSD.plus(userBalanceUSD);
       }
     }
 
@@ -187,6 +188,56 @@ export class DepositComponent implements OnInit {
       const user = queryResult.data.user;
       const dpools = queryResult.data.dpools;
       let stablecoinPriceCache = {};
+
+      if (dpools) {
+        let allPoolList = new Array<DPool>(0);
+        Promise.all(dpools.map(async pool => {
+          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+
+          const stablecoin = poolInfo.stablecoin.toLowerCase()
+          let stablecoinPrice = stablecoinPriceCache[stablecoin];
+          if (!stablecoinPrice) {
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPriceCache[stablecoin] = stablecoinPrice;
+          }
+
+          // get MPH APY
+          const mphDepositorRewardMintMultiplier = new BigNumber(pool.mphDepositorRewardMintMultiplier);
+          const mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
+          const tempMPHAPY = mphDepositorRewardMintMultiplier.times(this.mphPriceUSD).times(this.YEAR_IN_SEC).div(stablecoinPrice).times(100);
+          const mphAPY = tempMPHAPY.times(new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier));
+
+          const dpoolObj: DPool = {
+            name: poolInfo.name,
+            protocol: poolInfo.protocol,
+            stablecoin: poolInfo.stablecoin,
+            stablecoinSymbol: poolInfo.stablecoinSymbol,
+            iconPath: poolInfo.iconPath,
+            totalDepositToken: new BigNumber(pool.totalActiveDeposit),
+            totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice),
+            oneYearInterestRate: this.helpers.applyFeeToInterest(pool.oneYearInterestRate, poolInfo).times(100),
+            mphAPY: mphAPY,
+            tempMPHAPY: tempMPHAPY,
+            totalUserDeposits: new BigNumber(0),
+            totalUserDepositsUSD: new BigNumber(0)
+          };
+          allPoolList.push(dpoolObj);
+        })).then(() => {
+          allPoolList.sort((a, b) => {
+            const aName = a.name;
+            const bName = b.name;
+            if (aName > bName) {
+              return 1;
+            }
+            if (aName < bName) {
+              return -1;
+            }
+            return 0;
+          });
+          this.allPoolList = allPoolList;
+        });
+      }
+
       if (user) {
         // update totalMPHEarned
         this.totalMPHEarned = new BigNumber(user.totalMPHEarned).minus(user.totalMPHPaidBack);
@@ -253,59 +304,17 @@ export class DepositComponent implements OnInit {
           }
 
           const poolInfo = this.contract.getPoolInfoFromAddress(totalDepositEntity.pool.address);
+          const activePool = this.allPoolList.find(pool => pool.name === poolInfo.name);
+          const poolDeposit = new BigNumber(totalDepositEntity.totalActiveDeposit);
           const poolDepositUSD = new BigNumber(totalDepositEntity.totalActiveDeposit).times(stablecoinPrice);
           const poolInterestUSD = this.helpers.applyFeeToInterest(new BigNumber(totalDepositEntity.totalInterestEarned).times(stablecoinPrice), poolInfo);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
+          activePool.totalUserDeposits = activePool.totalUserDeposits.plus(poolDeposit);
+          activePool.totalUserDepositsUSD = activePool.totalUserDepositsUSD.plus(poolDepositUSD);
         })).then(() => {
-          this.totalDepositUSD = totalDepositUSD;
+          this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
           this.totalInterestUSD = totalInterestUSD;
-        });
-      }
-      if (dpools) {
-        let allPoolList = new Array<DPool>(0);
-        Promise.all(dpools.map(async pool => {
-          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
-
-          const stablecoin = poolInfo.stablecoin.toLowerCase()
-          let stablecoinPrice = stablecoinPriceCache[stablecoin];
-          if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
-            stablecoinPriceCache[stablecoin] = stablecoinPrice;
-          }
-
-          // get MPH APY
-          const mphDepositorRewardMintMultiplier = new BigNumber(pool.mphDepositorRewardMintMultiplier);
-          const mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
-          const tempMPHAPY = mphDepositorRewardMintMultiplier.times(this.mphPriceUSD).times(this.YEAR_IN_SEC).div(stablecoinPrice).times(100);
-          const mphAPY = tempMPHAPY.times(new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier));
-
-          const dpoolObj: DPool = {
-            name: poolInfo.name,
-            protocol: poolInfo.protocol,
-            stablecoin: poolInfo.stablecoin,
-            stablecoinSymbol: poolInfo.stablecoinSymbol,
-            iconPath: poolInfo.iconPath,
-            totalDepositToken: new BigNumber(pool.totalActiveDeposit),
-            totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice),
-            oneYearInterestRate: this.helpers.applyFeeToInterest(pool.oneYearInterestRate, poolInfo).times(100),
-            mphAPY: mphAPY,
-            tempMPHAPY: tempMPHAPY
-          };
-          allPoolList.push(dpoolObj);
-        })).then(() => {
-          allPoolList.sort((a, b) => {
-            const aName = a.name;
-            const bName = b.name;
-            if (aName > bName) {
-              return 1;
-            }
-            if (aName < bName) {
-              return -1;
-            }
-            return 0;
-          });
-          this.allPoolList = allPoolList;
         });
       }
     }
@@ -334,7 +343,9 @@ export class DepositComponent implements OnInit {
           totalDepositUSD: new BigNumber(0),
           oneYearInterestRate: new BigNumber(0),
           mphAPY: new BigNumber(0),
-          tempMPHAPY: new BigNumber(0)
+          tempMPHAPY: new BigNumber(0),
+          totalUserDeposits: new BigNumber(0),
+          totalUserDepositsUSD: new BigNumber(0)
         };
         allPoolList.push(dpoolObj);
       }
