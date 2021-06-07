@@ -178,7 +178,8 @@
                   </td>
                   <td class="text-right">
                     <!-- Button -->
-                    <button type="button" class="btn btn-sm btn-bg-gradient mr-3" (click)="openDepositModal()" [disabled]="wallet.watching">
+                    <!-- <button type="button" class="btn btn-sm btn-bg-gradient mr-3" (click)="openDepositModal(pool.name)" [disabled]="wallet.watching"> -->
+                    <button type="button" class="btn btn-sm btn-bg-gradient mr-3" (click)="openDepositModal(pool.name)">
                       <i class="fe fe-arrow-down mr-2 align-bottom"></i>Deposit
                     </button>
                     <button class="btn btn-sm btn-dark btn-rounded-circle" type="button" data-toggle="collapse" [attr.data-target]="'#' + pool.name" aria-expanded="false" [attr.aria-controls]="pool.name">
