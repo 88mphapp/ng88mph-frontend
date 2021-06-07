@@ -61,7 +61,7 @@ const mockUser = {
 })
 export class DepositComponent implements OnInit {
   YEAR_IN_SEC = 31556952; // Number of seconds in a year
-  DECIMALS = 4;
+  DECIMALS = 2;
 
   totalDepositUSD: BigNumber;
   totalInterestUSD: BigNumber;
@@ -114,9 +114,12 @@ export class DepositComponent implements OnInit {
     for (let pool in this.allZCBPoolList) {
       const zcbPool = this.allZCBPoolList[pool];
       const zcbContract = this.contract.getZeroCouponBondContract(zcbPool.address ,readonlyWeb3);
-      const userBalance = await zcbContract.methods.balanceOf(userID).call();
-      if(userBalance > 0) {
-        const poolInfo = this.contract.getPoolInfoFromAddress(await zcbContract.methods.pool().call());
+      const poolInfo = this.contract.getPoolInfoFromAddress(await zcbContract.methods.pool().call());
+      const userBalance = new BigNumber(await zcbContract.methods.balanceOf(userID).call()).div(Math.pow(10, poolInfo.stablecoinDecimals));
+
+      if(userBalance.gt(0)) {
+        const zcbPriceUSD = new BigNumber(await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo));
+        const userBalanceUSD = userBalance.times(zcbPriceUSD);
         const maturationTimestamp = await zcbContract.methods.maturationTimestamp().call();
         const maturationDate = new Date(maturationTimestamp * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
         let userZCB: UserZCBPool = {
@@ -124,6 +127,7 @@ export class DepositComponent implements OnInit {
           poolName: poolInfo.name,
           poolAddress: poolInfo.address,
           amountToken: userBalance,
+          amountUSD: userBalanceUSD,
           maturation: maturationDate
         }
         this.userZCBPools.push(userZCB);
@@ -338,6 +342,32 @@ export class DepositComponent implements OnInit {
       this.allZCBPoolList = [];
       this.mphPriceUSD = new BigNumber(0);
     }
+  }
+
+  async getZeroCouponBondPriceUSD(bond: ZeroCouponBondInfo, pool: PoolInfo): Promise<BigNumber> {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const pair = this.contract.getContract(bond.sushiSwapPair, 'MPHLP', readonlyWeb3);
+    const reservesObj = await pair.methods.getReserves().call();
+    if (+reservesObj._reserve0 === 0 || +reservesObj._reserve1 === 0) {
+      // no liquidity, return NaN
+      return new BigNumber(NaN);
+    }
+    const baseToken = this.contract.getERC20(bond.sushiSwapPairBaseTokenAddress, readonlyWeb3);
+    const baseTokenPrecision = Math.pow(10, +await baseToken.methods.decimals().call());
+    let baseTokenReserve;
+    let bondReserve;
+    if (new BigNumber(bond.sushiSwapPairBaseTokenAddress, 16).lt(new BigNumber(bond.address, 16))) {
+      // base token is token0
+      baseTokenReserve = new BigNumber(reservesObj._reserve0).div(baseTokenPrecision);
+      bondReserve = new BigNumber(reservesObj._reserve1).div(Math.pow(10, pool.stablecoinDecimals));
+    } else {
+      // base token is token1
+      bondReserve = new BigNumber(reservesObj._reserve0).div(Math.pow(10, pool.stablecoinDecimals));
+      baseTokenReserve = new BigNumber(reservesObj._reserve1).div(baseTokenPrecision);
+    }
+    const bondPriceInBaseToken = baseTokenReserve.div(bondReserve);
+    const baseTokenPriceInUSD = await this.helpers.getTokenPriceUSD(bond.sushiSwapPairBaseTokenAddress);
+    return bondPriceInBaseToken.times(baseTokenPriceInUSD);
   }
 
   openDepositModal(poolName?: string) {
