@@ -166,14 +166,14 @@
                     <span class="text-white">{{pool.totalUserDeposits.toFormat(DECIMALS)}} {{pool.stablecoinSymbol}}</span>
                   </td>
                   <td>
-                    <span class="h4 mb-0 glowing">Up to {{pool.oneYearInterestRate.toFormat(2)}}%</span>
+                    <span class="h4 mb-0 glowing">Up to {{pool.oneYearInterestRate.toFormat(DECIMALS)}}%</span>
                     <span  class="badge badge-dark border border-light py-0 pl-0 mt-n2 ml-2" style="
                     border-radius: 14px;" placement="top"
                     ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
                       <div class="avatar avatar-xs">
                         <img src="./assets/img/token-icons/mph-logo-24.svg" width="16" alt="..." class="avatar-img rounded-circle">
                       </div>
-                      +0.00% APR
+                      +{{pool.mphAPY.toFormat(DECIMALS)}}% APR
                     </span>
                   </td>
                   <td class="text-right">
@@ -220,7 +220,7 @@
                               <div class="avatar avatar-xs">
                                 <img src="./assets/img/token-icons/mph-logo-24.svg" width="16" alt="..." class="avatar-img rounded-circle">
                               </div>
-                              +{{deposit.mphAPY.toFormat(DECIMALS)}}% APR 
+                              +{{deposit.mphAPY.toFormat(DECIMALS)}}% APR
                             </span></h4>
                           <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH) <a class="text-primary" href="">Claim</a></span>
                         </td>
