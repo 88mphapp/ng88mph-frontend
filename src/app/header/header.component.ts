@@ -31,9 +31,10 @@ export class HeaderComponent implements OnInit {
     public constants: ConstantsService, public helpers: HelpersService, public app: AppComponent) {
     this.resetData(true, true);
   }
-  
+
 
   ngOnInit(): void {
+    console.log(this.wallet.connected);
     this.loadData(this.wallet.connected, true);
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
@@ -67,7 +68,7 @@ export class HeaderComponent implements OnInit {
       mphToken.methods.balanceOf(this.wallet.userAddress).call().then(mphBalance => {
         this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
       });
-    } else {
+    } else if (loadUser && this.wallet.watching) {
       const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
       mphToken.methods.balanceOf(this.wallet.watchedAddress).call().then(mphBalance => {
         this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
