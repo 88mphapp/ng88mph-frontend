@@ -166,7 +166,7 @@
                     <span class="text-white">{{pool.totalUserDeposits.toFormat(DECIMALS)}} {{pool.stablecoinSymbol}}</span>
                   </td>
                   <td>
-                    <span class="h4 mb-0 glowing">Up to 0.00%</span>
+                    <span class="h4 mb-0 glowing">Up to {{pool.oneYearInterestRate.toFormat(2)}}%</span>
                     <span  class="badge badge-dark border border-light py-0 pl-0 mt-n2 ml-2" style="
                     border-radius: 14px;" placement="top"
                     ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)">
