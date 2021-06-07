@@ -209,8 +209,9 @@
                           </div>
                         </td>
                         <td>
-                          <h4 class="mb-1 font-weight-bold glowing">$0.00</h4>
-                          <div class="text-muted d-block">0.00 TKN</div>
+                          <h4 class="mb-1 font-weight-bold glowing">${{deposit.amountUSD.toFormat(DECIMALS)}}</h4>
+                          <div class="text-muted d-block">{{deposit.amountToken.toFormat(DECIMALS)}}
+                            {{userPool.poolInfo.stablecoinSymbol}}</div>
                         </td>
                         <td>
                           <h4 class="mb-1 font-weight-bold glowing">0.00% APY <span class="badge badge-dark border border-light py-0 pl-0 ml-2 mt-n1" style="
