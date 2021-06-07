@@ -107,31 +107,33 @@ export class DepositComponent implements OnInit {
       userID = '';
     }
 
-    // load Zero Coupon Bond / Preset Maturity data
-    const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
-    const zcbPoolList = zcbPoolNameList.map(poolName => this.contract.getZeroCouponBondPool(poolName));
-    this.allZCBPoolList = zcbPoolList.concat.apply([],zcbPoolList);
-    for (let pool in this.allZCBPoolList) {
-      const zcbPool = this.allZCBPoolList[pool];
-      const zcbContract = this.contract.getZeroCouponBondContract(zcbPool.address ,readonlyWeb3);
-      const poolInfo = this.contract.getPoolInfoFromAddress(await zcbContract.methods.pool().call());
-      const userBalance = new BigNumber(await zcbContract.methods.balanceOf(userID).call()).div(Math.pow(10, poolInfo.stablecoinDecimals));
+    if (loadUser) {
+      // load Zero Coupon Bond / Preset Maturity data
+      const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
+      const zcbPoolList = zcbPoolNameList.map(poolName => this.contract.getZeroCouponBondPool(poolName));
+      this.allZCBPoolList = zcbPoolList.concat.apply([],zcbPoolList);
+      for (let pool in this.allZCBPoolList) {
+        const zcbPool = this.allZCBPoolList[pool];
+        const zcbContract = this.contract.getZeroCouponBondContract(zcbPool.address ,readonlyWeb3);
+        const poolInfo = this.contract.getPoolInfoFromAddress(await zcbContract.methods.pool().call());
+        const userBalance = new BigNumber(await zcbContract.methods.balanceOf(userID).call()).div(Math.pow(10, poolInfo.stablecoinDecimals));
 
-      if(userBalance.gt(0)) {
-        const zcbPriceUSD = new BigNumber(await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo));
-        const userBalanceUSD = userBalance.times(zcbPriceUSD);
-        const maturationTimestamp = await zcbContract.methods.maturationTimestamp().call();
-        const maturationDate = new Date(maturationTimestamp * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
-        let userZCB: UserZCBPool = {
-          zcbPoolInfo: zcbPool,
-          poolName: poolInfo.name,
-          poolAddress: poolInfo.address,
-          amountToken: userBalance,
-          amountUSD: userBalanceUSD,
-          maturation: maturationDate
+        if(userBalance.gt(0)) {
+          const zcbPriceUSD = new BigNumber(await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo));
+          const userBalanceUSD = userBalance.times(zcbPriceUSD);
+          const maturationTimestamp = await zcbContract.methods.maturationTimestamp().call();
+          const maturationDate = new Date(maturationTimestamp * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+          let userZCB: UserZCBPool = {
+            zcbPoolInfo: zcbPool,
+            poolName: poolInfo.name,
+            poolAddress: poolInfo.address,
+            amountToken: userBalance,
+            amountUSD: userBalanceUSD,
+            maturation: maturationDate
+          }
+          this.userZCBPools.push(userZCB);
+          this.totalDepositUSD = this.totalDepositUSD.plus(userBalanceUSD);
         }
-        this.userZCBPools.push(userZCB);
-        this.totalDepositUSD = this.totalDepositUSD.plus(userBalanceUSD);
       }
     }
 
