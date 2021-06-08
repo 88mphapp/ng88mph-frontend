@@ -10,7 +10,7 @@
           </a>
           </div>
           <div class="col">
-            <h1 class="mb-0 h3">MPH rewards</h1>
+            <h1 class="mb-0 h3">MPH Rewards</h1>
           </div>
         </div>
         <div class="row justify-content-center">
@@ -22,15 +22,15 @@
                     <h6 class="header-pretitle mb-2">
                       Full amount
                     </h6>
-                    <h4 class="mb-1 glowing">0.00 MPH</h4>
-                    <div class="text-muted small d-block">$0.00</div>
+                    <h4 class="mb-1 glowing">{{fullAmount.toFormat(4)}} MPH</h4>
+                    <div class="text-muted small d-block">${{fullAmount.times(mphPriceUSD).toFormat(4)}}</div>
                   </div>
                   <div class="col-6">
                     <h6 class="header-pretitle mb-2">
                       Withdrawn Amount
                     </h6>
-                    <h4 class="mb-1 glowing">0.00 MPH</h4>
-                    <div class="text-muted small d-block">$0.00</div>
+                    <h4 class="mb-1 glowing">{{withdrawnAmount.toFormat(4)}} MPH</h4>
+                    <div class="text-muted small d-block">${{withdrawnAmount.times(mphPriceUSD).toFormat(4)}}</div>
                   </div>
                 </div>
                 <div class="row justify-content-center mb-4">
@@ -38,11 +38,12 @@
                     <h6 class="header-pretitle mb-2">
                       Current Withdrawable Amount
                     </h6>
-                    <h4 class="mb-1 glowing display-4">0.00 MPH</h4>
-                    <div class="text-muted small d-block">$0.00</div>
+                    <h4 class="mb-1 glowing display-4">{{currentWithdrawableAmount.toFormat(4)}} MPH</h4>
+                    <div class="text-muted small d-block">${{currentWithdrawableAmount.times(mphPriceUSD).toFormat(4)}}</div>
                   </div>
                 </div>
-                <button class="btn btn-lg btn-bg-gradient btn-block" type="button">
+                <button class="btn btn-lg btn-bg-gradient btn-block" type="button"
+                (click)="withdraw()">
                   Withdraw
                 </button>
               </div>
