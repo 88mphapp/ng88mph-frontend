@@ -149,6 +149,7 @@ export class ModalDepositComponent implements OnInit {
       const stablecoin = this.contract.getPoolStablecoin(poolName);
       const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
       this.depositTokenBalance = new BigNumber(await stablecoin.methods.balanceOf(userAddress).call()).div(stablecoinPrecision);
+      console.log(this.depositTokenBalance);
     }
 
     this.updateAPY();
@@ -166,12 +167,14 @@ export class ModalDepositComponent implements OnInit {
         if (tokenAddress === this.constants.ZERO_ADDR) {
           // ETH
           this.depositTokenBalance = new BigNumber(await this.wallet.web3.eth.getBalance(this.wallet.userAddress)).div(this.constants.PRECISION);
+          console.log(this.depositTokenBalance);
         } else {
           // ERC20
           const token = this.contract.getERC20(tokenAddress);
           const tokenDecimals = +await token.methods.decimals().call();
           const tokenPrecision = Math.pow(10, tokenDecimals);
           this.depositTokenBalance = new BigNumber(await token.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
+          console.log(this.depositTokenBalance);
         }
       }
     }
@@ -247,22 +250,37 @@ export class ModalDepositComponent implements OnInit {
   }
 
   deposit() {
+    const zcb: boolean = this.presetMaturity !== null;
+    console.log(zcb);
+
     if (this.selectedDepositToken === this.selectedPoolInfo.stablecoinSymbol) {
+      console.log("normal deposit");
       this.normalDeposit();
     } else {
+      console.log("zap curve deposit");
       this.zapCurveDeposit();
     }
   }
 
+  // @dev needs to be tested with a deployed v3 ZCB contract
+  // @dev currently throws an error zcbContract.methods.mint is not a function
   normalDeposit() {
-    const pool = this.contract.getPool(this.selectedPoolInfo.name);
     const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
     const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
     const depositAmount = this.helpers.processWeb3Number(this.depositAmount.times(stablecoinPrecision));
     const maturationTimestamp = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC).plus(Date.now() / 1e3).plus(this.DEPOSIT_DELAY));
-    const func = pool.methods.deposit(depositAmount, maturationTimestamp);
 
-    this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    const zcb: boolean = this.presetMaturity !== null;
+
+    if (!zcb) {
+      const pool = this.contract.getPool(this.selectedPoolInfo.name);
+      const func = pool.methods.deposit(depositAmount, maturationTimestamp);
+      this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    } else {
+      const zcbContract = this.contract.getZeroCouponBondContract(this.presetMaturity.address);
+      const func = zcbContract.methods.mint(depositAmount);
+      this.wallet.sendTxWithToken(func, stablecoin, this.presetMaturity.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    }
   }
 
   async zapCurveDeposit() {
@@ -392,8 +410,13 @@ export class ModalDepositComponent implements OnInit {
   }
 
   canContinue() {
-    return this.wallet.connected && this.depositAmount.gte(this.minDepositAmount) && this.depositAmount.lte(this.maxDepositAmount)
-      && this.depositTimeInDays.gte(this.minDepositPeriod) && this.depositTimeInDays.lte(this.maxDepositPeriod);
+    return this.wallet.connected
+      && this.depositAmount.gte(this.minDepositAmount)
+      && this.depositAmount.lte(this.maxDepositAmount)
+      && this.depositTimeInDays.gte(this.minDepositPeriod)
+      && this.depositTimeInDays.lte(this.maxDepositPeriod)
+      //&& this.depositTokenBalance.gte(this.depositAmount)
+      ;
   }
 }
 
