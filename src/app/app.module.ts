@@ -33,6 +33,7 @@ import { WithdrawZeroCouponBondComponent } from './zero-coupon-bonds/modal-zero-
 import { FarmZeroCouponBondComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/farm-zero-coupon-bond/farm-zero-coupon-bond.component';
 import { ModalStakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/farm-zero-coupon-bond/modal-stake-zcblp/modal-stake-zcblp.component';
 import { ModalUnstakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/farm-zero-coupon-bond/modal-unstake-zcblp/modal-unstake-zcblp.component';
+import { ModalMphRewardsComponent } from './deposit/modal-mph-rewards/modal-mph-rewards.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { ModalUnstakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupo
     WithdrawZeroCouponBondComponent,
     FarmZeroCouponBondComponent,
     ModalStakeZCBLPComponent,
-    ModalUnstakeZCBLPComponent
+    ModalUnstakeZCBLPComponent,
+    ModalMphRewardsComponent
   ],
   imports: [
     BrowserModule,
