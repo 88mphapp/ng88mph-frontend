@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-5">
   <div class="alert alert-dark alert-dismissible fade show p-4" role="alert">
 
     <h6 class="text-uppercase text-muted">
@@ -6,7 +6,7 @@
     </h6>
     <p class="lead"><strong>Let's get you set up.</strong> Follow the steps below to leverage the full potential of 88mph.</p>
     <div class="row">
-      <div class="col-4">
+      <div class="col-12 col-lg-4 mb-4">
         <div class="row">
           <div class="col-auto">
             <div class="avatar avatar-xs">
@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-lg-4 mb-4">
         <div class="row">
           <div class="col-auto">
             <div class="avatar avatar-xs">
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <div class="col-4">
+      <div class="col-12 col-lg-4">
         <div class="row">
           <div class="col-auto">
             <div class="avatar avatar-xs">
@@ -58,68 +58,92 @@
       <span aria-hidden="true"><i class="fe fe-x text-muted"></i></span>
     </button>
   </div>
-  <div class="row align-items-end">
-    <div class="col">
-      <h1 class="title-bg-gradient display-2">Earn up to 8% fixed APY on your crypto.
-      </h1>
-      <p class="text-white font-weight-bold mb-5 lead">Select a crypto or stablecoin below to start earning fixed-interest rates. Boost your yield with $MPH rewards. Exit anytime.
-        <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
-        Learn more <i class="fe fe-external-link"></i>
-      </a></p>
-      <div class="card-deck mt-4 mb-6">
-        <div class="card mb-4 mb-lg-0">
-          <div class="card-body">
-            <!-- Title -->
-            <h5 class="text-uppercase">
-              Deposits balance
-            </h5>
+  <!--desktop user's data-->
+  <div class="card-deck d-none d-lg-flex my-5">
+    <div class="card mb-5 mb-lg-0">
+      <div class="card-body">
+        <!-- Title -->
+        <h5 class="text-uppercase">
+          Deposits balance
+        </h5>
 
-            <!-- Heading -->
-            <h2 class="mb-3 glowing">
-              ${{totalDepositUSD.toFormat(DECIMALS)}}
-            </h2>
-            <!-- Button -->
-            <button type="button" class="btn btn-sm btn-bg-gradient" (click)="openDepositModal()" [disabled]="wallet.watching">
-              <i class="fe fe-arrow-down mr-2 align-bottom"></i>Deposit
-            </button>
-          </div>
-        </div>
-
-        <div class="card mb-4 mb-lg-0">
-          <div class="card-body">
-            <!-- Title -->
-            <h5 class="text-uppercase">
-              Interest earned
-            </h5>
-
-            <!-- Heading -->
-            <h2 class="mb-0 glowing">
-              ${{totalInterestUSD.toFormat(DECIMALS)}}
-            </h2>
-          </div>
-        </div>
-        <div class="card mb-4 mb-lg-0">
-          <div class="card-body">
-            <!-- Title -->
-            <h5 class="text-uppercase">
-              MPH earned
-            </h5>
-            <!-- Heading -->
-            <h2 class="mb-1 glowing">
-              {{totalMPHEarned.toFormat(DECIMALS)}} MPH
-            </h2>
-            <h5 class="mb-3 text-white">${{totalMPHEarned.times(mphPriceUSD).toFormat(DECIMALS)}}</h5>
-          </div>
-        </div>
+        <!-- Heading -->
+        <h2 class="mb-3 glowing">
+          ${{totalDepositUSD.toFormat(DECIMALS)}}
+        </h2>
+        <!-- Button -->
+        <button type="button" class="btn btn-sm btn-bg-gradient" (click)="openDepositModal()" [disabled]="wallet.watching">
+          <i class="fe fe-arrow-down mr-2 align-bottom"></i>Deposit
+        </button>
       </div>
     </div>
-  </div> <!-- / .row -->
+
+    <div class="card mb-5 mb-lg-0">
+      <div class="card-body">
+        <!-- Title -->
+        <h5 class="text-uppercase">
+          Interest earned
+        </h5>
+
+        <!-- Heading -->
+        <h2 class="mb-0 glowing">
+          ${{totalInterestUSD.toFormat(DECIMALS)}}
+        </h2>
+      </div>
+    </div>
+    <div class="card mb-4 mb-lg-0">
+      <div class="card-body">
+        <!-- Title -->
+        <h5 class="text-uppercase">
+          Claimable rewards
+        </h5>
+        <!-- Heading -->
+        <h2 class="mb-1 glowing">
+          {{totalMPHEarned.toFormat(DECIMALS)}} MPH
+        </h2>
+        <h5 class="mb-3 text-white">${{totalMPHEarned.times(mphPriceUSD).toFormat(DECIMALS)}}</h5>
+      </div>
+    </div>
+  </div>
+  <!--mobile user's data-->
+  <div class="row d-lg-none my-5">
+    <div class="col-6">
+      <!-- Title -->
+      <h5 class="text-uppercase">
+        Deposits balance
+      </h5>
+      <!-- Heading -->
+      <h2 class="mb-4 glowing">
+        ${{totalDepositUSD.toFormat(DECIMALS)}}
+      </h2>
+      <!-- Title -->
+      <h5 class="text-uppercase">
+        Interest earned
+      </h5>
+
+      <!-- Heading -->
+      <h2 class="mb-0 glowing">
+        ${{totalInterestUSD.toFormat(DECIMALS)}}
+      </h2>
+    </div>
+    <div class="col-6">
+      <!-- Title -->
+      <h5 class="text-uppercase">
+        Claimable rewards
+      </h5>
+      <!-- Heading -->
+      <h2 class="mb-1 glowing">
+        {{totalMPHEarned.toFormat(DECIMALS)}} MPH
+      </h2>
+      <h5 class="mb-3 text-muted">${{totalMPHEarned.times(mphPriceUSD).toFormat(DECIMALS)}}</h5>
+    </div>
+  </div>
   <div class="row">
     <div class="col-12">
       <!-- Explore fixed rate opportunities -->
       <div class="card mb-6" id="fixedRateOpportunities">
         <div class="card-header">
-          <h2 class="mb-0 mr-auto">Fixed-interest rate opportunities</h2>
+          <h4 class="card-header-title mr-auto">Fixed-interest rate opportunities</h4>
           <button class="btn btn-sm btn-dark" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseaDAI multiCollapseaUSDC">Toggle all</button>
         </div>
         <div class="table-responsive mb-0">

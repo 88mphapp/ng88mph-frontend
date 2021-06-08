@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { LandingPageComponent } from './landing-page/landing-page.component';
 import { BondsComponent } from './bonds/bonds.component';
 import { FundingComponent } from './funding/funding.component';
 import { ClaimETHComponent } from './claim-eth/claim-eth.component';
@@ -14,15 +15,15 @@ import { ZeroCouponBondsComponent } from './zero-coupon-bonds/zero-coupon-bonds.
 const routes: Routes = [
   {
     path: '',
-    component: DepositComponent,
+    component: LandingPageComponent,
     pathMatch: 'full'
   },
   {
-    path: 'deposits',
+    path: 'earn',
     component: DepositComponent
   },
   {
-    path: 'bonds',
+    path: 'yield',
     component: BondsComponent
   },
   {
@@ -30,7 +31,7 @@ const routes: Routes = [
     component: ZeroCouponBondsComponent
   },
   {
-    path: 'rewards',
+    path: 'stake',
     component: RewardsComponent
   },
   {
@@ -38,7 +39,7 @@ const routes: Routes = [
     component: StatsComponent
   },
   {
-    path: 'farming',
+    path: 'farm',
     component: FarmingComponent
   },
   {
