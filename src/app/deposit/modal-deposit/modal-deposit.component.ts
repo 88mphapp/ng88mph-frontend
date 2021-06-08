@@ -149,7 +149,6 @@ export class ModalDepositComponent implements OnInit {
       const stablecoin = this.contract.getPoolStablecoin(poolName);
       const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
       this.depositTokenBalance = new BigNumber(await stablecoin.methods.balanceOf(userAddress).call()).div(stablecoinPrecision);
-      console.log(this.depositTokenBalance);
     }
 
     this.updateAPY();
@@ -167,14 +166,12 @@ export class ModalDepositComponent implements OnInit {
         if (tokenAddress === this.constants.ZERO_ADDR) {
           // ETH
           this.depositTokenBalance = new BigNumber(await this.wallet.web3.eth.getBalance(this.wallet.userAddress)).div(this.constants.PRECISION);
-          console.log(this.depositTokenBalance);
         } else {
           // ERC20
           const token = this.contract.getERC20(tokenAddress);
           const tokenDecimals = +await token.methods.decimals().call();
           const tokenPrecision = Math.pow(10, tokenDecimals);
           this.depositTokenBalance = new BigNumber(await token.methods.balanceOf(this.wallet.userAddress).call()).div(tokenPrecision);
-          console.log(this.depositTokenBalance);
         }
       }
     }
@@ -249,21 +246,15 @@ export class ModalDepositComponent implements OnInit {
     }
   }
 
+  // @dev needs to be fully tested with a deployed v3 contract, including ZCB
   deposit() {
-    const zcb: boolean = this.presetMaturity !== null;
-    console.log(zcb);
-
     if (this.selectedDepositToken === this.selectedPoolInfo.stablecoinSymbol) {
-      console.log("normal deposit");
       this.normalDeposit();
     } else {
-      console.log("zap curve deposit");
       this.zapCurveDeposit();
     }
   }
 
-  // @dev needs to be tested with a deployed v3 ZCB contract
-  // @dev currently throws an error zcbContract.methods.mint is not a function
   normalDeposit() {
     const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
     const stablecoinPrecision = Math.pow(10, this.selectedPoolInfo.stablecoinDecimals);
@@ -275,10 +266,12 @@ export class ModalDepositComponent implements OnInit {
     if (!zcb) {
       const pool = this.contract.getPool(this.selectedPoolInfo.name);
       const func = pool.methods.deposit(depositAmount, maturationTimestamp);
+
       this.wallet.sendTxWithToken(func, stablecoin, this.selectedPoolInfo.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
     } else {
       const zcbContract = this.contract.getZeroCouponBondContract(this.presetMaturity.address);
       const func = zcbContract.methods.mint(depositAmount);
+
       this.wallet.sendTxWithToken(func, stablecoin, this.presetMaturity.address, depositAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
     }
   }
@@ -334,10 +327,20 @@ export class ModalDepositComponent implements OnInit {
           }
         }
 
-        const pool = this.contract.getPool(this.selectedPoolInfo.name);
+        const zcb: boolean = this.presetMaturity !== null;
         const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
-        const funcDeposit = pool.methods.deposit(outputAmount, maturationTimestamp);
-        this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.selectedPoolInfo.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+
+        if (!zcb) {
+          const pool = this.contract.getPool(this.selectedPoolInfo.name);
+          const funcDeposit = pool.methods.deposit(outputAmount, maturationTimestamp);
+
+          this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.selectedPoolInfo.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+        } else {
+          const zcbContract = this.contract.getZeroCouponBondContract(this.presetMaturity.address);
+          const funcDeposit = zcbContract.methods.mint(outputAmount);
+
+          this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.presetMaturity.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+        }
       }, (error) => { this.wallet.displayGenericError(error) });
     } else {
       // ERC20 deposit
@@ -389,10 +392,20 @@ export class ModalDepositComponent implements OnInit {
             }
           }
 
-          const pool = this.contract.getPool(this.selectedPoolInfo.name);
+          const zcb: boolean = this.presetMaturity !== null;
           const stablecoin = this.contract.getPoolStablecoin(this.selectedPoolInfo.name);
-          const funcDeposit = pool.methods.deposit(outputAmount, maturationTimestamp);
-          this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.selectedPoolInfo.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+
+          if (!zcb) {
+            const pool = this.contract.getPool(this.selectedPoolInfo.name);
+            const funcDeposit = pool.methods.deposit(outputAmount, maturationTimestamp);
+
+            this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.selectedPoolInfo.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+          } else {
+            const zcbContract = this.contract.getZeroCouponBondContract(this.presetMaturity.address);
+            const funcDeposit = zcbContract.methods.mint(outputAmount);
+
+            this.wallet.sendTxWithToken(funcDeposit, stablecoin, this.presetMaturity.address, outputAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+          }
         }, (error) => { this.wallet.displayGenericError(error) });
       }, (error) => { this.wallet.displayGenericError(error) });
 
