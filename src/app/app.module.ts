@@ -35,6 +35,7 @@ import { ModalStakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupon-
 import { ModalUnstakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupon-bond-info/farm-zero-coupon-bond/modal-unstake-zcblp/modal-unstake-zcblp.component';
 import { ModalMphRewardsComponent } from './deposit/modal-mph-rewards/modal-mph-rewards.component';
 import { ModalTopUpComponent } from './deposit/modal-top-up/modal-top-up.component';
+import { ModalRollOverComponent } from './deposit/modal-roll-over/modal-roll-over.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { ModalTopUpComponent } from './deposit/modal-top-up/modal-top-up.compone
     ModalStakeZCBLPComponent,
     ModalUnstakeZCBLPComponent,
     ModalMphRewardsComponent,
-    ModalTopUpComponent
+    ModalTopUpComponent,
+    ModalRollOverComponent
   ],
   imports: [
     BrowserModule,
