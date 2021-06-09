@@ -43,7 +43,7 @@
                   </div>
                 </div>
                 <button class="btn btn-lg btn-bg-gradient btn-block" type="button"
-                (click)="withdraw()">
+                (click)="withdraw()" [disabled]="!canContinue()">
                   Withdraw
                 </button>
               </div>
