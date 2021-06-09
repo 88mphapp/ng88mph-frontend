@@ -422,8 +422,10 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.poolInfo = poolInfo;
   }
 
-  openRollOverModal() {
+  openRollOverModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
     const modalRef = this.modalService.open(ModalRollOverComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.userDeposit = userDeposit;
+    modalRef.componentInstance.poolInfo = poolInfo;
   }
 
 }

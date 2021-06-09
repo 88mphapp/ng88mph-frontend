@@ -259,7 +259,7 @@
                             <i class="fe fe-arrow-down mr-2 align-bottom"></i>Top up
                           </button>
                           <button type="button" class="btn btn-sm btn-dark mr-3"
-                          (click)="openRollOverModal()" *ngIf="!deposit.locked">
+                          (click)="openRollOverModal(deposit, userPool.poolInfo)" *ngIf="deposit.locked">
                             <i class="fe fe-arrow-down mr-2 align-bottom"></i>Roll over
                           </button>
                           <button type="button" class="btn btn-sm btn-dark"
