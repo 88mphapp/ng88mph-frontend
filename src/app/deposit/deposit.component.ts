@@ -6,9 +6,12 @@ import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
 import { ModalDepositComponent } from './modal-deposit/modal-deposit.component';
 import { ModalWithdrawComponent } from './modal-withdraw/modal-withdraw.component';
+import { ModalMphRewardsComponent } from './modal-mph-rewards/modal-mph-rewards.component';
+import { ModalTopUpComponent } from './modal-top-up/modal-top-up.component';
+import { ModalRollOverComponent } from './modal-roll-over/modal-roll-over.component';
 import { WalletService } from '../wallet.service';
 import { ContractService, PoolInfo, ZeroCouponBondInfo } from '../contract.service';
-import { DPool, UserPool, UserDeposit, UserZCBPool } from './types';
+import { DPool, UserPool, UserDeposit, UserZCBPool, Vest } from './types';
 import { HelpersService } from '../helpers.service';
 import { Timer } from '../timer';
 import { ConstantsService } from '../constants.service';
@@ -267,6 +270,14 @@ export class DepositComponent implements OnInit {
             const interestEarnedToken = this.helpers.applyFeeToInterest(new BigNumber(deposit.interestEarned), poolInfo);
             const interestEarnedUSD = interestEarnedToken.times(stablecoinPrice);
 
+            const vest: Vest = {
+              id: "1",
+              lastUpdateTimestamp: new BigNumber(Date.now() / 1e3),
+              accumulatedAmount: new BigNumber(0),
+              withdrawnAmount: new BigNumber(0),
+              vestAmountPerStablecoinPerSecond: new BigNumber(0)
+            }
+
             const userPoolDeposit: UserDeposit = {
               nftID: deposit.nftID,
               fundingID: deposit.fundingID,
@@ -280,7 +291,11 @@ export class DepositComponent implements OnInit {
               mintMPHAmount: new BigNumber(deposit.mintMPHAmount),
               realMPHReward: realMPHReward,
               mphAPY: mphAPY,
-              tempMPHAPY: tempMPHAPY
+              tempMPHAPY: tempMPHAPY,
+              virtualTokenTotalSupply: new BigNumber(100),
+              vest: vest,
+              depositLength: this.constants.YEAR_IN_SEC,
+              interestRate: interestEarnedToken.div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.YEAR_IN_SEC).times(100)
             }
             userPoolDeposit.countdownTimer.start();
             userPoolDeposits.push(userPoolDeposit);
@@ -395,6 +410,22 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
   }
+
+  openRewardsModal(userDeposit: UserDeposit) {
+    const modalRef = this.modalService.open(ModalMphRewardsComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.userDeposit = userDeposit;
+  }
+
+  openTopUpModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
+    const modalRef = this.modalService.open(ModalTopUpComponent, { windowClass: 'fullscreen' });
+    modalRef.componentInstance.userDeposit = userDeposit;
+    modalRef.componentInstance.poolInfo = poolInfo;
+  }
+
+  openRollOverModal() {
+    const modalRef = this.modalService.open(ModalRollOverComponent, { windowClass: 'fullscreen' });
+  }
+
 }
 
 interface QueryResult {
@@ -414,6 +445,8 @@ interface QueryResult {
         interestEarned: number;
         mintMPHAmount: number;
         takeBackMPHAmount: number;
+        vest: Vest;
+        depositLength: number;
       }[];
     }[];
     totalDepositByPool: {

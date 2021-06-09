@@ -223,15 +223,30 @@
                               </div>
                               +{{deposit.mphAPY.toFormat(DECIMALS)}}% APR
                             </span></h4>
-                          <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH) <a class="text-primary" href="">Claim</a></span>
+                          <span class="text-muted d-block">${{deposit.interestEarnedUSD.toFormat(DECIMALS)}} / ${{deposit.realMPHReward.times(mphPriceUSD).toFormat(DECIMALS)}} ({{deposit.realMPHReward.toFormat(DECIMALS)}} MPH)
+                            <button type="button" class="btn btn-sm btn-dark mr-3 text-primary" (click)="openRewardsModal(deposit)">
+                              <i class="fe fe-arrow-down mr-2 align-bottom"></i>Claim
+                            </button>
+                          </span>
                         </td>
                         <td class="text-right">
-                          <button type="button" class="btn btn-sm btn-dark mr-3">
+                          <button type="button" class="btn btn-sm btn-dark mr-3"
+                          (click)="openTopUpModal(deposit, userPool.poolInfo)" *ngIf="deposit.locked">
                             <i class="fe fe-arrow-down mr-2 align-bottom"></i>Top up
                           </button>
-                          <button type="button" class="btn btn-sm btn-dark">
+                          <button type="button" class="btn btn-sm btn-dark mr-3"
+                          (click)="openRollOverModal()" *ngIf="!deposit.locked">
+                            <i class="fe fe-arrow-down mr-2 align-bottom"></i>Roll over
+                          </button>
+                          <button type="button" class="btn btn-sm btn-dark"
+                          (click)="openWithdrawModal(deposit, userPool.poolInfo)">
                             <i class="fe fe-arrow-up mr-2 align-bottom"></i>
+                            <ng-container *ngIf="deposit.locked">
                               Withdraw early
+                            </ng-container>
+                            <ng-container *ngIf="!deposit.locked">
+                              Withdraw
+                            </ng-container>
                           </button>
                         </td>
                       </tr>
@@ -269,19 +284,24 @@
                             </div>
                             +0.00% APR
                           </span></h4>
-                        <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH) <a class="text-primary" href="">Claim</a></span>
+                        <span class="text-muted d-block">$0.00 / $0.00 (0.00 MPH)
+                          <button type="button" class="btn btn-sm btn-dark mr-3 text-primary" (click)="openRewardsModal()">
+                            <i class="fe fe-arrow-down mr-2 align-bottom"></i>Claim
+                          </button>
+                        </span>
                       </td>
                       <td class="text-right">
-                        <button type="button" class="btn btn-sm btn-dark mr-3">
+                        <button type="button" class="btn btn-sm btn-dark mr-3"
+                        (click)="openTopUpModal()">
                           <i class="fe fe-arrow-down mr-2 align-bottom"></i>Top up
                         </button>
-                        <button type="button" class="btn btn-sm btn-dark mr-3">
+                        <button type="button" class="btn btn-sm btn-dark mr-3" routerLink="/rewards">
                           <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
                         </button>
-                        <button type="button" class="btn btn-sm btn-dark">
+                        <a href="https://app.sushi.com/swap" class="btn btn-sm btn-dark">
                           <i class="fe fe-arrow-up mr-2 align-bottom"></i>
                             Sell
-                        </button>
+                        </a>
                       </td>
                     </tr>
                   </ng-container>
