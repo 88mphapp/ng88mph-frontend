@@ -32,7 +32,7 @@
   --warning: #F6C343;
   --danger: #E63757;
   --light: #242526;
-  --dark: #12263F;
+  --dark: #080808;
   --white: #FFFFFF;
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
@@ -66,7 +66,7 @@ body {
   line-height: 1.5;
   color: #fff;
   text-align: left;
-  background-color: #161522
+  background-color: #080808
 }
 
 [tabindex="-1"]:focus:not(:focus-visible) {
@@ -151,13 +151,13 @@ sup {
 }
 
 a {
-  color: #2c7be5;
+  color: #f25ca7;
   text-decoration: none;
   background-color: transparent
 }
 
 a:hover {
-  color: #1657af;
+  color: #743ad5;
   text-decoration: none
 }
 
@@ -457,7 +457,7 @@ hr {
 
 .img-thumbnail {
   padding: .25rem;
-  background-color: #161522;
+  background-color: #080808;
   border: 1px solid #e3ebf6;
   border-radius: 0;
   max-width: 100%;
@@ -1711,7 +1711,7 @@ pre code {
 
 .table .thead-light th {
   color: #6e84a3;
-  background-color: #161522;
+  background-color: #080808;
   border-color: #333436
 }
 
@@ -1807,7 +1807,7 @@ pre code {
   color: #fff;
   background-color: #333436;
   background-clip: padding-box;
-  border: 1px solid #161522;
+  border: 1px solid #080808;
   border-radius: 0;
   transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out
 }
@@ -2510,32 +2510,32 @@ a.btn.disabled, fieldset:disabled a.btn {
 
 .btn-dark {
   color: #fff;
-  background-color: #161522;
+  background-color: #080808;
   border-color: #242526
 }
 
 .btn-dark:hover {
   color: #fff;
-  background-color: #0a1421;
+  background-color: #242526;
   border-color: #070e17
 }
 
 .btn-dark.focus, .btn-dark:focus {
   color: #fff;
-  background-color: #0a1421;
+  background-color: #242526;
   border-color: #070e17;
   box-shadow: 0 0 0 .15rem rgba(54, 71, 92, .5)
 }
 
 .btn-dark.disabled, .btn-dark:disabled {
   color: #fff;
-  background-color: #161522;
+  background-color: #080808;
   border-color: #242526
 }
 
 .btn-dark:not(:disabled):not(.disabled).active, .btn-dark:not(:disabled):not(.disabled):active, .show>.btn-dark.dropdown-toggle {
   color: #fff;
-  background-color: #070e17;
+  background-color: #242526;
   border-color: #04080d
 }
 
@@ -2795,7 +2795,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 
 .btn-outline-dark:hover {
   color: #fff;
-  background-color: #161522;
+  background-color: #080808;
   border-color: #242526
 }
 
@@ -2810,7 +2810,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 
 .btn-outline-dark:not(:disabled):not(.disabled).active, .btn-outline-dark:not(:disabled):not(.disabled):active, .show>.btn-outline-dark.dropdown-toggle {
   color: #fff;
-  background-color: #161522;
+  background-color: #080808;
   border-color: #242526
 }
 
@@ -2964,9 +2964,9 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
   color: #fff;
   text-align: left;
   list-style: none;
-  background-color: #161526;
+  background-color: #080808;
   background-clip: padding-box;
-  border: 1px solid #12263f;
+  border: 1px solid #161526;
   border-radius: 0
 }
 
@@ -3361,7 +3361,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
   text-align: center;
   white-space: nowrap;
   background-color: #333436;
-  border: 1px solid #161522;
+  border: 1px solid #080808;
   border-radius: 0
 }
 
@@ -4775,7 +4775,7 @@ a.badge-light.focus, a.badge-light:focus {
 
 .badge-dark {
   color: #fff;
-  background-color: #161522
+  background-color: #080808
 }
 
 a.badge-dark:focus, a.badge-dark:hover {
@@ -4958,7 +4958,7 @@ a.badge-white.focus, a.badge-white:focus {
 
 .alert-dark {
   color: #12263f;
-  background-color: #161522;
+  background-color: #080808;
   border-color: #242526
 }
 
@@ -5386,7 +5386,7 @@ a.badge-white.focus, a.badge-white:focus {
 
 .list-group-item-dark.list-group-item-action.active {
   color: #fff;
-  background-color: #161522;
+  background-color: #080808;
   border-color: #242526
 }
 
@@ -6418,7 +6418,7 @@ a.bg-white:focus, a.bg-white:hover, button.bg-white:focus, button.bg-white:hover
 }
 
 .rounded-circle {
-  border-radius: 50%!important
+  border-radius: 0%!important
 }
 
 .rounded-pill {
@@ -10067,7 +10067,7 @@ a.text-white:focus, a.text-white:hover {
 
 .alert-dark {
   color: #fff;
-  background-color: #161522;
+  background-color: #080808;
   border-color: #242526
 }
 
@@ -10324,7 +10324,18 @@ a.text-white:focus, a.text-white:hover {
 }
 
 .card-header-title {
-  margin-bottom: 0
+  margin-bottom: 0;
+  margin-top: -57px;
+  background-color: #080808;
+  padding: 8px;
+  margin-left: -8px;
+}
+
+.card-body > h5.text-uppercase{
+  margin-top: -38px;
+  background-color: #080808;
+  padding: 8px;
+  margin-left: -8px;
 }
 
 .card-header-tabs {
@@ -12729,13 +12740,13 @@ a.text-white:focus, a.text-white:hover {
 }
 
 .popover-dark {
-  background-color: #161522;
+  background-color: #080808;
   border-color: #242526
 }
 
 .popover-dark .popover-header {
   font-weight: 400;
-  background-color: #161522;
+  background-color: #080808;
   color: #fff
 }
 
@@ -12798,7 +12809,7 @@ body {
 }
 
 .table thead th {
-  background-color: #161522;
+  background-color: #080808;
   text-transform: uppercase;
   font-size: 1rem;
   font-weight: 400;
@@ -12948,7 +12959,7 @@ a:focus, button:focus {
 }
 
 .bg-auth {
-  background-color: #161522
+  background-color: #080808
 }
 
 .bg-ellipses.bg-primary {
@@ -13150,7 +13161,7 @@ a:focus, button:focus {
 }
 
 .border-body {
-  border-color: #161522!important
+  border-color: #080808!important
 }
 
 .border-card {
@@ -13291,8 +13302,8 @@ a:focus, button:focus {
 }
 
 .avatar-xxs {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 20px;
+  height: 20px;
   font-size: .54167rem
 }
 .avatar-xs {
@@ -13774,7 +13785,7 @@ a:focus, button:focus {
 .dz-message {
   padding: 5rem 1rem;
   background-color: #333436;
-  border: 1px dashed #161522;
+  border: 1px dashed #080808;
   border-radius: 0;
   text-align: center;
   color: #6e84a3;
@@ -13853,7 +13864,7 @@ a:focus, button:focus {
 
 .flatpickr-calendar {
   background-color: #333436;
-  border: 1px solid #161522;
+  border: 1px solid #080808;
   color: #fff;
   box-shadow: none
 }
@@ -13864,7 +13875,7 @@ a:focus, button:focus {
 }
 
 .flatpickr-calendar.arrowTop:before {
-  border-bottom-color: #161522
+  border-bottom-color: #080808
 }
 
 .flatpickr-calendar.arrowTop:after {
@@ -13890,7 +13901,7 @@ a:focus, button:focus {
 
 .flatpickr-calendar .flatpickr-day:hover {
   background-color: #242526;
-  border-color: #161522
+  border-color: #080808
 }
 
 .flatpickr-calendar .flatpickr-day.prevMonthDay {
@@ -13922,7 +13933,7 @@ a:focus, button:focus {
   position: relative;
   padding: .5rem .75rem;
   background-color: #333436;
-  border: 1px solid #161522;
+  border: 1px solid #080808;
   border-radius: 0;
   color: #fff
 }
@@ -13946,7 +13957,7 @@ a:focus, button:focus {
   color: #fff;
   background-color: #333436;
   background-clip: padding-box;
-  border: 1px solid #161522;
+  border: 1px solid #080808;
   border-radius: 0;
   transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out
 }
@@ -14467,7 +14478,7 @@ a:focus, button:focus {
 }
 
 .btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled).active:focus, .btn-light:not(:disabled):not(.disabled):active, .btn-light:not(:disabled):not(.disabled):active:focus, .btn-light:not(:disabled):not(.disabled):focus, .btn-light:not(:disabled):not(.disabled):hover, .btn-white:not(:disabled):not(.disabled).active, .btn-white:not(:disabled):not(.disabled).active:focus, .btn-white:not(:disabled):not(.disabled):active, .btn-white:not(:disabled):not(.disabled):active:focus, .btn-white:not(:disabled):not(.disabled):focus, .btn-white:not(:disabled):not(.disabled):hover, .show>.btn-light.dropdown-toggle, .show>.btn-white.dropdown-toggle {
-  background-color: #161522;
+  background-color: #080808;
   border-color: #333436;
   color: #fff
 }
@@ -14600,7 +14611,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .navbar-light {
-  background-color: #161522;
+  background-color: #080808;
 }
 
 .avatar-img {
@@ -14647,14 +14658,14 @@ input[type=range]:focus::-ms-fill-upper {
 
 .bg-dark-curved {
   background-color: transparent!important;
-  background-image: radial-gradient(#161522, #161522 70%, transparent 70.1%);
+  background-image: radial-gradient(#080808, #080808 70%, transparent 70.1%);
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: 200% 150%
 }
 
 .bg-dark {
-  background-color: #161522!important
+  background-color: #080808!important
 }
 
 .bg-purple {
@@ -14664,7 +14675,7 @@ input[type=range]:focus::-ms-fill-upper {
 .btn-purple {
   background-color: #9575cd!important;
   padding: 2px 0;
-  color: #161522
+  color: #080808
 }
 
 .text-purple {
@@ -14676,13 +14687,13 @@ input[type=range]:focus::-ms-fill-upper {
   text-shadow: 0 0 3px #ffe0b2, 0 0 10px #ffb74d, 0 0 20px #fb8c00, 0 0 30px #f57c00
 }
 .btn-bg-gradient {
-  background: #161522;
+  background: #080808;
   border: 2px;
   border-style: outset;
   border-color: #888;
 }
 .border-gradient{
-  background: #161522;
+  background: #080808;
   border: 1px solid #242526;
 }
 .border-purple {
@@ -14691,7 +14702,7 @@ input[type=range]:focus::-ms-fill-upper {
 
 .card-link {
   color: #fff;
-  background: #161522
+  background: #080808
 }
 
 .card-link:active, .card-link:hover {
