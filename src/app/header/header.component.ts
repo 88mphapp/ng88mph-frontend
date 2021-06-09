@@ -18,6 +18,7 @@ import { Watch } from '../watch';
 })
 export class HeaderComponent implements OnInit {
   mphBalance: BigNumber;
+  xMPHBalance: BigNumber;
   depositValueLocked: BigNumber;
   farmingValueLocked: BigNumber;
   sushiFarmingValueLocked: BigNumber;
@@ -62,15 +63,24 @@ export class HeaderComponent implements OnInit {
 
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
-    if (loadUser && this.wallet.connected && !this.wallet.watching) {
+    let address;
+    if (this.wallet.connected && !this.wallet.watching) {
+      address = this.wallet.userAddress
+    } else if (this.wallet.watching) {
+      address = this.wallet.watching;
+    }
+
+    if (loadUser) {
+      // MPH
       const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
-      mphToken.methods.balanceOf(this.wallet.userAddress).call().then(mphBalance => {
+      mphToken.methods.balanceOf(address).call().then(mphBalance => {
         this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
       });
-    } else if (loadUser && this.wallet.watching) {
-      const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
-      mphToken.methods.balanceOf(this.wallet.watchedAddress).call().then(mphBalance => {
-        this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
+
+      // xMPH
+      const xmph = this.contract.getNamedContract('xMPHToken', readonlyWeb3);
+      xmph.methods.balanceOf(address).call().then(xMPHBalance => {
+        this.xMPHBalance = new BigNumber(xMPHBalance).div(this.constants.PRECISION);
       });
     }
 
@@ -126,6 +136,7 @@ export class HeaderComponent implements OnInit {
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
       this.mphBalance = new BigNumber(0);
+      this.xMPHBalance = new BigNumber(0);
     }
 
     if (resetGlobal) {
