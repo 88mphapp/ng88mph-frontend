@@ -21,19 +21,10 @@
 
                   <div class="list-group-item">
                     <div class="row">
-                      <!-- <div class="col-auto text-center">
-
-                        <div class="avatar avatar-sm">
-                          <div class="avatar-title font-size-lg bg-dark rounded-circle text-white border-gradient">
-                            2
-                          </div>
-                        </div>
-
-                      </div> -->
                       <div class="col ml-n2">
                         <div class="form-group mb-2">
-                          <label>Deposit amount (DAI)</label>
-                          <div class="input-group">
+                          <label>Top up amount ({{poolInfo.stablecoinSymbol}})</label>
+                          <div class="input-group mb-2">
                             <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
                               aria-describedby="" [value]=""
                               >
@@ -47,8 +38,8 @@
                         <div class="row mb-4">
                           <div class="col">
                             <small class="form-text text-muted">0.0000
-                              DAI
-                              available | Min: 100 DAI <> Max: 500000 DAI per deposit</small>
+                              {{poolInfo.stablecoinSymbol}}
+                              available | Min: 100 {{poolInfo.stablecoinSymbol}} <> Max: 500000 {{poolInfo.stablecoinSymbol}} per deposit</small>
                           </div>
                         </div>
                       </div>
@@ -74,7 +65,7 @@
                           <h4 class="mb-1 glowing">$0.00</h4>
                           <h5 class="text-muted">
                             0.00
-                            DAI
+                            {{poolInfo.stablecoinSymbol}}
                           </h5>
                         </td>
                       </tr>
@@ -86,8 +77,7 @@
                           <h4 class="mb-1 glowing">$0.00
                           </h4>
                           <h5 class="text-muted">
-                            0.0000
-                              DAI
+                            0.0000 {{poolInfo.stablecoinSymbol}}
                           </h5>
                           <!-- <small *ngIf="selectedPoolInfo.depositFee">Note: A {{selectedPoolInfo.depositFee * 100}}% fee is taken by the underlying yield protocol ({{selectedPoolInfo.protocol}})</small> -->
                           <small>Note: A 10% fee is taken by the underlying yield protocol (Yearn)</small>
