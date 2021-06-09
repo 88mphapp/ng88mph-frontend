@@ -17,6 +17,7 @@ import { Watch } from '../watch';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  gasPrice: BigNumber;
   mphBalance: BigNumber;
   xMPHBalance: BigNumber;
   depositValueLocked: BigNumber;
@@ -85,6 +86,9 @@ export class HeaderComponent implements OnInit {
     }
 
     if (loadGlobal) {
+      // gas price
+      this.gasPrice = new BigNumber(await readonlyWeb3.eth.getGasPrice());
+
       //uni
       const rewards = this.contract.getNamedContract('Farming', readonlyWeb3);
       const totalStakedMPHLPBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
@@ -140,6 +144,7 @@ export class HeaderComponent implements OnInit {
     }
 
     if (resetGlobal) {
+      this.gasPrice = new BigNumber(0);
       this.depositValueLocked = new BigNumber(0);
       this.farmingValueLocked = new BigNumber(0);
       this.sushiFarmingValueLocked = new BigNumber(0);
