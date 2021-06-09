@@ -23,24 +23,20 @@
                     <div class="row">
                       <div class="col ml-n2">
                         <div class="form-group mb-2">
-                          <label>Deposit amount (DAI)</label>
-                          <div class="input-group mb-2">
-                            <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
-                              aria-describedby="" [value]=""
-                              >
+                          <label>Select a custom maturity</label>
+                          <div class="input-group">
+                            <input type="tel" class="form-control form-control-lg" placeholder="0.00" aria-label=""
+                              aria-describedby="" [value]="depositTimeInDays" min="7" id="lock-period" data-mask="#,##0" data-mask-reverse="true"
+                              (input)="setDepositTime($event.target.value)">
                             <div class="input-group-append">
                               <button class="btn btn-lg border-gradient" type="button"
-                                >Max</button>
+                                (click)="setDepositTime(365)">Max</button>
                             </div>
                           </div>
-                        </div>
-
-                        <div class="row mb-4">
-                          <div class="col">
-                            <small class="form-text text-muted">0.0000
-                              DAI
-                              available | Min: 100 DAI <> Max: 500000 DAI per deposit</small>
-                          </div>
+                          <small class="form-text text-muted my-2">
+                            Min: 000 d /
+                            Max: 000 d
+                          </small>
                         </div>
                       </div>
                     </div> <!-- / .row -->
@@ -106,8 +102,8 @@
                     </tbody>
                   </table>
                 </div>
-                <button class="btn btn-lg btn-bg-gradient btn-block" type="button">
-                  Deposit
+                <button class="btn btn-lg btn-bg-gradient btn-block" type="button" (click)="rollOver()">
+                  Roll Over
                 </button>
               </form>
             </div>
