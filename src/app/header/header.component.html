@@ -17,24 +17,24 @@
 
     <!-- Navigation -->
     <ul class="navbar-nav mr-lg-auto" ngbNav [activeId]="route.url">
-      <li class="nav-item" ngbNavItem="/deposits">
-        <a class="nav-link text-white" routerLink="deposits" ngbNavLink>
+      <li class="nav-item" ngbNavItem="/earn">
+        <a class="nav-link text-white" routerLink="earn" ngbNavLink>
           Earn
         </a>
       </li>
-      <li class="nav-item" ngbNavItem="/bonds">
-        <a class="nav-link text-white" routerLink="bonds" ngbNavLink>
+      <li class="nav-item" ngbNavItem="/yield">
+        <a class="nav-link text-white" routerLink="yield" ngbNavLink>
           Yield
         </a>
       </li>
-      <li class="nav-item" ngbNavItem="/rewards">
-        <a class="nav-link text-white" routerLink="rewards" ngbNavLink>
+      <li class="nav-item" ngbNavItem="/stake">
+        <a class="nav-link text-white" routerLink="stake" ngbNavLink>
           Stake
         </a>
       </li>
-      <li class="nav-item" ngbNavItem="/farming">
-        <a class="nav-link text-white" routerLink="farming" ngbNavLink>
-          LM
+      <li class="nav-item" ngbNavItem="/farm">
+        <a class="nav-link text-white" routerLink="farm" ngbNavLink>
+          Farm
         </a>
       </li>
       <li class="nav-item" ngbNavItem="/stats">
@@ -206,14 +206,14 @@
           <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v0</button>
         </div>
       </div>
+      <a class="btn btn-block btn-dark mr-1 mb-3" href=""><img src="./assets/img/local_gas_station_white_24dp.svg" class="mx-1 icon-logo" alt="MPH logo"
+        width="24px">13
+      </a>
       <button class="btn btn-block btn-dark mr-1 mb-3" type="button" routerLink="/rewards">
-        {{mphBalance.toFormat(2)}} MPH <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
-          width="24px">
-      </button>   
-      <button class="btn btn-block btn-dark mr-3 mb-3" type="button" routerLink="/rewards">
-        {{mphBalance.toFormat(2)}} xMPH <img src="./assets/img/token-icons/xmph-logo-24.svg" class="mx-1 icon-logo" alt="xMPH logo"
-          width="24px">
-      </button>
+        <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
+          width="24px"> {{mphBalance.toFormat(2)}} MPH</button>
+      <button class="btn btn-block btn-dark mr-3 mb-3" type="button" routerLink="/rewards"><img src="./assets/img/token-icons/xmph-logo-24.svg" class="mx-1 icon-logo" alt="xMPH logo"
+        width="24px"> {{mphBalance.toFormat(2)}} xMPH</button>
       
       <div class="dropdown">
         <button class="btn btn-block btn-dark dropdown-toggle mr-3 mb-3 d-flex align-items-center justify-content-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -234,8 +234,8 @@
   <!-- User desktop -->
   <div class="navbar-user d-none d-lg-flex">
     <div class="dropdown">
-      <button class="btn btn-sm btn-dark dropdown-toggle mr-3 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div> Ethereum
+      <button class="btn btn-sm btn-dark dropdown-toggle mr-1 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Ethereum
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
         <h6 class="dropdown-header">Select Network (88mph v3)</h6>
@@ -248,13 +248,16 @@
         <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v0</button>
       </div>
     </div>
-    <button class="btn btn-sm btn-dark mr-1" type="button" routerLink="/rewards">
-      {{mphBalance.toFormat(2)}} MPH <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
-        width="24px">
+    <a class="btn btn-sm btn-dark mr-3" href=""><img src="./assets/img/local_gas_station_white_24dp.svg" class="mx-1 icon-logo" alt="MPH logo"
+      width="20px">13
+    </a>
+    <button class="btn btn-sm btn-dark mr-1 d-flex align-items-center" type="button" routerLink="/rewards">
+      <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
+        width="20px"> {{mphBalance.toFormat(2)}} MPH
     </button>   
-    <button class="btn btn-sm btn-dark mr-3" type="button" routerLink="/rewards">
-      {{mphBalance.toFormat(2)}} xMPH <img src="./assets/img/token-icons/xmph-logo-24.svg" class="mx-1 icon-logo" alt="xMPH logo"
-        width="24px">
+    <button class="btn btn-sm btn-dark mr-3 d-flex align-items-center" type="button" routerLink="/rewards">
+      <img src="./assets/img/token-icons/xmph-logo-24.svg" class="mx-1 icon-logo" alt="xMPH logo"
+        width="20px"> {{mphBalance.toFormat(2)}} xMPH
     </button>
     <!-- Connect/watch button -->
     <div class="btn-group btn-group-sm mr-3">
