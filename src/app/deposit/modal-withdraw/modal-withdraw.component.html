@@ -37,9 +37,10 @@
                 <label>Amount</label>
                 <div class="input-group mb-2">
                   <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                    aria-label="withdraw-amount">
+                    aria-label="withdraw-amount" [value]="withdrawAmount.toFixed()"
+                    (input)="setWithdrawAmount($event.target.value)">
                   <div class="input-group-append">
-                    <button class="btn btn-lg border-gradient" type="button">Max</button>
+                    <button class="btn btn-lg border-gradient" type="button" (click)="setMaxWithdrawAmount()">Max</button>
                   </div>
                 </div>
               </div>
@@ -130,13 +131,13 @@
                   </div>
                 </div>
                 <div class="col-4">
-                  <div class="form-group"> 
+                  <div class="form-group">
                     <label class="col-form-label">Or custom duration</label>
                     <input type="tel" min="7" data-mask="#,##0" data-mask-reverse="true" id="lock-period"
                         class="form-control text-right pr-3" [value]="depositTimeInDays"
                         (input)="setDepositTime($event.target.value)">
                     <small class="form-text text-white my-2">
-                      Min: {{minDepositPeriod}}d / 
+                      Min: {{minDepositPeriod}}d /
                       Max: {{maxDepositPeriod}}d
                     </small>
                   </div>
@@ -218,7 +219,7 @@
                   </tbody>
                 </table>
               </div>
-              
+
               <div class="row">
                 <div class="col">
                   <button class="btn btn-lg btn-bg-gradient btn-block" type="button" (click)="deposit()" [disabled]="!canContinue()">
