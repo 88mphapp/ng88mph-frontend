@@ -16,6 +16,8 @@ import { UserDeposit } from '../types';
 export class ModalWithdrawComponent implements OnInit {
   @Input() userDeposit: UserDeposit;
   @Input() poolInfo: PoolInfo;
+
+  withdrawAmount: BigNumber;
   mphRewardAmount: BigNumber;
   mphTakeBackAmount: BigNumber;
   mphBalance: BigNumber;
@@ -64,6 +66,7 @@ export class ModalWithdrawComponent implements OnInit {
   }
 
   resetData() {
+    this.withdrawAmount = new BigNumber(0);
     this.mphRewardAmount = new BigNumber(0);
     this.mphTakeBackAmount = new BigNumber(0);
     this.mphBalance = new BigNumber(0);
@@ -81,14 +84,40 @@ export class ModalWithdrawComponent implements OnInit {
   }
 
   earlyWithdraw() {
-    const pool = this.contract.getPool(this.poolInfo.name);
-    const mphToken = this.contract.getNamedContract('MPHToken');
-    const mphMinter = this.contract.getNamedContractAddress('MPHMinter');
-    const mphAmount = this.helpers.processWeb3Number(this.mphTakeBackAmount.times(this.constants.PRECISION));
-    const func = pool.methods.earlyWithdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
+    // v2 code //
+    // const pool = this.contract.getPool(this.poolInfo.name);
+    // const mphToken = this.contract.getNamedContract('MPHToken');
+    // const mphMinter = this.contract.getNamedContractAddress('MPHMinter');
+    // const mphAmount = this.helpers.processWeb3Number(this.mphTakeBackAmount.times(this.constants.PRECISION));
+    // const func = pool.methods.earlyWithdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
+    // this.wallet.sendTxWithToken(func, mphToken, mphMinter, mphAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
 
-    this.wallet.sendTxWithToken(func, mphToken, mphMinter, mphAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    // v3 code //
+    // const pool = this.contract.getPool(this.poolInfo.name);
+    // const virtualTokensToWithdraw = this.getVirtualTokenAmount();
+    // console.log(virtualTokensToWithdraw);
+    // const func = pool.methods.withdraw(this.userDeposit.nftID, virtualTokensToWithdraw, true);
+    // console.log(this.userDeposit);
+
+    console.log("You still need to implement this!");
   }
+
+  setWithdrawAmount(amount: string) {
+    this.withdrawAmount = new BigNumber(+amount);
+    console.log(this.withdrawAmount);
+  }
+
+  setMaxWithdrawAmount(): void {
+    this.withdrawAmount = new BigNumber(this.userDeposit.amountToken);
+    console.log(this.withdrawAmount);
+  }
+
+  //getVirtualTokenAmount(): BigNumber {
+    // const withdrawRatio = this.withdrawAmount.div(this.userDeposit.amountToken);
+    // const virtualTokenTotalSupply = this.userDeposit.virtualTokenTotalSupply;
+    // const virtualTokensToWithdraw = virtualTokenTotalSupply.times(withdrawRatio);
+    // return virtualTokensToWithdraw;
+  //}
 }
 
 interface QueryResult {
