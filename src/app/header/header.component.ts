@@ -87,7 +87,7 @@ export class HeaderComponent implements OnInit {
 
     if (loadGlobal) {
       // gas price
-      this.gasPrice = new BigNumber(await readonlyWeb3.eth.getGasPrice());
+      this.gasPrice = new BigNumber(await readonlyWeb3.eth.getGasPrice()).div(1e9);
 
       //uni
       const rewards = this.contract.getNamedContract('Farming', readonlyWeb3);
