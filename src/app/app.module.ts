@@ -37,6 +37,8 @@ import { ModalUnstakeZCBLPComponent } from './zero-coupon-bonds/modal-zero-coupo
 import { ModalMphRewardsComponent } from './deposit/modal-mph-rewards/modal-mph-rewards.component';
 import { ModalTopUpComponent } from './deposit/modal-top-up/modal-top-up.component';
 import { ModalRollOverComponent } from './deposit/modal-roll-over/modal-roll-over.component';
+import { ChartsModule } from 'ng2-charts';
+import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liquidity.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,8 @@ import { ModalRollOverComponent } from './deposit/modal-roll-over/modal-roll-ove
     ModalUnstakeZCBLPComponent,
     ModalMphRewardsComponent,
     ModalTopUpComponent,
-    ModalRollOverComponent
+    ModalRollOverComponent,
+    MphLiquidityComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +81,8 @@ import { ModalRollOverComponent } from './deposit/modal-roll-over/modal-roll-ove
     GraphQLModule,
     HttpClientModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
