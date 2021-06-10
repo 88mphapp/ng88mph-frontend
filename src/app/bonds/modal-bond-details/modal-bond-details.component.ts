@@ -126,7 +126,8 @@ export class ModalBondDetailsComponent implements OnInit {
     this.floatingRatePrediction = new BigNumber(newPrediction);
     const estimatedRemainingEarnings = this.totalAmountMulTime.times(newPrediction).div(100).div(this.constants.YEAR_IN_SEC);
     const cost = this.funding.deficitToken.minus(this.funding.refundAmountToken);
-    this.estimatedProfitToken = estimatedRemainingEarnings.plus(this.funding.interestEarnedToken).plus(this.interestFromLeftoverDeposits).minus(cost);
+    const accruedInterest = this.funding.recordedFundedDepositAmount.times(this.funding.pool.moneyMarketIncomeIndex).div(this.funding.recordedMoneyMarketIncomeIndex).minus(this.funding.recordedFundedDepositAmount);
+    this.estimatedProfitToken = estimatedRemainingEarnings.plus(this.funding.interestEarnedToken).plus(this.interestFromLeftoverDeposits).plus(accruedInterest).minus(cost);
     const tokenPrice = this.funding.deficitUSD.div(this.funding.deficitToken); // infer token price from funding, avoids network request
     this.estimatedProfitUSD = this.estimatedProfitToken.times(tokenPrice);
     this.estimatedROI = this.estimatedProfitToken.div(cost).times(100);

@@ -206,7 +206,8 @@ export class BondsComponent implements OnInit {
               refundAmountToken: new BigNumber(funding.refundAmount),
               refundAmountUSD: new BigNumber(funding.refundAmount).times(stablecoinPrice),
               recordedMoneyMarketIncomeIndex: new BigNumber(funding.recordedMoneyMarketIncomeIndex),
-              creationTimestamp: +funding.creationTimestamp
+              creationTimestamp: +funding.creationTimestamp,
+              recordedFundedDepositAmount: new BigNumber(funding.recordedFundedDepositAmount)
             }
             fundings.push(fundingObj)
           }

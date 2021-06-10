@@ -28,6 +28,7 @@ export interface Funding {
   refundAmountUSD: BigNumber;
   recordedMoneyMarketIncomeIndex: BigNumber;
   creationTimestamp: number;
+  recordedFundedDepositAmount: BigNumber;
 }
 
 export interface Deposit {
