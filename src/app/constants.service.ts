@@ -6,6 +6,27 @@ import BigNumber from 'bignumber.js';
 })
 export class ConstantsService {
 
+  CHAIN_ID = {
+    MAINNET: 1,
+    RINKEBY: 4
+  };
+
+  MPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
+    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93'
+  };
+
+  // @dev currently points to MPH
+  XMPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
+    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93'
+  };
+
+  GRAPHQL_ENDPOINT_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph', // v2
+    [this.CHAIN_ID.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby' // v3
+  };
+
   // UTILITIES //
   PRECISION = 1e18;
   YEAR_IN_SEC = 31556952;
