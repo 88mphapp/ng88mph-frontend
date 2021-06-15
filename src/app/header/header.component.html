@@ -193,12 +193,17 @@
       </div>
       <div class="dropdown">
         <button class="btn btn-block mb-3 btn-dark dropdown-toggle mr-3 d-flex align-items-center justify-content-center " type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div> Ethereum
+          <ng-container *ngIf="chainId === constants.CHAIN_ID.MAINNET">
+            <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Ethereum
+          </ng-container>
+          <ng-container *ngIf="chainId === constants.CHAIN_ID.RINKEBY">
+            <div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Rinkeby
+          </ng-container>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
           <h6 class="dropdown-header">Select Network (88mph v3)</h6>
           <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
-          <button class="dropdown-item d-flex align-items-center mr-2" type="button"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button>
+          <!-- <button class="dropdown-item d-flex align-items-center mr-2" type="button"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button> -->
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Select 88mph legacy version xxx</h6>
           <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v2/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v2</a>
@@ -235,12 +240,17 @@
   <div class="navbar-user d-none d-lg-flex">
     <div class="dropdown">
       <button class="btn btn-sm btn-dark dropdown-toggle mr-1 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Ethereum
+        <ng-container *ngIf="chainId === constants.CHAIN_ID.MAINNET">
+          <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Ethereum
+        </ng-container>
+        <ng-container *ngIf="chainId === constants.CHAIN_ID.RINKEBY">
+          <div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Rinkeby
+        </ng-container>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
         <h6 class="dropdown-header">Select Network (88mph v3)</h6>
         <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
-        <button class="dropdown-item d-flex align-items-center mr-2" type="button"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button>
+        <!-- <button class="dropdown-item d-flex align-items-center mr-2" type="button"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button> -->
         <div class="dropdown-divider"></div>
         <h6 class="dropdown-header">Select 88mph legacy version</h6>
         <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v2/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v2</a>
