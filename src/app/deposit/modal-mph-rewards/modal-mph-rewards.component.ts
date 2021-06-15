@@ -40,6 +40,10 @@ export class ModalMphRewardsComponent implements OnInit {
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData();
     });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData();
+      this.loadData();
+    });
   }
 
   // @dev line 61 needs double checked

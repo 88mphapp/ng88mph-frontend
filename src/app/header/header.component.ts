@@ -42,18 +42,13 @@ export class HeaderComponent implements OnInit {
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
     });
-
-    this.wallet.chainChangedEvent.subscribe(() => {
-      this.zone.run(() => {
-        this.resetData(true, true);
-        this.loadData(true, true);
-      });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData(true, true);
+      this.loadData(true, true);
     });
-
-    const provider = window['ethereum'] || (this.wallet.web3 && this.wallet.web3.currentProvider);
-    provider.on('chainChanged', (chainId) => {
-      this.chainId = parseInt(chainId.substring(2));
-      this.wallet.changeChain(this.chainId);
+    this.wallet.accountChangedEvent.subscribe((account) => {
+      this.resetData(true, false);
+      this.loadData(true, false);
     });
   }
 

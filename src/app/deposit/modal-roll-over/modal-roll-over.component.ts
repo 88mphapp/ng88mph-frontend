@@ -40,6 +40,10 @@ export class ModalRollOverComponent implements OnInit {
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData();
     });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData();
+      this.loadData();
+    });
   }
 
   loadData() {

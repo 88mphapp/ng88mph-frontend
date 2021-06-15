@@ -38,6 +38,10 @@ export class StatsComponent implements OnInit {
       this.resetData();
       this.loadData();
     });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData();
+      this.loadData();
+    });
   }
 
   async loadData() {
