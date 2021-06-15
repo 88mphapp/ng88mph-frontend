@@ -18,6 +18,10 @@ export class SyncWarningComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData();
+      this.loadData();
+    });
   }
 
   loadData() {

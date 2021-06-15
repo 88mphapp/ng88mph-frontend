@@ -95,6 +95,14 @@ export class DepositComponent implements OnInit {
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
     });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData(true, true);
+      this.loadData(true, true);
+    });
+    this.wallet.accountChangedEvent.subscribe((account) => {
+      this.resetData(true, false);
+      this.loadData(true, false);
+    });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
@@ -114,18 +122,19 @@ export class DepositComponent implements OnInit {
       // load Zero Coupon Bond / Preset Maturity data
       const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
       const zcbPoolList = zcbPoolNameList.map(poolName => this.contract.getZeroCouponBondPool(poolName));
-      this.allZCBPoolList = zcbPoolList.concat.apply([],zcbPoolList);
-      for (let pool in this.allZCBPoolList) {
-        const zcbPool = this.allZCBPoolList[pool];
-        const zcbContract = this.contract.getZeroCouponBondContract(zcbPool.address ,readonlyWeb3);
+      this.allZCBPoolList = zcbPoolList.concat.apply([], zcbPoolList);
+      const userZCBPools = [];
+      let totalDepositUSD = new BigNumber(0);
+      for (let zcbPool of this.allZCBPoolList) {
+        const zcbContract = this.contract.getZeroCouponBondContract(zcbPool.address, readonlyWeb3);
         const poolInfo = this.contract.getPoolInfoFromAddress(await zcbContract.methods.pool().call());
         const userBalance = new BigNumber(await zcbContract.methods.balanceOf(userID).call()).div(Math.pow(10, poolInfo.stablecoinDecimals));
 
-        if(userBalance.gt(0)) {
+        if (userBalance.gt(0)) {
           const zcbPriceUSD = new BigNumber(await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo));
           const userBalanceUSD = userBalance.times(zcbPriceUSD);
           const maturationTimestamp = await zcbContract.methods.maturationTimestamp().call();
-          const maturationDate = new Date(maturationTimestamp * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+          const maturationDate = new Date(maturationTimestamp * 1e3).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
           let userZCB: UserZCBPool = {
             zcbPoolInfo: zcbPool,
             poolName: poolInfo.name,
@@ -134,10 +143,12 @@ export class DepositComponent implements OnInit {
             amountUSD: userBalanceUSD,
             maturation: maturationDate
           }
-          this.userZCBPools.push(userZCB);
-          this.totalDepositUSD = this.totalDepositUSD.plus(userBalanceUSD);
+          userZCBPools.push(userZCB);
+          totalDepositUSD = totalDepositUSD.plus(userBalanceUSD);
         }
       }
+      this.userZCBPools = userZCBPools;
+      this.totalDepositUSD = totalDepositUSD;
     }
 
     await this.helpers.getMPHPriceUSD().then((price) => {
@@ -308,7 +319,6 @@ export class DepositComponent implements OnInit {
           userPools.push(userPool);
         })).then(() => {
           this.userPools = userPools;
-          console.log(this.userPools);
         });
 
         // compute total deposit & interest in USD

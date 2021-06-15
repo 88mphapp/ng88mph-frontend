@@ -53,6 +53,14 @@ export class FarmZeroCouponBondComponent implements OnInit {
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
     });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData(true, true);
+      this.loadData(true, true);
+    });
+    this.wallet.accountChangedEvent.subscribe((account) => {
+      this.resetData(true, false);
+      this.loadData(true, false);
+    });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {

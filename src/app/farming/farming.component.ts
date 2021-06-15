@@ -97,6 +97,14 @@ export class FarmingComponent implements OnInit {
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
     });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData(true, true);
+      this.loadData(true, true);
+    });
+    this.wallet.accountChangedEvent.subscribe((account) => {
+      this.resetData(true, false);
+      this.loadData(true, false);
+    });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
@@ -105,7 +113,6 @@ export class FarmingComponent implements OnInit {
     const uniLPToken = this.contract.getNamedContract('MPHLP', readonlyWeb3);
 
     const sushiMasterChef = this.contract.getContract(this.constants.SUSHI_MASTERCHEF, 'MasterChef', readonlyWeb3);
-    const yflinkStaking = this.contract.getContract(this.constants.LINKSWAP_STAKING, 'LinkSwapStaking', readonlyWeb3);
     const bancorLiquidityProtectionStats = this.contract.getContract(this.constants.BANCOR_LP_STATS, 'LiquidityProtectionStats', readonlyWeb3);
     const bancorLPStore = this.contract.getNamedContract('BancorLPStore', readonlyWeb3);
     const bancorStaking = this.contract.getContract(this.constants.BANCOR_STAKING_REWARDS, 'BancorStaking', readonlyWeb3);

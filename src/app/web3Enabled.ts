@@ -2,26 +2,21 @@ import Web3 from 'web3';
 import Notify from 'bnc-notify';
 import Onboard from 'bnc-onboard';
 import BigNumber from 'bignumber.js';
+import { ConstantsService } from './constants.service';
+import { EventEmitter } from '@angular/core';
 
 export class Web3Enabled {
-  blocknativeAPIKey: string;
-  infuraKey: string;
-  portisAPIKey: string;
-  fortmaticKey: string;
+  connectedEvent: EventEmitter<null>;
+  disconnectedEvent: EventEmitter<null>;
+  chainChangedEvent: EventEmitter<number>;
+  accountChangedEvent: EventEmitter<string>;
+
   assistInstance: any;
   notifyInstance: any;
   state: any;
   networkID: number;
-  alchemyEndpoint: string;
-  alchemyWSEndpoint: string;
 
-  constructor(public web3: Web3) {
-    this.blocknativeAPIKey = 'af9c0a83-8874-4e07-a272-19c879420693';
-    this.infuraKey = '9e5f0d08ad19483193cc86092b7512f2';
-    this.portisAPIKey = 'a838dbd2-c0b1-4465-8dbe-36b88f3d0d4e';
-    this.fortmaticKey = 'pk_live_937F9430B2CB3407';
-    this.alchemyEndpoint = 'https://eth-mainnet.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-';
-    this.alchemyWSEndpoint = 'wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-';
+  constructor(public web3: Web3, public constants: ConstantsService) {
     this.networkID = 1;
     this.state = {
       address: null,
@@ -29,6 +24,10 @@ export class Web3Enabled {
         provider: null
       }
     };
+    this.connectedEvent = new EventEmitter<null>();
+    this.disconnectedEvent = new EventEmitter<null>();
+    this.chainChangedEvent = new EventEmitter<number>();
+    this.accountChangedEvent = new EventEmitter<string>();
   }
 
   async connect(onConnected, onError, isStartupMode: boolean) {
@@ -62,40 +61,35 @@ export class Web3Enabled {
         genericMobileWalletConfig,
         {
           walletName: 'walletConnect',
-          rpc: {
-            [this.networkID]: this.alchemyEndpoint
-          },
-          networkId: this.networkID,
+          rpc: this.constants.RPC,
           preferred: true
         },
         {
           walletName: 'ledger',
-          rpcUrl: this.alchemyEndpoint,
+          rpcUrl: this.constants.RPC[this.networkID],
           preferred: true
         },
         {
           walletName: 'trezor',
           appUrl: 'https://88mph.app',
           email: 'hello@88mph.app',
-          rpcUrl: this.alchemyEndpoint,
+          rpcUrl: this.constants.RPC[this.networkID],
           preferred: true
         },
         {
           walletName: 'walletLink',
-          rpcUrl: this.alchemyEndpoint,
+          rpcUrl: this.constants.RPC[this.networkID],
           appName: '88mph',
           appLogoUrl: 'https://88mph.app/docs/img/88mph-logo-dark.png'
         },
         {
           walletName: 'fortmatic',
-          apiKey: this.fortmaticKey,
-          networkId: this.networkID
+          apiKey: this.constants.FORTMATIC_KEY
         },
-        { walletName: 'authereum', networkId: this.networkID },
+        { walletName: 'authereum' },
         {
           walletName: 'portis',
-          apiKey: this.portisAPIKey,
-          networkId: this.networkID
+          apiKey: this.constants.PORTIS_KEY
         },
       ];
 
@@ -103,7 +97,6 @@ export class Web3Enabled {
         { checkName: 'derivationPath' },
         { checkName: 'connect' },
         { checkName: 'accounts' },
-        { checkName: 'network' },
       ];
 
       const walletSelectConfig = {
@@ -113,26 +106,49 @@ export class Web3Enabled {
       };
 
       const bncAssistConfig = {
-        dappId: this.blocknativeAPIKey,
+        dappId: this.constants.BLOCKNATIVE_KEY,
         darkMode: true,
         networkId: this.networkID,
         hideBranding: true,
         subscriptions: {
           wallet: wallet => {
             if (wallet.provider) {
+              this.state.wallet = wallet;
               this.web3 = new Web3(wallet.provider);
+              // store the selected wallet name to be retrieved next time the app loads
+              window.localStorage.setItem('selectedWallet', wallet.name);
             }
-            // store the selected wallet name to be retrieved next time the app loads
-            window.localStorage.setItem('selectedWallet', wallet.name);
           },
-          address: this.doNothing,
-          network: this.doNothing,
+          address: (newAddress) => {
+            const shouldEmitEvent = newAddress != this.state.address && this.state.address;
+            this.state.address = newAddress;
+            if (shouldEmitEvent) {
+              this.accountChangedEvent.emit(newAddress);
+            }
+          },
+          network: (newNetworkID) => {
+            if (newNetworkID != this.networkID && this.notifyInstance) {
+              this.notifyInstance.config({
+                networkId: newNetworkID
+              });
+              this.chainChangedEvent.emit(newNetworkID);
+            }
+            this.networkID = newNetworkID;
+          },
           balance: this.doNothing
         },
         walletSelect: walletSelectConfig,
         walletCheck: walletChecks
       };
       this.assistInstance = Onboard(bncAssistConfig);
+    }
+    const _onConnected = () => {
+      this.connectedEvent.emit();
+      onConnected();
+    };
+    const _onError = () => {
+      this.disconnectedEvent.emit();
+      onError();
     }
 
     // Get user to select a wallet
@@ -161,21 +177,21 @@ export class Web3Enabled {
       if (!ready) {
         // Selected an option but then dismissed it
         // Treat as no wallet
-        onError();
+        _onError();
       } else {
         // Successfully connected
-        onConnected();
+        _onConnected();
       }
     } else {
       // User refuses to connect to wallet
       // Update state
       this.state = this.assistInstance.getState();
-      onError();
+      _onError();
     }
 
     if (!this.notifyInstance) {
       this.notifyInstance = Notify({
-        dappId: this.blocknativeAPIKey,
+        dappId: this.constants.BLOCKNATIVE_KEY,
         networkId: this.networkID
       });
       this.notifyInstance.config({
@@ -188,7 +204,7 @@ export class Web3Enabled {
     if (this.state.wallet.provider) {
       return this.web3;
     }
-    return new Web3(this.alchemyWSEndpoint);
+    return new Web3(this.constants.RPC_WS[this.networkID]);
   }
 
   async estimateGas(func, val, _onError) {
