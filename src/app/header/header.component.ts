@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import BigNumber from 'bignumber.js';
 import { AppComponent } from '../app.component';
@@ -24,7 +24,8 @@ export class HeaderComponent implements OnInit {
     public wallet: WalletService,
     public contract: ContractService,
     public constants: ConstantsService,
-    public app: AppComponent
+    public app: AppComponent,
+    private zone: NgZone
   ) {
     this.resetData(true, true);
   }
@@ -32,20 +33,27 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData(this.wallet.connected, true);
+
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
       this.loadData(true, true);
     });
+
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
     });
 
+    this.wallet.chainChangedEvent.subscribe(() => {
+      this.zone.run(() => {
+        this.resetData(true, true);
+        this.loadData(true, true);
+      });
+    });
+
     const provider = window['ethereum'] || (this.wallet.web3 && this.wallet.web3.currentProvider);
-    provider.on('chainChanged', chainId => {
+    provider.on('chainChanged', (chainId) => {
       this.chainId = parseInt(chainId.substring(2));
       this.wallet.changeChain(this.chainId);
-      this.resetData(true, true);
-      this.loadData(true, true);
     });
   }
 
@@ -62,12 +70,12 @@ export class HeaderComponent implements OnInit {
     }
 
     if (loadUser) {
-      const mphToken = await this.contract.getContract(this.constants.MPH_ADDRESS[this.chainId], 'MPHToken', readonlyWeb3);
-      mphToken.methods.balanceOf(address).call().then(mphBalance => {
+      const mph = await this.contract.getContract(this.constants.MPH_ADDRESS[this.chainId], `${this.constants.CHAIN_NAME[this.chainId]}/MPHToken`);
+      mph.methods.balanceOf(address).call().then(mphBalance => {
         this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
       });
 
-      const xmph = await this.contract.getContract(this.constants.XMPH_ADDRESS[this.chainId], 'xMPHToken', readonlyWeb3);
+      const xmph = await this.contract.getContract(this.constants.XMPH_ADDRESS[this.chainId], `${this.constants.CHAIN_NAME[this.chainId]}/xMPHToken`);
       xmph.methods.balanceOf(address).call().then(xMPHBalance => {
         this.xMPHBalance = new BigNumber(xMPHBalance).div(this.constants.PRECISION);
       });
@@ -104,5 +112,4 @@ export class HeaderComponent implements OnInit {
     this.wallet.watch.watching = watching;
     this.loadData(true, true);
   }
-
 }

@@ -11,6 +11,11 @@ export class ConstantsService {
     RINKEBY: 4
   };
 
+  CHAIN_NAME = {
+    1: 'mainnet',
+    4: 'rinkeby'
+  };
+
   MPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
     [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93'
