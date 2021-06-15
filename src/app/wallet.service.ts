@@ -11,12 +11,14 @@ import { Watch } from './watch';
 export class WalletService extends Web3Enabled {
   connectedEvent: EventEmitter<null>;
   disconnectedEvent: EventEmitter<null>;
+  chainChangedEvent: EventEmitter<null>;
   watch: Watch;
 
   constructor(@Inject(WEB3) public web3: Web3) {
     super(web3);
     this.connectedEvent = new EventEmitter<null>();
     this.disconnectedEvent = new EventEmitter<null>();
+    this.chainChangedEvent = new EventEmitter<null>();
     this.watch = new Watch(false, null);
   }
 
@@ -46,6 +48,11 @@ export class WalletService extends Web3Enabled {
       onError();
     }
     await super.connect(_onConnected, _onError, isStartupMode);
+  }
+
+  async changeChain(chainId: number) {
+    this.networkID = chainId;
+    this.chainChangedEvent.emit();
   }
 
   watchWallet(address: string) {
