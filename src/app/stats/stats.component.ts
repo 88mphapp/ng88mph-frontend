@@ -71,7 +71,9 @@ export class StatsComponent implements OnInit {
       this.mphPriceUSD = price;
     });
 
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const readonlyWeb3 = this.wallet.readonlyWeb3(
+      this.constants.CHAIN_ID.MAINNET
+    );
     const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
     const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
     this.mphTotalSupply = new BigNumber(

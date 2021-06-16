@@ -220,9 +220,12 @@ export class Web3Enabled {
     );
   }
 
-  readonlyWeb3() {
+  readonlyWeb3(chainId?: number) {
     if (this.state.wallet.provider) {
       return this.web3;
+    }
+    if (chainId) {
+      return new Web3(this.constants.RPC_WS[chainId]);
     }
     return new Web3(this.constants.RPC_WS[this.networkID]);
   }
