@@ -6,16 +6,13 @@ import { WalletService } from '../wallet.service';
 @Component({
   selector: 'app-claim-mph',
   templateUrl: './claim-mph.component.html',
-  styleUrls: ['./claim-mph.component.css']
+  styleUrls: ['./claim-mph.component.css'],
 })
 export class ClaimMPHComponent implements OnInit {
   claimAmount: BigNumber;
   claimed: boolean;
 
-  constructor(
-    public wallet: WalletService,
-    public merkle: MerkleService
-  ) {
+  constructor(public wallet: WalletService, public merkle: MerkleService) {
     this.resetData();
   }
 
@@ -48,8 +45,20 @@ export class ClaimMPHComponent implements OnInit {
   claim() {
     const distributor = this.merkle.getMPHMerkleDistributor();
     const claim = this.merkle.getMPHClaimForAddress(this.wallet.userAddress);
-    const func = distributor.methods.claim(claim.index, this.wallet.userAddress, claim.amount, claim.proof);
+    const func = distributor.methods.claim(
+      claim.index,
+      this.wallet.userAddress,
+      claim.amount,
+      claim.proof
+    );
 
-    this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 }

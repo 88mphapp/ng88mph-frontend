@@ -9,7 +9,7 @@ import { ZeroCouponBondTableEntry } from '../../zero-coupon-bonds.component';
 @Component({
   selector: 'app-redeem-zero-coupon-bond',
   templateUrl: './redeem-zero-coupon-bond.component.html',
-  styleUrls: ['./redeem-zero-coupon-bond.component.css']
+  styleUrls: ['./redeem-zero-coupon-bond.component.css'],
 })
 export class RedeemZeroCouponBondComponent implements OnInit {
   @Input() zcbEntry: ZeroCouponBondTableEntry;
@@ -48,9 +48,20 @@ export class RedeemZeroCouponBondComponent implements OnInit {
 
   async loadData() {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const stablecoin = this.contract.getPoolStablecoin(this.poolInfo.name, readonlyWeb3);
+    const stablecoin = this.contract.getPoolStablecoin(
+      this.poolInfo.name,
+      readonlyWeb3
+    );
     const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
-    stablecoin.methods.balanceOf(this.zcbEntry.zcbInfo.address).call().then(balance => this.globalRedeemableAmount = new BigNumber(balance).div(stablecoinPrecision));
+    stablecoin.methods
+      .balanceOf(this.zcbEntry.zcbInfo.address)
+      .call()
+      .then(
+        (balance) =>
+          (this.globalRedeemableAmount = new BigNumber(balance).div(
+            stablecoinPrecision
+          ))
+      );
   }
 
   get zcbIsMature(): boolean {
@@ -62,15 +73,33 @@ export class RedeemZeroCouponBondComponent implements OnInit {
   }
 
   get maxRedeemableAmount(): BigNumber {
-    return BigNumber.min(this.globalRedeemableAmount, this.zcbEntry.userBalance);
+    return BigNumber.min(
+      this.globalRedeemableAmount,
+      this.zcbEntry.userBalance
+    );
   }
 
   redeem() {
-    const zcbContract = this.contract.getZeroCouponBondContract(this.zcbEntry.zcbInfo.address);
+    const zcbContract = this.contract.getZeroCouponBondContract(
+      this.zcbEntry.zcbInfo.address
+    );
     const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
-    const redeemAmount = BigNumber.min(this.zcbEntry.userBalance, this.globalRedeemableAmount).times(stablecoinPrecision).integerValue().toFixed();
+    const redeemAmount = BigNumber.min(
+      this.zcbEntry.userBalance,
+      this.globalRedeemableAmount
+    )
+      .times(stablecoinPrecision)
+      .integerValue()
+      .toFixed();
     const func = zcbContract.methods.redeemStablecoin(redeemAmount);
 
-    this.wallet.sendTx(func, () => { }, () => { }, (err) => { this.wallet.displayGenericError(err) });
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      (err) => {
+        this.wallet.displayGenericError(err);
+      }
+    );
   }
 }

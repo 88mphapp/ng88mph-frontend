@@ -8,9 +8,8 @@ describe('ClaimETHComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ClaimETHComponent ]
-    })
-    .compileComponents();
+      declarations: [ClaimETHComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

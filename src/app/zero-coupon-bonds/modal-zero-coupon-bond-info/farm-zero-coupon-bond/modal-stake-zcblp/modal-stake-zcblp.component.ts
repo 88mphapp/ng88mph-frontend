@@ -10,10 +10,9 @@ import { ZeroCouponBondTableEntry } from 'src/app/zero-coupon-bonds/zero-coupon-
 @Component({
   selector: 'app-modal-stake-zcblp',
   templateUrl: './modal-stake-zcblp.component.html',
-  styleUrls: ['./modal-stake-zcblp.component.css']
+  styleUrls: ['./modal-stake-zcblp.component.css'],
 })
 export class ModalStakeZCBLPComponent implements OnInit {
-
   @Input() stakedTokenPoolProportion: BigNumber;
   @Input() stakedTokenBalance: BigNumber;
   @Input() totalStakedTokenBalance: BigNumber;
@@ -54,8 +53,13 @@ export class ModalStakeZCBLPComponent implements OnInit {
   }
 
   async loadData() {
-    const lpToken = this.contract.getContract(this.zcbEntry.zcbInfo.sushiSwapPair, 'MPHLP');
-    this.stakeTokenBalance = new BigNumber(await lpToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    const lpToken = this.contract.getContract(
+      this.zcbEntry.zcbInfo.sushiSwapPair,
+      'MPHLP'
+    );
+    this.stakeTokenBalance = new BigNumber(
+      await lpToken.methods.balanceOf(this.wallet.userAddress).call()
+    ).div(this.constants.PRECISION);
     this.setStakeAmount(this.stakeTokenBalance.toFixed(18));
   }
 
@@ -71,23 +75,53 @@ export class ModalStakeZCBLPComponent implements OnInit {
     if (this.stakeAmount.isNaN()) {
       this.stakeAmount = new BigNumber(0);
     }
-    this.newStakedTokenPoolProportion = this.stakedTokenBalance.plus(this.stakeAmount).div(this.totalStakedTokenBalance.plus(this.stakeAmount)).times(100);
+    this.newStakedTokenPoolProportion = this.stakedTokenBalance
+      .plus(this.stakeAmount)
+      .div(this.totalStakedTokenBalance.plus(this.stakeAmount))
+      .times(100);
     if (this.newStakedTokenPoolProportion.isNaN()) {
       this.newStakedTokenPoolProportion = new BigNumber(0);
     }
-    this.newRewardPerDay = this.stakedTokenBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedTokenBalance.plus(this.stakeAmount))).times(this.constants.DAY_IN_SEC);
+    this.newRewardPerDay = this.stakedTokenBalance
+      .plus(this.stakeAmount)
+      .times(
+        this.totalRewardPerSecond.div(
+          this.totalStakedTokenBalance.plus(this.stakeAmount)
+        )
+      )
+      .times(this.constants.DAY_IN_SEC);
     if (this.newRewardPerDay.isNaN()) {
       this.newRewardPerDay = new BigNumber(0);
     }
   }
 
   stake() {
-    const rewards = this.contract.getContract(this.zcbEntry.zcbInfo.farmAddress, 'Farming');
-    const lpToken = this.contract.getContract(this.zcbEntry.zcbInfo.sushiSwapPair, 'MPHLP');
-    const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
+    const rewards = this.contract.getContract(
+      this.zcbEntry.zcbInfo.farmAddress,
+      'Farming'
+    );
+    const lpToken = this.contract.getContract(
+      this.zcbEntry.zcbInfo.sushiSwapPair,
+      'MPHLP'
+    );
+    const stakeAmount = this.helpers.processWeb3Number(
+      this.stakeAmount.times(this.constants.PRECISION)
+    );
     const func = rewards.methods.stake(stakeAmount);
 
-    this.wallet.sendTxWithToken(func, lpToken, rewards.options.address, stakeAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTxWithToken(
+      func,
+      lpToken,
+      rewards.options.address,
+      stakeAmount,
+      () => {},
+      () => {
+        this.activeModal.dismiss();
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 
   canContinue() {

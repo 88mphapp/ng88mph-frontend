@@ -10,7 +10,7 @@ import { ZeroCouponBondTableEntry } from 'src/app/zero-coupon-bonds/zero-coupon-
 @Component({
   selector: 'app-modal-unstake-zcblp',
   templateUrl: './modal-unstake-zcblp.component.html',
-  styleUrls: ['./modal-unstake-zcblp.component.css']
+  styleUrls: ['./modal-unstake-zcblp.component.css'],
 })
 export class ModalUnstakeZCBLPComponent implements OnInit {
   @Input() stakedTokenPoolProportion: BigNumber;
@@ -66,22 +66,46 @@ export class ModalUnstakeZCBLPComponent implements OnInit {
     if (this.unstakeAmount.isNaN()) {
       this.unstakeAmount = new BigNumber(0);
     }
-    this.newStakedTokenPoolProportion = this.stakedTokenBalance.minus(this.unstakeAmount).div(this.totalStakedTokenBalance.minus(this.unstakeAmount)).times(100);
+    this.newStakedTokenPoolProportion = this.stakedTokenBalance
+      .minus(this.unstakeAmount)
+      .div(this.totalStakedTokenBalance.minus(this.unstakeAmount))
+      .times(100);
     if (this.newStakedTokenPoolProportion.isNaN()) {
       this.newStakedTokenPoolProportion = new BigNumber(0);
     }
-    this.newRewardPerDay = this.stakedTokenBalance.minus(this.unstakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedTokenBalance.minus(this.unstakeAmount))).times(this.constants.DAY_IN_SEC);
+    this.newRewardPerDay = this.stakedTokenBalance
+      .minus(this.unstakeAmount)
+      .times(
+        this.totalRewardPerSecond.div(
+          this.totalStakedTokenBalance.minus(this.unstakeAmount)
+        )
+      )
+      .times(this.constants.DAY_IN_SEC);
     if (this.newRewardPerDay.isNaN()) {
       this.newRewardPerDay = new BigNumber(0);
     }
   }
 
   unstake() {
-    const rewards = this.contract.getContract(this.zcbEntry.zcbInfo.farmAddress, 'Farming');
-    const unstakeAmount = this.helpers.processWeb3Number(this.unstakeAmount.times(this.constants.PRECISION));
+    const rewards = this.contract.getContract(
+      this.zcbEntry.zcbInfo.farmAddress,
+      'Farming'
+    );
+    const unstakeAmount = this.helpers.processWeb3Number(
+      this.unstakeAmount.times(this.constants.PRECISION)
+    );
     const func = rewards.methods.withdraw(unstakeAmount);
 
-    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {
+        this.activeModal.dismiss();
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 
   canContinue() {

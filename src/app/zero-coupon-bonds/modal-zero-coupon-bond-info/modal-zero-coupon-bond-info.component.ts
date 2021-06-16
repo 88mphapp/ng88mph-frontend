@@ -10,7 +10,7 @@ import { ZeroCouponBondTableEntry } from '../zero-coupon-bonds.component';
 @Component({
   selector: 'app-modal-zero-coupon-bond-info',
   templateUrl: './modal-zero-coupon-bond-info.component.html',
-  styleUrls: ['./modal-zero-coupon-bond-info.component.css']
+  styleUrls: ['./modal-zero-coupon-bond-info.component.css'],
 })
 export class ModalZeroCouponBondInfoComponent implements OnInit {
   @Input() zcbEntry: ZeroCouponBondTableEntry;
@@ -22,10 +22,7 @@ export class ModalZeroCouponBondInfoComponent implements OnInit {
     public contract: ContractService,
     public helpers: HelpersService,
     public constants: ConstantsService
-  ) {
-  }
+  ) {}
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 }

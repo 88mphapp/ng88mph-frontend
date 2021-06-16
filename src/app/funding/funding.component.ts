@@ -6,13 +6,10 @@ import { WalletService } from '../wallet.service';
 @Component({
   selector: 'app-funding',
   templateUrl: './funding.component.html',
-  styleUrls: ['./funding.component.css']
+  styleUrls: ['./funding.component.css'],
 })
 export class FundingComponent implements OnInit {
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 }

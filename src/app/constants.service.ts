@@ -1,69 +1,74 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConstantsService {
-
   CHAIN_ID = {
     MAINNET: 1,
-    RINKEBY: 4
+    RINKEBY: 4,
   };
 
   CHAIN_NAME = {
     1: 'mainnet',
-    4: 'rinkeby'
+    4: 'rinkeby',
   };
 
   MPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
-    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93'
+    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
   };
 
   // @dev currently points to MPH
   XMPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
-    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93'
+    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
   };
 
   GRAPHQL_ENDPOINT_ADDRESS = {
-    [this.CHAIN_ID.MAINNET]: 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph', // v2
-    [this.CHAIN_ID.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby' // v3
+    [this.CHAIN_ID.MAINNET]:
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph', // v2
+    [this.CHAIN_ID.RINKEBY]:
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby', // v3
   };
 
   RPC = {
-    [this.CHAIN_ID.MAINNET]: 'https://eth-mainnet.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
-    [this.CHAIN_ID.RINKEBY]: 'https://eth-rinkeby.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4'
+    [this.CHAIN_ID.MAINNET]:
+      'https://eth-mainnet.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
+    [this.CHAIN_ID.RINKEBY]:
+      'https://eth-rinkeby.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
   };
 
   RPC_WS = {
-    [this.CHAIN_ID.MAINNET]: 'wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
-    [this.CHAIN_ID.RINKEBY]: 'wss://eth-rinkeby.ws.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4'
+    [this.CHAIN_ID.MAINNET]:
+      'wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
+    [this.CHAIN_ID.RINKEBY]:
+      'wss://eth-rinkeby.ws.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
   };
 
   NETWORK_METADATA = {
     [this.CHAIN_ID.MAINNET]: {
-      chainId: "0x1",
-      chainName: "Ethereum",
+      chainId: '0x1',
+      chainName: 'Ethereum',
       nativeCurrency: {
-        name: "Ethereum",
-        symbol: "ETH",
+        name: 'Ethereum',
+        symbol: 'ETH',
         decimals: 18,
       },
-      rpcUrls: ["https://mainnet.infura.io/v3"],
-      blockExplorerUrls: ["https://etherscan.com"],
+      rpcUrls: ['https://mainnet.infura.io/v3'],
+      blockExplorerUrls: ['https://etherscan.com'],
     },
     [this.CHAIN_ID.RINKEBY]: {
-      chainId: "0x4",
-      chainName: "Rinkeby",
+      chainId: '0x4',
+      chainName: 'Rinkeby',
       nativeCurrency: {
-        name: "Ethereum",
-        symbol: "ETH",
+        name: 'Ethereum',
+        symbol: 'ETH',
         decimals: 18,
       },
-      rpcUrls: ["https://rinkeby.infura.io/v3"],
-      blockExplorerUrls: ["https://rinkeby.etherscan.com"],
-    }
+      rpcUrls: ['https://rinkeby.infura.io/v3'],
+      blockExplorerUrls: ['https://rinkeby.etherscan.com'],
+    },
   };
 
   BLOCKNATIVE_KEY = 'af9c0a83-8874-4e07-a272-19c879420693';
@@ -78,7 +83,8 @@ export class ConstantsService {
   WEEK_IN_SEC = 7 * 24 * 60 * 60;
   DAY_IN_SEC = 24 * 60 * 60;
   SUBGRAPH_SYNC_WARNING_THRESHOLD = 20; // if falls behind by 20 blocks, display error banner
-  GRAPHQL_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph';
+  GRAPHQL_ENDPOINT =
+    'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph';
 
   // 88MPH CONTRACTS //
   GOV_TREASURY = '0x56f34826Cc63151f74FA8f701E4f73C5EAae52AD';
@@ -96,7 +102,7 @@ export class ConstantsService {
 
   // TOKENS //
   MPH = '0x8888801af4d980682e47f1a9036e589479e835c5';
-  XMPH = "0x8888801af4d980682e47f1a9036e589479e835c5"; // @dev update after contract is deployed
+  XMPH = '0x8888801af4d980682e47f1a9036e589479e835c5'; // @dev update after contract is deployed
   COMP = '0xc00e94cb662c3520282e6f5717214004a7f26888';
   FARM = '0xa0246c9032bC3A600820415aE600c6388619A14D';
   AAVE = '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9';

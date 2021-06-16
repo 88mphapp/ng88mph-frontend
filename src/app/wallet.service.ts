@@ -7,7 +7,7 @@ import { Watch } from './watch';
 import { ConstantsService } from './constants.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WalletService extends Web3Enabled {
   watch: Watch;
@@ -37,5 +37,4 @@ export class WalletService extends Web3Enabled {
     this.watch.watching = true;
     this.watch.address = address;
   }
-
 }

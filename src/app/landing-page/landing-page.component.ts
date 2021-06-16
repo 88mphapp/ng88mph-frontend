@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { request, gql } from 'graphql-request'
+import { request, gql } from 'graphql-request';
 import { ConstantsService } from '../constants.service';
 import { WalletService } from '../wallet.service';
 
 @Component({
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
-  styleUrls: ['./landing-page.component.css']
+  styleUrls: ['./landing-page.component.css'],
 })
 export class LandingPageComponent implements OnInit {
   syncBlockNumber: number;
   latestBlockNumber: number;
 
-  constructor(public constants: ConstantsService, public wallet: WalletService) {
+  constructor(
+    public constants: ConstantsService,
+    public wallet: WalletService
+  ) {
     this.resetData();
   }
 
@@ -30,7 +33,9 @@ export class LandingPageComponent implements OnInit {
         }
       }
     `;
-    request(this.constants.GRAPHQL_ENDPOINT, queryString).then((data) => this.handleData(data));
+    request(this.constants.GRAPHQL_ENDPOINT, queryString).then((data) =>
+      this.handleData(data)
+    );
   }
 
   async handleData(queryResult: QueryResult) {
@@ -45,7 +50,10 @@ export class LandingPageComponent implements OnInit {
   }
 
   shouldDisplay(): boolean {
-    return this.latestBlockNumber >= this.syncBlockNumber + this.constants.SUBGRAPH_SYNC_WARNING_THRESHOLD;
+    return (
+      this.latestBlockNumber >=
+      this.syncBlockNumber + this.constants.SUBGRAPH_SYNC_WARNING_THRESHOLD
+    );
   }
 }
 

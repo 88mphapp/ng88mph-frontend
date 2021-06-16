@@ -8,9 +8,8 @@ describe('FarmZeroCouponBondComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FarmZeroCouponBondComponent ]
-    })
-    .compileComponents();
+      declarations: [FarmZeroCouponBondComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('ClaimMphComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ClaimMphComponent ]
-    })
-    .compileComponents();
+      declarations: [ClaimMphComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

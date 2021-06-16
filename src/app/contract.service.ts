@@ -3,11 +3,10 @@ import Web3 from 'web3';
 import { WalletService } from './wallet.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ContractService {
-
-  constructor(public wallet: WalletService) { }
+  constructor(public wallet: WalletService) {}
 
   getContract(address: string, abiName: string, web3?: Web3) {
     const abi = require(`../assets/abis/${abiName}.json`);
@@ -30,13 +29,15 @@ export class ContractService {
   }
 
   getPoolInfoList(): PoolInfo[] {
-    return Object.keys(require('../assets/json/pools.json'))
-      .map(pool => this.getPoolInfo(pool));
+    return Object.keys(require('../assets/json/pools.json')).map((pool) =>
+      this.getPoolInfo(pool)
+    );
   }
 
   getPoolInfoFromAddress(address: string): PoolInfo {
-    return this.getPoolInfoList()
-      .find(poolInfo => poolInfo.address.toLowerCase() === address.toLowerCase());
+    return this.getPoolInfoList().find(
+      (poolInfo) => poolInfo.address.toLowerCase() === address.toLowerCase()
+    );
   }
 
   getPool(name: string, web3?: Web3) {

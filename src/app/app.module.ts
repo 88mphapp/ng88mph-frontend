@@ -73,7 +73,7 @@ import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liqu
     ModalMphRewardsComponent,
     ModalTopUpComponent,
     ModalRollOverComponent,
-    MphLiquidityComponent
+    MphLiquidityComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,9 +82,9 @@ import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liqu
     HttpClientModule,
     NgbModule,
     FormsModule,
-    ChartsModule
+    ChartsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

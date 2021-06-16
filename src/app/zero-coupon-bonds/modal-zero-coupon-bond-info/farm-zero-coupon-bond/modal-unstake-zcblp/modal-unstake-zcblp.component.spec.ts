@@ -8,9 +8,8 @@ describe('ModalUnstakeZCBLPComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalUnstakeZCBLPComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalUnstakeZCBLPComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

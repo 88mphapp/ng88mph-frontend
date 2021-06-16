@@ -5,16 +5,13 @@ import { WalletService } from './wallet.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'ng88mph-frontend';
-  themeName = 'boring'
+  themeName = 'boring';
   themeURL = this.getThemeURL();
-  themes = [
-    'boring',
-    '80s'
-  ];
+  themes = ['boring', '80s'];
 
   constructor(public wallet: WalletService, public sanitizer: DomSanitizer) {
     const storedThemeName = window.localStorage.getItem('themeName');
@@ -22,7 +19,11 @@ export class AppComponent {
       this.themeName = storedThemeName;
     }
     this.themeURL = this.getThemeURL();
-    wallet.connect(() => {}, () => {}, true);
+    wallet.connect(
+      () => {},
+      () => {},
+      true
+    );
   }
 
   setTheme(newThemeName: string): void {
@@ -32,6 +33,8 @@ export class AppComponent {
   }
 
   getThemeURL() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(`assets/css/theme-${this.themeName}.css`);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `assets/css/theme-${this.themeName}.css`
+    );
   }
 }

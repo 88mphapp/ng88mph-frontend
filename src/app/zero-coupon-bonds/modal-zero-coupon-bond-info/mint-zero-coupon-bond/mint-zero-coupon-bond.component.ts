@@ -12,7 +12,7 @@ import { ZeroCouponBondTableEntry } from '../../zero-coupon-bonds.component';
 @Component({
   selector: 'app-mint-zero-coupon-bond',
   templateUrl: './mint-zero-coupon-bond.component.html',
-  styleUrls: ['./mint-zero-coupon-bond.component.css']
+  styleUrls: ['./mint-zero-coupon-bond.component.css'],
 })
 export class MintZeroCouponBondComponent implements OnInit {
   @Input() zcbEntry: ZeroCouponBondTableEntry;
@@ -63,9 +63,19 @@ export class MintZeroCouponBondComponent implements OnInit {
     });
 
     const mphContract = this.contract.getNamedContract('MPHToken');
-    mphContract.methods.balanceOf(this.wallet.userAddress).call().then((balance) => this.mphBalance = new BigNumber(balance).div(this.constants.PRECISION));
+    mphContract.methods
+      .balanceOf(this.wallet.userAddress)
+      .call()
+      .then(
+        (balance) =>
+          (this.mphBalance = new BigNumber(balance).div(
+            this.constants.PRECISION
+          ))
+      );
 
-    const maturationTimestamp = Math.floor(this.zcbEntry.maturationTimestamp.getTime() / 1e3);
+    const maturationTimestamp = Math.floor(
+      this.zcbEntry.maturationTimestamp.getTime() / 1e3
+    );
 
     const userID = this.wallet.userAddress.toLowerCase();
     const queryString = gql`
@@ -83,9 +93,11 @@ export class MintZeroCouponBondComponent implements OnInit {
         }
       }
     `;
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => this.handleData(x));
+    this.apollo
+      .query<QueryResult>({
+        query: queryString,
+      })
+      .subscribe((x) => this.handleData(x));
   }
 
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
@@ -103,25 +115,40 @@ export class MintZeroCouponBondComponent implements OnInit {
         const userPoolDeposits: Array<UserDeposit> = [];
         for (const deposit of deposits) {
           // compute MPH APY
-          let mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
-          const realMPHReward = new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier).times(deposit.mintMPHAmount);
+          let mphDepositorRewardTakeBackMultiplier = new BigNumber(
+            pool.mphDepositorRewardTakeBackMultiplier
+          );
+          const realMPHReward = new BigNumber(1)
+            .minus(mphDepositorRewardTakeBackMultiplier)
+            .times(deposit.mintMPHAmount);
 
           // compute interest
-          const interestEarnedToken = this.helpers.applyFeeToInterest(deposit.interestEarned, this.poolInfo);
+          const interestEarnedToken = this.helpers.applyFeeToInterest(
+            deposit.interestEarned,
+            this.poolInfo
+          );
           const interestEarnedUSD = interestEarnedToken.times(stablecoinPrice);
 
           const userPoolDeposit: UserDeposit = {
             nftID: deposit.nftID,
             amountToken: new BigNumber(deposit.amount),
             amountUSD: new BigNumber(deposit.amount).times(stablecoinPrice),
-            apy: interestEarnedToken.div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100),
-            maturationDate: new Date(+deposit.maturationTimestamp * 1e3).toLocaleString(),
+            apy: interestEarnedToken
+              .div(deposit.amount)
+              .div(deposit.maturationTimestamp - deposit.depositTimestamp)
+              .times(this.constants.YEAR_IN_SEC)
+              .times(100),
+            maturationDate: new Date(
+              +deposit.maturationTimestamp * 1e3
+            ).toLocaleString(),
             interestEarnedToken,
             interestEarnedUSD,
             mintMPHAmount: new BigNumber(deposit.mintMPHAmount),
             realMPHReward: realMPHReward,
-            mintableZCBAmount: new BigNumber(deposit.amount).plus(interestEarnedToken)
-          }
+            mintableZCBAmount: new BigNumber(deposit.amount).plus(
+              interestEarnedToken
+            ),
+          };
           userPoolDeposits.push(userPoolDeposit);
         }
         this.eligibleDeposits = userPoolDeposits;
@@ -131,31 +158,77 @@ export class MintZeroCouponBondComponent implements OnInit {
 
   async mint(deposit: UserDeposit) {
     const poolContract = this.contract.getPool(this.poolInfo.name);
-    const zcbContract = this.contract.getZeroCouponBondContract(this.zcbEntry.zcbInfo.address);
+    const zcbContract = this.contract.getZeroCouponBondContract(
+      this.zcbEntry.zcbInfo.address
+    );
     const mphContract = this.contract.getNamedContract('MPHToken');
     const depositNFTAddress = await poolContract.methods.depositNFT().call();
-    const depositNFTContract = this.contract.getContract(depositNFTAddress, 'NFT');
+    const depositNFTContract = this.contract.getContract(
+      depositNFTAddress,
+      'NFT'
+    );
 
     const fractionalDepositName = `88mph Fractional Deposit`;
     const fractionalDepositSymbol = `88MPH-FD`;
-    const mphDepositAmount = deposit.mintMPHAmount.times(this.constants.PRECISION).integerValue().toFixed();
-    const mintFunc = zcbContract.methods.mintWithDepositNFT(deposit.nftID, fractionalDepositName, fractionalDepositSymbol);
+    const mphDepositAmount = deposit.mintMPHAmount
+      .times(this.constants.PRECISION)
+      .integerValue()
+      .toFixed();
+    const mintFunc = zcbContract.methods.mintWithDepositNFT(
+      deposit.nftID,
+      fractionalDepositName,
+      fractionalDepositSymbol
+    );
 
     // approve deposit NFT
-    const approvedForNFT = (await depositNFTContract.methods.getApproved(deposit.nftID).call() !== this.constants.ZERO_ADDR);
-    const approvedForAll = await depositNFTContract.methods.isApprovedForAll(this.wallet.userAddress, this.zcbEntry.zcbInfo.address).call();
+    const approvedForNFT =
+      (await depositNFTContract.methods.getApproved(deposit.nftID).call()) !==
+      this.constants.ZERO_ADDR;
+    const approvedForAll = await depositNFTContract.methods
+      .isApprovedForAll(this.wallet.userAddress, this.zcbEntry.zcbInfo.address)
+      .call();
     if (!approvedForAll && !approvedForNFT) {
       // need approval
-      const approveFunc = depositNFTContract.methods.setApprovalForAll(this.zcbEntry.zcbInfo.address, true);
-      this.wallet.sendTx(approveFunc, () => { }, () => {
-        // mint with deposit NFT
-        this.wallet.sendTxWithToken(mintFunc, mphContract, this.zcbEntry.zcbInfo.address, mphDepositAmount, () => { }, () => { }, (err) => { this.wallet.displayGenericError(err) })
-      }, (err) => { this.wallet.displayGenericError(err) });
+      const approveFunc = depositNFTContract.methods.setApprovalForAll(
+        this.zcbEntry.zcbInfo.address,
+        true
+      );
+      this.wallet.sendTx(
+        approveFunc,
+        () => {},
+        () => {
+          // mint with deposit NFT
+          this.wallet.sendTxWithToken(
+            mintFunc,
+            mphContract,
+            this.zcbEntry.zcbInfo.address,
+            mphDepositAmount,
+            () => {},
+            () => {},
+            (err) => {
+              this.wallet.displayGenericError(err);
+            }
+          );
+        },
+        (err) => {
+          this.wallet.displayGenericError(err);
+        }
+      );
       return;
     }
 
     // mint with deposit NFT
-    this.wallet.sendTxWithToken(mintFunc, mphContract, this.zcbEntry.zcbInfo.address, mphDepositAmount, () => { }, () => { }, (err) => { this.wallet.displayGenericError(err) })
+    this.wallet.sendTxWithToken(
+      mintFunc,
+      mphContract,
+      this.zcbEntry.zcbInfo.address,
+      mphDepositAmount,
+      () => {},
+      () => {},
+      (err) => {
+        this.wallet.displayGenericError(err);
+      }
+    );
   }
 
   canContinue(deposit: UserDeposit) {
@@ -174,7 +247,7 @@ interface QueryResult {
   }[];
   dpool: {
     mphDepositorRewardTakeBackMultiplier: number;
-  }
+  };
 }
 
 interface UserDeposit {

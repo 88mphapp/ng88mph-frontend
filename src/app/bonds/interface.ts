@@ -1,5 +1,5 @@
-import BigNumber from "bignumber.js";
-import { PoolInfo } from "../contract.service";
+import BigNumber from 'bignumber.js';
+import { PoolInfo } from '../contract.service';
 
 export interface FunderPool {
   poolInfo: PoolInfo;
