@@ -202,10 +202,10 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
           <h6 class="dropdown-header">Select Network (88mph v3)</h6>
-          <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
-          <!-- <button class="dropdown-item d-flex align-items-center mr-2" type="button"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button> -->
+          <button class="dropdown-item d-flex align-items-center" type="button"  (click)="wallet.changeChain(1)"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
+          <button class="dropdown-item d-flex align-items-center mr-2" type="button" (click)="wallet.changeChain(4)"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Select 88mph legacy version xxx</h6>
+          <h6 class="dropdown-header">Select 88mph legacy version</h6>
           <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v2/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v2</a>
           <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v1/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v1</a>
           <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v0/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v0</a>
@@ -249,8 +249,8 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
         <h6 class="dropdown-header">Select Network (88mph v3)</h6>
-        <button class="dropdown-item d-flex align-items-center" type="button"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
-        <!-- <button class="dropdown-item d-flex align-items-center mr-2" type="button"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button> -->
+        <button class="dropdown-item d-flex align-items-center" type="button" (click)="wallet.changeChain(1)"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
+        <button class="dropdown-item d-flex align-items-center mr-2" type="button" (click)="wallet.changeChain(4)"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button>
         <div class="dropdown-divider"></div>
         <h6 class="dropdown-header">Select 88mph legacy version</h6>
         <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v2/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v2</a>

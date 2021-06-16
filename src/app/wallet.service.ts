@@ -33,11 +33,6 @@ export class WalletService extends Web3Enabled {
     return this.watch.watching;
   }
 
-  async changeChain(chainId: number) {
-    this.networkID = chainId;
-    this.chainChangedEvent.emit();
-  }
-
   watchWallet(address: string) {
     this.watch.watching = true;
     this.watch.address = address;

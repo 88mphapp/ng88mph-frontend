@@ -200,6 +200,17 @@ export class Web3Enabled {
     }
   }
 
+  async changeChain(chainId: number) {
+    this.web3.currentProvider['send']({
+      jsonrpc: "2.0",
+      method: "wallet_addEthereumChain",
+      params: [this.constants.NETWORK_METADATA[chainId]]
+    },
+      (err, result) => {
+
+      });
+  }
+
   readonlyWeb3() {
     if (this.state.wallet.provider) {
       return this.web3;

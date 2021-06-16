@@ -41,6 +41,31 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: 'wss://eth-rinkeby.ws.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4'
   };
 
+  NETWORK_METADATA = {
+    [this.CHAIN_ID.MAINNET]: {
+      chainId: "0x1",
+      chainName: "Ethereum",
+      nativeCurrency: {
+        name: "Ethereum",
+        symbol: "ETH",
+        decimals: 18,
+      },
+      rpcUrls: ["https://mainnet.infura.io/v3"],
+      blockExplorerUrls: ["https://etherscan.com"],
+    },
+    [this.CHAIN_ID.RINKEBY]: {
+      chainId: "0x4",
+      chainName: "Rinkeby",
+      nativeCurrency: {
+        name: "Ethereum",
+        symbol: "ETH",
+        decimals: 18,
+      },
+      rpcUrls: ["https://rinkeby.infura.io/v3"],
+      blockExplorerUrls: ["https://rinkeby.etherscan.com"],
+    }
+  };
+
   BLOCKNATIVE_KEY = 'af9c0a83-8874-4e07-a272-19c879420693';
   INFURA_KEY = '9e5f0d08ad19483193cc86092b7512f2';
   PORTIS_KEY = 'a838dbd2-c0b1-4465-8dbe-36b88f3d0d4e';
