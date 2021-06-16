@@ -5,10 +5,14 @@
     <div class="modal-body pt-0 py-lg-0">
       <div class="row no-gutters align-items-center">
         <div class="col-auto">
-          <a class="btn btn-link border-0 text-white pl-0" data-dismiss="modal"
-            aria-label="Close" (click)="activeModal.dismiss()">
+          <a
+            class="btn btn-link border-0 text-white pl-0"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
             <i class="fe fe-arrow-left h2 mb-0"></i>
-        </a>
+          </a>
         </div>
         <div class="col">
           <h1 class="mb-0 h3">Stake UNI-v2 LP tokens</h1>
@@ -23,16 +27,29 @@
                   <div class="form-group mb-0">
                     <label>Amount</label>
                     <div class="input-group mb-2">
-                      <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                        aria-label="stake-amount" [value]="stakeAmount.toString()"
-                        (input)="setStakeAmount($event.target.value)">
+                      <input
+                        type="text"
+                        class="form-control form-control-lg"
+                        placeholder="0.00"
+                        aria-label="stake-amount"
+                        [value]="stakeAmount.toString()"
+                        (input)="setStakeAmount($event.target.value)"
+                      />
                       <div class="input-group-append">
-                        <button class="btn btn-lg border-gradient" type="button"
-                          (click)="setStakeAmount(this.mphBalance.toFixed(18))">Max</button>
+                        <button
+                          class="btn btn-lg border-gradient"
+                          type="button"
+                          (click)="setStakeAmount(this.mphBalance.toFixed(18))"
+                        >
+                          Max
+                        </button>
                       </div>
                     </div>
                   </div>
-                  <small class="form-text text-white mb-2">{{mphBalance.toFormat()}} MPH-ETH UNI-v2 LP available</small>
+                  <small class="form-text text-white mb-2"
+                    >{{ mphBalance.toFormat() }} MPH-ETH UNI-v2 LP
+                    available</small
+                  >
                   <div class="table-responsive">
                     <table class="table mb-0">
                       <tbody>
@@ -41,8 +58,13 @@
                             <strong>New share of the staking pool</strong>
                           </td>
                           <td class="text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">{{newStakedMPHPoolProportion.toFormat(4)}}%</h4>
-                            <span class="text-white">Current: {{stakedMPHPoolProportion.toFormat(4)}}%</span>
+                            <h4 class="mb-1 font-weight-normal glowing">
+                              {{ newStakedMPHPoolProportion.toFormat(4) }}%
+                            </h4>
+                            <span class="text-white"
+                              >Current:
+                              {{ stakedMPHPoolProportion.toFormat(4) }}%</span
+                            >
                           </td>
                         </tr>
                         <tr>
@@ -50,8 +72,13 @@
                             <strong>New reward rate</strong>
                           </td>
                           <td class="text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">{{newRewardPerDay.toFormat(4)}} MPH/day</h4>
-                            <span class="text-white">Current: {{rewardPerDay.toFormat(4)}} MPH/day</span>
+                            <h4 class="mb-1 font-weight-normal glowing">
+                              {{ newRewardPerDay.toFormat(4) }} MPH/day
+                            </h4>
+                            <span class="text-white"
+                              >Current:
+                              {{ rewardPerDay.toFormat(4) }} MPH/day</span
+                            >
                           </td>
                         </tr>
                         <tr>
@@ -60,15 +87,27 @@
                           </td>
                           <td class="text-right border-0">
                             <h4 class="mb-1 font-weight-normal glowing">
-                              ${{newRewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</h4>
-                            <span class="text-white">Current:
-                              ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</span>
+                              ${{
+                                newRewardPerDay.times(mphPriceUSD).toFormat(4)
+                              }}/day
+                            </h4>
+                            <span class="text-white"
+                              >Current: ${{
+                                rewardPerDay.times(mphPriceUSD).toFormat(4)
+                              }}/day</span
+                            >
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-                  <button class="btn btn-lg btn-block btn-bg-gradient" (click)="stake()" [disabled]="!canContinue()">Stake</button>
+                  <button
+                    class="btn btn-lg btn-block btn-bg-gradient"
+                    (click)="stake()"
+                    [disabled]="!canContinue()"
+                  >
+                    Stake
+                  </button>
                 </div>
               </div>
             </div>

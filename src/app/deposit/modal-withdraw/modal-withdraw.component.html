@@ -5,8 +5,12 @@
     <div class="modal-body pt-0 py-lg-0">
       <div class="row no-gutters align-items-center">
         <div class="col-auto">
-          <a class="btn btn-link border-0 text-white pl-0" data-dismiss="modal" aria-label="Close"
-            (click)="activeModal.dismiss()">
+          <a
+            class="btn btn-link border-0 text-white pl-0"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
             <i class="fe fe-arrow-left h2 mb-0"></i>
           </a>
         </div>
@@ -15,9 +19,7 @@
             <h1 class="mb-0 h3">Withdraw early</h1>
           </ng-container>
           <ng-container *ngIf="!userDeposit.locked">
-            <h1 class="mb-0 h3">
-              Withdraw
-            </h1>
+            <h1 class="mb-0 h3">Withdraw</h1>
           </ng-container>
         </div>
       </div>
@@ -27,39 +29,62 @@
             <div class="card-body">
               <ng-container *ngIf="userDeposit.locked">
                 <div class="alert border-gradient mb-4">
-                  Warning: by withdrawing your principal before the maturation date, you'll forfeit your interest and
-                  MPH tokens earned so far.
+                  Warning: by withdrawing your principal before the maturation
+                  date, you'll forfeit your interest and MPH tokens earned so
+                  far.
                 </div>
               </ng-container>
               <ng-container *ngIf="!userDeposit.locked">
-                <p class="text-white">Withdraw your principal and interest earned or extend its duration.</p>
+                <p class="text-white">
+                  Withdraw your principal and interest earned or extend its
+                  duration.
+                </p>
               </ng-container>
               <div class="form-group mb-0">
                 <label>Amount</label>
                 <div class="input-group mb-2">
-                  <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                    aria-label="withdraw-amount" [value]="withdrawAmount.toFixed()"
-                    (input)="setWithdrawAmount($event.target.value)">
+                  <input
+                    type="text"
+                    class="form-control form-control-lg"
+                    placeholder="0.00"
+                    aria-label="withdraw-amount"
+                    [value]="withdrawAmount.toFixed()"
+                    (input)="setWithdrawAmount($event.target.value)"
+                  />
                   <div class="input-group-append">
-                    <button class="btn btn-lg border-gradient" type="button"
-                      (click)="setMaxWithdrawAmount()">Max</button>
+                    <button
+                      class="btn btn-lg border-gradient"
+                      type="button"
+                      (click)="setMaxWithdrawAmount()"
+                    >
+                      Max
+                    </button>
                   </div>
                 </div>
               </div>
-              <small class="form-text text-white mb-4">${{userDeposit.amountUSD.toFormat(4)}}
-                ({{userDeposit.amountToken.toFormat()}}
-                {{poolInfo.stablecoinSymbol}}) available</small>
+              <small class="form-text text-white mb-4"
+                >${{ userDeposit.amountUSD.toFormat(4) }} ({{
+                  userDeposit.amountToken.toFormat()
+                }}
+                {{ poolInfo.stablecoinSymbol }}) available</small
+              >
               <div class="row justify-content-center mb-4">
                 <div class="col-6">
-                  <h6 class="header-pretitle mb-2">
-                    MPH reward received
-                  </h6>
-                  <h4 class="mb-1 glowing">{{mphRewardAmount.toFormat()}} MPH</h4>
-                  <div class="text-white small d-block">${{mphRewardAmount.times(mphPriceUSD).toFormat(4)}}</div>
+                  <h6 class="header-pretitle mb-2">MPH reward received</h6>
+                  <h4 class="mb-1 glowing">
+                    {{ mphRewardAmount.toFormat() }} MPH
+                  </h4>
+                  <div class="text-white small d-block">
+                    ${{ mphRewardAmount.times(mphPriceUSD).toFormat(4) }}
+                  </div>
                 </div>
               </div>
-              <button class="btn btn-lg btn-bg-gradient btn-block" type="button" (click)="earlyWithdraw()"
-                *ngIf="userDeposit.locked">
+              <button
+                class="btn btn-lg btn-bg-gradient btn-block"
+                type="button"
+                (click)="earlyWithdraw()"
+                *ngIf="userDeposit.locked"
+              >
                 Withdraw early
               </button>
             </div>

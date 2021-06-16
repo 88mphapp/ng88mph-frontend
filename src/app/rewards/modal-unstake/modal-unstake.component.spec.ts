@@ -8,9 +8,8 @@ describe('ModalUnstakeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalUnstakeComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalUnstakeComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

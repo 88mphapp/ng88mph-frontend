@@ -4,10 +4,14 @@
     <div class="modal-body pt-0 py-lg-0">
       <div class="row no-gutters align-items-center">
         <div class="col-auto">
-          <a class="btn btn-link border-0 text-white pl-0" data-dismiss="modal"
-            aria-label="Close" (click)="activeModal.dismiss()">
+          <a
+            class="btn btn-link border-0 text-white pl-0"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
             <i class="fe fe-arrow-left h2 mb-0"></i>
-        </a>
+          </a>
         </div>
         <div class="col">
           <h1 class="mb-0 h3">Unstake LP tokens</h1>
@@ -17,53 +21,138 @@
         <div class="col-6 pt-0">
           <div class="card mb-6">
             <div class="card-body">
-              <div class="form-group" *ngIf="selectedPool=='Bancor'">
+              <div class="form-group" *ngIf="selectedPool == 'Bancor'">
                 <label for="LiquidityToken">Select a token</label>
-                <select [(ngModel)]="bancorSelectedToken" class="custom-select custom-select-lg" data-toggle="select" id="LiquidityToken" (ngModelChange)="loadData()">
-                  <option *ngFor="let token of bancorTokens" [ngValue]="token">{{token}}</option>
+                <select
+                  [(ngModel)]="bancorSelectedToken"
+                  class="custom-select custom-select-lg"
+                  data-toggle="select"
+                  id="LiquidityToken"
+                  (ngModelChange)="loadData()"
+                >
+                  <option *ngFor="let token of bancorTokens" [ngValue]="token">
+                    {{ token }}
+                  </option>
                 </select>
               </div>
-              <div class="form-group" *ngIf="selectedPool=='Bancor'">
+              <div class="form-group" *ngIf="selectedPool == 'Bancor'">
                 <label for="DepositId">Select a deposit ID</label>
-                <select *ngIf="bancorSelectedToken=='MPH'" [(ngModel)]="bancorSelectedDeposit" class="custom-select custom-select-lg"
-                (change)="getClaimAmount()" data-toggle="select" id="DepositID">
-                  <option *ngFor="let id of bancorMPHDeposits" [ngValue]="id">{{id}}</option>
+                <select
+                  *ngIf="bancorSelectedToken == 'MPH'"
+                  [(ngModel)]="bancorSelectedDeposit"
+                  class="custom-select custom-select-lg"
+                  (change)="getClaimAmount()"
+                  data-toggle="select"
+                  id="DepositID"
+                >
+                  <option *ngFor="let id of bancorMPHDeposits" [ngValue]="id">
+                    {{ id }}
+                  </option>
                 </select>
-                <select *ngIf="bancorSelectedToken=='BNT'" [(ngModel)]="bancorSelectedDeposit" class="custom-select custom-select-lg" data-toggle="select" id="DepositID">
-                  <option *ngFor="let id of bancorBNTDeposits" [ngValue]="id">{{id}}</option>
+                <select
+                  *ngIf="bancorSelectedToken == 'BNT'"
+                  [(ngModel)]="bancorSelectedDeposit"
+                  class="custom-select custom-select-lg"
+                  data-toggle="select"
+                  id="DepositID"
+                >
+                  <option *ngFor="let id of bancorBNTDeposits" [ngValue]="id">
+                    {{ id }}
+                  </option>
                 </select>
               </div>
               <div class="form-group mb-0">
                 <label>Amount</label>
                 <div class="input-group mb-2">
-                  <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                    aria-label="stake-amount" [value]="unstakeAmount.toString()"
-                    (input)="setUnstakeAmount($event.target.value)">
+                  <input
+                    type="text"
+                    class="form-control form-control-lg"
+                    placeholder="0.00"
+                    aria-label="stake-amount"
+                    [value]="unstakeAmount.toString()"
+                    (input)="setUnstakeAmount($event.target.value)"
+                  />
                   <div class="input-group-append">
-                    <button class="btn btn-lg border-gradient" type="button"
-                      (click)="setUnstakeAmount(this.stakedMPHBalance.toFixed(18))"
-                      *ngIf="this.selectedPool=='Uniswap v2'">Max</button>
-                    <button class="btn btn-lg border-gradient" type="button"
-                      (click)="setUnstakeAmount(this.sushiStakedLPBalance.toFixed(18))"
-                      *ngIf="this.selectedPool=='SushiSwap'">Max</button>
-                    <button class="btn btn-lg border-gradient" type="button"
+                    <button
+                      class="btn btn-lg border-gradient"
+                      type="button"
+                      (click)="
+                        setUnstakeAmount(this.stakedMPHBalance.toFixed(18))
+                      "
+                      *ngIf="this.selectedPool == 'Uniswap v2'"
+                    >
+                      Max
+                    </button>
+                    <button
+                      class="btn btn-lg border-gradient"
+                      type="button"
+                      (click)="
+                        setUnstakeAmount(this.sushiStakedLPBalance.toFixed(18))
+                      "
+                      *ngIf="this.selectedPool == 'SushiSwap'"
+                    >
+                      Max
+                    </button>
+                    <button
+                      class="btn btn-lg border-gradient"
+                      type="button"
                       (click)="setUnstakeAmount(this.stakedAmount.toFixed(18))"
-                      *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='MPH'">Max</button>
-                    <button class="btn btn-lg border-gradient" type="button"
+                      *ngIf="
+                        this.selectedPool == 'Bancor' &&
+                        bancorSelectedToken == 'MPH'
+                      "
+                    >
+                      Max
+                    </button>
+                    <button
+                      class="btn btn-lg border-gradient"
+                      type="button"
                       (click)="setUnstakeAmount(this.stakedAmount.toFixed(18))"
-                      *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='BNT'">Max</button>
+                      *ngIf="
+                        this.selectedPool == 'Bancor' &&
+                        bancorSelectedToken == 'BNT'
+                      "
+                    >
+                      Max
+                    </button>
                   </div>
                 </div>
               </div>
-              <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Uniswap v2'">
-                {{stakedMPHBalance.toFormat(4)}} MPH-ETH UNI-V2 staked</small>
-              <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='SushiSwap'">
-                {{sushiStakedLPBalance.toFormat(4)}} MPH-ETH SLP staked</small>
-              <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='MPH'">
-                {{stakedAmount.toFormat(4)}} MPH staked</small>
-              <small class="form-text text-white mb-4" *ngIf="this.selectedPool=='Bancor' && bancorSelectedToken=='BNT'">
-                {{stakedAmount.toFormat(4)}} BNT staked</small>
-              <button class="btn btn-lg btn-block btn-bg-gradient" (click)="unstake()" [disabled]="!canContinue()">Unstake</button>
+              <small
+                class="form-text text-white mb-4"
+                *ngIf="this.selectedPool == 'Uniswap v2'"
+              >
+                {{ stakedMPHBalance.toFormat(4) }} MPH-ETH UNI-V2 staked</small
+              >
+              <small
+                class="form-text text-white mb-4"
+                *ngIf="this.selectedPool == 'SushiSwap'"
+              >
+                {{ sushiStakedLPBalance.toFormat(4) }} MPH-ETH SLP staked</small
+              >
+              <small
+                class="form-text text-white mb-4"
+                *ngIf="
+                  this.selectedPool == 'Bancor' && bancorSelectedToken == 'MPH'
+                "
+              >
+                {{ stakedAmount.toFormat(4) }} MPH staked</small
+              >
+              <small
+                class="form-text text-white mb-4"
+                *ngIf="
+                  this.selectedPool == 'Bancor' && bancorSelectedToken == 'BNT'
+                "
+              >
+                {{ stakedAmount.toFormat(4) }} BNT staked</small
+              >
+              <button
+                class="btn btn-lg btn-block btn-bg-gradient"
+                (click)="unstake()"
+                [disabled]="!canContinue()"
+              >
+                Unstake
+              </button>
             </div>
           </div>
         </div>
@@ -78,10 +167,14 @@
     <div class="modal-body pt-0 py-lg-0">
       <div class="row no-gutters align-items-center">
         <div class="col-auto">
-          <a class="btn btn-link border-0 text-white pl-0" data-dismiss="modal"
-            aria-label="Close" (click)="activeModal.dismiss()">
+          <a
+            class="btn btn-link border-0 text-white pl-0"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
             <i class="fe fe-arrow-left h2 mb-0"></i>
-        </a>
+          </a>
         </div>
         <div class="col">
           <h1 class="mb-0 h3">Unstake UNI-v2 LP tokens</h1>
@@ -96,16 +189,30 @@
                   <div class="form-group mb-0">
                     <label>Amount</label>
                     <div class="input-group mb-2">
-                      <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                        aria-label="stake-amount" [value]="unstakeAmount.toString()"
-                        (input)="setUnstakeAmount($event.target.value)">
+                      <input
+                        type="text"
+                        class="form-control form-control-lg"
+                        placeholder="0.00"
+                        aria-label="stake-amount"
+                        [value]="unstakeAmount.toString()"
+                        (input)="setUnstakeAmount($event.target.value)"
+                      />
                       <div class="input-group-append">
-                        <button class="btn btn-lg border-gradient" type="button"
-                          (click)="setUnstakeAmount(this.stakedMPHBalance.toFixed(18))">Max</button>
+                        <button
+                          class="btn btn-lg border-gradient"
+                          type="button"
+                          (click)="
+                            setUnstakeAmount(this.stakedMPHBalance.toFixed(18))
+                          "
+                        >
+                          Max
+                        </button>
                       </div>
                     </div>
                   </div>
-                  <small class="form-text text-white mb-2">{{stakedMPHBalance.toFormat()}} MPH staked</small>
+                  <small class="form-text text-white mb-2"
+                    >{{ stakedMPHBalance.toFormat() }} MPH staked</small
+                  >
                   <div class="table-responsive">
                     <table class="table mb-0">
                       <tbody>
@@ -114,8 +221,13 @@
                             <strong>New share of the staking pool</strong>
                           </td>
                           <td class="text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">{{newStakedMPHPoolProportion.toFormat(4)}}%</h4>
-                            <span class="text-white">Current: {{stakedMPHPoolProportion.toFormat(4)}}%</span>
+                            <h4 class="mb-1 font-weight-normal glowing">
+                              {{ newStakedMPHPoolProportion.toFormat(4) }}%
+                            </h4>
+                            <span class="text-white"
+                              >Current:
+                              {{ stakedMPHPoolProportion.toFormat(4) }}%</span
+                            >
                           </td>
                         </tr>
                         <tr>
@@ -123,8 +235,13 @@
                             <strong>New reward rate</strong>
                           </td>
                           <td class="text-right border-0">
-                            <h4 class="mb-1 font-weight-normal glowing">{{newRewardPerDay.toFormat(4)}} MPH/day</h4>
-                            <span class="text-white">Current: {{rewardPerDay.toFormat(4)}} MPH/day</span>
+                            <h4 class="mb-1 font-weight-normal glowing">
+                              {{ newRewardPerDay.toFormat(4) }} MPH/day
+                            </h4>
+                            <span class="text-white"
+                              >Current:
+                              {{ rewardPerDay.toFormat(4) }} MPH/day</span
+                            >
                           </td>
                         </tr>
                         <tr>
@@ -133,23 +250,33 @@
                           </td>
                           <td class="text-right border-0">
                             <h4 class="mb-1 font-weight-normal glowing">
-                              ${{newRewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</h4>
-                            <span class="text-white">Current:
-                              ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day</span>
+                              ${{
+                                newRewardPerDay.times(mphPriceUSD).toFormat(4)
+                              }}/day
+                            </h4>
+                            <span class="text-white"
+                              >Current: ${{
+                                rewardPerDay.times(mphPriceUSD).toFormat(4)
+                              }}/day</span
+                            >
                           </td>
                         </tr>
                         <tr class="d-none">
                           <td class="px-0 text-white border-0">
                             <strong>Staking pool APY</strong>
                           </td>
-                          <td class="glowing text-right border-0">
-                            0.0000%
-                          </td>
+                          <td class="glowing text-right border-0">0.0000%</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-                  <button class="btn btn-lg btn-block btn-bg-gradient" (click)="unstake()" [disabled]="!canContinue()">Unstake</button>
+                  <button
+                    class="btn btn-lg btn-block btn-bg-gradient"
+                    (click)="unstake()"
+                    [disabled]="!canContinue()"
+                  >
+                    Unstake
+                  </button>
                 </div>
               </div>
             </div>

@@ -6,14 +6,10 @@ import { HttpLink } from 'apollo-angular/http';
 import gql from 'graphql-tag';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TimeSeriesService {
-
-  constructor(
-    public constants: ConstantsService
-  ) {
-  }
+  constructor(public constants: ConstantsService) {}
 
   client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
@@ -22,7 +18,7 @@ export class TimeSeriesService {
 
   getLatestUTCDate() {
     let date = new Date();
-    date.setUTCHours(0,0,0,0);
+    date.setUTCHours(0, 0, 0, 0);
     return date.getTime() / 1000;
   }
 
@@ -43,14 +39,13 @@ export class TimeSeriesService {
 
     // generate array of timestamps
     for (let p = 0; p < numPeriods; p++) {
-      timeStamps.push(startTime + (p * period));
+      timeStamps.push(startTime + p * period);
     }
 
     // generate a query string
     let queryString = `query GetBlocks {`;
     for (let i = 0; i < timeStamps.length; i++) {
-      queryString +=
-      `t${i}: blocks(
+      queryString += `t${i}: blocks(
         first: 1,
         orderBy: timestamp,
         orderDirection: asc,
@@ -65,18 +60,20 @@ export class TimeSeriesService {
       }`;
     }
     queryString += `}`;
-    const blocksQuery = gql`${queryString}`;
+    const blocksQuery = gql`
+      ${queryString}
+    `;
 
     // run the query and create array of blocks
-    await this.client.query<QueryResult>({
-      query: blocksQuery
-    }).then(results =>
-      {
+    await this.client
+      .query<QueryResult>({
+        query: blocksQuery,
+      })
+      .then((results) => {
         for (let result in results.data) {
           blocks.push(parseInt(results.data[result][0].number));
         }
-      }
-    );
+      });
 
     // return data
     data.push(timeStamps);
@@ -90,5 +87,5 @@ interface QueryResult {
     id: string;
     number: number;
     timestamp: number;
-  }
+  };
 }

@@ -8,9 +8,8 @@ describe('ModalZeroCouponBondInfoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalZeroCouponBondInfoComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalZeroCouponBondInfoComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

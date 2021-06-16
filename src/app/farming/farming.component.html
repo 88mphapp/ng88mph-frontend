@@ -1,10 +1,14 @@
 <div class="container mt-4 mb-6">
   <div class="row">
     <div class="col-12">
-      <h1 class="title-bg-gradient display-2">Provide liquidity & boost your yield</h1>
-      <p class="text-white font-weight-bold mb-5 lead">Provide liquidity on our trading pools, and get rewarded by doing so from trading fees and liquidity mining rewards.
+      <h1 class="title-bg-gradient display-2">
+        Provide liquidity & boost your yield
+      </h1>
+      <p class="text-white font-weight-bold mb-5 lead">
+        Provide liquidity on our trading pools, and get rewarded by doing so
+        from trading fees and liquidity mining rewards.
         <a class="text-primary" href="https://docs.88mph.app/" target="_blank">
-        Learn more <i class="fe fe-external-link"></i>
+          Learn more <i class="fe fe-external-link"></i>
         </a>
       </p>
       <div class="row">
@@ -20,75 +24,221 @@
                 <div class="list-group-item">
                   <div class="row">
                     <div class="col-auto">
-
                       <div class="avatar avatar-sm">
-                        <div class="avatar-title font-size-lg bg-dark rounded-circle text-white border-gradient">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                        >
                           1
                         </div>
                       </div>
-
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group">
-                        <label for="LiquidityPool">Select a liquidity pool</label>
-                        <select [(ngModel)]="selectedPool" class="custom-select custom-select-lg"
-                        data-toggle="select" id="LiquidityPool" (ngModelChange)="setStakeAmount(0)">
-                          <option *ngFor="let pool of liquidityPools" [ngValue]="pool">{{pool}}</option>
+                        <label for="LiquidityPool"
+                          >Select a liquidity pool</label
+                        >
+                        <select
+                          [(ngModel)]="selectedPool"
+                          class="custom-select custom-select-lg"
+                          data-toggle="select"
+                          id="LiquidityPool"
+                          (ngModelChange)="setStakeAmount(0)"
+                        >
+                          <option
+                            *ngFor="let pool of liquidityPools"
+                            [ngValue]="pool"
+                          >
+                            {{ pool }}
+                          </option>
                         </select>
                       </div>
                     </div>
-                  </div> <!-- / .row -->
+                  </div>
+                  <!-- / .row -->
                 </div>
                 <div class="list-group-item">
                   <div class="row">
                     <div class="col-auto text-center">
-
                       <div class="avatar avatar-sm">
-                        <div class="avatar-title font-size-lg bg-dark rounded-circle text-white border-gradient">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                        >
                           2
                         </div>
                       </div>
-
                     </div>
                     <div class="col ml-n2">
                       <!-- display if UNI-v2 pool option selected -->
                       <div class="form-group">
-                        <label>Stake LP tokens <br>
-                          <small class="text-muted" *ngIf="selectedPool=='Uniswap v2'">🦄 <a class="text-primary"
-                            href="https://app.uniswap.org/#/add/v2/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH"
-                            target="_blank">Provide liquidity</a> to the Uniswap MPH-ETH pair and earn MPH
+                        <label
+                          >Stake LP tokens <br />
+                          <small
+                            class="text-muted"
+                            *ngIf="selectedPool == 'Uniswap v2'"
+                            >🦄
+                            <a
+                              class="text-primary"
+                              href="https://app.uniswap.org/#/add/v2/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH"
+                              target="_blank"
+                              >Provide liquidity</a
+                            >
+                            to the Uniswap MPH-ETH pair and earn MPH
                           </small>
-                          <small class="text-muted" *ngIf="selectedPool=='Bancor'">Provide liquidity to the Bancor MPH-BNT pair and earn BNT. <a class="text-primary"
-                            href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
-                            target="_blank">Manage liquidity on Bancor</a>
+                          <small
+                            class="text-muted"
+                            *ngIf="selectedPool == 'Bancor'"
+                            >Provide liquidity to the Bancor MPH-BNT pair and
+                            earn BNT.
+                            <a
+                              class="text-primary"
+                              href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
+                              target="_blank"
+                              >Manage liquidity on Bancor</a
+                            >
                           </small>
-                          <small class="text-muted" *ngIf="selectedPool=='SushiSwap'">🍣 <a class="text-primary"
-                            href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
-                            target="_blank">Provide liquidity</a> to the SushiSwap MPH-ETH pair and earn SUSHI
+                          <small
+                            class="text-muted"
+                            *ngIf="selectedPool == 'SushiSwap'"
+                            >🍣
+                            <a
+                              class="text-primary"
+                              href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
+                              target="_blank"
+                              >Provide liquidity</a
+                            >
+                            to the SushiSwap MPH-ETH pair and earn SUSHI
                           </small>
                         </label>
-                        <div class="form-group" *ngIf="selectedPool=='Bancor'">
+                        <div
+                          class="form-group"
+                          *ngIf="selectedPool == 'Bancor'"
+                        >
                           <label for="LiquidityPool">Select a token</label>
-                          <select [(ngModel)]="bancorSelectedToken" class="custom-select custom-select-lg"
-                          data-toggle="select" id="LiquidityToken" (ngModelChange)="setStakeAmount(0)">
-                            <option *ngFor="let token of bancorTokens" [ngValue]="token">{{token}}</option>
+                          <select
+                            [(ngModel)]="bancorSelectedToken"
+                            class="custom-select custom-select-lg"
+                            data-toggle="select"
+                            id="LiquidityToken"
+                            (ngModelChange)="setStakeAmount(0)"
+                          >
+                            <option
+                              *ngFor="let token of bancorTokens"
+                              [ngValue]="token"
+                            >
+                              {{ token }}
+                            </option>
                           </select>
                         </div>
                         <div class="input-group mb-2">
-                          <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                            aria-label="stake-amount" [value]="stakeAmount.toString()"
-                            (input)="setStakeAmount($event.target.value)">
+                          <input
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="0.00"
+                            aria-label="stake-amount"
+                            [value]="stakeAmount.toString()"
+                            (input)="setStakeAmount($event.target.value)"
+                          />
                           <div class="input-group-append">
-                            <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='Uniswap v2'" type="button" (click)="this.setStakeAmount(this.unstakedMPHBalance.toFixed(18))" >Max</button>
-                            <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='SushiSwap'" type="button" (click)="this.setStakeAmount(this.sushiUnstakedLPBalance.toFixed(18))" >Max</button>
-                            <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='Bancor' && bancorSelectedToken=='MPH'" type="button" (click)="this.setStakeAmount(this.bancorUnstakedMPHBalance.toFixed(18))" >Max</button>
-                            <button class="btn btn-lg border-gradient" *ngIf="selectedPool=='Bancor' && bancorSelectedToken=='BNT'" type="button" (click)="this.setStakeAmount(this.bancorUnstakedBNTBalance.toFixed(18))" >Max</button>
+                            <button
+                              class="btn btn-lg border-gradient"
+                              *ngIf="selectedPool == 'Uniswap v2'"
+                              type="button"
+                              (click)="
+                                this.setStakeAmount(
+                                  this.unstakedMPHBalance.toFixed(18)
+                                )
+                              "
+                            >
+                              Max
+                            </button>
+                            <button
+                              class="btn btn-lg border-gradient"
+                              *ngIf="selectedPool == 'SushiSwap'"
+                              type="button"
+                              (click)="
+                                this.setStakeAmount(
+                                  this.sushiUnstakedLPBalance.toFixed(18)
+                                )
+                              "
+                            >
+                              Max
+                            </button>
+                            <button
+                              class="btn btn-lg border-gradient"
+                              *ngIf="
+                                selectedPool == 'Bancor' &&
+                                bancorSelectedToken == 'MPH'
+                              "
+                              type="button"
+                              (click)="
+                                this.setStakeAmount(
+                                  this.bancorUnstakedMPHBalance.toFixed(18)
+                                )
+                              "
+                            >
+                              Max
+                            </button>
+                            <button
+                              class="btn btn-lg border-gradient"
+                              *ngIf="
+                                selectedPool == 'Bancor' &&
+                                bancorSelectedToken == 'BNT'
+                              "
+                              type="button"
+                              (click)="
+                                this.setStakeAmount(
+                                  this.bancorUnstakedBNTBalance.toFixed(18)
+                                )
+                              "
+                            >
+                              Max
+                            </button>
                           </div>
                         </div>
-                        <small class="form-text text-white" *ngIf="selectedPool=='Uniswap v2'">{{unstakedMPHBalance.toFormat(4)}} MPH-ETH UNI-V2 available</small>
-                        <small class="form-text text-white" *ngIf="selectedPool=='SushiSwap'">{{sushiUnstakedLPBalance.toFormat(4)}} MPH-ETH SLP available</small>
-                        <small class="form-text text-white" *ngIf="selectedPool=='Bancor' && bancorSelectedToken=='MPH'">{{bancorUnstakedMPHBalance.toFormat(4)}} MPH available</small>
-                        <small class="form-text text-white" *ngIf="selectedPool=='Bancor' && bancorSelectedToken=='BNT'">{{bancorUnstakedBNTBalance.toFormat(4)}} BNT available</small>
+                        <small
+                          class="form-text text-white"
+                          *ngIf="selectedPool == 'Uniswap v2'"
+                          >{{ unstakedMPHBalance.toFormat(4) }} MPH-ETH UNI-V2
+                          available</small
+                        >
+                        <small
+                          class="form-text text-white"
+                          *ngIf="selectedPool == 'SushiSwap'"
+                          >{{ sushiUnstakedLPBalance.toFormat(4) }} MPH-ETH SLP
+                          available</small
+                        >
+                        <small
+                          class="form-text text-white"
+                          *ngIf="
+                            selectedPool == 'Bancor' &&
+                            bancorSelectedToken == 'MPH'
+                          "
+                          >{{ bancorUnstakedMPHBalance.toFormat(4) }} MPH
+                          available</small
+                        >
+                        <small
+                          class="form-text text-white"
+                          *ngIf="
+                            selectedPool == 'Bancor' &&
+                            bancorSelectedToken == 'BNT'
+                          "
+                          >{{ bancorUnstakedBNTBalance.toFormat(4) }} BNT
+                          available</small
+                        >
                       </div>
                       <!-- display if ZCB pool option selected -->
                       <div class="form-group d-none">
@@ -97,31 +247,56 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text small">USDC</span>
                           </div>
-                          <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                            aria-label="stake-amount">
+                          <input
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="0.00"
+                            aria-label="stake-amount"
+                          />
                           <div class="input-group-append">
-                            <button class="btn btn-lg border-gradient" type="button" >Max</button>
+                            <button
+                              class="btn btn-lg border-gradient"
+                              type="button"
+                            >
+                              Max
+                            </button>
                           </div>
                         </div>
-                        <small class="form-text text-white">0.00 tkn available</small>
+                        <small class="form-text text-white"
+                          >0.00 tkn available</small
+                        >
                       </div>
                       <!-- display if ZCB pool option selected -->
                       <div class="form-group d-none">
                         <label>Add ZCB asset</label>
                         <div class="input-group mb-2">
                           <div class="input-group-prepend">
-                            <span class="input-group-text small">USDC-ZCB0821</span>
+                            <span class="input-group-text small"
+                              >USDC-ZCB0821</span
+                            >
                           </div>
-                          <input type="text" class="form-control form-control-lg" placeholder="0.00"
-                            aria-label="stake-amount">
+                          <input
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="0.00"
+                            aria-label="stake-amount"
+                          />
                           <div class="input-group-append">
-                            <button class="btn btn-lg border-gradient" type="button" >Max</button>
+                            <button
+                              class="btn btn-lg border-gradient"
+                              type="button"
+                            >
+                              Max
+                            </button>
                           </div>
                         </div>
-                        <small class="form-text text-white">0.00 tkn available</small>
+                        <small class="form-text text-white"
+                          >0.00 tkn available</small
+                        >
                       </div>
                     </div>
-                  </div> <!-- / .row -->
+                  </div>
+                  <!-- / .row -->
                 </div>
               </div>
               <div class="table-responsive p-4">
@@ -131,93 +306,190 @@
                       <td class="px-0 py-1 text-white border-0 small">
                         Staked LP tokens
                       </td>
-                      <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Uniswap v2'">{{stakedMPHBalance.toFormat(4)}}</h4>
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='SushiSwap'">{{sushiStakedLPBalance.toFormat(4)}}</h4>
+                      <td
+                        class="px-0 py-1 text-white text-right border-0 small"
+                      >
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'Uniswap v2'"
+                        >
+                          {{ stakedMPHBalance.toFormat(4) }}
+                        </h4>
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'SushiSwap'"
+                        >
+                          {{ sushiStakedLPBalance.toFormat(4) }}
+                        </h4>
                       </td>
                     </tr>
-                    <tr *ngIf="selectedPool=='Bancor'">
+                    <tr *ngIf="selectedPool == 'Bancor'">
                       <td class="px-0 pl-3 py-1 text-white border-0 small">
                         MPH
                       </td>
-                      <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">{{bancorStakedMPHBalance.toFormat(4)}}</h4>
+                      <td
+                        class="px-0 py-1 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">
+                          {{ bancorStakedMPHBalance.toFormat(4) }}
+                        </h4>
                       </td>
                     </tr>
-                    <tr *ngIf="selectedPool=='Bancor'">
+                    <tr *ngIf="selectedPool == 'Bancor'">
                       <td class="px-0 pl-3 py-1 text-white border-0 small">
                         BNT
                       </td>
-                      <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">{{bancorStakedBNTBalance.toFormat(4)}}</h4>
+                      <td
+                        class="px-0 py-1 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">
+                          {{ bancorStakedBNTBalance.toFormat(4) }}
+                        </h4>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-1 text-white border-0 small">
                         Staked LP Value
                       </td>
-                      <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Uniswap v2'">${{stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}}</h4>
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='SushiSwap'">${{sushiStakedLPBalance.times(sushiLPPriceUSD).toFormat(4)}}</h4>
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Bancor'">${{bancorStakedMPHBalance.times(mphPriceUSD).plus(bancorStakedBNTBalance.times(bntPriceUSD)).toFormat(4)}}</h4>
+                      <td
+                        class="px-0 py-1 text-white text-right border-0 small"
+                      >
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'Uniswap v2'"
+                        >
+                          ${{
+                            stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)
+                          }}
+                        </h4>
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'SushiSwap'"
+                        >
+                          ${{
+                            sushiStakedLPBalance
+                              .times(sushiLPPriceUSD)
+                              .toFormat(4)
+                          }}
+                        </h4>
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'Bancor'"
+                        >
+                          ${{
+                            bancorStakedMPHBalance
+                              .times(mphPriceUSD)
+                              .plus(bancorStakedBNTBalance.times(bntPriceUSD))
+                              .toFormat(4)
+                          }}
+                        </h4>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Unclaimed Rewards
-                        </strong>
+                        <strong>Unclaimed Rewards </strong>
                       </td>
-                      <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Uniswap v2'">{{claimableRewards.toFormat(4)}} MPH</h4>
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='SushiSwap'">{{sushiClaimableRewards.toFormat(4)}} SUSHI</h4>
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Bancor'">{{bancorClaimableRewards.toFormat(4)}} BNT</h4>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedPool!='Bancor'">
-                      <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Variable APR
-                        </strong>
-                      </td>
-                      <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='Uniswap v2'">{{yearlyROI.toFormat(4)}}%</h4>
-                        <h4 class="mb-0 glowing" *ngIf="selectedPool=='SushiSwap'">{{sushiYearlyROI.toFormat(4)}}%</h4>
-                      </td>
-                    </tr>
-                    <tr *ngIf="selectedPool=='Bancor'">
-                      <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Variable APR to provide MPH
-                        </strong>
-                      </td>
-                      <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">{{bancorMPHYearlyROI.toFormat(4)}}%</h4>
+                      <td
+                        class="px-0 py-1 text-white text-right border-0 small"
+                      >
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'Uniswap v2'"
+                        >
+                          {{ claimableRewards.toFormat(4) }} MPH
+                        </h4>
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'SushiSwap'"
+                        >
+                          {{ sushiClaimableRewards.toFormat(4) }} SUSHI
+                        </h4>
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'Bancor'"
+                        >
+                          {{ bancorClaimableRewards.toFormat(4) }} BNT
+                        </h4>
                       </td>
                     </tr>
-                    <tr *ngIf="selectedPool=='Bancor'">
+                    <tr *ngIf="selectedPool != 'Bancor'">
                       <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Variable APR to provide BNT
-                        </strong>
+                        <strong>Variable APR </strong>
                       </td>
-                      <td class="px-0 py-1 text-white text-right border-0 small">
-                        <h4 class="mb-0 glowing">{{bancorBNTYearlyROI.toFormat(4)}}%</h4>
+                      <td
+                        class="px-0 py-1 text-white text-right border-0 small"
+                      >
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'Uniswap v2'"
+                        >
+                          {{ yearlyROI.toFormat(4) }}%
+                        </h4>
+                        <h4
+                          class="mb-0 glowing"
+                          *ngIf="selectedPool == 'SushiSwap'"
+                        >
+                          {{ sushiYearlyROI.toFormat(4) }}%
+                        </h4>
+                      </td>
+                    </tr>
+                    <tr *ngIf="selectedPool == 'Bancor'">
+                      <td class="px-0 py-1 text-white border-0 small">
+                        <strong>Variable APR to provide MPH </strong>
+                      </td>
+                      <td
+                        class="px-0 py-1 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">
+                          {{ bancorMPHYearlyROI.toFormat(4) }}%
+                        </h4>
+                      </td>
+                    </tr>
+                    <tr *ngIf="selectedPool == 'Bancor'">
+                      <td class="px-0 py-1 text-white border-0 small">
+                        <strong>Variable APR to provide BNT </strong>
+                      </td>
+                      <td
+                        class="px-0 py-1 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">
+                          {{ bancorBNTYearlyROI.toFormat(4) }}%
+                        </h4>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <button type="button" class="btn btn-lg btn-block btn-bg-gradient mb-3"
-              (click)="stake()" [disabled]="!canContinue() || !canStake() || wallet.watching">
+              <button
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                (click)="stake()"
+                [disabled]="!canContinue() || !canStake() || wallet.watching"
+              >
                 <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
               </button>
               <div class="row">
                 <div class="col-12 col-lg-6 mb-3 mb-lg-0">
-                  <button type="button" class="btn btn-block btn-lg border-gradient"
-                  (click)="claim()" [disabled]="!canContinue() || !canClaim() || wallet.watching">
+                  <button
+                    type="button"
+                    class="btn btn-block btn-lg border-gradient"
+                    (click)="claim()"
+                    [disabled]="
+                      !canContinue() || !canClaim() || wallet.watching
+                    "
+                  >
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                   </button>
                 </div>
                 <div class="col-12 col-lg-6">
-                  <button type="button" class="btn btn-block btn-lg border-gradient"
-                  (click)=openUnstakeModal() [disabled]="!canContinue() || !canUnstake() || wallet.watching">
+                  <button
+                    type="button"
+                    class="btn btn-block btn-lg border-gradient"
+                    (click)="openUnstakeModal()"
+                    [disabled]="
+                      !canContinue() || !canUnstake() || wallet.watching
+                    "
+                  >
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
                   </button>
                 </div>
@@ -228,15 +500,16 @@
         <div class="col-12 col-lg-4">
           <div class="card">
             <div class="card-header">
-              <h4 class="card-header-title">
-                Things you can do
-              </h4>
+              <h4 class="card-header-title">Things you can do</h4>
             </div>
             <div class="card-body p-0">
               <div class="list-group list-group-flush">
                 <a href="#" class="list-group-item list-group-item-action px-4">
                   <h4 class="mb-1">Stake MPH for xMPH</h4>
-                  <small class="text-muted">By staking your MPH, you are eligible to collect two kinds of rewards distributed as MPH.</small>
+                  <small class="text-muted"
+                    >By staking your MPH, you are eligible to collect two kinds
+                    of rewards distributed as MPH.</small
+                  >
                   <small class="text-primary ml-2">Learn more</small>
                 </a>
               </div>
@@ -245,7 +518,6 @@
         </div>
       </div>
 
-
       <!--v2 code-->
       <div class="card-deck mb-6 d-none">
         <div class="card mb-4 mb-lg-0">
@@ -253,64 +525,85 @@
             <div class="row">
               <div class="col-12 col-lg-6">
                 <h5 class="text-uppercase">
-                  🦄 <a class="text-primary"
+                  🦄
+                  <a
+                    class="text-primary"
                     href="https://uniswap.exchange/add/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH"
-                    target="_blank">Provide
-                    liquidity</a> to the Uniswap MPH-ETH pair and earn MPH
+                    target="_blank"
+                    >Provide liquidity</a
+                  >
+                  to the Uniswap MPH-ETH pair and earn MPH
                 </h5>
                 <!-- Heading -->
                 <h2 class="mt-4 mb-2 glowing">
-                  {{stakedMPHBalance.toFormat(4)}} MPH-ETH UNI-V2
+                  {{ stakedMPHBalance.toFormat(4) }} MPH-ETH UNI-V2
                 </h2>
                 <h5 class="mb-5 text-white">
-                  (${{stakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}})
-                  ({{stakedMPHPoolProportion.toFormat(4)}}% of the pool)
+                  (${{ stakedMPHBalance.times(mphLPPriceUSD).toFormat(4) }}) ({{
+                    stakedMPHPoolProportion.toFormat(4)
+                  }}% of the pool)
                 </h5>
-                <button type="button" class="btn btn-lg btn-block btn-bg-gradient mb-3" (click)="openStakeModal()" [disabled]="wallet.watching">
-                  <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake UNI-v2 LP tokens
+                <button
+                  type="button"
+                  class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                  (click)="openStakeModal()"
+                  [disabled]="wallet.watching"
+                >
+                  <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake UNI-v2
+                  LP tokens
                 </button>
                 <div class="row">
                   <div class="col-6">
-                    <button type="button" class="btn btn-block btn-lg border-gradient" (click)="openUnstakeModal()" [disabled]="wallet.watching">
+                    <button
+                      type="button"
+                      class="btn btn-block btn-lg border-gradient"
+                      (click)="openUnstakeModal()"
+                      [disabled]="wallet.watching"
+                    >
                       <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
                     </button>
                   </div>
                   <div class="col-6">
-                    <button type="button" class="btn btn-block btn-lg border-gradient" (click)="unstakeAndClaim()"
-                      [disabled]="!canContinue() || wallet.watching">
-                      <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake all & Claim
+                    <button
+                      type="button"
+                      class="btn btn-block btn-lg border-gradient"
+                      (click)="unstakeAndClaim()"
+                      [disabled]="!canContinue() || wallet.watching"
+                    >
+                      <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
+                      all & Claim
                     </button>
                   </div>
                 </div>
                 <div class="row mt-4">
                   <div class="col-12 col-lg-6">
-                    <h5 class="text-uppercase">
-                      Claimable rewards
-                    </h5>
+                    <h5 class="text-uppercase">Claimable rewards</h5>
                     <!-- Heading -->
                     <h2 class="mb-3 glowing">
-                      {{claimableRewards.toFormat(4)}} MPH
+                      {{ claimableRewards.toFormat(4) }} MPH
                     </h2>
                     <h5 class="mb-3 text-white">
-                      ${{claimableRewards.times(mphPriceUSD).toFormat(4)}} /
-                      ${{rewardPerDay.times(mphPriceUSD).toFormat(4)}}/day / {{rewardPerDay.toFormat(4)}} MPH/day
+                      ${{ claimableRewards.times(mphPriceUSD).toFormat(4) }} /
+                      ${{ rewardPerDay.times(mphPriceUSD).toFormat(4) }}/day /
+                      {{ rewardPerDay.toFormat(4) }} MPH/day
                     </h5>
-                    <button type="button" class="btn btn-sm btn-bg-gradient" (click)="claim()"
-                      [disabled]="!canContinue() || wallet.watching">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-bg-gradient"
+                      (click)="claim()"
+                      [disabled]="!canContinue() || wallet.watching"
+                    >
                       <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
                     </button>
                   </div>
                   <div class="col-12 col-lg-6">
-                    <h5 class="text-uppercase">
-                      Estimated ROI (y)
-                    </h5>
+                    <h5 class="text-uppercase">Estimated ROI (y)</h5>
                     <!-- Heading -->
-                    <h2 class="mb-3 glowing">
-                      {{yearlyROI.toFormat(4)}}%
-                    </h2>
+                    <h2 class="mb-3 glowing">{{ yearlyROI.toFormat(4) }}%</h2>
                     <h5 class="mb-2 text-white">
-                      {{monthlyROI.toFormat(4)}}% (m) / {{weeklyROI.toFormat(4)}}% (w) / {{dailyROI.toFormat(4)}}%
-                      (d)
+                      {{ monthlyROI.toFormat(4) }}% (m) /
+                      {{ weeklyROI.toFormat(4) }}% (w) /
+                      {{ dailyROI.toFormat(4) }}% (d)
                     </h5>
                   </div>
                 </div>
@@ -324,7 +617,12 @@
                       </div>
                       <div class="col text-right">
                         <h3 class="glowing">
-                          ${{totalStakedMPHBalance.times(mphLPPriceUSD).toFormat(4)}}</h3>
+                          ${{
+                            totalStakedMPHBalance
+                              .times(mphLPPriceUSD)
+                              .toFormat(4)
+                          }}
+                        </h3>
                       </div>
                     </div>
                   </li>
@@ -335,7 +633,7 @@
                       </div>
                       <div class="col text-right">
                         <h3 class="glowing">
-                          {{rewardStartTime}} to {{rewardEndTime}}
+                          {{ rewardStartTime }} to {{ rewardEndTime }}
                         </h3>
                       </div>
                     </div>
@@ -347,9 +645,22 @@
                       </div>
                       <div class="col text-right">
                         <h3 class="glowing">
-                          {{totalRewardPerSecond.times(PERIOD).times(constants.DAY_IN_SEC).toFormat(0)}} MPH</h3>
+                          {{
+                            totalRewardPerSecond
+                              .times(PERIOD)
+                              .times(constants.DAY_IN_SEC)
+                              .toFormat(0)
+                          }}
+                          MPH
+                        </h3>
                         <h5 class="text-white">
-                          ${{totalRewardPerSecond.times(PERIOD).times(constants.DAY_IN_SEC).times(mphPriceUSD).toFormat(4)}}
+                          ${{
+                            totalRewardPerSecond
+                              .times(PERIOD)
+                              .times(constants.DAY_IN_SEC)
+                              .times(mphPriceUSD)
+                              .toFormat(4)
+                          }}
                         </h5>
                       </div>
                     </div>
@@ -361,10 +672,20 @@
                       </div>
                       <div class="col text-right">
                         <h3 class="glowing">
-                          {{totalRewardPerSecond.times(constants.DAY_IN_SEC).toFormat(4)}} MPH
+                          {{
+                            totalRewardPerSecond
+                              .times(constants.DAY_IN_SEC)
+                              .toFormat(4)
+                          }}
+                          MPH
                         </h3>
                         <h5 class="text-white">
-                          ${{totalRewardPerSecond.times(constants.DAY_IN_SEC).times(mphPriceUSD).toFormat(4)}}
+                          ${{
+                            totalRewardPerSecond
+                              .times(constants.DAY_IN_SEC)
+                              .times(mphPriceUSD)
+                              .toFormat(4)
+                          }}
                         </h5>
                       </div>
                     </div>
@@ -375,7 +696,7 @@
                         <h3 class="text-white">MPH price</h3>
                       </div>
                       <div class="col text-right">
-                        <h3 class="glowing">${{mphPriceUSD.toFormat(4)}}</h3>
+                        <h3 class="glowing">${{ mphPriceUSD.toFormat(4) }}</h3>
                       </div>
                     </div>
                   </li>
@@ -390,63 +711,70 @@
           <div class="card-body">
             <!-- Title -->
             <h5 class="text-uppercase">
-              <a class="text-primary"
+              <a
+                class="text-primary"
                 href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
-                target="_blank">Provide
-                liquidity</a> to the Bancor MPH-BNT pair and earn BNT
+                target="_blank"
+                >Provide liquidity</a
+              >
+              to the Bancor MPH-BNT pair and earn BNT
             </h5>
             <div class="row">
               <div class="col">
                 <!-- Heading -->
                 <h2 class="mt-4 mb-2 glowing">
-                  {{bancorStakedMPHBalance.toFormat(4)}} MPH in MPH-BNT
+                  {{ bancorStakedMPHBalance.toFormat(4) }} MPH in MPH-BNT
                 </h2>
                 <h5 class="mb-3 text-white">
-                  (${{bancorStakedMPHBalance.times(mphPriceUSD).toFormat(4)}})
-                  ({{bancorStakedMPHPoolProportion.toFormat(4)}}% of the pool)
+                  (${{ bancorStakedMPHBalance.times(mphPriceUSD).toFormat(4) }})
+                  ({{ bancorStakedMPHPoolProportion.toFormat(4) }}% of the pool)
                 </h5>
               </div>
               <div class="col">
                 <!-- Heading -->
                 <h2 class="mt-4 mb-2 glowing">
-                  {{bancorStakedBNTBalance.toFormat(4)}} BNT in MPH-BNT
+                  {{ bancorStakedBNTBalance.toFormat(4) }} BNT in MPH-BNT
                 </h2>
                 <h5 class="mb-3 text-white">
-                  (${{bancorStakedBNTBalance.times(bntPriceUSD).toFormat(4)}})
-                  ({{bancorStakedBNTPoolProportion.toFormat(4)}}% of the pool)
+                  (${{ bancorStakedBNTBalance.times(bntPriceUSD).toFormat(4) }})
+                  ({{ bancorStakedBNTPoolProportion.toFormat(4) }}% of the pool)
                 </h5>
               </div>
             </div>
-            <a class="text-primary"
-              href="https://app.bancor.network/eth/portfolio" target="_blank">Manage
-              liquidity <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+            <a
+              class="text-primary"
+              href="https://app.bancor.network/eth/portfolio"
+              target="_blank"
+              >Manage liquidity
+              <i class="fe fe-external-link ml-2 align-bottom"></i
+            ></a>
             <div class="row mt-4">
               <div class="col-12 col-lg-6">
-                <h5 class="text-uppercase">
-                  Claimable rewards
-                </h5>
+                <h5 class="text-uppercase">Claimable rewards</h5>
                 <!-- Heading -->
                 <h2 class="mb-3 glowing">
-                  {{bancorClaimableRewards.toFormat(4)}} BNT
+                  {{ bancorClaimableRewards.toFormat(4) }} BNT
                 </h2>
                 <h5 class="mb-3 text-white">
-                  ${{bancorClaimableRewards.times(bntPriceUSD).toFormat(4)}}
+                  ${{ bancorClaimableRewards.times(bntPriceUSD).toFormat(4) }}
                 </h5>
-                <a class="text-primary"
+                <a
+                  class="text-primary"
                   href="https://app.bancor.network/eth/portfolio"
-                  target="_blank">Manage rewards <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+                  target="_blank"
+                  >Manage rewards
+                  <i class="fe fe-external-link ml-2 align-bottom"></i
+                ></a>
               </div>
               <div class="col-12 col-lg-6">
-                <h5 class="text-uppercase">
-                  Estimated ROI (y) to provide
-                </h5>
+                <h5 class="text-uppercase">Estimated ROI (y) to provide</h5>
                 <!-- Heading -->
                 <h2 class="mb-1 glowing">
-                  MPH {{bancorMPHYearlyROI.toFormat(4)}}%
+                  MPH {{ bancorMPHYearlyROI.toFormat(4) }}%
                 </h2>
                 <!-- Heading -->
                 <h2 class="mb-3 glowing">
-                  BNT {{bancorBNTYearlyROI.toFormat(4)}}%
+                  BNT {{ bancorBNTYearlyROI.toFormat(4) }}%
                 </h2>
               </div>
             </div>
@@ -456,51 +784,61 @@
           <div class="card-body">
             <!-- Title -->
             <h5 class="text-uppercase">
-              🍣 <a class="text-primary"
+              🍣
+              <a
+                class="text-primary"
                 href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
-                target="_blank">Provide
-                liquidity</a> to the SushiSwap MPH-ETH pair and earn SUSHI
+                target="_blank"
+                >Provide liquidity</a
+              >
+              to the SushiSwap MPH-ETH pair and earn SUSHI
             </h5>
             <!-- Heading -->
             <h2 class="mt-4 mb-2 glowing">
-              {{sushiStakedLPBalance.toFormat(4)}} MPH-ETH SLP
+              {{ sushiStakedLPBalance.toFormat(4) }} MPH-ETH SLP
             </h2>
             <h5 class="mb-3 text-white">
-              (${{sushiStakedLPBalance.times(sushiLPPriceUSD).toFormat(4)}})
-              ({{sushiStakedLPPoolProportion.toFormat(4)}}% of the pool)
+              (${{ sushiStakedLPBalance.times(sushiLPPriceUSD).toFormat(4) }})
+              ({{ sushiStakedLPPoolProportion.toFormat(4) }}% of the pool)
             </h5>
-            <a class="text-primary"
-              href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f" target="_blank">Manage
-              liquidity <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+            <a
+              class="text-primary"
+              href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
+              target="_blank"
+              >Manage liquidity
+              <i class="fe fe-external-link ml-2 align-bottom"></i
+            ></a>
             <div class="row mt-4">
               <div class="col-12 col-lg-6">
-                <h5 class="text-uppercase">
-                  Claimable rewards
-                </h5>
+                <h5 class="text-uppercase">Claimable rewards</h5>
                 <!-- Heading -->
                 <h2 class="mb-3 glowing">
-                  {{sushiClaimableRewards.toFormat(4)}} SUSHI
+                  {{ sushiClaimableRewards.toFormat(4) }} SUSHI
                 </h2>
                 <h5 class="mb-3 text-white">
-                  ${{sushiClaimableRewards.times(sushiPriceUSD).toFormat(4)}} /
-                  ${{sushiRewardPerDay.times(sushiPriceUSD).toFormat(4)}}/day / {{sushiRewardPerDay.toFormat(4)}}
+                  ${{
+                    sushiClaimableRewards.times(sushiPriceUSD).toFormat(4)
+                  }}
+                  / ${{
+                    sushiRewardPerDay.times(sushiPriceUSD).toFormat(4)
+                  }}/day / {{ sushiRewardPerDay.toFormat(4) }}
                   SUSHI/day
                 </h5>
-                <a class="text-primary"
+                <a
+                  class="text-primary"
                   href="https://app.sushi.com/vesting"
-                  target="_blank">Claim <i class="fe fe-external-link ml-2 align-bottom"></i></a>
+                  target="_blank"
+                  >Claim <i class="fe fe-external-link ml-2 align-bottom"></i
+                ></a>
               </div>
               <div class="col-12 col-lg-6">
-                <h5 class="text-uppercase">
-                  Estimated ROI (y)
-                </h5>
+                <h5 class="text-uppercase">Estimated ROI (y)</h5>
                 <!-- Heading -->
-                <h2 class="mb-3 glowing">
-                  {{sushiYearlyROI.toFormat(4)}}%
-                </h2>
+                <h2 class="mb-3 glowing">{{ sushiYearlyROI.toFormat(4) }}%</h2>
                 <h5 class="mb-2 text-white">
-                  {{sushiMonthlyROI.toFormat(4)}}% (m) / {{sushiWeeklyROI.toFormat(4)}}% (w) /
-                  {{sushiDailyROI.toFormat(4)}}% (d)
+                  {{ sushiMonthlyROI.toFormat(4) }}% (m) /
+                  {{ sushiWeeklyROI.toFormat(4) }}% (w) /
+                  {{ sushiDailyROI.toFormat(4) }}% (d)
                 </h5>
               </div>
             </div>

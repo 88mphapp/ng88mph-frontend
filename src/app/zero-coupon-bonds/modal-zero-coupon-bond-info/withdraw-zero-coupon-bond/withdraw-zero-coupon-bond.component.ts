@@ -19,19 +19,19 @@ const mockData = {
         fundingID: 3,
         amount: 100,
         interestEarned: 10,
-        mintMPHAmount: 10
-      }
-    }
+        mintMPHAmount: 10,
+      },
+    },
   ],
   dpool: {
-    mphDepositorRewardTakeBackMultiplier: 0.3
-  }
-}
+    mphDepositorRewardTakeBackMultiplier: 0.3,
+  },
+};
 
 @Component({
   selector: 'app-withdraw-zero-coupon-bond',
   templateUrl: './withdraw-zero-coupon-bond.component.html',
-  styleUrls: ['./withdraw-zero-coupon-bond.component.css']
+  styleUrls: ['./withdraw-zero-coupon-bond.component.css'],
 })
 export class WithdrawZeroCouponBondComponent implements OnInit {
   @Input() zcbEntry: ZeroCouponBondTableEntry;
@@ -79,7 +79,9 @@ export class WithdrawZeroCouponBondComponent implements OnInit {
       this.mphPriceUSD = price;
     });
 
-    this.helpers.getTokenPriceUSD(this.poolInfo.stablecoin).then(price => this.stablecoinPriceUSD = new BigNumber(price));
+    this.helpers
+      .getTokenPriceUSD(this.poolInfo.stablecoin)
+      .then((price) => (this.stablecoinPriceUSD = new BigNumber(price)));
 
     if (this.wallet.connected) {
       this.loadActiveDeposits(false);
@@ -133,9 +135,11 @@ export class WithdrawZeroCouponBondComponent implements OnInit {
       `;
     }
 
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => this.handleData(x));
+    this.apollo
+      .query<QueryResult>({
+        query: queryString,
+      })
+      .subscribe((x) => this.handleData(x));
   }
 
   async handleData(queryResult: ApolloQueryResult<QueryResult>) {
@@ -144,17 +148,26 @@ export class WithdrawZeroCouponBondComponent implements OnInit {
       const pool = queryResult.data.dpool;
 
       if (pool && fractionalDeposits) {
-        const mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
+        const mphDepositorRewardTakeBackMultiplier = new BigNumber(
+          pool.mphDepositorRewardTakeBackMultiplier
+        );
         const parsedDeposits: FractionalDeposit[] = [];
         for (const rawDeposit of fractionalDeposits) {
-          const interestEarnedToken = this.helpers.applyFeeToInterest(rawDeposit.deposit.interestEarned, this.poolInfo);
-          const realMPHReward = new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier).times(rawDeposit.deposit.mintMPHAmount);
+          const interestEarnedToken = this.helpers.applyFeeToInterest(
+            rawDeposit.deposit.interestEarned,
+            this.poolInfo
+          );
+          const realMPHReward = new BigNumber(1)
+            .minus(mphDepositorRewardTakeBackMultiplier)
+            .times(rawDeposit.deposit.mintMPHAmount);
           const parsedDeposit: FractionalDeposit = {
             address: rawDeposit.address,
             nftID: +rawDeposit.deposit.nftID,
             fundingID: +rawDeposit.deposit.fundingID,
-            unlockStablecoinAmount: new BigNumber(rawDeposit.deposit.amount).plus(interestEarnedToken),
-            unlockMPHAmount: realMPHReward
+            unlockStablecoinAmount: new BigNumber(
+              rawDeposit.deposit.amount
+            ).plus(interestEarnedToken),
+            unlockMPHAmount: realMPHReward,
           };
           parsedDeposits.push(parsedDeposit);
         }
@@ -164,13 +177,27 @@ export class WithdrawZeroCouponBondComponent implements OnInit {
   }
 
   canContinue(): boolean {
-    return this.wallet.connected && this.now > this.zcbEntry.maturationTimestamp;
+    return (
+      this.wallet.connected && this.now > this.zcbEntry.maturationTimestamp
+    );
   }
 
   withdraw(deposit: FractionalDeposit) {
-    const zeroCouponBondContract = this.contract.getZeroCouponBondContract(this.zcbEntry.zcbInfo.address);
-    const func = zeroCouponBondContract.methods.redeemFractionalDepositShares(deposit.address, deposit.fundingID);
-    this.wallet.sendTx(func, () => { }, () => { }, (err) => { this.wallet.displayGenericError(err) });
+    const zeroCouponBondContract = this.contract.getZeroCouponBondContract(
+      this.zcbEntry.zcbInfo.address
+    );
+    const func = zeroCouponBondContract.methods.redeemFractionalDepositShares(
+      deposit.address,
+      deposit.fundingID
+    );
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      (err) => {
+        this.wallet.displayGenericError(err);
+      }
+    );
   }
 }
 
@@ -184,7 +211,7 @@ interface QueryResult {
       amount: number;
       interestEarned: number;
       mintMPHAmount: number;
-    }
+    };
   }[];
   dpool: {
     id: string;

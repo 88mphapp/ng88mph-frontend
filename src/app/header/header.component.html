@@ -1,173 +1,245 @@
-
 <div class="container justify-content-start justify-content-lg-between">
-
   <!-- Toggler -->
-  <button class="navbar-toggler mr-3" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+  <button
+    class="navbar-toggler mr-3"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbar"
+    aria-controls="navbar"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <!-- Brand -->
   <a class="navbar-brand mr-lg-3" href="./index.html">
-    <img src="./assets/img/logo.svg" alt="..." class="navbar-brand-img mr-2"> <span class="h4 text-white d-lg-none">88mph</span>
+    <img src="./assets/img/logo.svg" alt="..." class="navbar-brand-img mr-2" />
+    <span class="h4 text-white d-lg-none">88mph</span>
   </a>
-
 
   <!-- Collapse -->
   <div class="collapse navbar-collapse mr-lg-auto" id="navbar">
-
     <!-- Navigation -->
     <ul class="navbar-nav mr-lg-auto" ngbNav [activeId]="route.url">
       <li class="nav-item" ngbNavItem="/earn">
-        <a class="nav-link text-white" routerLink="earn" ngbNavLink>
-          Earn
-        </a>
+        <a class="nav-link text-white" routerLink="earn" ngbNavLink> Earn </a>
       </li>
       <li class="nav-item" ngbNavItem="/yield">
-        <a class="nav-link text-white" routerLink="yield" ngbNavLink>
-          Yield
-        </a>
+        <a class="nav-link text-white" routerLink="yield" ngbNavLink> Yield </a>
       </li>
       <li class="nav-item" ngbNavItem="/stake">
-        <a class="nav-link text-white" routerLink="stake" ngbNavLink>
-          Stake
-        </a>
+        <a class="nav-link text-white" routerLink="stake" ngbNavLink> Stake </a>
       </li>
       <li class="nav-item" ngbNavItem="/farm">
-        <a class="nav-link text-white" routerLink="farm" ngbNavLink>
-          Farm
-        </a>
+        <a class="nav-link text-white" routerLink="farm" ngbNavLink> Farm </a>
       </li>
       <li class="nav-item" ngbNavItem="/stats">
-        <a class="nav-link text-white" routerLink="stats" ngbNavLink>
-          Stats
-        </a>
+        <a class="nav-link text-white" routerLink="stats" ngbNavLink> Stats </a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link" href="#" id="topnavPartners" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a
+          class="nav-link"
+          href="#"
+          id="topnavPartners"
+          role="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
           <i class="fe fe-more-horizontal"></i>
         </a>
         <ul class="dropdown-menu" aria-labelledby="topnavPartners">
           <li>
-            <a class="dropdown-item" href="https://docs.88mph.app/" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://docs.88mph.app/"
+              target="_blank"
+            >
               Documentations
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="https://forum.88mph.app/" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://forum.88mph.app/"
+              target="_blank"
+            >
               Forum
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="https://snapshot.org/#/88mph.eth" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://snapshot.org/#/88mph.eth"
+              target="_blank"
+            >
               Governance
             </a>
           </li>
           <li ngbNavItem="/funding">
-            <a class="dropdown-item" routerLink="funding">
-              Funding
-            </a>
+            <a class="dropdown-item" routerLink="funding"> Funding </a>
           </li>
           <li>
-            <a class="dropdown-item" href="https://88mph.app/fm/" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://88mph.app/fm/"
+              target="_blank"
+            >
               88.0 FM 📻
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item" href="https://twitter.com/88mphapp" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://twitter.com/88mphapp"
+              target="_blank"
+            >
               Twitter
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item" href="https://t.me/join_88mphapp" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://t.me/join_88mphapp"
+              target="_blank"
+            >
               Telegram
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item" href="https://discord.gg/95pw2uQ7PE" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://discord.gg/95pw2uQ7PE"
+              target="_blank"
+            >
               Discord
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item" href="https://www.youtube.com/channel/UCEr3cuwaggjkw8TajaPSpgg"
-              target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://www.youtube.com/channel/UCEr3cuwaggjkw8TajaPSpgg"
+              target="_blank"
+            >
               Youtube
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item" href="https://medium.com/88mphapp" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://medium.com/88mphapp"
+              target="_blank"
+            >
               Medium
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item" href="https://github.com/88mphapp" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://github.com/88mphapp"
+              target="_blank"
+            >
               GitHub
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item" href="https://forms.gle/UqKQ1LqhwAFCBWGBA" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://forms.gle/UqKQ1LqhwAFCBWGBA"
+              target="_blank"
+            >
               Feedback
             </a>
           </li>
           <li class="nav-item">
-            <img style="margin-left: 16px" class="img-fluid rounded my-3" src="./assets/img/wechatbot.png" alt="WeChat 88mph" width="128px">
+            <img
+              style="margin-left: 16px"
+              class="img-fluid rounded my-3"
+              src="./assets/img/wechatbot.png"
+              alt="WeChat 88mph"
+              width="128px"
+            />
           </li>
 
           <li class="nav-item">
-            <a class="dropdown-item"
+            <a
+              class="dropdown-item"
               href="https://weibo.com/u/7550683535"
-              target="_blank">
+              target="_blank"
+            >
               微博
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item"
+            <a
+              class="dropdown-item"
               href="https://docs.cn.88mph.app"
-              target="_blank">
+              target="_blank"
+            >
               百科
             </a>
           </li>
           <li class="nav-item">
-            <a class="dropdown-item" href="https://t.me/join88mphchinese" target="_blank">
+            <a
+              class="dropdown-item"
+              href="https://t.me/join88mphchinese"
+              target="_blank"
+            >
               电报
             </a>
           </li>
         </ul>
       </li>
     </ul>
-    <div>
-
-    </div>
+    <div></div>
     <div class="d-lg-none">
-
       <!-- Connect/watch button -->
       <div class="btn-group btn-block mr-3 mb-3">
-        <button type="button" class="btn btn-dark border-right-0" (click)="connectWallet()">
+        <button
+          type="button"
+          class="btn btn-dark border-right-0"
+          (click)="connectWallet()"
+        >
           <div *ngIf="wallet.connected && !wallet.watching">
-            {{wallet.userAddress.substring(0, 14)}}
+            {{ wallet.userAddress.substring(0, 14) }}
           </div>
           <div *ngIf="!wallet.connected && !wallet.watching">
             Connect Wallet
           </div>
           <div *ngIf="wallet.watching">
-            {{wallet.watchedAddress.substring(0, 14)}}
+            {{ wallet.watchedAddress.substring(0, 14) }}
           </div>
         </button>
-        <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        </button>
-        <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px;">
+        <button
+          type="button"
+          class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        ></button>
+        <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px">
           <!-- Connected Wallet -->
           <span class="d-block mb-3" *ngIf="wallet.connected">
             <h6 class="dropdown-header px-0">Connected</h6>
-            <button type="button" class="btn btn-dark" (click)="switchFocus(false)">
-              {{wallet.userAddress.substring(0, 14)}}
+            <button
+              type="button"
+              class="btn btn-dark"
+              (click)="switchFocus(false)"
+            >
+              {{ wallet.userAddress.substring(0, 14) }}
             </button>
             <span *ngIf="!wallet.watching" class="badge">Viewing</span>
           </span>
           <!-- Watched Wallet -->
           <span *ngIf="wallet.watchedAddress != null">
             <h6 class="dropdown-header px-0">Watched</h6>
-            <button type="button" class="btn btn-dark" (click)="switchFocus(true)">
-              {{wallet.watchedAddress.substring(0, 14)}}
+            <button
+              type="button"
+              class="btn btn-dark"
+              (click)="switchFocus(true)"
+            >
+              {{ wallet.watchedAddress.substring(0, 14) }}
             </button>
             <span *ngIf="wallet.watching" class="badge">Viewing</span>
           </span>
@@ -180,125 +252,445 @@
           </span>
           <form #watchForm="ngForm" (ngSubmit)="onSubmit()">
             <div class="form-group mb-2">
-              <input type="text" [class.is-invalid]="address.invalid && address.dirty"
-               class="form-control" pattern="^0x[a-fA-F0-9]{40}$" required #address="ngModel" name="watchAddress"
-               id="TrackEthAddress"  placeholder="Add an Ethereum address"
-               [(ngModel)]="watchedModel.address">
-               <small *ngIf="address.invalid && address.dirty" class="text-danger"> Please enter a valid address</small>
+              <input
+                type="text"
+                [class.is-invalid]="address.invalid && address.dirty"
+                class="form-control"
+                pattern="^0x[a-fA-F0-9]{40}$"
+                required
+                #address="ngModel"
+                name="watchAddress"
+                id="TrackEthAddress"
+                placeholder="Add an Ethereum address"
+                [(ngModel)]="watchedModel.address"
+              />
+              <small
+                *ngIf="address.invalid && address.dirty"
+                class="text-danger"
+              >
+                Please enter a valid address</small
+              >
             </div>
-            <button *ngIf="wallet.watchedAddress == null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Add watched address</button>
-            <button *ngIf="wallet.watchedAddress != null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Edit watched address</button>
+            <button
+              *ngIf="wallet.watchedAddress == null"
+              type="submit"
+              class="btn btn-dark"
+              [disabled]="watchForm.form.invalid"
+            >
+              Add watched address
+            </button>
+            <button
+              *ngIf="wallet.watchedAddress != null"
+              type="submit"
+              class="btn btn-dark"
+              [disabled]="watchForm.form.invalid"
+            >
+              Edit watched address
+            </button>
           </form>
         </div>
       </div>
       <div class="dropdown">
-        <button class="btn btn-block mb-3 btn-dark dropdown-toggle mr-3 d-flex align-items-center justify-content-center " type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button
+          class="
+            btn btn-block
+            mb-3
+            btn-dark
+            dropdown-toggle
+            mr-3
+            d-flex
+            align-items-center
+            justify-content-center
+          "
+          type="button"
+          id="dropdownNetwork"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
           <ng-container *ngIf="chainId === constants.CHAIN_ID.MAINNET">
-            <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Ethereum
+            <div class="avatar avatar-xxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="20px"
+              />
+            </div>
+            Ethereum
           </ng-container>
           <ng-container *ngIf="chainId === constants.CHAIN_ID.RINKEBY">
-            <div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Rinkeby
+            <div class="avatar avatar-xxs avatar-online rinkeby mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="20px"
+              />
+            </div>
+            Rinkeby
           </ng-container>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
           <h6 class="dropdown-header">Select Network (88mph v3)</h6>
-          <button class="dropdown-item d-flex align-items-center" type="button"  (click)="wallet.changeChain(1)"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
-          <button class="dropdown-item d-flex align-items-center mr-2" type="button" (click)="wallet.changeChain(4)"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button>
+          <button
+            class="dropdown-item d-flex align-items-center"
+            type="button"
+            (click)="wallet.changeChain(1)"
+          >
+            <div class="avatar avatar-xxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            Ethereum
+          </button>
+          <button
+            class="dropdown-item d-flex align-items-center mr-2"
+            type="button"
+            (click)="wallet.changeChain(4)"
+          >
+            <div class="avatar avatar-xxs avatar-online rinkeby mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            Ethereum Rinkeby
+          </button>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Select 88mph legacy version</h6>
-          <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v2/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v2</a>
-          <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v1/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v1</a>
-          <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v0/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v0</a>
-          </div>
-      </div>
-      <a class="btn btn-block btn-dark mr-1 mb-3" href=""><img src="./assets/img/local_gas_station_white_24dp.svg" class="mx-1 icon-logo" alt="MPH logo"
-        width="24px">{{gasPrice.toFormat(0)}}
-      </a>
-      <button class="btn btn-block btn-dark mr-1 mb-3" type="button" routerLink="/stake">
-        <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
-          width="24px"> {{mphBalance.toFormat(2)}} MPH</button>
-      <button class="btn btn-block btn-dark mr-3 mb-3" type="button" routerLink="/stake"><img src="./assets/img/token-icons/xmph-logo-24.svg" class="mx-1 icon-logo" alt="xMPH logo"
-        width="24px"> {{xMPHBalance.toFormat(2)}} xMPH</button>
-
-      <div class="dropdown">
-        <button class="btn btn-block btn-dark dropdown-toggle mr-3 mb-3 d-flex align-items-center justify-content-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img class="img-fluid" src="./assets/img/language_white_24dp.svg" alt="Language icon" width="24px"> Language
-        </button>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownNetwork">
-          <h6 class="dropdown-header">Select language</h6>
-          <button class="dropdown-item d-flex align-items-center" type="button">English</button>
-          <button class="dropdown-item d-flex align-items-center" type="button">Spanish</button>
-          <button class="dropdown-item d-flex align-items-center" type="button">Chinese</button>
+          <a
+            class="dropdown-item d-flex align-items-center"
+            href="https://88mph.app/v2/"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><div class="avatar avatar-xxs avatar-online mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            88mph v2</a
+          >
+          <a
+            class="dropdown-item d-flex align-items-center"
+            href="https://88mph.app/v1/"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><div class="avatar avatar-xxs avatar-online mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            88mph v1</a
+          >
+          <a
+            class="dropdown-item d-flex align-items-center"
+            href="https://88mph.app/v0/"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><div class="avatar avatar-xxs avatar-online mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            88mph v0</a
+          >
         </div>
       </div>
+      <a class="btn btn-block btn-dark mr-1 mb-3" href=""
+        ><img
+          src="./assets/img/local_gas_station_white_24dp.svg"
+          class="mx-1 icon-logo"
+          alt="MPH logo"
+          width="24px"
+        />{{ gasPrice.toFormat(0) }}
+      </a>
+      <button
+        class="btn btn-block btn-dark mr-1 mb-3"
+        type="button"
+        routerLink="/stake"
+      >
+        <img
+          src="./assets/img/token-icons/mph-logo-24.svg"
+          class="mx-1 icon-logo"
+          alt="MPH logo"
+          width="24px"
+        />
+        {{ mphBalance.toFormat(2) }} MPH
+      </button>
+      <button
+        class="btn btn-block btn-dark mr-3 mb-3"
+        type="button"
+        routerLink="/stake"
+      >
+        <img
+          src="./assets/img/token-icons/xmph-logo-24.svg"
+          class="mx-1 icon-logo"
+          alt="xMPH logo"
+          width="24px"
+        />
+        {{ xMPHBalance.toFormat(2) }} xMPH
+      </button>
 
+      <div class="dropdown">
+        <button
+          class="
+            btn btn-block btn-dark
+            dropdown-toggle
+            mr-3
+            mb-3
+            d-flex
+            align-items-center
+            justify-content-center
+          "
+          type="button"
+          id="dropdownNetwork"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <img
+            class="img-fluid"
+            src="./assets/img/language_white_24dp.svg"
+            alt="Language icon"
+            width="24px"
+          />
+          Language
+        </button>
+        <div
+          class="dropdown-menu dropdown-menu-right"
+          aria-labelledby="dropdownNetwork"
+        >
+          <h6 class="dropdown-header">Select language</h6>
+          <button class="dropdown-item d-flex align-items-center" type="button">
+            English
+          </button>
+          <button class="dropdown-item d-flex align-items-center" type="button">
+            Spanish
+          </button>
+          <button class="dropdown-item d-flex align-items-center" type="button">
+            Chinese
+          </button>
+        </div>
+      </div>
     </div>
-
-
   </div>
   <!-- User desktop -->
   <div class="navbar-user d-none d-lg-flex">
     <div class="dropdown">
-      <button class="btn btn-sm btn-dark dropdown-toggle mr-1 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button
+        class="
+          btn btn-sm btn-dark
+          dropdown-toggle
+          mr-1
+          d-flex
+          align-items-center
+        "
+        type="button"
+        id="dropdownNetwork"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
         <ng-container *ngIf="chainId === constants.CHAIN_ID.MAINNET">
-          <div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Ethereum
+          <div class="avatar avatar-xxs avatar-online mainnet mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/ethereum-icon.png"
+              alt="logo eth-diamond-purple-white"
+              width="20px"
+            />
+          </div>
+          Ethereum
         </ng-container>
         <ng-container *ngIf="chainId === constants.CHAIN_ID.RINKEBY">
-          <div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="20px"></div> Rinkeby
+          <div class="avatar avatar-xxs avatar-online rinkeby mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/ethereum-icon.png"
+              alt="logo eth-diamond-purple-white"
+              width="20px"
+            />
+          </div>
+          Rinkeby
         </ng-container>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
         <h6 class="dropdown-header">Select Network (88mph v3)</h6>
-        <button class="dropdown-item d-flex align-items-center" type="button" (click)="wallet.changeChain(1)"><div class="avatar avatar-xxs avatar-online mainnet mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum</button>
-        <button class="dropdown-item d-flex align-items-center mr-2" type="button" (click)="wallet.changeChain(4)"><div class="avatar avatar-xxs avatar-online rinkeby mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>Ethereum Rinkeby</button>
+        <button
+          class="dropdown-item d-flex align-items-center"
+          type="button"
+          (click)="wallet.changeChain(1)"
+        >
+          <div class="avatar avatar-xxs avatar-online mainnet mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/ethereum-icon.png"
+              alt="logo eth-diamond-purple-white"
+              width="24px"
+            />
+          </div>
+          Ethereum
+        </button>
+        <button
+          class="dropdown-item d-flex align-items-center mr-2"
+          type="button"
+          (click)="wallet.changeChain(4)"
+        >
+          <div class="avatar avatar-xxs avatar-online rinkeby mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/ethereum-icon.png"
+              alt="logo eth-diamond-purple-white"
+              width="24px"
+            />
+          </div>
+          Ethereum Rinkeby
+        </button>
         <div class="dropdown-divider"></div>
         <h6 class="dropdown-header">Select 88mph legacy version</h6>
-        <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v2/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v2</a>
-        <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v1/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v1</a>
-        <a class="dropdown-item d-flex align-items-center" href="https://88mph.app/v0/" target="_blank" rel="noopener noreferrer"><div class="avatar avatar-xxs avatar-online mr-2"><img class="avatar-img rounded-circle" src="./assets/img/ethereum-icon.png" alt="logo eth-diamond-purple-white" width="24px"></div>88mph v0</a>
+        <a
+          class="dropdown-item d-flex align-items-center"
+          href="https://88mph.app/v2/"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><div class="avatar avatar-xxs avatar-online mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/ethereum-icon.png"
+              alt="logo eth-diamond-purple-white"
+              width="24px"
+            />
+          </div>
+          88mph v2</a
+        >
+        <a
+          class="dropdown-item d-flex align-items-center"
+          href="https://88mph.app/v1/"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><div class="avatar avatar-xxs avatar-online mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/ethereum-icon.png"
+              alt="logo eth-diamond-purple-white"
+              width="24px"
+            />
+          </div>
+          88mph v1</a
+        >
+        <a
+          class="dropdown-item d-flex align-items-center"
+          href="https://88mph.app/v0/"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><div class="avatar avatar-xxs avatar-online mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/ethereum-icon.png"
+              alt="logo eth-diamond-purple-white"
+              width="24px"
+            />
+          </div>
+          88mph v0</a
+        >
       </div>
     </div>
-    <a class="btn btn-sm btn-dark mr-3" href=""><img src="./assets/img/local_gas_station_white_24dp.svg" class="mx-1 icon-logo" alt="MPH logo"
-      width="20px">{{gasPrice.toFormat(0)}}
+    <a class="btn btn-sm btn-dark mr-3" href=""
+      ><img
+        src="./assets/img/local_gas_station_white_24dp.svg"
+        class="mx-1 icon-logo"
+        alt="MPH logo"
+        width="20px"
+      />{{ gasPrice.toFormat(0) }}
     </a>
-    <button class="btn btn-sm btn-dark mr-1 d-flex align-items-center" type="button" routerLink="/stake">
-      <img src="./assets/img/token-icons/mph-logo-24.svg" class="mx-1 icon-logo" alt="MPH logo"
-        width="20px"> {{mphBalance.toFormat(2)}} MPH
+    <button
+      class="btn btn-sm btn-dark mr-1 d-flex align-items-center"
+      type="button"
+      routerLink="/stake"
+    >
+      <img
+        src="./assets/img/token-icons/mph-logo-24.svg"
+        class="mx-1 icon-logo"
+        alt="MPH logo"
+        width="20px"
+      />
+      {{ mphBalance.toFormat(2) }} MPH
     </button>
-    <button class="btn btn-sm btn-dark mr-3 d-flex align-items-center" type="button" routerLink="/stake">
-      <img src="./assets/img/token-icons/xmph-logo-24.svg" class="mx-1 icon-logo" alt="xMPH logo"
-        width="20px"> {{xMPHBalance.toFormat(2)}} xMPH
+    <button
+      class="btn btn-sm btn-dark mr-3 d-flex align-items-center"
+      type="button"
+      routerLink="/stake"
+    >
+      <img
+        src="./assets/img/token-icons/xmph-logo-24.svg"
+        class="mx-1 icon-logo"
+        alt="xMPH logo"
+        width="20px"
+      />
+      {{ xMPHBalance.toFormat(2) }} xMPH
     </button>
     <!-- Connect/watch button -->
     <div class="btn-group btn-group-sm mr-3">
-      <button type="button" class="btn btn-dark border-right-0" (click)="connectWallet()">
+      <button
+        type="button"
+        class="btn btn-dark border-right-0"
+        (click)="connectWallet()"
+      >
         <div *ngIf="wallet.connected && !wallet.watching">
-          {{wallet.userAddress.substring(0, 14)}}
+          {{ wallet.userAddress.substring(0, 14) }}
         </div>
-        <div *ngIf="!wallet.connected && !wallet.watching">
-          Connect Wallet
-        </div>
+        <div *ngIf="!wallet.connected && !wallet.watching">Connect Wallet</div>
         <div *ngIf="wallet.watching">
-          {{wallet.watchedAddress.substring(0, 14)}}
+          {{ wallet.watchedAddress.substring(0, 14) }}
         </div>
       </button>
-      <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button
+        type="button"
+        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
         <span class="fe fe-chevron-down"></span>
       </button>
-      <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px;">
+      <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px">
         <!-- Connected Wallet -->
         <span class="d-block mb-3" *ngIf="wallet.connected">
           <h6 class="dropdown-header px-0">Connected</h6>
-          <button type="button" class="btn btn-dark" (click)="switchFocus(false)">
-            {{wallet.userAddress.substring(0, 14)}}
+          <button
+            type="button"
+            class="btn btn-dark"
+            (click)="switchFocus(false)"
+          >
+            {{ wallet.userAddress.substring(0, 14) }}
           </button>
           <span *ngIf="!wallet.watching" class="badge">Viewing</span>
         </span>
         <!-- Watched Wallet -->
         <span *ngIf="wallet.watchedAddress != null">
           <h6 class="dropdown-header px-0">Watched</h6>
-          <button type="button" class="btn btn-dark" (click)="switchFocus(true)">
-            {{wallet.watchedAddress.substring(0, 14)}}
+          <button
+            type="button"
+            class="btn btn-dark"
+            (click)="switchFocus(true)"
+          >
+            {{ wallet.watchedAddress.substring(0, 14) }}
           </button>
           <span *ngIf="wallet.watching" class="badge">Viewing</span>
         </span>
@@ -311,46 +703,124 @@
         </span>
         <form #watchForm="ngForm" (ngSubmit)="onSubmit()">
           <div class="form-group mb-2">
-            <input type="text" [class.is-invalid]="address.invalid && address.dirty"
-             class="form-control" pattern="^0x[a-fA-F0-9]{40}$" required #address="ngModel" name="watchAddress"
-             id="TrackEthAddress"  placeholder="Add an Ethereum address"
-             [(ngModel)]="watchedModel.address">
-             <small *ngIf="address.invalid && address.dirty" class="text-danger"> Please enter a valid address</small>
+            <input
+              type="text"
+              [class.is-invalid]="address.invalid && address.dirty"
+              class="form-control"
+              pattern="^0x[a-fA-F0-9]{40}$"
+              required
+              #address="ngModel"
+              name="watchAddress"
+              id="TrackEthAddress"
+              placeholder="Add an Ethereum address"
+              [(ngModel)]="watchedModel.address"
+            />
+            <small *ngIf="address.invalid && address.dirty" class="text-danger">
+              Please enter a valid address</small
+            >
           </div>
-          <button *ngIf="wallet.watchedAddress == null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Add watched address</button>
-          <button *ngIf="wallet.watchedAddress != null" type="submit" class="btn btn-dark" [disabled]="watchForm.form.invalid">Edit watched address</button>
+          <button
+            *ngIf="wallet.watchedAddress == null"
+            type="submit"
+            class="btn btn-dark"
+            [disabled]="watchForm.form.invalid"
+          >
+            Add watched address
+          </button>
+          <button
+            *ngIf="wallet.watchedAddress != null"
+            type="submit"
+            class="btn btn-dark"
+            [disabled]="watchForm.form.invalid"
+          >
+            Edit watched address
+          </button>
         </form>
       </div>
     </div>
 
     <div class="dropdown">
-      <button class="btn btn-sm btn-dark dropdown-toggle mr-3 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <img class="img-fluid" src="./assets/img/language_white_24dp.svg" alt="Language icon" width="24px">
+      <button
+        class="
+          btn btn-sm btn-dark
+          dropdown-toggle
+          mr-3
+          d-flex
+          align-items-center
+        "
+        type="button"
+        id="dropdownNetwork"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <img
+          class="img-fluid"
+          src="./assets/img/language_white_24dp.svg"
+          alt="Language icon"
+          width="24px"
+        />
       </button>
-      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownNetwork">
+      <div
+        class="dropdown-menu dropdown-menu-right"
+        aria-labelledby="dropdownNetwork"
+      >
         <h6 class="dropdown-header">Select language</h6>
-        <button class="dropdown-item d-flex align-items-center" type="button">English</button>
-        <button class="dropdown-item d-flex align-items-center" type="button">Spanish</button>
-        <button class="dropdown-item d-flex align-items-center" type="button">Chinese</button>
+        <button class="dropdown-item d-flex align-items-center" type="button">
+          English
+        </button>
+        <button class="dropdown-item d-flex align-items-center" type="button">
+          Spanish
+        </button>
+        <button class="dropdown-item d-flex align-items-center" type="button">
+          Chinese
+        </button>
       </div>
     </div>
     <div class="dropdown">
-      <button class="btn btn-sm btn-dark dropdown-toggle mr-3 d-flex align-items-center" type="button" id="dropdownNetwork" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <img class="img-fluid" src="./assets/img/dark_mode_white_24dp.svg" alt="Mode icon" width="24px">
+      <button
+        class="
+          btn btn-sm btn-dark
+          dropdown-toggle
+          mr-3
+          d-flex
+          align-items-center
+        "
+        type="button"
+        id="dropdownNetwork"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <img
+          class="img-fluid"
+          src="./assets/img/dark_mode_white_24dp.svg"
+          alt="Mode icon"
+          width="24px"
+        />
       </button>
-      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownNetwork">
+      <div
+        class="dropdown-menu dropdown-menu-right"
+        aria-labelledby="dropdownNetwork"
+      >
         <h6 class="dropdown-header">Select Mode</h6>
         <ng-container *ngFor="let themeName of app.themes">
-          <button class="dropdown-item d-flex align-items-center" (click)="app.setTheme(themeName)">
-            <input class="mr-2" type="radio" name="colorScheme" value={{themeName}} [checked]="app.themeName === themeName">
-            {{themeName}}
+          <button
+            class="dropdown-item d-flex align-items-center"
+            (click)="app.setTheme(themeName)"
+          >
+            <input
+              class="mr-2"
+              type="radio"
+              name="colorScheme"
+              value="{{ themeName }}"
+              [checked]="app.themeName === themeName"
+            />
+            {{ themeName }}
           </button>
         </ng-container>
       </div>
     </div>
-
   </div>
-
-
-
-</div> <!-- / .container -->
+</div>
+<!-- / .container -->

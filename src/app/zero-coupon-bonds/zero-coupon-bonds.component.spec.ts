@@ -8,9 +8,8 @@ describe('ZeroCouponBondsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ZeroCouponBondsComponent ]
-    })
-    .compileComponents();
+      declarations: [ZeroCouponBondsComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

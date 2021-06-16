@@ -12,7 +12,7 @@ import { ModalUnstakeZCBLPComponent } from './modal-unstake-zcblp/modal-unstake-
 @Component({
   selector: 'app-farm-zero-coupon-bond',
   templateUrl: './farm-zero-coupon-bond.component.html',
-  styleUrls: ['./farm-zero-coupon-bond.component.css']
+  styleUrls: ['./farm-zero-coupon-bond.component.css'],
 })
 export class FarmZeroCouponBondComponent implements OnInit {
   @Input() zcbEntry: ZeroCouponBondTableEntry;
@@ -65,24 +65,45 @@ export class FarmZeroCouponBondComponent implements OnInit {
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const rewards = this.contract.getContract(this.zcbEntry.zcbInfo.farmAddress, 'Farming', readonlyWeb3);
+    const rewards = this.contract.getContract(
+      this.zcbEntry.zcbInfo.farmAddress,
+      'Farming',
+      readonlyWeb3
+    );
 
     if (loadGlobal) {
-      this.totalStakedTokenBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
-      this.totalRewardPerSecond = new BigNumber(await rewards.methods.rewardRate().call()).div(this.constants.PRECISION);
-      this.rewardPerStakeTokenPerSecond = this.totalRewardPerSecond.div(this.totalStakedTokenBalance);
+      this.totalStakedTokenBalance = new BigNumber(
+        await rewards.methods.totalSupply().call()
+      ).div(this.constants.PRECISION);
+      this.totalRewardPerSecond = new BigNumber(
+        await rewards.methods.rewardRate().call()
+      ).div(this.constants.PRECISION);
+      this.rewardPerStakeTokenPerSecond = this.totalRewardPerSecond.div(
+        this.totalStakedTokenBalance
+      );
       if (this.totalStakedTokenBalance.isZero()) {
         this.rewardPerStakeTokenPerSecond = new BigNumber(0);
       }
       // load reward start & end time
-      rewards.methods.starttime().call().then(startTime => {
-        this.rewardStartTime = new Date(+startTime * 1e3).toLocaleString();
-        this.rewardEndTime = new Date((+startTime + this.PERIOD * this.constants.DAY_IN_SEC) * 1e3).toLocaleString();
-      });
+      rewards.methods
+        .starttime()
+        .call()
+        .then((startTime) => {
+          this.rewardStartTime = new Date(+startTime * 1e3).toLocaleString();
+          this.rewardEndTime = new Date(
+            (+startTime + this.PERIOD * this.constants.DAY_IN_SEC) * 1e3
+          ).toLocaleString();
+        });
 
       this.rewardTokenPriceUSD = await this.helpers.getMPHPriceUSD();
-      this.stakeTokenPriceUSD = await this.helpers.getZCBLPPriceUSD(this.zcbEntry.zcbInfo.sushiSwapPair, this.zcbEntry.zcbInfo.sushiSwapPairBaseTokenAddress);
-      const secondROI = this.totalRewardPerSecond.times(this.rewardTokenPriceUSD).div(this.totalStakedTokenBalance.times(this.stakeTokenPriceUSD)).times(100);
+      this.stakeTokenPriceUSD = await this.helpers.getZCBLPPriceUSD(
+        this.zcbEntry.zcbInfo.sushiSwapPair,
+        this.zcbEntry.zcbInfo.sushiSwapPairBaseTokenAddress
+      );
+      const secondROI = this.totalRewardPerSecond
+        .times(this.rewardTokenPriceUSD)
+        .div(this.totalStakedTokenBalance.times(this.stakeTokenPriceUSD))
+        .times(100);
       this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
       this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
       this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
@@ -90,13 +111,21 @@ export class FarmZeroCouponBondComponent implements OnInit {
     }
 
     if (loadUser) {
-      this.stakedTokenBalance = new BigNumber(await rewards.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
-      this.claimableRewards = new BigNumber(await rewards.methods.earned(this.wallet.userAddress).call()).div(this.constants.PRECISION);
-      this.stakedTokenPoolProportion = this.stakedTokenBalance.div(this.totalStakedTokenBalance).times(100);
+      this.stakedTokenBalance = new BigNumber(
+        await rewards.methods.balanceOf(this.wallet.userAddress).call()
+      ).div(this.constants.PRECISION);
+      this.claimableRewards = new BigNumber(
+        await rewards.methods.earned(this.wallet.userAddress).call()
+      ).div(this.constants.PRECISION);
+      this.stakedTokenPoolProportion = this.stakedTokenBalance
+        .div(this.totalStakedTokenBalance)
+        .times(100);
       if (this.totalStakedTokenBalance.isZero()) {
         this.stakedTokenPoolProportion = new BigNumber(0);
       }
-      this.rewardPerDay = this.stakedTokenBalance.times(this.rewardPerStakeTokenPerSecond).times(this.constants.DAY_IN_SEC);
+      this.rewardPerDay = this.stakedTokenBalance
+        .times(this.rewardPerStakeTokenPerSecond)
+        .times(this.constants.DAY_IN_SEC);
     }
   }
 
@@ -122,10 +151,14 @@ export class FarmZeroCouponBondComponent implements OnInit {
   }
 
   openStakeModal() {
-    const modalRef = this.modalService.open(ModalStakeZCBLPComponent, { windowClass: 'fullscreen' });
-    modalRef.componentInstance.stakedTokenPoolProportion = this.stakedTokenPoolProportion;
+    const modalRef = this.modalService.open(ModalStakeZCBLPComponent, {
+      windowClass: 'fullscreen',
+    });
+    modalRef.componentInstance.stakedTokenPoolProportion =
+      this.stakedTokenPoolProportion;
     modalRef.componentInstance.stakedTokenBalance = this.stakedTokenBalance;
-    modalRef.componentInstance.totalStakedTokenBalance = this.totalStakedTokenBalance;
+    modalRef.componentInstance.totalStakedTokenBalance =
+      this.totalStakedTokenBalance;
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerDay = this.rewardPerDay;
     modalRef.componentInstance.rewardTokenPriceUSD = this.rewardTokenPriceUSD;
@@ -133,10 +166,14 @@ export class FarmZeroCouponBondComponent implements OnInit {
   }
 
   openUnstakeModal() {
-    const modalRef = this.modalService.open(ModalUnstakeZCBLPComponent, { windowClass: 'fullscreen' });
-    modalRef.componentInstance.stakedTokenPoolProportion = this.stakedTokenPoolProportion;
+    const modalRef = this.modalService.open(ModalUnstakeZCBLPComponent, {
+      windowClass: 'fullscreen',
+    });
+    modalRef.componentInstance.stakedTokenPoolProportion =
+      this.stakedTokenPoolProportion;
     modalRef.componentInstance.stakedTokenBalance = this.stakedTokenBalance;
-    modalRef.componentInstance.totalStakedTokenBalance = this.totalStakedTokenBalance;
+    modalRef.componentInstance.totalStakedTokenBalance =
+      this.totalStakedTokenBalance;
     modalRef.componentInstance.totalRewardPerSecond = this.totalRewardPerSecond;
     modalRef.componentInstance.rewardPerDay = this.rewardPerDay;
     modalRef.componentInstance.rewardTokenPriceUSD = this.rewardTokenPriceUSD;
@@ -144,17 +181,37 @@ export class FarmZeroCouponBondComponent implements OnInit {
   }
 
   unstakeAndClaim() {
-    const rewards = this.contract.getContract(this.zcbEntry.zcbInfo.farmAddress, 'Farming');
+    const rewards = this.contract.getContract(
+      this.zcbEntry.zcbInfo.farmAddress,
+      'Farming'
+    );
     const func = rewards.methods.exit();
 
-    this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 
   claim() {
-    const rewards = this.contract.getContract(this.zcbEntry.zcbInfo.farmAddress, 'Farming');
+    const rewards = this.contract.getContract(
+      this.zcbEntry.zcbInfo.farmAddress,
+      'Farming'
+    );
     const func = rewards.methods.getReward();
 
-    this.wallet.sendTx(func, () => { }, () => { }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 
   canContinue() {

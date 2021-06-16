@@ -10,16 +10,16 @@ import { Watch } from '../watch';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
   chainId: number;
   gasPrice: BigNumber;
   mphBalance: BigNumber;
   xMPHBalance: BigNumber;
-  watchedModel = new Watch(false, "");
+  watchedModel = new Watch(false, '');
 
-  constructor (
+  constructor(
     public route: Router,
     public wallet: WalletService,
     public contract: ContractService,
@@ -29,7 +29,6 @@ export class HeaderComponent implements OnInit {
   ) {
     this.resetData(true, true);
   }
-
 
   ngOnInit(): void {
     this.loadData(this.wallet.connected, true);
@@ -59,28 +58,45 @@ export class HeaderComponent implements OnInit {
 
     let address;
     if (this.wallet.connected && !this.wallet.watching) {
-      address = this.wallet.userAddress
+      address = this.wallet.userAddress;
     } else if (this.wallet.watching) {
       address = this.wallet.watchedAddress;
     }
 
     if (loadUser) {
-      const mph = await this.contract.getContract(this.constants.MPH_ADDRESS[this.chainId], `${this.constants.CHAIN_NAME[this.chainId]}/MPHToken`);
-      mph.methods.balanceOf(address).call().then(mphBalance => {
-        this.mphBalance = new BigNumber(mphBalance).div(this.constants.PRECISION);
-      });
+      const mph = await this.contract.getContract(
+        this.constants.MPH_ADDRESS[this.chainId],
+        `${this.constants.CHAIN_NAME[this.chainId]}/MPHToken`
+      );
+      mph.methods
+        .balanceOf(address)
+        .call()
+        .then((mphBalance) => {
+          this.mphBalance = new BigNumber(mphBalance).div(
+            this.constants.PRECISION
+          );
+        });
 
-      const xmph = await this.contract.getContract(this.constants.XMPH_ADDRESS[this.chainId], `${this.constants.CHAIN_NAME[this.chainId]}/xMPHToken`);
-      xmph.methods.balanceOf(address).call().then(xMPHBalance => {
-        this.xMPHBalance = new BigNumber(xMPHBalance).div(this.constants.PRECISION);
-      });
+      const xmph = await this.contract.getContract(
+        this.constants.XMPH_ADDRESS[this.chainId],
+        `${this.constants.CHAIN_NAME[this.chainId]}/xMPHToken`
+      );
+      xmph.methods
+        .balanceOf(address)
+        .call()
+        .then((xMPHBalance) => {
+          this.xMPHBalance = new BigNumber(xMPHBalance).div(
+            this.constants.PRECISION
+          );
+        });
     }
 
     if (loadGlobal) {
-      this.gasPrice = new BigNumber(await readonlyWeb3.eth.getGasPrice()).div(1e9);
+      this.gasPrice = new BigNumber(await readonlyWeb3.eth.getGasPrice()).div(
+        1e9
+      );
     }
   }
-
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
@@ -95,7 +111,11 @@ export class HeaderComponent implements OnInit {
   }
 
   connectWallet() {
-    this.wallet.connect(() => { }, () => { }, false);
+    this.wallet.connect(
+      () => {},
+      () => {},
+      false
+    );
   }
 
   onSubmit() {

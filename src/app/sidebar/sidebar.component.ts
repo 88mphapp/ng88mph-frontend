@@ -10,15 +10,20 @@ import { Watch } from '../watch';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css']
+  styleUrls: ['./sidebar.component.css'],
 })
 export class SidebarComponent implements OnInit {
   mphBalance: BigNumber;
 
-  watchedModel = new Watch(false, "");
+  watchedModel = new Watch(false, '');
 
-  constructor(public route: Router, public wallet: WalletService, public contract: ContractService,
-    public constants: ConstantsService, public app: AppComponent) {
+  constructor(
+    public route: Router,
+    public wallet: WalletService,
+    public contract: ContractService,
+    public constants: ConstantsService,
+    public app: AppComponent
+  ) {
     this.resetData();
   }
 
@@ -52,9 +57,13 @@ export class SidebarComponent implements OnInit {
       address = this.wallet.watchedAddress;
     }
     await Promise.all([
-      mphBalance = new BigNumber(await mphToken.methods.balanceOf(address).call()).div(this.constants.PRECISION),
-      stakedMPHBalance = new BigNumber(await rewards.methods.balanceOf(address).call()).div(this.constants.PRECISION)
-    ])
+      (mphBalance = new BigNumber(
+        await mphToken.methods.balanceOf(address).call()
+      ).div(this.constants.PRECISION)),
+      (stakedMPHBalance = new BigNumber(
+        await rewards.methods.balanceOf(address).call()
+      ).div(this.constants.PRECISION)),
+    ]);
     this.mphBalance = new BigNumber(mphBalance);
   }
 
@@ -63,7 +72,11 @@ export class SidebarComponent implements OnInit {
   }
 
   connectWallet() {
-    this.wallet.connect(() => { }, () => { }, false);
+    this.wallet.connect(
+      () => {},
+      () => {},
+      false
+    );
   }
 
   onSubmit() {
@@ -75,5 +88,4 @@ export class SidebarComponent implements OnInit {
     this.wallet.watch.watching = watching;
     this.loadData();
   }
-
 }

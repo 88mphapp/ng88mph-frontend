@@ -9,7 +9,7 @@ import { WalletService } from 'src/app/wallet.service';
 @Component({
   selector: 'app-modal-stake-lp',
   templateUrl: './modal-stake-lp.component.html',
-  styleUrls: ['./modal-stake-lp.component.css']
+  styleUrls: ['./modal-stake-lp.component.css'],
 })
 export class ModalStakeLPComponent implements OnInit {
   @Input() stakedMPHPoolProportion: BigNumber;
@@ -52,7 +52,9 @@ export class ModalStakeLPComponent implements OnInit {
 
   async loadData() {
     const lpToken = this.contract.getNamedContract('MPHLP');
-    this.mphBalance = new BigNumber(await lpToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    this.mphBalance = new BigNumber(
+      await lpToken.methods.balanceOf(this.wallet.userAddress).call()
+    ).div(this.constants.PRECISION);
     this.setStakeAmount(this.mphBalance.toFixed(18));
   }
 
@@ -68,11 +70,21 @@ export class ModalStakeLPComponent implements OnInit {
     if (this.stakeAmount.isNaN()) {
       this.stakeAmount = new BigNumber(0);
     }
-    this.newStakedMPHPoolProportion = this.stakedMPHBalance.plus(this.stakeAmount).div(this.totalStakedMPHBalance.plus(this.stakeAmount)).times(100);
+    this.newStakedMPHPoolProportion = this.stakedMPHBalance
+      .plus(this.stakeAmount)
+      .div(this.totalStakedMPHBalance.plus(this.stakeAmount))
+      .times(100);
     if (this.newStakedMPHPoolProportion.isNaN()) {
       this.newStakedMPHPoolProportion = new BigNumber(0);
     }
-    this.newRewardPerDay = this.stakedMPHBalance.plus(this.stakeAmount).times(this.totalRewardPerSecond.div(this.totalStakedMPHBalance.plus(this.stakeAmount))).times(this.constants.DAY_IN_SEC);
+    this.newRewardPerDay = this.stakedMPHBalance
+      .plus(this.stakeAmount)
+      .times(
+        this.totalRewardPerSecond.div(
+          this.totalStakedMPHBalance.plus(this.stakeAmount)
+        )
+      )
+      .times(this.constants.DAY_IN_SEC);
     if (this.newRewardPerDay.isNaN()) {
       this.newRewardPerDay = new BigNumber(0);
     }
@@ -81,10 +93,24 @@ export class ModalStakeLPComponent implements OnInit {
   stake() {
     const rewards = this.contract.getNamedContract('Farming');
     const lpToken = this.contract.getNamedContract('MPHLP');
-    const stakeAmount = this.helpers.processWeb3Number(this.stakeAmount.times(this.constants.PRECISION));
+    const stakeAmount = this.helpers.processWeb3Number(
+      this.stakeAmount.times(this.constants.PRECISION)
+    );
     const func = rewards.methods.stake(stakeAmount);
 
-    this.wallet.sendTxWithToken(func, lpToken, rewards.options.address, stakeAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTxWithToken(
+      func,
+      lpToken,
+      rewards.options.address,
+      stakeAmount,
+      () => {},
+      () => {
+        this.activeModal.dismiss();
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 
   canContinue() {

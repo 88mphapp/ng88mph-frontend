@@ -16,52 +16,52 @@ const routes: Routes = [
   {
     path: '',
     component: LandingPageComponent,
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'earn',
-    component: DepositComponent
+    component: DepositComponent,
   },
   {
     path: 'yield',
-    component: BondsComponent
+    component: BondsComponent,
   },
   {
     path: 'zero-coupon-bonds',
-    component: ZeroCouponBondsComponent
+    component: ZeroCouponBondsComponent,
   },
   {
     path: 'stake',
-    component: RewardsComponent
+    component: RewardsComponent,
   },
   {
     path: 'stats',
-    component: StatsComponent
+    component: StatsComponent,
   },
   {
     path: 'farm',
-    component: FarmingComponent
+    component: FarmingComponent,
   },
   {
     path: 'vesting',
-    component: VestingComponent
+    component: VestingComponent,
   },
   {
     path: 'funding',
-    component: FundingComponent
+    component: FundingComponent,
   },
   {
     path: 'claim-eth',
-    component: ClaimETHComponent
+    component: ClaimETHComponent,
   },
   {
     path: 'claim-mph',
-    component: ClaimMPHComponent
-  }
+    component: ClaimMPHComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -8,9 +8,8 @@ describe('ModalStakeZCBLPComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalStakeZCBLPComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalStakeZCBLPComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

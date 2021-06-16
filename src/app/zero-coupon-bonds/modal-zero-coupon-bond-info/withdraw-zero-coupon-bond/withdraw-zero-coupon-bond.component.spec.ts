@@ -8,9 +8,8 @@ describe('WithdrawZeroCouponBondComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WithdrawZeroCouponBondComponent ]
-    })
-    .compileComponents();
+      declarations: [WithdrawZeroCouponBondComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

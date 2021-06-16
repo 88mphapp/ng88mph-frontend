@@ -23,13 +23,13 @@ const mockData = [
     vestPeriodInSeconds: 10 * 24 * 60 * 60,
     creationTimestamp: 1605297600,
     withdrawnAmount: 20,
-  }
+  },
 ];
 
 @Component({
   selector: 'app-vesting',
   templateUrl: './vesting.component.html',
-  styleUrls: ['./vesting.component.css']
+  styleUrls: ['./vesting.component.css'],
 })
 export class VestingComponent implements OnInit {
   mphPriceUSD: BigNumber;
@@ -83,11 +83,13 @@ export class VestingComponent implements OnInit {
           withdrawnAmount
         }
       }
-    `
+    `;
 
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => this.handleData(x));
+    this.apollo
+      .query<QueryResult>({
+        query: queryString,
+      })
+      .subscribe((x) => this.handleData(x));
 
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
@@ -103,7 +105,8 @@ export class VestingComponent implements OnInit {
       if (vests) {
         const vestList = [];
         for (let vest of vests) {
-          const fullyVestTimestamp = +vest.creationTimestamp + +vest.vestPeriodInSeconds;
+          const fullyVestTimestamp =
+            +vest.creationTimestamp + +vest.vestPeriodInSeconds;
           const vestObj: Vest = {
             id: vest.id,
             amount: new BigNumber(vest.amount),
@@ -111,7 +114,7 @@ export class VestingComponent implements OnInit {
             creationTimestamp: +vest.creationTimestamp,
             withdrawnAmount: new BigNumber(vest.withdrawnAmount),
             countdownTimer: new Timer(fullyVestTimestamp, 'down'),
-            locked: this.now < fullyVestTimestamp
+            locked: this.now < fullyVestTimestamp,
           };
           vestObj.countdownTimer.start();
           vestList.push(vestObj);
@@ -130,7 +133,10 @@ export class VestingComponent implements OnInit {
   getCurrentWithdrawableAmount(vest: Vest): BigNumber {
     if (vest.locked) {
       // partially vested
-      return vest.amount.times(this.now - vest.creationTimestamp).div(vest.vestPeriodInSeconds).minus(vest.withdrawnAmount);
+      return vest.amount
+        .times(this.now - vest.creationTimestamp)
+        .div(vest.vestPeriodInSeconds)
+        .minus(vest.withdrawnAmount);
     } else {
       // fully vested
       return vest.amount.minus(vest.withdrawnAmount);
@@ -139,14 +145,26 @@ export class VestingComponent implements OnInit {
 
   getIdxOfVest(vest: Vest): number {
     // TODO: hack, change later
-    return +(vest.id.split('---')[1]);
+    return +vest.id.split('---')[1];
   }
 
   withdraw(vest: Vest) {
     const vesting = this.contract.getNamedContract('Vesting');
-    const func = vesting.methods.withdrawVested(this.wallet.userAddress, this.getIdxOfVest(vest));
+    const func = vesting.methods.withdrawVested(
+      this.wallet.userAddress,
+      this.getIdxOfVest(vest)
+    );
 
-    this.wallet.sendTx(func, () => { }, () => { this.loadData(); }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {
+        this.loadData();
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 }
 
