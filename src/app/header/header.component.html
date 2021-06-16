@@ -31,7 +31,11 @@
       <li class="nav-item" ngbNavItem="/stake">
         <a class="nav-link text-white" routerLink="stake" ngbNavLink> Stake </a>
       </li>
-      <li class="nav-item" ngbNavItem="/farm">
+      <li
+        class="nav-item"
+        ngbNavItem="/farm"
+        *ngIf="wallet.networkID == constants.CHAIN_ID.MAINNET"
+      >
         <a class="nav-link text-white" routerLink="farm" ngbNavLink> Farm </a>
       </li>
       <li class="nav-item" ngbNavItem="/stats">
@@ -308,7 +312,7 @@
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <ng-container *ngIf="chainId === constants.CHAIN_ID.MAINNET">
+          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
             <div class="avatar avatar-xxs avatar-online mainnet mr-2">
               <img
                 class="avatar-img rounded-circle"
@@ -319,7 +323,7 @@
             </div>
             Ethereum
           </ng-container>
-          <ng-container *ngIf="chainId === constants.CHAIN_ID.RINKEBY">
+          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
             <div class="avatar avatar-xxs avatar-online rinkeby mr-2">
               <img
                 class="avatar-img rounded-circle"
@@ -507,7 +511,7 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <ng-container *ngIf="chainId === constants.CHAIN_ID.MAINNET">
+        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
           <div class="avatar avatar-xxs avatar-online mainnet mr-2">
             <img
               class="avatar-img rounded-circle"
@@ -518,7 +522,7 @@
           </div>
           Ethereum
         </ng-container>
-        <ng-container *ngIf="chainId === constants.CHAIN_ID.RINKEBY">
+        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
           <div class="avatar avatar-xxs avatar-online rinkeby mr-2">
             <img
               class="avatar-img rounded-circle"
