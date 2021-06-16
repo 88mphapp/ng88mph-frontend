@@ -13,7 +13,6 @@ import { Watch } from '../watch';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  chainId: number;
   gasPrice: BigNumber;
   mphBalance: BigNumber;
   xMPHBalance: BigNumber;
@@ -52,8 +51,6 @@ export class HeaderComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    this.chainId = this.wallet.networkID;
-
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
     let address;
@@ -65,8 +62,8 @@ export class HeaderComponent implements OnInit {
 
     if (loadUser) {
       const mph = await this.contract.getContract(
-        this.constants.MPH_ADDRESS[this.chainId],
-        `${this.constants.CHAIN_NAME[this.chainId]}/MPHToken`
+        this.constants.MPH_ADDRESS[this.wallet.networkID],
+        `${this.constants.CHAIN_NAME[this.wallet.networkID]}/MPHToken`
       );
       mph.methods
         .balanceOf(address)
@@ -78,8 +75,8 @@ export class HeaderComponent implements OnInit {
         });
 
       const xmph = await this.contract.getContract(
-        this.constants.XMPH_ADDRESS[this.chainId],
-        `${this.constants.CHAIN_NAME[this.chainId]}/xMPHToken`
+        this.constants.XMPH_ADDRESS[this.wallet.networkID],
+        `${this.constants.CHAIN_NAME[this.wallet.networkID]}/xMPHToken`
       );
       xmph.methods
         .balanceOf(address)
@@ -105,7 +102,6 @@ export class HeaderComponent implements OnInit {
     }
 
     if (resetGlobal) {
-      this.chainId = 0;
       this.gasPrice = new BigNumber(0);
     }
   }
