@@ -71,7 +71,7 @@ export class HelpersService {
   async getMPHPriceUSD(): Promise<BigNumber> {
     return new BigNumber(
       await this.getTokenPriceUSD(
-        this.constants.MPH_ADDRESS[this.wallet.networkID]
+        this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
       )
     );
   }
