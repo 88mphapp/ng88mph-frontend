@@ -69,18 +69,11 @@ export class HelpersService {
   }
 
   async getMPHPriceUSD(): Promise<BigNumber> {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const uniswapPair = this.contract.getNamedContract('MPHLP', readonlyWeb3);
-    const reservesObj = await uniswapPair.methods.getReserves().call();
-    const mphReserve = new BigNumber(reservesObj._reserve0).div(
-      this.constants.PRECISION
+    return new BigNumber(
+      await this.getTokenPriceUSD(
+        this.constants.MPH_ADDRESS[this.wallet.networkID]
+      )
     );
-    const ethReserve = new BigNumber(reservesObj._reserve1).div(
-      this.constants.PRECISION
-    );
-    const priceInETH = ethReserve.div(mphReserve);
-    const ethPriceInUSD = await this.getTokenPriceUSD(this.constants.WETH_ADDR);
-    return priceInETH.times(ethPriceInUSD);
   }
 
   async getMPHLPPriceUSD(): Promise<BigNumber> {
