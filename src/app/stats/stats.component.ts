@@ -74,14 +74,22 @@ export class StatsComponent implements OnInit {
     const readonlyWeb3 = this.wallet.readonlyWeb3(
       this.constants.CHAIN_ID.MAINNET
     );
-    const mphToken = this.contract.getNamedContract('MPHToken', readonlyWeb3);
-    const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
+    const mphToken = this.contract.getNamedContract(
+      'MPHToken',
+      readonlyWeb3,
+      this.constants.CHAIN_ID.MAINNET
+    );
+    const xMPHToken = this.contract.getNamedContract(
+      'xMPHToken',
+      readonlyWeb3,
+      this.constants.CHAIN_ID.MAINNET
+    );
     this.mphTotalSupply = new BigNumber(
       await mphToken.methods.totalSupply().call()
     ).div(this.constants.PRECISION);
     this.mphStakedPercentage = this.mphTotalSupply.isZero()
       ? new BigNumber(0)
-      : new BigNumber(await rewards.methods.totalSupply().call())
+      : new BigNumber(await xMPHToken.methods.totalSupply().call())
           .div(this.constants.PRECISION)
           .div(this.mphTotalSupply)
           .times(100);
@@ -94,12 +102,21 @@ export class StatsComponent implements OnInit {
       ).div(this.constants.PRECISION);
     };
     const accountsToUpdate = [
-      this.contract.getNamedContractAddress('Farming'),
+      this.contract.getNamedContractAddress(
+        'Farming',
+        this.constants.CHAIN_ID.MAINNET
+      ),
       this.constants.GOV_TREASURY,
       this.constants.DEV_WALLET,
       this.constants.MPH_MERKLE_DISTRIBUTOR,
-      this.contract.getNamedContractAddress('Rewards'),
-      this.contract.getNamedContractAddress('Vesting'),
+      this.contract.getNamedContractAddress(
+        'Rewards',
+        this.constants.CHAIN_ID.MAINNET
+      ),
+      this.contract.getNamedContractAddress(
+        'Vesting',
+        this.constants.CHAIN_ID.MAINNET
+      ),
     ];
     const accountBalances = await Promise.all(
       accountsToUpdate.map((account) => getBalance(account))

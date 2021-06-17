@@ -66,7 +66,6 @@ export class RewardsComponent implements OnInit {
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const rewards = this.contract.getNamedContract('Rewards', readonlyWeb3);
     const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
     const xmph = this.contract.getNamedContract('xMPHToken', readonlyWeb3);
 
@@ -100,7 +99,10 @@ export class RewardsComponent implements OnInit {
 
     if (loadGlobal) {
       // load reward accumulation stats
-      this.loadRewardAccumulationStats();
+      // only available on mainnet
+      if (this.wallet.networkID == this.constants.CHAIN_ID.MAINNET) {
+        this.loadRewardAccumulationStats();
+      }
 
       // load MPH and xMPH data
       // @dev will throw an error until xMPH abi and address have been updated
@@ -278,6 +280,7 @@ export class RewardsComponent implements OnInit {
     });
 
     // compute COMP rewards
+
     const compoundPools = allPools.filter(
       (poolInfo) => poolInfo.protocol === 'Compound'
     );

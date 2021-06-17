@@ -25,7 +25,7 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
   };
 
-  GRAPHQL_ENDPOINT_ADDRESS = {
+  GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph', // v2
     [this.CHAIN_ID.RINKEBY]:
@@ -83,8 +83,6 @@ export class ConstantsService {
   WEEK_IN_SEC = 7 * 24 * 60 * 60;
   DAY_IN_SEC = 24 * 60 * 60;
   SUBGRAPH_SYNC_WARNING_THRESHOLD = 20; // if falls behind by 20 blocks, display error banner
-  GRAPHQL_ENDPOINT =
-    'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph';
 
   // 88MPH CONTRACTS //
   GOV_TREASURY = '0x56f34826Cc63151f74FA8f701E4f73C5EAae52AD';
@@ -101,8 +99,6 @@ export class ConstantsService {
   BANCOR_STAKING_REWARDS_STORE = '0x891AfF26593Da95e574E3f62619dAD6624FB5693';
 
   // TOKENS //
-  MPH = '0x8888801af4d980682e47f1a9036e589479e835c5';
-  XMPH = '0x8888801af4d980682e47f1a9036e589479e835c5'; // @dev update after contract is deployed
   COMP = '0xc00e94cb662c3520282e6f5717214004a7f26888';
   FARM = '0xa0246c9032bC3A600820415aE600c6388619A14D';
   AAVE = '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9';

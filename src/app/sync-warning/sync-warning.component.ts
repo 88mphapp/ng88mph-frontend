@@ -37,9 +37,10 @@ export class SyncWarningComponent implements OnInit {
         }
       }
     `;
-    request(this.constants.GRAPHQL_ENDPOINT, queryString).then((data) =>
-      this.handleData(data)
-    );
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data) => this.handleData(data));
   }
 
   async handleData(queryResult: QueryResult) {

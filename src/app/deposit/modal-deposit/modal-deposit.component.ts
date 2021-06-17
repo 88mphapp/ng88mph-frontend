@@ -440,6 +440,8 @@ export class ModalDepositComponent implements OnInit {
     }
   }
 
+  // @dev only works on mainnet since zapper only exists on mainnet
+  // TODO: switch to v3 version of CurveZapIn
   async zapCurveDeposit() {
     const slippage = 0.01;
     const tokenAddress = this.contract.getZapDepositTokenAddress(
