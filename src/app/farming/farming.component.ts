@@ -218,7 +218,7 @@ export class FarmingComponent implements OnInit {
         await bancorLiquidityProtectionStats.methods
           .totalReserveAmount(
             this.constants.BANCOR_MPHBNT_POOL,
-            this.constants.MPH
+            this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
           )
           .call()
       ).div(this.constants.PRECISION);
@@ -235,7 +235,10 @@ export class FarmingComponent implements OnInit {
           .poolProgram(this.constants.BANCOR_MPHBNT_POOL)
           .call();
       this.bancorTotalRewardPerSecond = new BigNumber(poolProgram[2]);
-      if (poolProgram[3][0].toLowerCase() === this.constants.MPH) {
+      if (
+        poolProgram[3][0].toLowerCase() ===
+        this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
+      ) {
         this.bancorRewardPerMPHPerSecond = new BigNumber(
           (poolProgram[2] * poolProgram[4][0]) / 1e6 / this.constants.PRECISION
         );
@@ -332,7 +335,10 @@ export class FarmingComponent implements OnInit {
         .times(this.constants.DAY_IN_SEC);
 
       // bancor
-      let mph = this.contract.getERC20(this.constants.MPH, readonlyWeb3);
+      let mph = this.contract.getERC20(
+        this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET],
+        readonlyWeb3
+      );
       let bnt = this.contract.getERC20(this.constants.BNT, readonlyWeb3);
       this.bancorUnstakedMPHBalance = new BigNumber(
         await mph.methods.balanceOf(address).call()
@@ -345,7 +351,7 @@ export class FarmingComponent implements OnInit {
           .totalProviderAmount(
             address,
             this.constants.BANCOR_MPHBNT_POOL,
-            this.constants.MPH
+            this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
           )
           .call()
       ).div(this.constants.PRECISION);
@@ -393,7 +399,12 @@ export class FarmingComponent implements OnInit {
           deposit[1].toLowerCase() ===
           this.constants.BANCOR_MPHBNT_POOL.toLowerCase()
         ) {
-          if (deposit[2].toLowerCase() === this.constants.MPH.toLowerCase()) {
+          if (
+            deposit[2].toLowerCase() ===
+            this.constants.MPH_ADDRESS[
+              this.constants.CHAIN_ID.MAINNET
+            ].toLowerCase()
+          ) {
             this.bancorMPHDeposits.push(parseInt(this.bancorDepositIDs[id]));
           } else if (
             deposit[2].toLowerCase() === this.constants.BNT.toLowerCase()
@@ -557,7 +568,7 @@ export class FarmingComponent implements OnInit {
         lpToken = this.contract.getNamedContract('MPHToken');
         func = rewards.methods.addLiquidity(
           this.constants.BANCOR_MPHBNT_POOL,
-          this.constants.MPH,
+          this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET],
           stakeAmount
         );
       } else if (this.bancorSelectedToken === 'BNT') {

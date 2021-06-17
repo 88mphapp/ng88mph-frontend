@@ -133,13 +133,14 @@ export class Web3Enabled {
             }
           },
           network: (newNetworkID) => {
-            if (newNetworkID != this.networkID && this.notifyInstance) {
+            const networkDidChange = newNetworkID != this.networkID;
+            if (networkDidChange) {
               this.notifyInstance.config({
                 networkId: newNetworkID,
               });
+              this.networkID = newNetworkID;
               this.chainChangedEvent.emit(newNetworkID);
             }
-            this.networkID = newNetworkID;
           },
           balance: this.doNothing,
         },

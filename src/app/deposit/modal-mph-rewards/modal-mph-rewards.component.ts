@@ -86,7 +86,7 @@ export class ModalMphRewardsComponent implements OnInit {
   // @dev withdraw() take a uint64 as a parameter, check to make sure it's correct
   withdraw() {
     const vest = this.userDeposit.vest;
-    const vestContract = this.contract.getNamedContract('Vesting');
+    const vestContract = this.contract.getNamedContract('Vesting02');
     const func = vestContract.methods.withdraw(vest.id);
 
     this.wallet.sendTx(

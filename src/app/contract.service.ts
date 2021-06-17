@@ -17,21 +17,23 @@ export class ContractService {
   }
 
   getPoolAddress(name: string): string {
-    return require('../assets/json/pools.json')[name].address;
+    return require('../assets/json/pools.json')[this.wallet.networkID][name]
+      .address;
   }
 
   getPoolStablecoinAddress(name: string): string {
-    return require('../assets/json/pools.json')[name].stablecoin;
+    return require('../assets/json/pools.json')[this.wallet.networkID][name]
+      .stablecoin;
   }
 
   getPoolInfo(name: string): PoolInfo {
-    return require('../assets/json/pools.json')[name];
+    return require('../assets/json/pools.json')[this.wallet.networkID][name];
   }
 
   getPoolInfoList(): PoolInfo[] {
-    return Object.keys(require('../assets/json/pools.json')).map((pool) =>
-      this.getPoolInfo(pool)
-    );
+    return Object.keys(
+      require('../assets/json/pools.json')[this.wallet.networkID]
+    ).map((pool) => this.getPoolInfo(pool));
   }
 
   getPoolInfoFromAddress(address: string): PoolInfo {
@@ -50,13 +52,21 @@ export class ContractService {
     return this.getContract(address, 'ERC20', web3);
   }
 
-  getNamedContract(name: string, web3?: Web3) {
-    const address = require('../assets/json/contracts.json')[name];
+  getNamedContract(name: string, web3?: Web3, networkID?: number) {
+    const actualNetworkID = (
+      networkID ? networkID : this.wallet.networkID
+    ).toString();
+    const address = require('../assets/json/contracts.json')[actualNetworkID][
+      name
+    ];
     return this.getContract(address, name, web3);
   }
 
-  getNamedContractAddress(name: string) {
-    return require('../assets/json/contracts.json')[name];
+  getNamedContractAddress(name: string, networkID?: number) {
+    const actualNetworkID = (
+      networkID ? networkID : this.wallet.networkID
+    ).toString();
+    return require('../assets/json/contracts.json')[actualNetworkID][name];
   }
 
   getERC20(address: string, web3?: Web3) {
@@ -72,11 +82,15 @@ export class ContractService {
   }
 
   getZeroCouponBondPoolNameList(): string[] {
-    return Object.keys(require('../assets/json/zero-coupon-bonds.json'));
+    return Object.keys(
+      require('../assets/json/zero-coupon-bonds.json')[this.wallet.networkID]
+    );
   }
 
   getZeroCouponBondPool(name: string): ZeroCouponBondInfo[] {
-    return require('../assets/json/zero-coupon-bonds.json')[name];
+    return require('../assets/json/zero-coupon-bonds.json')[
+      this.wallet.networkID
+    ][name];
   }
 
   getZeroCouponBondContract(address: string, web3?: Web3) {
@@ -93,7 +107,6 @@ export interface PoolInfo {
   protocol: string;
   iconPath: string;
   moneyMarket: string;
-  vestPeriod: string;
   stakingPool?: string;
   curveSwapAddress?: string;
   zapDepositTokens?: string[];
