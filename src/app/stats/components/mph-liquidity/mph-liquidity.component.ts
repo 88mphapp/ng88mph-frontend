@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ApolloQueryResult } from '@apollo/client/core';
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import BigNumber from 'bignumber.js';
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
+import { request, gql } from 'graphql-request';
 import { TimeSeriesService } from 'src/app/timeseries.service';
 import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app//helpers.service';
@@ -35,7 +32,6 @@ export class MphLiquidityComponent implements OnInit {
   public barChartData;
 
   constructor(
-    private apollo: Apollo,
     public helpers: HelpersService,
     public constants: ConstantsService,
     public timeseries: TimeSeriesService
@@ -130,11 +126,6 @@ export class MphLiquidityComponent implements OnInit {
   }
 
   async loadUniswap() {
-    const uniswap = new ApolloClient({
-      uri: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2',
-      cache: new InMemoryCache(),
-    });
-
     // buld the query string
     let queryString = `query Uniswap {`;
     for (let i = 0; i < this.blocks.length; i++) {
@@ -152,19 +143,13 @@ export class MphLiquidityComponent implements OnInit {
       ${queryString}
     `;
 
-    uniswap
-      .query<QueryResult>({
-        query: query,
-      })
-      .then((result) => this.handleUniswapData(result));
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.constants.CHAIN_ID.MAINNET],
+      query
+    ).then((data: QueryResult) => this.handleUniswapData(data));
   }
 
   async loadSushiswap() {
-    const sushiswap = new ApolloClient({
-      uri: 'https://api.thegraph.com/subgraphs/name/sushiswap/exchange',
-      cache: new InMemoryCache(),
-    });
-
     // buld the query string
     let queryString = `query Uniswap {`;
     for (let i = 0; i < this.blocks.length; i++) {
@@ -182,39 +167,32 @@ export class MphLiquidityComponent implements OnInit {
       ${queryString}
     `;
 
-    sushiswap
-      .query<QueryResult>({
-        query: query,
-      })
-      .then((result) => this.handleSushiswapData(result));
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.constants.CHAIN_ID.MAINNET],
+      query
+    ).then((data: QueryResult) => this.handleSushiswapData(data));
   }
 
   async loadBancor() {
     // waiting on Bancor to implement historical data queries to their API
   }
 
-  handleUniswapData(queryResult: ApolloQueryResult<QueryResult>): void {
-    if (!queryResult.loading) {
-      let result = queryResult.data;
-      for (let i in result) {
-        if (result[i] !== null) {
-          this.uniswap.push(parseInt(result[i].reserveUSD));
-        } else {
-          this.uniswap.push(0);
-        }
+  handleUniswapData(data: QueryResult): void {
+    for (let key in data) {
+      if (data[key] !== null) {
+        this.uniswap.push(parseInt(data[key].reserveUSD));
+      } else {
+        this.uniswap.push(0);
       }
     }
   }
 
-  handleSushiswapData(queryResult: ApolloQueryResult<QueryResult>): void {
-    if (!queryResult.loading) {
-      let result = queryResult.data;
-      for (let i in result) {
-        if (result[i] !== null) {
-          this.sushiswap.push(parseInt(result[i].reserveUSD));
-        } else {
-          this.sushiswap.push(0);
-        }
+  handleSushiswapData(data: QueryResult): void {
+    for (let key in data) {
+      if (data[key] !== null) {
+        this.sushiswap.push(parseInt(data[key].reserveUSD));
+      } else {
+        this.sushiswap.push(0);
       }
     }
   }

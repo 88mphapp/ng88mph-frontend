@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { gql } from '@apollo/client/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Apollo } from 'apollo-angular';
+import { request, gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app/helpers.service';
@@ -52,7 +51,6 @@ export class ModalDepositComponent implements OnInit {
   selectedZCBPools: ZeroCouponBondInfo[];
 
   constructor(
-    private apollo: Apollo,
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
@@ -148,27 +146,26 @@ export class ModalDepositComponent implements OnInit {
         }
       }
     `;
-    this.apollo
-      .query<QueryResult>({
-        query: queryString,
-      })
-      .subscribe((x) => {
-        const pool = x.data.dpool;
-        this.minDepositAmount = new BigNumber(pool.MinDepositAmount);
-        this.maxDepositAmount = new BigNumber(pool.MaxDepositAmount);
-        this.minDepositPeriod = Math.ceil(
-          pool.MinDepositPeriod / this.constants.DAY_IN_SEC
-        );
-        this.maxDepositPeriod = Math.floor(
-          pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
-        );
-        this.mphDepositorRewardMintMultiplier = new BigNumber(
-          pool.mphDepositorRewardMintMultiplier
-        );
-        this.mphDepositorRewardTakeBackMultiplier = new BigNumber(
-          pool.mphDepositorRewardTakeBackMultiplier
-        );
-      });
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data: QueryResult) => {
+      const pool = data.dpool;
+      this.minDepositAmount = new BigNumber(pool.MinDepositAmount);
+      this.maxDepositAmount = new BigNumber(pool.MaxDepositAmount);
+      this.minDepositPeriod = Math.ceil(
+        pool.MinDepositPeriod / this.constants.DAY_IN_SEC
+      );
+      this.maxDepositPeriod = Math.floor(
+        pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
+      );
+      this.mphDepositorRewardMintMultiplier = new BigNumber(
+        pool.mphDepositorRewardMintMultiplier
+      );
+      this.mphDepositorRewardTakeBackMultiplier = new BigNumber(
+        pool.mphDepositorRewardTakeBackMultiplier
+      );
+    });
 
     let userAddress: string;
     if (this.wallet.connected && !this.wallet.watching) {

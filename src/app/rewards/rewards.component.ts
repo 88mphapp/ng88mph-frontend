@@ -67,7 +67,7 @@ export class RewardsComponent implements OnInit {
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
-    const xmph = this.contract.getNamedContract('xMPHToken', readonlyWeb3);
+    const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
 
     let address;
     if (!this.wallet.watching) {
@@ -376,13 +376,13 @@ export class RewardsComponent implements OnInit {
     }
   }
 
-  // @dev update assets/abis/xMPHToken.json to correct ABI for xMPH
+  // @dev update assets/abis/xMPH.json to correct ABI for xMPH
   // @dev update assets/json/contracts.json to correct address for xMPH
   // @dev update constants.service.ts to correct address for xMPH
   // @dev needs testing once xMPH contract has been deployed on mainnet
   stake() {
     const mph = this.contract.getNamedContract('MPHToken');
-    const xmph = this.contract.getNamedContract('xMPHToken');
+    const xmph = this.contract.getNamedContract('xMPH');
     const stakeAmount = this.helpers.processWeb3Number(
       this.stakeAmount.times(this.constants.PRECISION)
     );

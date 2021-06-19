@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApolloQueryResult, gql } from '@apollo/client/core';
-import { Apollo } from 'apollo-angular';
+import { request, gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
@@ -75,7 +74,6 @@ export class BondsComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private apollo: Apollo,
     public wallet: WalletService,
     public contract: ContractService,
     public helpers: HelpersService,
@@ -173,192 +171,189 @@ export class BondsComponent implements OnInit {
         }
       }
     `;
-    this.apollo
-      .query<QueryResult>({
-        query: queryString,
-      })
-      .subscribe((x) => this.handleData(x));
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data: QueryResult) => this.handleData(data));
 
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
   }
 
-  async handleData(queryResult: ApolloQueryResult<QueryResult>) {
-    if (!queryResult.loading) {
-      const funder = queryResult.data.funder;
-      const dpools = queryResult.data.dpools;
-      let stablecoinPriceCache = {};
+  async handleData(data: QueryResult) {
+    const funder = data.funder;
+    const dpools = data.dpools;
+    let stablecoinPriceCache = {};
 
-      if (funder) {
-        // update totalMPHEarned
-        this.totalMPHEarned = new BigNumber(funder.totalMPHEarned);
+    if (funder) {
+      // update totalMPHEarned
+      this.totalMPHEarned = new BigNumber(funder.totalMPHEarned);
 
-        // process funding list
-        const funderPools: FunderPool[] = [];
-        Promise.all(
-          funder.pools.map(async (pool) => {
-            if (pool.fundings.length == 0) return;
-            const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
-            const stablecoin = poolInfo.stablecoin.toLowerCase();
-            let stablecoinPrice = stablecoinPriceCache[stablecoin];
-            if (!stablecoinPrice) {
-              stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
-              stablecoinPriceCache[stablecoin] = stablecoinPrice;
-            }
-            const fundings: Array<Funding> = [];
-            for (const funding of pool.fundings) {
-              const fundingObj: Funding = {
-                id: funding.id,
-                fromDepositID: funding.fromDepositID,
-                toDepositID: funding.toDepositID,
-                pool: {
-                  address: funding.pool.address,
-                  oracleInterestRate: new BigNumber(
-                    funding.pool.oracleInterestRate
-                  )
-                    .times(this.constants.YEAR_IN_SEC)
-                    .times(100),
-                  moneyMarketIncomeIndex: new BigNumber(
-                    funding.pool.moneyMarketIncomeIndex
-                  ),
-                  mphFunderRewardMultiplier: new BigNumber(
-                    funding.pool.mphFunderRewardMultiplier
-                  ),
-                },
-                nftID: funding.nftID,
-                deficitToken: new BigNumber(funding.fundedDeficitAmount),
-                deficitUSD: new BigNumber(funding.fundedDeficitAmount).times(
-                  stablecoinPrice
+      // process funding list
+      const funderPools: FunderPool[] = [];
+      Promise.all(
+        funder.pools.map(async (pool) => {
+          if (pool.fundings.length == 0) return;
+          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+          const stablecoin = poolInfo.stablecoin.toLowerCase();
+          let stablecoinPrice = stablecoinPriceCache[stablecoin];
+          if (!stablecoinPrice) {
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPriceCache[stablecoin] = stablecoinPrice;
+          }
+          const fundings: Array<Funding> = [];
+          for (const funding of pool.fundings) {
+            const fundingObj: Funding = {
+              id: funding.id,
+              fromDepositID: funding.fromDepositID,
+              toDepositID: funding.toDepositID,
+              pool: {
+                address: funding.pool.address,
+                oracleInterestRate: new BigNumber(
+                  funding.pool.oracleInterestRate
+                )
+                  .times(this.constants.YEAR_IN_SEC)
+                  .times(100),
+                moneyMarketIncomeIndex: new BigNumber(
+                  funding.pool.moneyMarketIncomeIndex
                 ),
-                currentDepositToken: new BigNumber(
-                  funding.recordedFundedDepositAmount
+                mphFunderRewardMultiplier: new BigNumber(
+                  funding.pool.mphFunderRewardMultiplier
                 ),
-                currentDepositUSD: new BigNumber(
-                  funding.recordedFundedDepositAmount
-                ).times(stablecoinPrice),
-                interestEarnedToken: new BigNumber(funding.totalInterestEarned),
-                interestEarnedUSD: new BigNumber(
-                  funding.totalInterestEarned
-                ).times(stablecoinPrice),
-                mphRewardEarned: new BigNumber(funding.mphRewardEarned),
-                refundAmountToken: new BigNumber(funding.refundAmount),
-                refundAmountUSD: new BigNumber(funding.refundAmount).times(
-                  stablecoinPrice
-                ),
-                recordedMoneyMarketIncomeIndex: new BigNumber(
-                  funding.recordedMoneyMarketIncomeIndex
-                ),
-                creationTimestamp: +funding.creationTimestamp,
-              };
-              fundings.push(fundingObj);
-            }
-
-            const funderPool: FunderPool = {
-              poolInfo: poolInfo,
-              fundings: fundings,
+              },
+              nftID: funding.nftID,
+              deficitToken: new BigNumber(funding.fundedDeficitAmount),
+              deficitUSD: new BigNumber(funding.fundedDeficitAmount).times(
+                stablecoinPrice
+              ),
+              currentDepositToken: new BigNumber(
+                funding.recordedFundedDepositAmount
+              ),
+              currentDepositUSD: new BigNumber(
+                funding.recordedFundedDepositAmount
+              ).times(stablecoinPrice),
+              interestEarnedToken: new BigNumber(funding.totalInterestEarned),
+              interestEarnedUSD: new BigNumber(
+                funding.totalInterestEarned
+              ).times(stablecoinPrice),
+              mphRewardEarned: new BigNumber(funding.mphRewardEarned),
+              refundAmountToken: new BigNumber(funding.refundAmount),
+              refundAmountUSD: new BigNumber(funding.refundAmount).times(
+                stablecoinPrice
+              ),
+              recordedMoneyMarketIncomeIndex: new BigNumber(
+                funding.recordedMoneyMarketIncomeIndex
+              ),
+              creationTimestamp: +funding.creationTimestamp,
             };
-            funderPools.push(funderPool);
-          })
-        ).then(() => {
-          this.funderPools = funderPools;
-        });
+            fundings.push(fundingObj);
+          }
 
-        // compute overall statistics
-        let totalDeficitFundedUSD = new BigNumber(0);
-        let totalCurrentDepositUSD = new BigNumber(0);
-        let totalInterestUSD = new BigNumber(0);
-        Promise.all(
-          funder.totalInterestByPool.map(async (totalInterestEntity) => {
-            let stablecoinPrice =
-              stablecoinPriceCache[totalInterestEntity.pool.stablecoin];
-            if (!stablecoinPrice) {
-              stablecoinPrice = await this.helpers.getTokenPriceUSD(
-                totalInterestEntity.pool.stablecoin
-              );
-              stablecoinPriceCache[totalInterestEntity.pool.stablecoin] =
-                stablecoinPrice;
-            }
+          const funderPool: FunderPool = {
+            poolInfo: poolInfo,
+            fundings: fundings,
+          };
+          funderPools.push(funderPool);
+        })
+      ).then(() => {
+        this.funderPools = funderPools;
+      });
 
-            const poolDeficitFundedUSD = new BigNumber(
-              totalInterestEntity.totalDeficitFunded
-            ).times(stablecoinPrice);
-            const poolCurrentDepositUSD = new BigNumber(
-              totalInterestEntity.totalRecordedFundedDepositAmount
-            ).times(stablecoinPrice);
-            const poolInterestUSD = new BigNumber(
-              totalInterestEntity.totalInterestEarned
-            ).times(stablecoinPrice);
-            totalDeficitFundedUSD =
-              totalDeficitFundedUSD.plus(poolDeficitFundedUSD);
-            totalCurrentDepositUSD = totalCurrentDepositUSD.plus(
-              poolCurrentDepositUSD
+      // compute overall statistics
+      let totalDeficitFundedUSD = new BigNumber(0);
+      let totalCurrentDepositUSD = new BigNumber(0);
+      let totalInterestUSD = new BigNumber(0);
+      Promise.all(
+        funder.totalInterestByPool.map(async (totalInterestEntity) => {
+          let stablecoinPrice =
+            stablecoinPriceCache[totalInterestEntity.pool.stablecoin];
+          if (!stablecoinPrice) {
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(
+              totalInterestEntity.pool.stablecoin
             );
-            totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-          })
-        ).then(() => {
-          this.totalDeficitFundedUSD = totalDeficitFundedUSD;
-          this.totalCurrentDepositUSD = totalCurrentDepositUSD;
-          this.totalInterestUSD = totalInterestUSD;
-        });
-      }
+            stablecoinPriceCache[totalInterestEntity.pool.stablecoin] =
+              stablecoinPrice;
+          }
 
-      if (dpools) {
-        const allPoolList = new Array<DPool>(0);
-        Promise.all(
-          dpools.map(async (pool) => {
-            const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+          const poolDeficitFundedUSD = new BigNumber(
+            totalInterestEntity.totalDeficitFunded
+          ).times(stablecoinPrice);
+          const poolCurrentDepositUSD = new BigNumber(
+            totalInterestEntity.totalRecordedFundedDepositAmount
+          ).times(stablecoinPrice);
+          const poolInterestUSD = new BigNumber(
+            totalInterestEntity.totalInterestEarned
+          ).times(stablecoinPrice);
+          totalDeficitFundedUSD =
+            totalDeficitFundedUSD.plus(poolDeficitFundedUSD);
+          totalCurrentDepositUSD = totalCurrentDepositUSD.plus(
+            poolCurrentDepositUSD
+          );
+          totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
+        })
+      ).then(() => {
+        this.totalDeficitFundedUSD = totalDeficitFundedUSD;
+        this.totalCurrentDepositUSD = totalCurrentDepositUSD;
+        this.totalInterestUSD = totalInterestUSD;
+      });
+    }
 
-            if (!poolInfo) {
-              return;
-            }
+    if (dpools) {
+      const allPoolList = new Array<DPool>(0);
+      Promise.all(
+        dpools.map(async (pool) => {
+          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
-            const stablecoin = poolInfo.stablecoin.toLowerCase();
-            let stablecoinPrice = stablecoinPriceCache[stablecoin];
-            if (!stablecoinPrice) {
-              stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
-              stablecoinPriceCache[stablecoin] = stablecoinPrice;
-            }
+          if (!poolInfo) {
+            return;
+          }
 
-            // get MPH reward amount
-            const mphRewardPerTokenPerSecond = new BigNumber(
-              pool.mphFunderRewardMultiplier
-            );
+          const stablecoin = poolInfo.stablecoin.toLowerCase();
+          let stablecoinPrice = stablecoinPriceCache[stablecoin];
+          if (!stablecoinPrice) {
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPriceCache[stablecoin] = stablecoinPrice;
+          }
 
-            const poolContract = this.contract.getPool(poolInfo.name);
-            const latestFundedDeposit = +(await poolContract.methods
-              .latestFundedDepositID()
-              .call());
-            const latestDeposit = pool.latestDeposit.length
-              ? +pool.latestDeposit[0].nftID
-              : 0;
-            const dpoolObj: DPool = {
-              name: poolInfo.name,
-              address: poolInfo.address,
-              protocol: poolInfo.protocol,
-              stablecoin: poolInfo.stablecoin,
-              stablecoinSymbol: poolInfo.stablecoinSymbol,
-              stablecoinDecimals: poolInfo.stablecoinDecimals,
-              iconPath: poolInfo.iconPath,
-              surplus: new BigNumber(pool.surplus),
-              oneYearInterestRate: new BigNumber(
-                pool.oneYearInterestRate
-              ).times(100),
-              latestFundedDeposit: latestFundedDeposit,
-              latestDeposit: latestDeposit,
-              unfundedDepositAmount: new BigNumber(pool.unfundedDepositAmount),
-              mphRewardPerTokenPerSecond: mphRewardPerTokenPerSecond,
-              oracleInterestRate: new BigNumber(pool.oracleInterestRate)
-                .times(this.constants.YEAR_IN_SEC)
-                .times(100),
-            };
-            allPoolList.push(dpoolObj);
-          })
-        ).then(() => {
-          this.allPoolList = allPoolList;
-          this.selectPool(0);
-        });
-      }
+          // get MPH reward amount
+          const mphRewardPerTokenPerSecond = new BigNumber(
+            pool.mphFunderRewardMultiplier
+          );
+
+          const poolContract = this.contract.getPool(poolInfo.name);
+          const latestFundedDeposit = +(await poolContract.methods
+            .latestFundedDepositID()
+            .call());
+          const latestDeposit = pool.latestDeposit.length
+            ? +pool.latestDeposit[0].nftID
+            : 0;
+          const dpoolObj: DPool = {
+            name: poolInfo.name,
+            address: poolInfo.address,
+            protocol: poolInfo.protocol,
+            stablecoin: poolInfo.stablecoin,
+            stablecoinSymbol: poolInfo.stablecoinSymbol,
+            stablecoinDecimals: poolInfo.stablecoinDecimals,
+            iconPath: poolInfo.iconPath,
+            surplus: new BigNumber(pool.surplus),
+            oneYearInterestRate: new BigNumber(pool.oneYearInterestRate).times(
+              100
+            ),
+            latestFundedDeposit: latestFundedDeposit,
+            latestDeposit: latestDeposit,
+            unfundedDepositAmount: new BigNumber(pool.unfundedDepositAmount),
+            mphRewardPerTokenPerSecond: mphRewardPerTokenPerSecond,
+            oracleInterestRate: new BigNumber(pool.oracleInterestRate)
+              .times(this.constants.YEAR_IN_SEC)
+              .times(100),
+          };
+          allPoolList.push(dpoolObj);
+        })
+      ).then(() => {
+        this.allPoolList = allPoolList;
+        this.selectPool(0);
+      });
     }
   }
 
@@ -429,35 +424,34 @@ export class BondsComponent implements OnInit {
         }
       }
     `;
-    this.apollo
-      .query<FundableDepositsQuery>({
-        query: queryString,
-      })
-      .subscribe((x) => {
-        const fundableDeposits = [];
-        const moneyMarketIncomeIndex = new BigNumber(
-          x.data.dpool.moneyMarketIncomeIndex
-        );
-        for (const deposit of x.data.dpool.deposits) {
-          const surplus = moneyMarketIncomeIndex
-            .div(deposit.initialMoneyMarketIncomeIndex)
-            .minus(1)
-            .times(deposit.amount)
-            .minus(deposit.interestEarned);
-          const parsedDeposit: Deposit = {
-            nftID: deposit.nftID,
-            amount: new BigNumber(deposit.amount),
-            active: deposit.active,
-            maturationTimestamp: deposit.maturationTimestamp,
-            interestEarned: new BigNumber(deposit.interestEarned),
-            surplus: surplus,
-          };
-          fundableDeposits.push(parsedDeposit);
-        }
-        this.fundableDeposits = fundableDeposits;
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data: FundableDepositsQuery) => {
+      const fundableDeposits = [];
+      const moneyMarketIncomeIndex = new BigNumber(
+        data.dpool.moneyMarketIncomeIndex
+      );
+      for (const deposit of data.dpool.deposits) {
+        const surplus = moneyMarketIncomeIndex
+          .div(deposit.initialMoneyMarketIncomeIndex)
+          .minus(1)
+          .times(deposit.amount)
+          .minus(deposit.interestEarned);
+        const parsedDeposit: Deposit = {
+          nftID: deposit.nftID,
+          amount: new BigNumber(deposit.amount),
+          active: deposit.active,
+          maturationTimestamp: deposit.maturationTimestamp,
+          interestEarned: new BigNumber(deposit.interestEarned),
+          surplus: surplus,
+        };
+        fundableDeposits.push(parsedDeposit);
+      }
+      this.fundableDeposits = fundableDeposits;
 
-        this.updateNumDepositsToFund(this.numFundableDeposits + 1);
-      });
+      this.updateNumDepositsToFund(this.numFundableDeposits + 1);
+    });
   }
 
   selectedPoolHasDebt(): boolean {
