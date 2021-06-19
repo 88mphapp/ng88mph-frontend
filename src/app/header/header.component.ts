@@ -63,7 +63,7 @@ export class HeaderComponent implements OnInit {
     if (loadUser) {
       const mph = await this.contract.getContract(
         this.constants.MPH_ADDRESS[this.wallet.networkID],
-        `${this.constants.CHAIN_NAME[this.wallet.networkID]}/MPHToken`
+        `MPHToken`
       );
       mph.methods
         .balanceOf(address)
@@ -76,7 +76,7 @@ export class HeaderComponent implements OnInit {
 
       const xmph = await this.contract.getContract(
         this.constants.XMPH_ADDRESS[this.wallet.networkID],
-        `${this.constants.CHAIN_NAME[this.wallet.networkID]}/xMPHToken`
+        `xMPH`
       );
       xmph.methods
         .balanceOf(address)

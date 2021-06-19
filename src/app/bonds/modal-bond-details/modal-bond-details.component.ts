@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Apollo, gql } from 'apollo-angular';
-import { ApolloQueryResult } from '@apollo/client/core';
+import { request, gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { ContractService } from 'src/app/contract.service';
@@ -29,7 +28,6 @@ export class ModalBondDetailsComponent implements OnInit {
   @Input() public mphPriceUSD: BigNumber;
 
   constructor(
-    private apollo: Apollo,
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
@@ -67,64 +65,59 @@ export class ModalBondDetailsComponent implements OnInit {
         }
       }
     `;
-    this.apollo
-      .query<FundingDepositResult>({
-        query: queryString,
-      })
-      .subscribe((x) => this.handleData(x));
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data: FundingDepositResult) => this.handleData(data));
   }
 
-  async handleData(
-    queryResult: ApolloQueryResult<FundingDepositResult>
-  ): Promise<void> {
-    if (!queryResult.loading) {
-      const { deposits } = queryResult.data;
-      const now = Date.now() / 1e3;
+  async handleData(data: FundingDepositResult): Promise<void> {
+    const { deposits } = data;
+    const now = Date.now() / 1e3;
 
-      let newDeposits: Array<Deposit> = [];
-      let newTotalAmountMulTime = new BigNumber(0);
-      let newTotalMPHReward = new BigNumber(0);
-      for (const deposit of deposits) {
-        const mphRewardTimeComponent =
-          this.funding.creationTimestamp < deposit.maturationTimestamp
-            ? deposit.maturationTimestamp - this.funding.creationTimestamp
-            : 0;
-        const funderMPHReward = new BigNumber(deposit.amount)
-          .times(this.funding.pool.mphFunderRewardMultiplier)
-          .times(mphRewardTimeComponent);
-        const depositObj: Deposit = {
-          ...deposit,
-          maturationTimestamp: +deposit.maturationTimestamp,
-          amount: new BigNumber(deposit.amount),
-          fundingInterestPaid: new BigNumber(deposit.fundingInterestPaid),
-          fundingRefundAmount: new BigNumber(deposit.fundingRefundAmount),
-          funderMPHReward,
-        };
-        newDeposits = [...newDeposits, depositObj];
-        newTotalMPHReward = newTotalMPHReward.plus(funderMPHReward);
+    let newDeposits: Array<Deposit> = [];
+    let newTotalAmountMulTime = new BigNumber(0);
+    let newTotalMPHReward = new BigNumber(0);
+    for (const deposit of deposits) {
+      const mphRewardTimeComponent =
+        this.funding.creationTimestamp < deposit.maturationTimestamp
+          ? deposit.maturationTimestamp - this.funding.creationTimestamp
+          : 0;
+      const funderMPHReward = new BigNumber(deposit.amount)
+        .times(this.funding.pool.mphFunderRewardMultiplier)
+        .times(mphRewardTimeComponent);
+      const depositObj: Deposit = {
+        ...deposit,
+        maturationTimestamp: +deposit.maturationTimestamp,
+        amount: new BigNumber(deposit.amount),
+        fundingInterestPaid: new BigNumber(deposit.fundingInterestPaid),
+        fundingRefundAmount: new BigNumber(deposit.fundingRefundAmount),
+        funderMPHReward,
+      };
+      newDeposits = [...newDeposits, depositObj];
+      newTotalMPHReward = newTotalMPHReward.plus(funderMPHReward);
 
-        if (depositObj.active) {
-          if (depositObj.maturationTimestamp > now) {
-            newTotalAmountMulTime = newTotalAmountMulTime.plus(
-              depositObj.amount.times(depositObj.maturationTimestamp - now)
-            );
-          } else {
-            // mature but not withdrawn, compute current interest accumulated
-            const interestAccumulated = depositObj.amount
-              .times(this.funding.pool.moneyMarketIncomeIndex)
-              .div(this.funding.recordedMoneyMarketIncomeIndex)
-              .minus(depositObj.amount);
-            this.interestFromLeftoverDeposits =
-              this.interestFromLeftoverDeposits.plus(interestAccumulated);
-          }
+      if (depositObj.active) {
+        if (depositObj.maturationTimestamp > now) {
+          newTotalAmountMulTime = newTotalAmountMulTime.plus(
+            depositObj.amount.times(depositObj.maturationTimestamp - now)
+          );
+        } else {
+          // mature but not withdrawn, compute current interest accumulated
+          const interestAccumulated = depositObj.amount
+            .times(this.funding.pool.moneyMarketIncomeIndex)
+            .div(this.funding.recordedMoneyMarketIncomeIndex)
+            .minus(depositObj.amount);
+          this.interestFromLeftoverDeposits =
+            this.interestFromLeftoverDeposits.plus(interestAccumulated);
         }
       }
-
-      this.deposits = newDeposits;
-      this.totalAmountMulTime = newTotalAmountMulTime;
-      this.totalMPHReward = newTotalMPHReward;
-      this.updateFloatingRatePrediction(this.funding.pool.oracleInterestRate);
     }
+
+    this.deposits = newDeposits;
+    this.totalAmountMulTime = newTotalAmountMulTime;
+    this.totalMPHReward = newTotalMPHReward;
+    this.updateFloatingRatePrediction(this.funding.pool.oracleInterestRate);
   }
 
   resetData(): void {

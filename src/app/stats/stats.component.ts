@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ApolloQueryResult } from '@apollo/client/core';
-import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
-import gql from 'graphql-tag';
+import { request, gql } from 'graphql-request';
 import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
 import { HelpersService } from '../helpers.service';
@@ -23,7 +21,6 @@ export class StatsComponent implements OnInit {
   mphCirculatingSupply: BigNumber;
 
   constructor(
-    private apollo: Apollo,
     public helpers: HelpersService,
     public contract: ContractService,
     public constants: ConstantsService,
@@ -61,11 +58,10 @@ export class StatsComponent implements OnInit {
         }
       }
     `;
-    this.apollo
-      .query<QueryResult>({
-        query: queryString,
-      })
-      .subscribe((x) => this.handleData(x));
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data: QueryResult) => this.handleData(data));
 
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
@@ -79,8 +75,8 @@ export class StatsComponent implements OnInit {
       readonlyWeb3,
       this.constants.CHAIN_ID.MAINNET
     );
-    const xMPHToken = this.contract.getNamedContract(
-      'xMPHToken',
+    const xMPH = this.contract.getNamedContract(
+      'xMPH',
       readonlyWeb3,
       this.constants.CHAIN_ID.MAINNET
     );
@@ -89,7 +85,7 @@ export class StatsComponent implements OnInit {
     ).div(this.constants.PRECISION);
     this.mphStakedPercentage = this.mphTotalSupply.isZero()
       ? new BigNumber(0)
-      : new BigNumber(await xMPHToken.methods.totalSupply().call())
+      : new BigNumber(await xMPH.methods.totalSupply().call())
           .div(this.constants.PRECISION)
           .div(this.mphTotalSupply)
           .times(100);
@@ -127,47 +123,43 @@ export class StatsComponent implements OnInit {
     this.mphCirculatingSupply = mphCirculatingSupply;
   }
 
-  async handleData(queryResult: ApolloQueryResult<QueryResult>) {
-    if (!queryResult.loading) {
-      const dpools = queryResult.data.dpools;
-      const mph = queryResult.data.mph;
+  async handleData(data: QueryResult) {
+    const dpools = data.dpools;
+    const mph = data.mph;
 
-      if (dpools) {
-        let totalDepositUSD = new BigNumber(0);
-        let totalInterestUSD = new BigNumber(0);
-        let stablecoinPriceCache = {};
-        Promise.all(
-          dpools.map(async (pool) => {
-            let stablecoinPrice = stablecoinPriceCache[pool.stablecoin];
-            if (!stablecoinPrice) {
-              stablecoinPrice = await this.helpers.getTokenPriceUSD(
-                pool.stablecoin
-              );
-              stablecoinPriceCache[pool.stablecoin] = stablecoinPrice;
-            }
-
-            const poolDepositUSD = new BigNumber(pool.totalActiveDeposit).times(
-              stablecoinPrice
+    if (dpools) {
+      let totalDepositUSD = new BigNumber(0);
+      let totalInterestUSD = new BigNumber(0);
+      let stablecoinPriceCache = {};
+      Promise.all(
+        dpools.map(async (pool) => {
+          let stablecoinPrice = stablecoinPriceCache[pool.stablecoin];
+          if (!stablecoinPrice) {
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(
+              pool.stablecoin
             );
-            const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
-            const poolInterestUSD = this.helpers.applyFeeToInterest(
-              new BigNumber(pool.totalInterestPaid).times(stablecoinPrice),
-              poolInfo
-            );
-            totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
-            totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-          })
-        ).then(() => {
-          this.totalDepositUSD = totalDepositUSD;
-          this.totalInterestUSD = totalInterestUSD;
-        });
-      }
+            stablecoinPriceCache[pool.stablecoin] = stablecoinPrice;
+          }
 
-      if (mph) {
-        this.mphTotalHistoricalReward = new BigNumber(
-          mph.totalHistoricalReward
-        );
-      }
+          const poolDepositUSD = new BigNumber(pool.totalActiveDeposit).times(
+            stablecoinPrice
+          );
+          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+          const poolInterestUSD = this.helpers.applyFeeToInterest(
+            new BigNumber(pool.totalInterestPaid).times(stablecoinPrice),
+            poolInfo
+          );
+          totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
+          totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
+        })
+      ).then(() => {
+        this.totalDepositUSD = totalDepositUSD;
+        this.totalInterestUSD = totalInterestUSD;
+      });
+    }
+
+    if (mph) {
+      this.mphTotalHistoricalReward = new BigNumber(mph.totalHistoricalReward);
     }
   }
 

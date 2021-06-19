@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DepositComponent } from './deposit/deposit.component';
@@ -54,7 +53,6 @@ import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liqu
   imports: [
     BrowserModule,
     AppRoutingModule,
-    GraphQLModule,
     HttpClientModule,
     NgbModule,
     FormsModule,

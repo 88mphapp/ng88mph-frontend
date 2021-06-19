@@ -55,7 +55,7 @@ export class ModalUnstakeComponent implements OnInit {
 
   setUnstakeAmount(amount: number | string) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const xmph = this.contract.getNamedContract('xMPHToken', readonlyWeb3);
+    const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
 
     this.unstakeAmount = new BigNumber(amount);
     if (this.unstakeAmount.isNaN()) {
@@ -72,12 +72,12 @@ export class ModalUnstakeComponent implements OnInit {
     }
   }
 
-  // @dev update assets/abis/xMPHToken.json to correct ABI for xMPH
+  // @dev update assets/abis/xMPH.json to correct ABI for xMPH
   // @dev update assets/json/contracts.json to correct address for xMPH
   // @dev update constants.service.ts to correct address for xMPH
   // @dev needs testing once xMPH contract has been deployed on mainnet
   unstake() {
-    const xmph = this.contract.getNamedContract('xMPHToken');
+    const xmph = this.contract.getNamedContract('xMPH');
     const unstakeAmount = this.helpers.processWeb3Number(
       this.unstakeAmount.times(this.constants.PRECISION)
     );

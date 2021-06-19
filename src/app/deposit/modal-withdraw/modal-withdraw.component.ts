@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Apollo, gql } from 'apollo-angular';
+import { request, gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { ContractService, PoolInfo } from 'src/app/contract.service';
@@ -24,7 +24,6 @@ export class ModalWithdrawComponent implements OnInit {
   mphPriceUSD: BigNumber;
 
   constructor(
-    private apollo: Apollo,
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
@@ -50,22 +49,21 @@ export class ModalWithdrawComponent implements OnInit {
         }
       }
     `;
-    this.apollo
-      .query<QueryResult>({
-        query: queryString,
-      })
-      .subscribe((x) => {
-        const pool = x.data.dpool;
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data: QueryResult) => {
+      const pool = data.dpool;
 
-        if (pool) {
-          this.mphRewardAmount = this.userDeposit.mintMPHAmount;
-          this.mphTakeBackAmount = this.userDeposit.locked
-            ? this.mphRewardAmount
-            : new BigNumber(pool.mphDepositorRewardTakeBackMultiplier).times(
-                this.mphRewardAmount
-              );
-        }
-      });
+      if (pool) {
+        this.mphRewardAmount = this.userDeposit.mintMPHAmount;
+        this.mphTakeBackAmount = this.userDeposit.locked
+          ? this.mphRewardAmount
+          : new BigNumber(pool.mphDepositorRewardTakeBackMultiplier).times(
+              this.mphRewardAmount
+            );
+      }
+    });
 
     const mphToken = this.contract.getNamedContract(
       'MPHToken',

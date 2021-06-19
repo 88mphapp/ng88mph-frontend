@@ -4,48 +4,11 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ConstantsService {
+  // NETWORK INFO //
   CHAIN_ID = {
     MAINNET: 1,
     RINKEBY: 4,
   };
-
-  CHAIN_NAME = {
-    1: 'mainnet',
-    4: 'rinkeby',
-  };
-
-  MPH_ADDRESS = {
-    [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
-    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
-  };
-
-  // @dev currently points to MPH
-  XMPH_ADDRESS = {
-    [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
-    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
-  };
-
-  GRAPHQL_ENDPOINT = {
-    [this.CHAIN_ID.MAINNET]:
-      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph', // v2
-    [this.CHAIN_ID.RINKEBY]:
-      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby', // v3
-  };
-
-  RPC = {
-    [this.CHAIN_ID.MAINNET]:
-      'https://eth-mainnet.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
-    [this.CHAIN_ID.RINKEBY]:
-      'https://eth-rinkeby.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
-  };
-
-  RPC_WS = {
-    [this.CHAIN_ID.MAINNET]:
-      'wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
-    [this.CHAIN_ID.RINKEBY]:
-      'wss://eth-rinkeby.ws.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
-  };
-
   NETWORK_METADATA = {
     [this.CHAIN_ID.MAINNET]: {
       chainId: '0x1',
@@ -71,6 +34,39 @@ export class ConstantsService {
     },
   };
 
+  // GRAPHQL ENDPOINTS //
+  GRAPHQL_ENDPOINT = {
+    [this.CHAIN_ID.MAINNET]:
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph', // v2
+    [this.CHAIN_ID.RINKEBY]:
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby', // v3
+  };
+  BLOCKS_GRAPHQL_ENDPOINT = {
+    [this.CHAIN_ID.MAINNET]:
+      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+    [this.CHAIN_ID.RINKEBY]:
+      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks', // TODO: update to rinkeby endpoint
+  };
+  UNISWAP_V2_GRAPHQL_ENDPOINT =
+    'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
+  SUSHISWAP_GRAPHQL_ENDPOINT =
+    'https://api.thegraph.com/subgraphs/name/sushiswap/exchange';
+
+  // RPC ENDPOINTS //
+  RPC = {
+    [this.CHAIN_ID.MAINNET]:
+      'https://eth-mainnet.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
+    [this.CHAIN_ID.RINKEBY]:
+      'https://eth-rinkeby.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
+  };
+  RPC_WS = {
+    [this.CHAIN_ID.MAINNET]:
+      'wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
+    [this.CHAIN_ID.RINKEBY]:
+      'wss://eth-rinkeby.ws.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
+  };
+
+  // API KEYS //
   BLOCKNATIVE_KEY = 'af9c0a83-8874-4e07-a272-19c879420693';
   INFURA_KEY = '9e5f0d08ad19483193cc86092b7512f2';
   PORTIS_KEY = 'a838dbd2-c0b1-4465-8dbe-36b88f3d0d4e';
@@ -89,6 +85,15 @@ export class ConstantsService {
   DEV_WALLET = '0xfecBad5D60725EB6fd10f8936e02fa203fd27E4b';
   DUMPER = '0x5B3C81C86d17786255904c316bFCB38A46146ef8';
   MPH_MERKLE_DISTRIBUTOR = '0x8c5ddBB0fd86B6480D81A1a5872a63812099C043'; // the MPH V2 distributor
+  MPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
+    [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
+  };
+  // @dev currently points to MPH on mainnet
+  XMPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
+    [this.CHAIN_ID.RINKEBY]: '0x59EE65726f0b886Ec924271B51A3c1e78F52d1FB',
+  };
 
   // EXTERNAL CONTRACTS //
   COMPOUND_COMPTROLLER = '0x3d9819210a31b4961b30ef54be2aed79b9c9cd3b';
