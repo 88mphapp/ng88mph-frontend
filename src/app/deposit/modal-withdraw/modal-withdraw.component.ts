@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { request, gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { ContractService, PoolInfo } from 'src/app/contract.service';
@@ -19,7 +18,6 @@ export class ModalWithdrawComponent implements OnInit {
 
   withdrawAmount: BigNumber;
   mphRewardAmount: BigNumber;
-  mphTakeBackAmount: BigNumber;
   mphBalance: BigNumber;
   mphPriceUSD: BigNumber;
 
@@ -41,29 +39,7 @@ export class ModalWithdrawComponent implements OnInit {
   }
 
   async loadData() {
-    const queryString = gql`
-      {
-        dpool(id: "${this.poolInfo.address.toLowerCase()}") {
-          id
-          mphDepositorRewardTakeBackMultiplier
-        }
-      }
-    `;
-    request(
-      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
-      queryString
-    ).then((data: QueryResult) => {
-      const pool = data.dpool;
-
-      if (pool) {
-        this.mphRewardAmount = this.userDeposit.mintMPHAmount;
-        this.mphTakeBackAmount = this.userDeposit.locked
-          ? this.mphRewardAmount
-          : new BigNumber(pool.mphDepositorRewardTakeBackMultiplier).times(
-              this.mphRewardAmount
-            );
-      }
-    });
+    this.mphRewardAmount = this.userDeposit.mintMPHAmount;
 
     const mphToken = this.contract.getNamedContract(
       'MPHToken',
@@ -77,28 +53,19 @@ export class ModalWithdrawComponent implements OnInit {
   resetData() {
     this.withdrawAmount = new BigNumber(0);
     this.mphRewardAmount = new BigNumber(0);
-    this.mphTakeBackAmount = new BigNumber(0);
     this.mphBalance = new BigNumber(0);
     this.mphPriceUSD = new BigNumber(0);
   }
 
   withdraw() {
     const pool = this.contract.getPool(this.poolInfo.name);
-    const mphToken = this.contract.getNamedContract('MPHToken');
-    const mphMinter = this.contract.getNamedContractAddress('MPHMinter');
-    const mphAmount = this.helpers.processWeb3Number(
-      this.mphTakeBackAmount.times(this.constants.PRECISION)
-    );
     const func = pool.methods.withdraw(
       this.userDeposit.nftID,
       this.userDeposit.fundingID
     );
 
-    this.wallet.sendTxWithToken(
+    this.wallet.sendTx(
       func,
-      mphToken,
-      mphMinter,
-      mphAmount,
       () => {},
       () => {
         this.activeModal.dismiss();
@@ -144,11 +111,4 @@ export class ModalWithdrawComponent implements OnInit {
   // const virtualTokensToWithdraw = virtualTokenTotalSupply.times(withdrawRatio);
   // return virtualTokensToWithdraw;
   //}
-}
-
-interface QueryResult {
-  dpool: {
-    id: string;
-    mphDepositorRewardTakeBackMultiplier: number;
-  };
 }
