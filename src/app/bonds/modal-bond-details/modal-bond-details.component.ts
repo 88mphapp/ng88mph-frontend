@@ -57,7 +57,6 @@ export class ModalBondDetailsComponent implements OnInit {
           depositTimestamp
           interestEarned
           mintMPHAmount
-          takeBackMPHAmount
           initialMoneyMarketIncomeIndex
           fundingInterestPaid
           fundingRefundAmount
@@ -160,7 +159,6 @@ interface Deposit {
   depositTimestamp: number;
   interestEarned: BigNumber;
   mintMPHAmount: BigNumber;
-  takeBackMPHAmount: BigNumber;
   initialMoneyMarketIncomeIndex: BigNumber;
   fundingInterestPaid: BigNumber;
   fundingRefundAmount: BigNumber;

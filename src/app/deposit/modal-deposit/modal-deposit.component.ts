@@ -33,7 +33,6 @@ export class ModalDepositComponent implements OnInit {
   interestAmountUSD: BigNumber;
   apy: BigNumber;
   mphRewardAmount: BigNumber;
-  mphTakeBackAmount: BigNumber;
   minDepositAmount: BigNumber;
   maxDepositAmount: BigNumber;
   minDepositPeriod: number;
@@ -42,7 +41,6 @@ export class ModalDepositComponent implements OnInit {
   mphAPY: BigNumber;
   tempMPHAPY: BigNumber;
   mphDepositorRewardMintMultiplier: BigNumber;
-  mphDepositorRewardTakeBackMultiplier: BigNumber;
   shouldDisplayZap: boolean;
   selectedDepositToken: string;
   zapDepositTokens: string[];
@@ -106,7 +104,6 @@ export class ModalDepositComponent implements OnInit {
     this.interestAmountUSD = new BigNumber(0);
     this.apy = new BigNumber(0);
     this.mphRewardAmount = new BigNumber(0);
-    this.mphTakeBackAmount = new BigNumber(0);
     this.minDepositAmount = new BigNumber(0);
     this.maxDepositAmount = new BigNumber(0);
     this.minDepositPeriod = 0;
@@ -115,7 +112,6 @@ export class ModalDepositComponent implements OnInit {
     this.mphAPY = new BigNumber(0);
     this.tempMPHAPY = new BigNumber(0);
     this.mphDepositorRewardMintMultiplier = new BigNumber(0);
-    this.mphDepositorRewardTakeBackMultiplier = new BigNumber(0);
     this.shouldDisplayZap = false;
     this.selectedDepositToken = '';
     this.zapDepositTokens = [];
@@ -142,7 +138,6 @@ export class ModalDepositComponent implements OnInit {
           MinDepositPeriod
           MaxDepositPeriod
           mphDepositorRewardMintMultiplier
-          mphDepositorRewardTakeBackMultiplier
         }
       }
     `;
@@ -161,9 +156,6 @@ export class ModalDepositComponent implements OnInit {
       );
       this.mphDepositorRewardMintMultiplier = new BigNumber(
         pool.mphDepositorRewardMintMultiplier
-      );
-      this.mphDepositorRewardTakeBackMultiplier = new BigNumber(
-        pool.mphDepositorRewardTakeBackMultiplier
       );
     });
 
@@ -339,12 +331,8 @@ export class ModalDepositComponent implements OnInit {
     this.mphRewardAmount = this.mphDepositorRewardMintMultiplier
       .times(this.depositAmount)
       .times(depositTime);
-    this.mphTakeBackAmount = this.mphDepositorRewardTakeBackMultiplier.times(
-      this.mphRewardAmount
-    );
 
     const mphAPY = this.mphRewardAmount
-      .minus(this.mphTakeBackAmount)
       .times(this.mphPriceUSD)
       .div(this.depositAmountUSD)
       .div(this.depositTimeInDays)
@@ -745,6 +733,5 @@ interface QueryResult {
     MinDepositPeriod: number;
     MaxDepositPeriod: number;
     mphDepositorRewardMintMultiplier: number;
-    mphDepositorRewardTakeBackMultiplier: number;
   };
 }
