@@ -37,7 +37,11 @@ export class Web3Enabled {
       if (provider) {
         const browserWeb3 = new Web3(provider);
         const chainId = await browserWeb3.eth.getChainId();
-        this.networkID = chainId;
+        const networkDidChange = chainId != this.networkID;
+        if (networkDidChange) {
+          this.networkID = chainId;
+          this.chainChangedEvent.emit(chainId);
+        }
       }
 
       const genericMobileWalletConfig = {
