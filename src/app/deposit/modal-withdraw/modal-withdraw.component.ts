@@ -59,7 +59,7 @@ export class ModalWithdrawComponent implements OnInit {
 
   withdraw() {
     const pool = this.contract.getPool(this.poolInfo.name);
-    const func = pool.methods.withdraw(
+    /*const func = pool.methods.withdraw(
       this.userDeposit.nftID,
       this.userDeposit.fundingID
     );
@@ -73,7 +73,7 @@ export class ModalWithdrawComponent implements OnInit {
       (error) => {
         this.wallet.displayGenericError(error);
       }
-    );
+    );*/
   }
 
   earlyWithdraw() {

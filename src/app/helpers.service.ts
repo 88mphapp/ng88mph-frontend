@@ -54,6 +54,9 @@ export class HelpersService {
     }
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
+    if (!rawResult.prices) {
+      return 1;
+    }
     return rawResult.prices[0][1];
   }
 

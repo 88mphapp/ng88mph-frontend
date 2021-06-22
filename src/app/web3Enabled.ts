@@ -4,6 +4,7 @@ import Onboard from 'bnc-onboard';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from './constants.service';
 import { EventEmitter } from '@angular/core';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 export class Web3Enabled {
   connectedEvent: EventEmitter<null>;
@@ -32,6 +33,13 @@ export class Web3Enabled {
 
   async connect(onConnected, onError, isStartupMode: boolean) {
     if (!this.assistInstance) {
+      const provider = (await detectEthereumProvider()) as any;
+      if (provider) {
+        const browserWeb3 = new Web3(provider);
+        const chainId = await browserWeb3.eth.getChainId();
+        this.networkID = chainId;
+      }
+
       const genericMobileWalletConfig = {
         name: 'Web3 wallet (Metamask)',
         mobile: true,
@@ -135,9 +143,12 @@ export class Web3Enabled {
           network: (newNetworkID) => {
             const networkDidChange = newNetworkID != this.networkID;
             if (networkDidChange) {
-              this.notifyInstance.config({
-                networkId: newNetworkID,
-              });
+              if (this.notifyInstance) {
+                this.notifyInstance.config({
+                  networkId: newNetworkID,
+                });
+              }
+
               this.networkID = newNetworkID;
               this.chainChangedEvent.emit(newNetworkID);
             }
