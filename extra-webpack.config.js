@@ -5,6 +5,6 @@ module.exports = {
     http: true,
     https: true,
     os: true,
-    path: true
-  }
-}
+    path: true,
+  },
+};

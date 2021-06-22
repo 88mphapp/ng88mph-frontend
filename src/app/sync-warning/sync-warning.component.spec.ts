@@ -8,9 +8,8 @@ describe('SyncWarningComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SyncWarningComponent ]
-    })
-    .compileComponents();
+      declarations: [SyncWarningComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

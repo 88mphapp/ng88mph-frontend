@@ -10,10 +10,9 @@ import { UserDeposit } from '../types';
 @Component({
   selector: 'app-modal-roll-over',
   templateUrl: './modal-roll-over.component.html',
-  styleUrls: ['./modal-roll-over.component.css']
+  styleUrls: ['./modal-roll-over.component.css'],
 })
 export class ModalRollOverComponent implements OnInit {
-
   DEPOSIT_DELAY = 20 * 60; // 20 minutes
 
   @Input() userDeposit: UserDeposit;
@@ -40,6 +39,10 @@ export class ModalRollOverComponent implements OnInit {
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData();
     });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData();
+      this.loadData();
+    });
   }
 
   loadData() {
@@ -58,10 +61,26 @@ export class ModalRollOverComponent implements OnInit {
   // @dev needs to be tested with v3 contract
   rollOver() {
     const pool = this.contract.getPool(this.poolInfo.name);
-    const maturationTimestamp = this.helpers.processWeb3Number(this.depositTimeInDays.times(this.constants.DAY_IN_SEC).plus(Date.now() / 1e3).plus(this.DEPOSIT_DELAY));
-    const func = pool.methods.rolloverDeposit(this.userDeposit.nftID, maturationTimestamp);
+    const maturationTimestamp = this.helpers.processWeb3Number(
+      this.depositTimeInDays
+        .times(this.constants.DAY_IN_SEC)
+        .plus(Date.now() / 1e3)
+        .plus(this.DEPOSIT_DELAY)
+    );
+    const func = pool.methods.rolloverDeposit(
+      this.userDeposit.nftID,
+      maturationTimestamp
+    );
 
-    this.wallet.sendTx(func, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {
+        this.activeModal.dismiss();
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
-
 }

@@ -8,9 +8,8 @@ describe('ModalMphRewardsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalMphRewardsComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalMphRewardsComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

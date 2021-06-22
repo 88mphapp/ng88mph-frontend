@@ -8,9 +8,8 @@ describe('ModalRollOverComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalRollOverComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalRollOverComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

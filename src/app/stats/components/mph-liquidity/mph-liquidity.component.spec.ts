@@ -8,9 +8,8 @@ describe('MphLiquidityComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MphLiquidityComponent ]
-    })
-    .compileComponents();
+      declarations: [MphLiquidityComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
