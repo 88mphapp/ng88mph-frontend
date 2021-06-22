@@ -30,8 +30,6 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData(this.wallet.connected, true);
-
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
       this.loadData(true, true);
@@ -39,14 +37,21 @@ export class HeaderComponent implements OnInit {
 
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
+      this.loadData(false, true);
     });
+
     this.wallet.chainChangedEvent.subscribe((networkID) => {
-      this.resetData(true, true);
-      this.loadData(true, true);
+      this.zone.run(() => {
+        this.resetData(true, true);
+        this.loadData(true, true);
+      });
     });
+
     this.wallet.accountChangedEvent.subscribe((account) => {
-      this.resetData(true, false);
-      this.loadData(true, false);
+      this.zone.run(() => {
+        this.resetData(true, false);
+        this.loadData(true, false);
+      });
     });
   }
 
@@ -60,7 +65,7 @@ export class HeaderComponent implements OnInit {
       address = this.wallet.watchedAddress;
     }
 
-    if (loadUser) {
+    if (loadUser && address) {
       const mph = await this.contract.getContract(
         this.constants.MPH_ADDRESS[this.wallet.networkID],
         `MPHToken`
