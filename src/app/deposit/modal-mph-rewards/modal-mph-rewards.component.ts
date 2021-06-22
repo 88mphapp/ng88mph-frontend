@@ -87,7 +87,7 @@ export class ModalMphRewardsComponent implements OnInit {
   withdraw() {
     const vest = this.userDeposit.vest;
     const vestContract = this.contract.getNamedContract('Vesting02');
-    const func = vestContract.methods.withdraw(vest.id);
+    const func = vestContract.methods.withdraw(vest.nftID);
 
     this.wallet.sendTx(
       func,

@@ -178,17 +178,24 @@ export class DepositComponent implements OnInit {
         ${
           loadUser
             ? `user(id: "${userID}") {
-          totalMPHEarned
+              address
           pools {
             id
             address
             deposits(where: { user: "${userID}", active: true }, orderBy: nftID) {
               nftID
-              fundingID
-              amount
+              virtualTokenTotalSupply
               maturationTimestamp
               depositTimestamp
-              interestEarned
+              interestRate
+              vest {
+                nftID
+                owner
+                lastUpdateTimestamp
+                accumulatedAmount
+                withdrawnAmount
+                vestAmountPerStablecoinPerSecond
+              }
               mintMPHAmount
             }
           }
@@ -197,8 +204,8 @@ export class DepositComponent implements OnInit {
               address
               stablecoin
             }
-            totalActiveDeposit
-            totalInterestEarned
+            totalDeposit
+            totalInterestOwed
           }
         }`
             : ''
@@ -208,9 +215,9 @@ export class DepositComponent implements OnInit {
             ? `dpools {
           id
           address
-          totalActiveDeposit
+          totalDeposit
           oneYearInterestRate
-          mphDepositorRewardMintMultiplier
+          poolDepositorRewardMintMultiplier
         }`
             : ''
         }
@@ -223,8 +230,7 @@ export class DepositComponent implements OnInit {
   }
 
   async handleData(data: QueryResult) {
-    const user = data.user;
-    const dpools = data.dpools;
+    const { user, dpools } = data;
     let stablecoinPriceCache = {};
 
     if (dpools) {
@@ -242,7 +248,7 @@ export class DepositComponent implements OnInit {
 
           // get MPH APY
           const mphDepositorRewardMintMultiplier = new BigNumber(
-            pool.mphDepositorRewardMintMultiplier
+            pool.poolDepositorRewardMintMultiplier
           );
           const mphAPY = mphDepositorRewardMintMultiplier
             .times(this.mphPriceUSD)
@@ -256,16 +262,15 @@ export class DepositComponent implements OnInit {
             stablecoin: poolInfo.stablecoin,
             stablecoinSymbol: poolInfo.stablecoinSymbol,
             iconPath: poolInfo.iconPath,
-            totalDepositToken: new BigNumber(pool.totalActiveDeposit),
-            totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(
+            totalDepositToken: new BigNumber(pool.totalDeposit),
+            totalDepositUSD: new BigNumber(pool.totalDeposit).times(
               stablecoinPrice
             ),
             oneYearInterestRate: this.helpers
               .applyFeeToInterest(pool.oneYearInterestRate, poolInfo)
               .times(100),
             mphAPY: mphAPY,
-            tempMPHAPY: tempMPHAPY,
-            totalUserDeposits: new BigNumber(0),
+            totalUserDepositsToken: new BigNumber(0),
             totalUserDepositsUSD: new BigNumber(0),
           };
           allPoolList.push(dpoolObj);
@@ -287,8 +292,7 @@ export class DepositComponent implements OnInit {
     }
 
     if (user) {
-      // update totalMPHEarned
-      this.totalMPHEarned = new BigNumber(user.totalMPHEarned);
+      let totalMPHEarned = new BigNumber(0);
 
       // process user deposit list
       const userPools: UserPool[] = [];
@@ -304,63 +308,69 @@ export class DepositComponent implements OnInit {
           }
           const userPoolDeposits: Array<UserDeposit> = [];
           for (const deposit of pool.deposits) {
-            // compute MPH APY
-            const realMPHReward = new BigNumber(deposit.mintMPHAmount);
-            const mphAPY = realMPHReward
-              .times(this.mphPriceUSD)
-              .div(deposit.amount)
-              .div(stablecoinPrice)
-              .div(deposit.maturationTimestamp - deposit.depositTimestamp)
-              .times(this.constants.YEAR_IN_SEC)
-              .times(100);
-            const tempMPHAPY = new BigNumber(deposit.mintMPHAmount)
-              .times(this.mphPriceUSD)
-              .div(deposit.amount)
-              .div(stablecoinPrice)
-              .div(deposit.maturationTimestamp - deposit.depositTimestamp)
-              .times(this.constants.YEAR_IN_SEC)
-              .times(100);
-
             // compute interest
-            const interestEarnedToken = this.helpers.applyFeeToInterest(
-              new BigNumber(deposit.interestEarned),
-              poolInfo
-            );
+            const depositAmount = new BigNumber(
+              deposit.virtualTokenTotalSupply
+            ).div(new BigNumber(deposit.interestRate).plus(1));
+            const interestEarnedToken = new BigNumber(
+              deposit.interestRate
+            ).times(depositAmount);
             const interestEarnedUSD =
               interestEarnedToken.times(stablecoinPrice);
 
-            const vest: Vest = {
-              id: '1',
-              lastUpdateTimestamp: new BigNumber(Date.now() / 1e3),
-              accumulatedAmount: new BigNumber(0),
-              withdrawnAmount: new BigNumber(0),
-              vestAmountPerStablecoinPerSecond: new BigNumber(0),
-            };
+            // compute MPH APY
+            let realMPHReward = new BigNumber(deposit.mintMPHAmount);
+            if (deposit.vest && deposit.vest.owner !== user.address) {
+              // vest NFT transferred to another account
+              // reward is zero
+              realMPHReward = new BigNumber(0);
+            }
+            const mphAPY = realMPHReward
+              .times(this.mphPriceUSD)
+              .div(depositAmount)
+              .div(stablecoinPrice)
+              .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
+              .times(this.constants.YEAR_IN_SEC)
+              .times(100);
+            totalMPHEarned = totalMPHEarned.plus(realMPHReward);
+
+            let vest: Vest;
+            if (deposit.vest) {
+              vest = {
+                nftID: +deposit.vest.nftID,
+                lastUpdateTimestamp: +deposit.vest.lastUpdateTimestamp,
+                accumulatedAmount: new BigNumber(
+                  deposit.vest.accumulatedAmount
+                ),
+                withdrawnAmount: new BigNumber(deposit.vest.withdrawnAmount),
+                vestAmountPerStablecoinPerSecond: new BigNumber(
+                  deposit.vest.vestAmountPerStablecoinPerSecond
+                ),
+              };
+            }
 
             const userPoolDeposit: UserDeposit = {
-              nftID: deposit.nftID,
-              fundingID: deposit.fundingID,
-              locked: deposit.maturationTimestamp >= Date.now() / 1e3,
-              amountToken: new BigNumber(deposit.amount),
-              amountUSD: new BigNumber(deposit.amount).times(stablecoinPrice),
+              nftID: +deposit.nftID,
+              locked: +deposit.maturationTimestamp >= Date.now() / 1e3,
+              amountToken: new BigNumber(depositAmount),
+              amountUSD: new BigNumber(depositAmount).times(stablecoinPrice),
               apy: interestEarnedToken
-                .div(deposit.amount)
-                .div(deposit.maturationTimestamp - deposit.depositTimestamp)
+                .div(depositAmount)
+                .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
                 .times(this.constants.YEAR_IN_SEC)
                 .times(100),
-              countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
+              countdownTimer: new Timer(+deposit.maturationTimestamp, 'down'),
               interestEarnedToken,
               interestEarnedUSD,
               mintMPHAmount: new BigNumber(deposit.mintMPHAmount),
               realMPHReward: realMPHReward,
               mphAPY: mphAPY,
-              tempMPHAPY: tempMPHAPY,
               virtualTokenTotalSupply: new BigNumber(100),
               vest: vest,
               depositLength: this.constants.YEAR_IN_SEC,
               interestRate: interestEarnedToken
-                .div(deposit.amount)
-                .div(deposit.maturationTimestamp - deposit.depositTimestamp)
+                .div(depositAmount)
+                .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
                 .times(this.constants.YEAR_IN_SEC)
                 .times(100),
             };
@@ -376,6 +386,7 @@ export class DepositComponent implements OnInit {
         })
       ).then(() => {
         this.userPools = userPools;
+        this.totalMPHEarned = totalMPHEarned;
       });
 
       // compute total deposit & interest in USD
@@ -399,22 +410,17 @@ export class DepositComponent implements OnInit {
           const activePool = this.allPoolList.find(
             (pool) => pool.name === poolInfo.name
           );
-          const poolDeposit = new BigNumber(
-            totalDepositEntity.totalActiveDeposit
-          );
+          const poolDeposit = new BigNumber(totalDepositEntity.totalDeposit);
           const poolDepositUSD = new BigNumber(
-            totalDepositEntity.totalActiveDeposit
+            totalDepositEntity.totalDeposit
           ).times(stablecoinPrice);
-          const poolInterestUSD = this.helpers.applyFeeToInterest(
-            new BigNumber(totalDepositEntity.totalInterestEarned).times(
-              stablecoinPrice
-            ),
-            poolInfo
-          );
+          const poolInterestUSD = new BigNumber(
+            totalDepositEntity.totalInterestOwed
+          ).times(stablecoinPrice);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-          activePool.totalUserDeposits =
-            activePool.totalUserDeposits.plus(poolDeposit);
+          activePool.totalUserDepositsToken =
+            activePool.totalUserDepositsToken.plus(poolDeposit);
           activePool.totalUserDepositsUSD =
             activePool.totalUserDepositsUSD.plus(poolDepositUSD);
         })
@@ -448,8 +454,7 @@ export class DepositComponent implements OnInit {
           totalDepositUSD: new BigNumber(0),
           oneYearInterestRate: new BigNumber(0),
           mphAPY: new BigNumber(0),
-          tempMPHAPY: new BigNumber(0),
-          totalUserDeposits: new BigNumber(0),
+          totalUserDepositsToken: new BigNumber(0),
           totalUserDepositsUSD: new BigNumber(0),
         };
         allPoolList.push(dpoolObj);
@@ -554,20 +559,25 @@ export class DepositComponent implements OnInit {
 
 interface QueryResult {
   user: {
-    totalMPHEarned: number;
+    address: string;
     pools: {
       id: string;
       address: string;
       deposits: {
-        nftID: number;
-        fundingID: number;
-        amount: number;
-        maturationTimestamp: number;
-        depositTimestamp: number;
-        interestEarned: number;
-        mintMPHAmount: number;
-        vest: Vest;
-        depositLength: number;
+        nftID: string;
+        virtualTokenTotalSupply: string;
+        maturationTimestamp: string;
+        depositTimestamp: string;
+        interestRate: string;
+        vest: {
+          owner: string;
+          nftID: string;
+          lastUpdateTimestamp: string;
+          accumulatedAmount: string;
+          withdrawnAmount: string;
+          vestAmountPerStablecoinPerSecond: string;
+        };
+        mintMPHAmount: string;
       }[];
     }[];
     totalDepositByPool: {
@@ -575,16 +585,15 @@ interface QueryResult {
         address: string;
         stablecoin: string;
       };
-      totalActiveDeposit: number;
-      totalHistoricalDeposit: number;
-      totalInterestEarned: number;
+      totalDeposit: string;
+      totalInterestOwed: string;
     }[];
   };
   dpools: {
     id: string;
     address: string;
-    totalActiveDeposit: number;
-    oneYearInterestRate: number;
-    mphDepositorRewardMintMultiplier: number;
+    totalDeposit: string;
+    oneYearInterestRate: string;
+    poolDepositorRewardMintMultiplier: string;
   }[];
 }
