@@ -1,28 +1,20 @@
 import { Injectable } from '@angular/core';
 import { ConstantsService } from './constants.service';
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
-import { ApolloQueryResult } from '@apollo/client/core';
-import { HttpLink } from 'apollo-angular/http';
-import gql from 'graphql-tag';
+import { request, gql } from 'graphql-request';
+import { WalletService } from './wallet.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TimeSeriesService {
-
   constructor(
-    public constants: ConstantsService
-  ) {
-  }
-
-  client = new ApolloClient({
-    uri: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
-    cache: new InMemoryCache(),
-  });
+    public constants: ConstantsService,
+    public wallet: WalletService
+  ) {}
 
   getLatestUTCDate() {
     let date = new Date();
-    date.setUTCHours(0,0,0,0);
+    date.setUTCHours(0, 0, 0, 0);
     return date.getTime() / 1000;
   }
 
@@ -43,14 +35,13 @@ export class TimeSeriesService {
 
     // generate array of timestamps
     for (let p = 0; p < numPeriods; p++) {
-      timeStamps.push(startTime + (p * period));
+      timeStamps.push(startTime + p * period);
     }
 
     // generate a query string
     let queryString = `query GetBlocks {`;
     for (let i = 0; i < timeStamps.length; i++) {
-      queryString +=
-      `t${i}: blocks(
+      queryString += `t${i}: blocks(
         first: 1,
         orderBy: timestamp,
         orderDirection: asc,
@@ -65,30 +56,23 @@ export class TimeSeriesService {
       }`;
     }
     queryString += `}`;
-    const blocksQuery = gql`${queryString}`;
+    const blocksQuery = gql`
+      ${queryString}
+    `;
 
     // run the query and create array of blocks
-    await this.client.query<QueryResult>({
-      query: blocksQuery
-    }).then(results =>
-      {
-        for (let result in results.data) {
-          blocks.push(parseInt(results.data[result][0].number));
-        }
+    await request(
+      this.constants.BLOCKS_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      blocksQuery
+    ).then((data) => {
+      for (let block of data) {
+        blocks.push(parseInt(block[0].number));
       }
-    );
+    });
 
     // return data
     data.push(timeStamps);
     data.push(blocks);
     return data;
-  }
-}
-
-interface QueryResult {
-  blocks: {
-    id: string;
-    number: number;
-    timestamp: number;
   }
 }

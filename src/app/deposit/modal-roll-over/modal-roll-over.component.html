@@ -3,10 +3,14 @@
     <div class="modal-body pt-0 py-lg-0">
       <div class="row no-gutters align-items-center">
         <div class="col-auto">
-          <a class="btn btn-link border-0 text-white pl-0" data-dismiss="modal"
-            aria-label="Close" (click)="activeModal.dismiss()">
+          <a
+            class="btn btn-link border-0 text-white pl-0"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
             <i class="fe fe-arrow-left h2 mb-0"></i>
-        </a>
+          </a>
         </div>
         <div class="col">
           <h1 class="mb-0 h3">Roll Over</h1>
@@ -17,29 +21,45 @@
           <div class="card mb-8">
             <div class="card-body">
               <form>
-                <div class="list-group list-group-flush list-group-activity mb-4">
-
+                <div
+                  class="list-group list-group-flush list-group-activity mb-4"
+                >
                   <div class="list-group-item">
                     <div class="row">
                       <div class="col ml-n2">
                         <div class="form-group mb-2">
                           <label>Select a custom maturity</label>
                           <div class="input-group">
-                            <input type="tel" class="form-control form-control-lg" placeholder="0.00" aria-label=""
-                              aria-describedby="" [value]="depositTimeInDays" min="7" id="lock-period" data-mask="#,##0" data-mask-reverse="true"
-                              (input)="setDepositTime($event.target.value)">
+                            <input
+                              type="tel"
+                              class="form-control form-control-lg"
+                              placeholder="0.00"
+                              aria-label=""
+                              aria-describedby=""
+                              [value]="depositTimeInDays"
+                              min="7"
+                              id="lock-period"
+                              data-mask="#,##0"
+                              data-mask-reverse="true"
+                              (input)="setDepositTime($event.target.value)"
+                            />
                             <div class="input-group-append">
-                              <button class="btn btn-lg border-gradient" type="button"
-                                (click)="setDepositTime(365)">Max</button>
+                              <button
+                                class="btn btn-lg border-gradient"
+                                type="button"
+                                (click)="setDepositTime(365)"
+                              >
+                                Max
+                              </button>
                             </div>
                           </div>
                           <small class="form-text text-muted my-2">
-                            Min: 000 d /
-                            Max: 000 d
+                            Min: 000 d / Max: 000 d
                           </small>
                         </div>
                       </div>
-                    </div> <!-- / .row -->
+                    </div>
+                    <!-- / .row -->
                   </div>
                 </div>
                 <div class="table-responsive">
@@ -49,7 +69,9 @@
                         <td class="px-0 py-2 text-white border-0 small">
                           Fixed-interest rate
                         </td>
-                        <td class="px-0 py-2 text-white text-right border-0 small">
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
                           <h4 class="mb-1 glowing">0.00%</h4>
                         </td>
                       </tr>
@@ -57,52 +79,58 @@
                         <td class="px-0 py-2 text-white border-0 small">
                           Interest earned
                         </td>
-                        <td class="px-0 py-2 text-white text-right border-0 small">
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
                           <h4 class="mb-1 glowing">$0.00</h4>
-                          <h5 class="text-muted">
-                            0.00
-                            DAI
-                          </h5>
+                          <h5 class="text-muted">0.00 DAI</h5>
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           Total Earned at Maturity | June 6, 2022
                         </td>
-                        <td class="px-0 py-2 text-white text-right border-0 small">
-                          <h4 class="mb-1 glowing">$0.00
-                          </h4>
-                          <h5 class="text-muted">
-                            0.0000
-                              DAI
-                          </h5>
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
+                          <h4 class="mb-1 glowing">$0.00</h4>
+                          <h5 class="text-muted">0.0000 DAI</h5>
                           <!-- <small *ngIf="selectedPoolInfo.depositFee">Note: A {{selectedPoolInfo.depositFee * 100}}% fee is taken by the underlying yield protocol ({{selectedPoolInfo.protocol}})</small> -->
-                          <small>Note: A 10% fee is taken by the underlying yield protocol (Yearn)</small>
+                          <small
+                            >Note: A 10% fee is taken by the underlying yield
+                            protocol (Yearn)</small
+                          >
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           MPH rewards (Vested over 270)
                         </td>
-                        <td class="px-0 py-2 text-white text-right border-0 small">
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
                           <h4 class="mb-1 glowing">$0.00</h4>
-                          <h5 class="text-muted">
-                            0.0000 MPH
-                          </h5>
+                          <h5 class="text-muted">0.0000 MPH</h5>
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           MPH APR
                         </td>
-                        <td class="px-0 py-2 text-white text-right border-0 small">
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
                           <h4 class="mb-1 glowing">+0.00%</h4>
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                <button class="btn btn-lg btn-bg-gradient btn-block" type="button" (click)="rollOver()">
+                <button
+                  class="btn btn-lg btn-bg-gradient btn-block"
+                  type="button"
+                  (click)="rollOver()"
+                >
                   Roll Over
                 </button>
               </form>

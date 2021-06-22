@@ -8,9 +8,8 @@ describe('ModalDepositComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalDepositComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalDepositComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -4,21 +4,16 @@ import Web3 from 'web3';
 import { WEB3 } from './web3';
 import { isNullOrUndefined } from 'util';
 import { Watch } from './watch';
+import { ConstantsService } from './constants.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WalletService extends Web3Enabled {
-  connectedEvent: EventEmitter<null>;
-  disconnectedEvent: EventEmitter<null>;
-  chainChangedEvent: EventEmitter<null>;
   watch: Watch;
 
-  constructor(@Inject(WEB3) public web3: Web3) {
-    super(web3);
-    this.connectedEvent = new EventEmitter<null>();
-    this.disconnectedEvent = new EventEmitter<null>();
-    this.chainChangedEvent = new EventEmitter<null>();
+  constructor(@Inject(WEB3) public web3: Web3, constants: ConstantsService) {
+    super(web3, constants);
     this.watch = new Watch(false, null);
   }
 
@@ -27,7 +22,7 @@ export class WalletService extends Web3Enabled {
   }
 
   public get connected(): boolean {
-    return !isNullOrUndefined(this.state.address);
+    return !!this.state.address;
   }
 
   public get watchedAddress(): string {
@@ -38,26 +33,8 @@ export class WalletService extends Web3Enabled {
     return this.watch.watching;
   }
 
-  async connect(onConnected, onError, isStartupMode: boolean) {
-    const _onConnected = () => {
-      this.connectedEvent.emit();
-      onConnected();
-    };
-    const _onError = () => {
-      this.disconnectedEvent.emit();
-      onError();
-    }
-    await super.connect(_onConnected, _onError, isStartupMode);
-  }
-
-  async changeChain(chainId: number) {
-    this.networkID = chainId;
-    this.chainChangedEvent.emit();
-  }
-
   watchWallet(address: string) {
     this.watch.watching = true;
     this.watch.address = address;
   }
-
 }

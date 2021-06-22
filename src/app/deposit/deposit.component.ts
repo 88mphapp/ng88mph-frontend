@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApolloQueryResult } from '@apollo/client/core';
-import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
-import gql from 'graphql-tag';
+import { request, gql } from 'graphql-request';
 import { ModalDepositComponent } from './modal-deposit/modal-deposit.component';
 import { ModalWithdrawComponent } from './modal-withdraw/modal-withdraw.component';
 import { ModalMphRewardsComponent } from './modal-mph-rewards/modal-mph-rewards.component';
 import { ModalTopUpComponent } from './modal-top-up/modal-top-up.component';
 import { ModalRollOverComponent } from './modal-roll-over/modal-roll-over.component';
 import { WalletService } from '../wallet.service';
-import { ContractService, PoolInfo, ZeroCouponBondInfo } from '../contract.service';
+import {
+  ContractService,
+  PoolInfo,
+  ZeroCouponBondInfo,
+} from '../contract.service';
 import { DPool, UserPool, UserDeposit, UserZCBPool, Vest } from './types';
 import { HelpersService } from '../helpers.service';
 import { Timer } from '../timer';
@@ -29,9 +31,8 @@ const mockUser = {
           depositTimestamp: 1601510400,
           interestEarned: 1e2,
           mintMPHAmount: 1e2,
-          takeBackMPHAmount: 0
-        }
-      ]
+        },
+      ],
     },
     {
       address: '0xEB2F0A3045db12366A9f6A8e922D725D86a117EB',
@@ -43,27 +44,27 @@ const mockUser = {
           depositTimestamp: 1601510400,
           interestEarned: 1e2,
           mintMPHAmount: 1e2,
-          takeBackMPHAmount: 0
-        }
-      ]
-    }
-  ],
-  totalDeposits: [{
-    pool: {
-      stablecoin: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+        },
+      ],
     },
-    totalActiveDeposit: 1e6,
-    totalInterestEarned: 1e4
-  }]
+  ],
+  totalDeposits: [
+    {
+      pool: {
+        stablecoin: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      },
+      totalActiveDeposit: 1e6,
+      totalInterestEarned: 1e4,
+    },
+  ],
 };
 
 @Component({
   selector: 'app-deposit',
   templateUrl: './deposit.component.html',
-  styleUrls: ['./deposit.component.css']
+  styleUrls: ['./deposit.component.css'],
 })
 export class DepositComponent implements OnInit {
-  YEAR_IN_SEC = 31556952; // Number of seconds in a year
   DECIMALS = 2;
 
   totalDepositUSD: BigNumber;
@@ -77,7 +78,6 @@ export class DepositComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private apollo: Apollo,
     public wallet: WalletService,
     public contract: ContractService,
     public helpers: HelpersService,
@@ -95,10 +95,17 @@ export class DepositComponent implements OnInit {
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
     });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.resetData(true, true);
+      this.loadData(true, true);
+    });
+    this.wallet.accountChangedEvent.subscribe((account) => {
+      this.resetData(true, false);
+      this.loadData(true, false);
+    });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
     let userID;
@@ -113,31 +120,53 @@ export class DepositComponent implements OnInit {
     if (loadUser) {
       // load Zero Coupon Bond / Preset Maturity data
       const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
-      const zcbPoolList = zcbPoolNameList.map(poolName => this.contract.getZeroCouponBondPool(poolName));
-      this.allZCBPoolList = zcbPoolList.concat.apply([],zcbPoolList);
-      for (let pool in this.allZCBPoolList) {
-        const zcbPool = this.allZCBPoolList[pool];
-        const zcbContract = this.contract.getZeroCouponBondContract(zcbPool.address ,readonlyWeb3);
-        const poolInfo = this.contract.getPoolInfoFromAddress(await zcbContract.methods.pool().call());
-        const userBalance = new BigNumber(await zcbContract.methods.balanceOf(userID).call()).div(Math.pow(10, poolInfo.stablecoinDecimals));
+      const zcbPoolList = zcbPoolNameList.map((poolName) =>
+        this.contract.getZeroCouponBondPool(poolName)
+      );
+      this.allZCBPoolList = zcbPoolList.concat.apply([], zcbPoolList);
+      const userZCBPools = [];
+      let totalDepositUSD = new BigNumber(0);
+      for (let zcbPool of this.allZCBPoolList) {
+        const zcbContract = this.contract.getZeroCouponBondContract(
+          zcbPool.address,
+          readonlyWeb3
+        );
+        const poolInfo = this.contract.getPoolInfoFromAddress(
+          await zcbContract.methods.pool().call()
+        );
+        const userBalance = new BigNumber(
+          await zcbContract.methods.balanceOf(userID).call()
+        ).div(Math.pow(10, poolInfo.stablecoinDecimals));
 
-        if(userBalance.gt(0)) {
-          const zcbPriceUSD = new BigNumber(await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo));
+        if (userBalance.gt(0)) {
+          const zcbPriceUSD = new BigNumber(
+            await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo)
+          );
           const userBalanceUSD = userBalance.times(zcbPriceUSD);
-          const maturationTimestamp = await zcbContract.methods.maturationTimestamp().call();
-          const maturationDate = new Date(maturationTimestamp * 1e3).toLocaleString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+          const maturationTimestamp = await zcbContract.methods
+            .maturationTimestamp()
+            .call();
+          const maturationDate = new Date(
+            maturationTimestamp * 1e3
+          ).toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          });
           let userZCB: UserZCBPool = {
             zcbPoolInfo: zcbPool,
             poolName: poolInfo.name,
             poolAddress: poolInfo.address,
             amountToken: userBalance,
             amountUSD: userBalanceUSD,
-            maturation: maturationDate
-          }
-          this.userZCBPools.push(userZCB);
-          this.totalDepositUSD = this.totalDepositUSD.plus(userBalanceUSD);
+            maturation: maturationDate,
+          };
+          userZCBPools.push(userZCB);
+          totalDepositUSD = totalDepositUSD.plus(userBalanceUSD);
         }
       }
+      this.userZCBPools = userZCBPools;
+      this.totalDepositUSD = totalDepositUSD;
     }
 
     await this.helpers.getMPHPriceUSD().then((price) => {
@@ -146,22 +175,28 @@ export class DepositComponent implements OnInit {
 
     const queryString = gql`
       {
-        ${loadUser ? `user(id: "${userID}") {
-          totalMPHEarned
-          totalMPHPaidBack
+        ${
+          loadUser
+            ? `user(id: "${userID}") {
+              address
           pools {
             id
             address
-            mphDepositorRewardTakeBackMultiplier
             deposits(where: { user: "${userID}", active: true }, orderBy: nftID) {
               nftID
-              fundingID
-              amount
+              virtualTokenTotalSupply
               maturationTimestamp
               depositTimestamp
-              interestEarned
+              interestRate
+              vest {
+                nftID
+                owner
+                lastUpdateTimestamp
+                accumulatedAmount
+                withdrawnAmount
+                vestAmountPerStablecoinPerSecond
+              }
               mintMPHAmount
-              takeBackMPHAmount
             }
           }
           totalDepositByPool {
@@ -169,37 +204,42 @@ export class DepositComponent implements OnInit {
               address
               stablecoin
             }
-            totalActiveDeposit
-            totalInterestEarned
+            totalDeposit
+            totalInterestOwed
           }
-        }` : ''}
-        ${loadGlobal ? `dpools {
+        }`
+            : ''
+        }
+        ${
+          loadGlobal
+            ? `dpools {
           id
           address
-          totalActiveDeposit
+          totalDeposit
           oneYearInterestRate
-          mphDepositorRewardMintMultiplier
-          mphDepositorRewardTakeBackMultiplier
-        }` : ''}
+          poolDepositorRewardMintMultiplier
+        }`
+            : ''
+        }
       }
     `;
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => this.handleData(x));
+    request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data: QueryResult) => this.handleData(data));
   }
 
-  async handleData(queryResult: ApolloQueryResult<QueryResult>) {
-    if (!queryResult.loading) {
-      const user = queryResult.data.user;
-      const dpools = queryResult.data.dpools;
-      let stablecoinPriceCache = {};
+  async handleData(data: QueryResult) {
+    const { user, dpools } = data;
+    let stablecoinPriceCache = {};
 
-      if (dpools) {
-        let allPoolList = new Array<DPool>(0);
-        Promise.all(dpools.map(async pool => {
+    if (dpools) {
+      let allPoolList = new Array<DPool>(0);
+      Promise.all(
+        dpools.map(async (pool) => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
-          const stablecoin = poolInfo.stablecoin.toLowerCase()
+          const stablecoin = poolInfo.stablecoin.toLowerCase();
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
@@ -207,10 +247,14 @@ export class DepositComponent implements OnInit {
           }
 
           // get MPH APY
-          const mphDepositorRewardMintMultiplier = new BigNumber(pool.mphDepositorRewardMintMultiplier);
-          const mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
-          const tempMPHAPY = mphDepositorRewardMintMultiplier.times(this.mphPriceUSD).times(this.YEAR_IN_SEC).div(stablecoinPrice).times(100);
-          const mphAPY = tempMPHAPY.times(new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier));
+          const mphDepositorRewardMintMultiplier = new BigNumber(
+            pool.poolDepositorRewardMintMultiplier
+          );
+          const mphAPY = mphDepositorRewardMintMultiplier
+            .times(this.mphPriceUSD)
+            .times(this.constants.YEAR_IN_SEC)
+            .div(stablecoinPrice)
+            .times(100);
 
           const dpoolObj: DPool = {
             name: poolInfo.name,
@@ -218,41 +262,45 @@ export class DepositComponent implements OnInit {
             stablecoin: poolInfo.stablecoin,
             stablecoinSymbol: poolInfo.stablecoinSymbol,
             iconPath: poolInfo.iconPath,
-            totalDepositToken: new BigNumber(pool.totalActiveDeposit),
-            totalDepositUSD: new BigNumber(pool.totalActiveDeposit).times(stablecoinPrice),
-            oneYearInterestRate: this.helpers.applyFeeToInterest(pool.oneYearInterestRate, poolInfo).times(100),
+            totalDepositToken: new BigNumber(pool.totalDeposit),
+            totalDepositUSD: new BigNumber(pool.totalDeposit).times(
+              stablecoinPrice
+            ),
+            oneYearInterestRate: this.helpers
+              .applyFeeToInterest(pool.oneYearInterestRate, poolInfo)
+              .times(100),
             mphAPY: mphAPY,
-            tempMPHAPY: tempMPHAPY,
-            totalUserDeposits: new BigNumber(0),
-            totalUserDepositsUSD: new BigNumber(0)
+            totalUserDepositsToken: new BigNumber(0),
+            totalUserDepositsUSD: new BigNumber(0),
           };
           allPoolList.push(dpoolObj);
-        })).then(() => {
-          allPoolList.sort((a, b) => {
-            const aName = a.name;
-            const bName = b.name;
-            if (aName > bName) {
-              return 1;
-            }
-            if (aName < bName) {
-              return -1;
-            }
-            return 0;
-          });
-          this.allPoolList = allPoolList;
+        })
+      ).then(() => {
+        allPoolList.sort((a, b) => {
+          const aName = a.name;
+          const bName = b.name;
+          if (aName > bName) {
+            return 1;
+          }
+          if (aName < bName) {
+            return -1;
+          }
+          return 0;
         });
-      }
+        this.allPoolList = allPoolList;
+      });
+    }
 
-      if (user) {
-        // update totalMPHEarned
-        this.totalMPHEarned = new BigNumber(user.totalMPHEarned).minus(user.totalMPHPaidBack);
+    if (user) {
+      let totalMPHEarned = new BigNumber(0);
 
-        // process user deposit list
-        const userPools: UserPool[] = [];
-        Promise.all(user.pools.map(async pool => {
+      // process user deposit list
+      const userPools: UserPool[] = [];
+      Promise.all(
+        user.pools.map(async (pool) => {
           if (pool.deposits.length == 0) return;
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
-          const stablecoin = poolInfo.stablecoin.toLowerCase()
+          const stablecoin = poolInfo.stablecoin.toLowerCase();
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
@@ -260,81 +308,126 @@ export class DepositComponent implements OnInit {
           }
           const userPoolDeposits: Array<UserDeposit> = [];
           for (const deposit of pool.deposits) {
-            // compute MPH APY
-            let mphDepositorRewardTakeBackMultiplier = new BigNumber(pool.mphDepositorRewardTakeBackMultiplier);
-            const realMPHReward = new BigNumber(1).minus(mphDepositorRewardTakeBackMultiplier).times(deposit.mintMPHAmount);
-            const mphAPY = realMPHReward.times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
-            const tempMPHAPY = new BigNumber(deposit.mintMPHAmount).times(this.mphPriceUSD).div(deposit.amount).div(stablecoinPrice).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.constants.YEAR_IN_SEC).times(100);
-
             // compute interest
-            const interestEarnedToken = this.helpers.applyFeeToInterest(new BigNumber(deposit.interestEarned), poolInfo);
-            const interestEarnedUSD = interestEarnedToken.times(stablecoinPrice);
+            const depositAmount = new BigNumber(
+              deposit.virtualTokenTotalSupply
+            ).div(new BigNumber(deposit.interestRate).plus(1));
+            const interestEarnedToken = new BigNumber(
+              deposit.interestRate
+            ).times(depositAmount);
+            const interestEarnedUSD =
+              interestEarnedToken.times(stablecoinPrice);
 
-            const vest: Vest = {
-              id: "1",
-              lastUpdateTimestamp: new BigNumber(Date.now() / 1e3),
-              accumulatedAmount: new BigNumber(0),
-              withdrawnAmount: new BigNumber(0),
-              vestAmountPerStablecoinPerSecond: new BigNumber(0)
+            // compute MPH APY
+            let realMPHReward = new BigNumber(deposit.mintMPHAmount);
+            if (deposit.vest && deposit.vest.owner !== user.address) {
+              // vest NFT transferred to another account
+              // reward is zero
+              realMPHReward = new BigNumber(0);
+            }
+            const mphAPY = realMPHReward
+              .times(this.mphPriceUSD)
+              .div(depositAmount)
+              .div(stablecoinPrice)
+              .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
+              .times(this.constants.YEAR_IN_SEC)
+              .times(100);
+            totalMPHEarned = totalMPHEarned.plus(realMPHReward);
+
+            let vest: Vest;
+            if (deposit.vest) {
+              vest = {
+                nftID: +deposit.vest.nftID,
+                lastUpdateTimestamp: +deposit.vest.lastUpdateTimestamp,
+                accumulatedAmount: new BigNumber(
+                  deposit.vest.accumulatedAmount
+                ),
+                withdrawnAmount: new BigNumber(deposit.vest.withdrawnAmount),
+                vestAmountPerStablecoinPerSecond: new BigNumber(
+                  deposit.vest.vestAmountPerStablecoinPerSecond
+                ),
+              };
             }
 
             const userPoolDeposit: UserDeposit = {
-              nftID: deposit.nftID,
-              fundingID: deposit.fundingID,
-              locked: deposit.maturationTimestamp >= (Date.now() / 1e3),
-              amountToken: new BigNumber(deposit.amount),
-              amountUSD: new BigNumber(deposit.amount).times(stablecoinPrice),
-              apy: interestEarnedToken.div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.YEAR_IN_SEC).times(100),
-              countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
+              nftID: +deposit.nftID,
+              locked: +deposit.maturationTimestamp >= Date.now() / 1e3,
+              amountToken: new BigNumber(depositAmount),
+              amountUSD: new BigNumber(depositAmount).times(stablecoinPrice),
+              apy: interestEarnedToken
+                .div(depositAmount)
+                .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
+                .times(this.constants.YEAR_IN_SEC)
+                .times(100),
+              countdownTimer: new Timer(+deposit.maturationTimestamp, 'down'),
               interestEarnedToken,
               interestEarnedUSD,
               mintMPHAmount: new BigNumber(deposit.mintMPHAmount),
               realMPHReward: realMPHReward,
               mphAPY: mphAPY,
-              tempMPHAPY: tempMPHAPY,
               virtualTokenTotalSupply: new BigNumber(100),
               vest: vest,
               depositLength: this.constants.YEAR_IN_SEC,
-              interestRate: interestEarnedToken.div(deposit.amount).div(deposit.maturationTimestamp - deposit.depositTimestamp).times(this.YEAR_IN_SEC).times(100)
-            }
+              interestRate: interestEarnedToken
+                .div(depositAmount)
+                .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
+                .times(this.constants.YEAR_IN_SEC)
+                .times(100),
+            };
             userPoolDeposit.countdownTimer.start();
             userPoolDeposits.push(userPoolDeposit);
           }
 
           const userPool: UserPool = {
             poolInfo: poolInfo,
-            deposits: userPoolDeposits
+            deposits: userPoolDeposits,
           };
           userPools.push(userPool);
-        })).then(() => {
-          this.userPools = userPools;
-          console.log(this.userPools);
-        });
+        })
+      ).then(() => {
+        this.userPools = userPools;
+        this.totalMPHEarned = totalMPHEarned;
+      });
 
-        // compute total deposit & interest in USD
-        let totalDepositUSD = new BigNumber(0);
-        let totalInterestUSD = new BigNumber(0);
-        Promise.all(user.totalDepositByPool.map(async totalDepositEntity => {
-          let stablecoinPrice = stablecoinPriceCache[totalDepositEntity.pool.stablecoin];
+      // compute total deposit & interest in USD
+      let totalDepositUSD = new BigNumber(0);
+      let totalInterestUSD = new BigNumber(0);
+      Promise.all(
+        user.totalDepositByPool.map(async (totalDepositEntity) => {
+          let stablecoinPrice =
+            stablecoinPriceCache[totalDepositEntity.pool.stablecoin];
           if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(totalDepositEntity.pool.stablecoin);
-            stablecoinPriceCache[totalDepositEntity.pool.stablecoin] = stablecoinPrice;
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(
+              totalDepositEntity.pool.stablecoin
+            );
+            stablecoinPriceCache[totalDepositEntity.pool.stablecoin] =
+              stablecoinPrice;
           }
 
-          const poolInfo = this.contract.getPoolInfoFromAddress(totalDepositEntity.pool.address);
-          const activePool = this.allPoolList.find(pool => pool.name === poolInfo.name);
-          const poolDeposit = new BigNumber(totalDepositEntity.totalActiveDeposit);
-          const poolDepositUSD = new BigNumber(totalDepositEntity.totalActiveDeposit).times(stablecoinPrice);
-          const poolInterestUSD = this.helpers.applyFeeToInterest(new BigNumber(totalDepositEntity.totalInterestEarned).times(stablecoinPrice), poolInfo);
+          const poolInfo = this.contract.getPoolInfoFromAddress(
+            totalDepositEntity.pool.address
+          );
+          const activePool = this.allPoolList.find(
+            (pool) => pool.name === poolInfo.name
+          );
+          const poolDeposit = new BigNumber(totalDepositEntity.totalDeposit);
+          const poolDepositUSD = new BigNumber(
+            totalDepositEntity.totalDeposit
+          ).times(stablecoinPrice);
+          const poolInterestUSD = new BigNumber(
+            totalDepositEntity.totalInterestOwed
+          ).times(stablecoinPrice);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-          activePool.totalUserDeposits = activePool.totalUserDeposits.plus(poolDeposit);
-          activePool.totalUserDepositsUSD = activePool.totalUserDepositsUSD.plus(poolDepositUSD);
-        })).then(() => {
-          this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
-          this.totalInterestUSD = totalInterestUSD;
-        });
-      }
+          activePool.totalUserDepositsToken =
+            activePool.totalUserDepositsToken.plus(poolDeposit);
+          activePool.totalUserDepositsUSD =
+            activePool.totalUserDepositsUSD.plus(poolDepositUSD);
+        })
+      ).then(() => {
+        this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
+        this.totalInterestUSD = totalInterestUSD;
+      });
     }
   }
 
@@ -361,9 +454,8 @@ export class DepositComponent implements OnInit {
           totalDepositUSD: new BigNumber(0),
           oneYearInterestRate: new BigNumber(0),
           mphAPY: new BigNumber(0),
-          tempMPHAPY: new BigNumber(0),
-          totalUserDeposits: new BigNumber(0),
-          totalUserDepositsUSD: new BigNumber(0)
+          totalUserDepositsToken: new BigNumber(0),
+          totalUserDepositsUSD: new BigNumber(0),
         };
         allPoolList.push(dpoolObj);
       }
@@ -373,82 +465,119 @@ export class DepositComponent implements OnInit {
     }
   }
 
-  async getZeroCouponBondPriceUSD(bond: ZeroCouponBondInfo, pool: PoolInfo): Promise<BigNumber> {
+  async getZeroCouponBondPriceUSD(
+    bond: ZeroCouponBondInfo,
+    pool: PoolInfo
+  ): Promise<BigNumber> {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const pair = this.contract.getContract(bond.sushiSwapPair, 'MPHLP', readonlyWeb3);
+    const pair = this.contract.getContract(
+      bond.sushiSwapPair,
+      'MPHLP',
+      readonlyWeb3
+    );
     const reservesObj = await pair.methods.getReserves().call();
     if (+reservesObj._reserve0 === 0 || +reservesObj._reserve1 === 0) {
       // no liquidity, return NaN
       return new BigNumber(NaN);
     }
-    const baseToken = this.contract.getERC20(bond.sushiSwapPairBaseTokenAddress, readonlyWeb3);
-    const baseTokenPrecision = Math.pow(10, +await baseToken.methods.decimals().call());
+    const baseToken = this.contract.getERC20(
+      bond.sushiSwapPairBaseTokenAddress,
+      readonlyWeb3
+    );
+    const baseTokenPrecision = Math.pow(
+      10,
+      +(await baseToken.methods.decimals().call())
+    );
     let baseTokenReserve;
     let bondReserve;
-    if (new BigNumber(bond.sushiSwapPairBaseTokenAddress, 16).lt(new BigNumber(bond.address, 16))) {
+    if (
+      new BigNumber(bond.sushiSwapPairBaseTokenAddress, 16).lt(
+        new BigNumber(bond.address, 16)
+      )
+    ) {
       // base token is token0
-      baseTokenReserve = new BigNumber(reservesObj._reserve0).div(baseTokenPrecision);
-      bondReserve = new BigNumber(reservesObj._reserve1).div(Math.pow(10, pool.stablecoinDecimals));
+      baseTokenReserve = new BigNumber(reservesObj._reserve0).div(
+        baseTokenPrecision
+      );
+      bondReserve = new BigNumber(reservesObj._reserve1).div(
+        Math.pow(10, pool.stablecoinDecimals)
+      );
     } else {
       // base token is token1
-      bondReserve = new BigNumber(reservesObj._reserve0).div(Math.pow(10, pool.stablecoinDecimals));
-      baseTokenReserve = new BigNumber(reservesObj._reserve1).div(baseTokenPrecision);
+      bondReserve = new BigNumber(reservesObj._reserve0).div(
+        Math.pow(10, pool.stablecoinDecimals)
+      );
+      baseTokenReserve = new BigNumber(reservesObj._reserve1).div(
+        baseTokenPrecision
+      );
     }
     const bondPriceInBaseToken = baseTokenReserve.div(bondReserve);
-    const baseTokenPriceInUSD = await this.helpers.getTokenPriceUSD(bond.sushiSwapPairBaseTokenAddress);
+    const baseTokenPriceInUSD = await this.helpers.getTokenPriceUSD(
+      bond.sushiSwapPairBaseTokenAddress
+    );
     return bondPriceInBaseToken.times(baseTokenPriceInUSD);
   }
 
   openDepositModal(poolName?: string) {
-    const modalRef = this.modalService.open(ModalDepositComponent, { windowClass: 'fullscreen' });
+    const modalRef = this.modalService.open(ModalDepositComponent, {
+      windowClass: 'fullscreen',
+    });
     modalRef.componentInstance.defaultPoolName = poolName;
   }
 
-
   openWithdrawModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
-    const modalRef = this.modalService.open(ModalWithdrawComponent, { windowClass: 'fullscreen' });
+    const modalRef = this.modalService.open(ModalWithdrawComponent, {
+      windowClass: 'fullscreen',
+    });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
   }
 
   openRewardsModal(userDeposit: UserDeposit) {
-    const modalRef = this.modalService.open(ModalMphRewardsComponent, { windowClass: 'fullscreen' });
+    const modalRef = this.modalService.open(ModalMphRewardsComponent, {
+      windowClass: 'fullscreen',
+    });
     modalRef.componentInstance.userDeposit = userDeposit;
   }
 
   openTopUpModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
-    const modalRef = this.modalService.open(ModalTopUpComponent, { windowClass: 'fullscreen' });
+    const modalRef = this.modalService.open(ModalTopUpComponent, {
+      windowClass: 'fullscreen',
+    });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
   }
 
   openRollOverModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
-    const modalRef = this.modalService.open(ModalRollOverComponent, { windowClass: 'fullscreen' });
+    const modalRef = this.modalService.open(ModalRollOverComponent, {
+      windowClass: 'fullscreen',
+    });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
   }
-
 }
 
 interface QueryResult {
   user: {
-    totalMPHEarned: number;
-    totalMPHPaidBack: number;
+    address: string;
     pools: {
       id: string;
       address: string;
-      mphDepositorRewardTakeBackMultiplier: number;
       deposits: {
-        nftID: number;
-        fundingID: number;
-        amount: number;
-        maturationTimestamp: number;
-        depositTimestamp: number;
-        interestEarned: number;
-        mintMPHAmount: number;
-        takeBackMPHAmount: number;
-        vest: Vest;
-        depositLength: number;
+        nftID: string;
+        virtualTokenTotalSupply: string;
+        maturationTimestamp: string;
+        depositTimestamp: string;
+        interestRate: string;
+        vest: {
+          owner: string;
+          nftID: string;
+          lastUpdateTimestamp: string;
+          accumulatedAmount: string;
+          withdrawnAmount: string;
+          vestAmountPerStablecoinPerSecond: string;
+        };
+        mintMPHAmount: string;
       }[];
     }[];
     totalDepositByPool: {
@@ -456,17 +585,15 @@ interface QueryResult {
         address: string;
         stablecoin: string;
       };
-      totalActiveDeposit: number;
-      totalHistoricalDeposit: number;
-      totalInterestEarned: number;
+      totalDeposit: string;
+      totalInterestOwed: string;
     }[];
   };
   dpools: {
     id: string;
     address: string;
-    totalActiveDeposit: number;
-    oneYearInterestRate: number;
-    mphDepositorRewardMintMultiplier: number;
-    mphDepositorRewardTakeBackMultiplier: number;
+    totalDeposit: string;
+    oneYearInterestRate: string;
+    poolDepositorRewardMintMultiplier: string;
   }[];
 }

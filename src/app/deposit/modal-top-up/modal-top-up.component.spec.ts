@@ -8,9 +8,8 @@ describe('ModalTopUpComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalTopUpComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalTopUpComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

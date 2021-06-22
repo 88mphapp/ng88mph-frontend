@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Apollo, gql } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
 import { ContractService, PoolInfo } from 'src/app/contract.service';
@@ -11,7 +10,7 @@ import { UserDeposit } from '../types';
 @Component({
   selector: 'app-modal-withdraw',
   templateUrl: './modal-withdraw.component.html',
-  styleUrls: ['./modal-withdraw.component.css']
+  styleUrls: ['./modal-withdraw.component.css'],
 })
 export class ModalWithdrawComponent implements OnInit {
   @Input() userDeposit: UserDeposit;
@@ -19,12 +18,10 @@ export class ModalWithdrawComponent implements OnInit {
 
   withdrawAmount: BigNumber;
   mphRewardAmount: BigNumber;
-  mphTakeBackAmount: BigNumber;
   mphBalance: BigNumber;
   mphPriceUSD: BigNumber;
 
   constructor(
-    private apollo: Apollo,
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
@@ -42,45 +39,41 @@ export class ModalWithdrawComponent implements OnInit {
   }
 
   async loadData() {
-    const queryString = gql`
-      {
-        dpool(id: "${this.poolInfo.address.toLowerCase()}") {
-          id
-          mphDepositorRewardTakeBackMultiplier
-        }
-      }
-    `;
-    this.apollo.query<QueryResult>({
-      query: queryString
-    }).subscribe((x) => {
-      const pool = x.data.dpool;
+    this.mphRewardAmount = this.userDeposit.mintMPHAmount;
 
-      if (pool) {
-        this.mphRewardAmount = this.userDeposit.mintMPHAmount;
-        this.mphTakeBackAmount = this.userDeposit.locked ? this.mphRewardAmount : new BigNumber(pool.mphDepositorRewardTakeBackMultiplier).times(this.mphRewardAmount);
-      }
-    });
-
-    const mphToken = this.contract.getNamedContract('MPHToken', this.wallet.readonlyWeb3());
-    this.mphBalance = new BigNumber(await mphToken.methods.balanceOf(this.wallet.userAddress).call()).div(this.constants.PRECISION);
+    const mphToken = this.contract.getNamedContract(
+      'MPHToken',
+      this.wallet.readonlyWeb3()
+    );
+    this.mphBalance = new BigNumber(
+      await mphToken.methods.balanceOf(this.wallet.userAddress).call()
+    ).div(this.constants.PRECISION);
   }
 
   resetData() {
     this.withdrawAmount = new BigNumber(0);
     this.mphRewardAmount = new BigNumber(0);
-    this.mphTakeBackAmount = new BigNumber(0);
     this.mphBalance = new BigNumber(0);
     this.mphPriceUSD = new BigNumber(0);
   }
 
   withdraw() {
     const pool = this.contract.getPool(this.poolInfo.name);
-    const mphToken = this.contract.getNamedContract('MPHToken');
-    const mphMinter = this.contract.getNamedContractAddress('MPHMinter');
-    const mphAmount = this.helpers.processWeb3Number(this.mphTakeBackAmount.times(this.constants.PRECISION));
-    const func = pool.methods.withdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
+    /*const func = pool.methods.withdraw(
+      this.userDeposit.nftID,
+      this.userDeposit.fundingID
+    );
 
-    this.wallet.sendTxWithToken(func, mphToken, mphMinter, mphAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {
+        this.activeModal.dismiss();
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );*/
   }
 
   earlyWithdraw() {
@@ -99,7 +92,7 @@ export class ModalWithdrawComponent implements OnInit {
     // const func = pool.methods.withdraw(this.userDeposit.nftID, virtualTokensToWithdraw, true);
     // console.log(this.userDeposit);
 
-    console.log("You still need to implement this!");
+    console.log('You still need to implement this!');
   }
 
   setWithdrawAmount(amount: string) {
@@ -113,16 +106,9 @@ export class ModalWithdrawComponent implements OnInit {
   }
 
   //getVirtualTokenAmount(): BigNumber {
-    // const withdrawRatio = this.withdrawAmount.div(this.userDeposit.amountToken);
-    // const virtualTokenTotalSupply = this.userDeposit.virtualTokenTotalSupply;
-    // const virtualTokensToWithdraw = virtualTokenTotalSupply.times(withdrawRatio);
-    // return virtualTokensToWithdraw;
+  // const withdrawRatio = this.withdrawAmount.div(this.userDeposit.amountToken);
+  // const virtualTokenTotalSupply = this.userDeposit.virtualTokenTotalSupply;
+  // const virtualTokensToWithdraw = virtualTokenTotalSupply.times(withdrawRatio);
+  // return virtualTokensToWithdraw;
   //}
-}
-
-interface QueryResult {
-  dpool: {
-    id: string;
-    mphDepositorRewardTakeBackMultiplier: number;
-  };
 }

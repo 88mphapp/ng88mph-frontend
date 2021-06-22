@@ -1,49 +1,63 @@
 <div class="modal-dialog modal-dialog-vertical" role="document">
-    <!--modal content Yield token purchase -->
-    <div class="modal-content">
-      <div class="modal-body pt-0 py-lg-0">
-        <div class="row no-gutters align-items-center">
-          <div class="col-auto">
-            <a class="btn btn-link border-0 text-white pl-0" data-dismiss="modal"
-              aria-label="Close" (click)="activeModal.dismiss()">
-              <i class="fe fe-arrow-left h2 mb-0"></i>
+  <!--modal content Yield token purchase -->
+  <div class="modal-content">
+    <div class="modal-body pt-0 py-lg-0">
+      <div class="row no-gutters align-items-center">
+        <div class="col-auto">
+          <a
+            class="btn btn-link border-0 text-white pl-0"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
+            <i class="fe fe-arrow-left h2 mb-0"></i>
           </a>
-          </div>
-          <div class="col">
-            <h1 class="mb-0 h3">Buy yield tokens</h1>
-          </div>
         </div>
-        <div class="row justify-content-center">
-          <div class="col-6 pt-0">
-            <div class="card mb-6">
-              <div class="card-body">
-                <div class="row justify-content-center mb-4">
-                  <div class="col">
-                    <h6 class="header-pretitle mb-2">
-                      Yield tokens available
-                    </h6>
-                    <h4 class="mb-1 glowing display-4">0.00 TKN</h4>
-                    <div class="text-muted small d-block">$0.00</div>
-                  </div>
+        <div class="col">
+          <h1 class="mb-0 h3">Buy yield tokens</h1>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-6 pt-0">
+          <div class="card mb-6">
+            <div class="card-body">
+              <div class="row justify-content-center mb-4">
+                <div class="col">
+                  <h6 class="header-pretitle mb-2">Yield tokens available</h6>
+                  <h4 class="mb-1 glowing display-4">0.00 TKN</h4>
+                  <div class="text-muted small d-block">$0.00</div>
                 </div>
-                <div class="form-group mb-4">
-                  <label>Amount to buy</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control form-control-lg" placeholder="0.00" aria-label=""
-                      aria-describedby="">
-                    <div class="input-group-append">
-                      <button class="btn btn-lg border-gradient" type="button">Max</button>
-                    </div>
-                  </div>
-                  <small class="form-text text-muted">0.00 TKN available in your balance</small>
-                </div>
-                <button class="btn btn-lg btn-bg-gradient btn-block" type="button">
-                  Buy
-                </button>
               </div>
+              <div class="form-group mb-4">
+                <label>Amount to buy</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control form-control-lg"
+                    placeholder="0.00"
+                    aria-label=""
+                    aria-describedby=""
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-lg border-gradient" type="button">
+                      Max
+                    </button>
+                  </div>
+                </div>
+                <small class="form-text text-muted"
+                  >0.00 TKN available in your balance</small
+                >
+              </div>
+              <button
+                class="btn btn-lg btn-bg-gradient btn-block"
+                type="button"
+              >
+                Buy
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </div> 
+    </div>
   </div>
+</div>

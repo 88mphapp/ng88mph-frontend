@@ -8,9 +8,8 @@ describe('ModalWithdrawComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalWithdrawComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalWithdrawComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
