@@ -2,7 +2,7 @@
   <div class="row d-flex align-items-center mb-5">
     <div class="col-12 mb-4 mb-lg-0 col-lg-8">
       <h1 class="title-bg-gradient display-2">
-        Earn up to 8% fixed APY on your crypto.
+        Earn up to {{ maxAPY.toFormat(2) }}% fixed APY on your crypto.
       </h1>
       <p class="text-white font-weight-bold mb-5 lead">
         Deposit crypto or stablecoins to earn a fixed interest rate & MPH
@@ -18,14 +18,16 @@
           <h6 class="text-uppercase text-muted">Total current deposits</h6>
 
           <!-- Heading -->
-          <h2 class="display-4 mb-2 glowing">$88.8m</h2>
+          <h2 class="display-4 mb-2 glowing">
+            ${{ totalDepositUSD.toFormat(3) }}m
+          </h2>
         </div>
         <div class="col-6 col-lg-auto">
           <!-- Title -->
           <h6 class="text-uppercase text-muted">Total interest earned</h6>
 
           <!-- Heading -->
-          <h2 class="display-4 mb-2 glowing">$4.8m</h2>
+          <h2 class="display-4 mb-2 glowing">$4.800m</h2>
         </div>
         <div class="col-6 col-lg-auto">
           <!-- Title -->
@@ -34,7 +36,7 @@
           </h6>
 
           <!-- Heading -->
-          <h2 class="display-4 mb-2 glowing">$1.8m</h2>
+          <h2 class="display-4 mb-2 glowing">$1.800m</h2>
         </div>
       </div>
     </div>
@@ -52,9 +54,11 @@
                   type="tel"
                   class="form-control form-control-lg"
                   aria-label="Text input with dropdown button"
+                  [value]="initialDeposit"
+                  (input)="setDepositAmount($event.target.value)"
                 />
                 <div class="input-group-append">
-                  <button
+                  <!-- <button
                     class="btn border-gradient dropdown-toggle"
                     type="button"
                     data-toggle="dropdown"
@@ -66,7 +70,19 @@
                   <div class="dropdown-menu">
                     <a class="dropdown-item" href="#">DAI (Aave)</a>
                     <a class="dropdown-item" href="#">DAI (Compound)</a>
-                  </div>
+                  </div> -->
+                  <select
+                    class="btn border-gradient"
+                    (change)="selectPool($event.target.value)"
+                  >
+                    <option
+                      value="{{ pool.stablecoinSymbol }}"
+                      *ngFor="let pool of allPoolList"
+                      [selected]="pool.name === selectedPool.name"
+                    >
+                      {{ pool.stablecoinSymbol }} ({{ pool.protocol }})
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -81,13 +97,15 @@
                     data-mask-reverse="true"
                     id="lock-period"
                     class="form-control form-control-lg text-right pr-3"
+                    [value]="termInDays"
+                    (input)="setTermLength($event.target.value)"
                   />
                 </div>
               </div>
               <div class="col">
                 <div class="form-group mb-2">
                   <h4 class="mb-3 font-weight-normal mt-1">Fixed APY</h4>
-                  <h2 class="mb-0 glowing">0.00%</h2>
+                  <h2 class="mb-0 glowing">{{ apy.toFormat(2) }}%</h2>
                 </div>
               </div>
             </div>
@@ -99,8 +117,13 @@
                       Interest earned at maturity
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
-                      <h4 class="mb-1 glowing">$0.00</h4>
-                      <h5 class="text-muted mb-0">0.00 tkn</h5>
+                      <h4 class="mb-1 glowing">
+                        ${{ interestEarnedUSD.toFormat(2) }}
+                      </h4>
+                      <h5 class="text-muted mb-0">
+                        {{ interestEarnedToken.toFormat(2) }}
+                        {{ selectedPool.stablecoinSymbol }}
+                      </h5>
                     </td>
                   </tr>
                   <tr>
@@ -108,8 +131,12 @@
                       MPH rewards
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
-                      <h4 class="mb-1 glowing">+$0.00</h4>
-                      <h5 class="text-muted mb-0">+0.00% APR</h5>
+                      <h4 class="mb-1 glowing">
+                        +${{ mphRewardUSD.toFormat(2) }}
+                      </h4>
+                      <h5 class="text-muted mb-0">
+                        +{{ mphRewardAPY.toFormat(2) }}% APY
+                      </h5>
                     </td>
                   </tr>
                   <tr>
@@ -117,7 +144,9 @@
                       Total earned
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
-                      <h4 class="mb-0 glowing">$0.00</h4>
+                      <h4 class="mb-0 glowing">
+                        ${{ totalEarnedUSD.toFormat(2) }}
+                      </h4>
                     </td>
                   </tr>
                   <tr>
@@ -125,7 +154,9 @@
                       Total compounded on 10y
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
-                      <h4 class="mb-0 glowing">$0.00</h4>
+                      <h4 class="mb-0 glowing">
+                        ${{ tenYearCompounded.toFormat(2) }}
+                      </h4>
                     </td>
                   </tr>
                 </tbody>
