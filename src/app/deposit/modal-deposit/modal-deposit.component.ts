@@ -34,8 +34,6 @@ export class ModalDepositComponent implements OnInit {
   apy: BigNumber;
   mphRewardAmount: BigNumber;
   minDepositAmount: BigNumber;
-  maxDepositAmount: BigNumber;
-  minDepositPeriod: number;
   maxDepositPeriod: number;
   mphPriceUSD: BigNumber;
   mphAPY: BigNumber;
@@ -105,9 +103,7 @@ export class ModalDepositComponent implements OnInit {
     this.apy = new BigNumber(0);
     this.mphRewardAmount = new BigNumber(0);
     this.minDepositAmount = new BigNumber(0);
-    this.maxDepositAmount = new BigNumber(0);
-    this.minDepositPeriod = 0;
-    this.maxDepositPeriod = 1e4;
+    this.maxDepositPeriod = 0;
     this.mphPriceUSD = new BigNumber(0);
     this.mphAPY = new BigNumber(0);
     this.tempMPHAPY = new BigNumber(0);
@@ -134,10 +130,8 @@ export class ModalDepositComponent implements OnInit {
         dpool(id: "${this.selectedPoolInfo.address.toLowerCase()}") {
           id
           MinDepositAmount
-          MaxDepositAmount
-          MinDepositPeriod
           MaxDepositPeriod
-          mphDepositorRewardMintMultiplier
+          poolDepositorRewardMintMultiplier
         }
       }
     `;
@@ -147,15 +141,11 @@ export class ModalDepositComponent implements OnInit {
     ).then((data: QueryResult) => {
       const pool = data.dpool;
       this.minDepositAmount = new BigNumber(pool.MinDepositAmount);
-      this.maxDepositAmount = new BigNumber(pool.MaxDepositAmount);
-      this.minDepositPeriod = Math.ceil(
-        pool.MinDepositPeriod / this.constants.DAY_IN_SEC
-      );
       this.maxDepositPeriod = Math.floor(
         pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
       );
       this.mphDepositorRewardMintMultiplier = new BigNumber(
-        pool.mphDepositorRewardMintMultiplier
+        pool.poolDepositorRewardMintMultiplier
       );
     });
 
@@ -223,10 +213,7 @@ export class ModalDepositComponent implements OnInit {
   }
 
   setMaxDepositAmount(): void {
-    this.depositAmount = BigNumber.min(
-      this.depositTokenBalance,
-      this.maxDepositAmount
-    );
+    this.depositAmount = this.depositTokenBalance;
     this.updateAPY();
   }
 
@@ -717,10 +704,8 @@ export class ModalDepositComponent implements OnInit {
     return (
       this.wallet.connected &&
       this.depositAmount.gte(this.minDepositAmount) &&
-      this.depositAmount.lte(this.maxDepositAmount) &&
-      this.depositTimeInDays.gte(this.minDepositPeriod) &&
-      this.depositTimeInDays.lte(this.maxDepositPeriod)
-      //&& this.depositTokenBalance.gte(this.depositAmount)
+      this.depositTimeInDays.lte(this.maxDepositPeriod) &&
+      this.depositTokenBalance.gte(this.depositAmount)
     );
   }
 }
@@ -729,9 +714,7 @@ interface QueryResult {
   dpool: {
     id: string;
     MinDepositAmount: number;
-    MaxDepositAmount: number;
-    MinDepositPeriod: number;
     MaxDepositPeriod: number;
-    mphDepositorRewardMintMultiplier: number;
+    poolDepositorRewardMintMultiplier: number;
   };
 }
