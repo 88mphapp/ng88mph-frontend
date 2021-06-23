@@ -11,6 +11,7 @@ export class Web3Enabled {
   disconnectedEvent: EventEmitter<null>;
   chainChangedEvent: EventEmitter<number>;
   accountChangedEvent: EventEmitter<string>;
+  txConfirmedEvent: EventEmitter<null>;
 
   assistInstance: any;
   notifyInstance: any;
@@ -29,6 +30,7 @@ export class Web3Enabled {
     this.disconnectedEvent = new EventEmitter<null>();
     this.chainChangedEvent = new EventEmitter<number>();
     this.accountChangedEvent = new EventEmitter<string>();
+    this.txConfirmedEvent = new EventEmitter<null>();
   }
 
   async connect(onConnected, onError, isStartupMode: boolean) {
