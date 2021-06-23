@@ -126,7 +126,7 @@ export class BondsComponent implements OnInit {
                 address
                 oracleInterestRate
                 moneyMarketIncomeIndex
-                mphFunderRewardMultiplier
+                poolFunderRewardMultiplier
               }
               fromDepositID
     					toDepositID
@@ -162,7 +162,7 @@ export class BondsComponent implements OnInit {
           unfundedDepositAmount
           oneYearInterestRate
           oracleInterestRate
-          mphFunderRewardMultiplier
+          poolFunderRewardMultiplier
           latestDeposit: deposits(orderBy: nftID, orderDirection: desc, first: 1) {
             nftID
           }
@@ -218,8 +218,8 @@ export class BondsComponent implements OnInit {
                 moneyMarketIncomeIndex: new BigNumber(
                   funding.pool.moneyMarketIncomeIndex
                 ),
-                mphFunderRewardMultiplier: new BigNumber(
-                  funding.pool.mphFunderRewardMultiplier
+                poolFunderRewardMultiplier: new BigNumber(
+                  funding.pool.poolFunderRewardMultiplier
                 ),
               },
               nftID: funding.nftID,
@@ -318,7 +318,7 @@ export class BondsComponent implements OnInit {
 
           // get MPH reward amount
           const mphRewardPerTokenPerSecond = new BigNumber(
-            pool.mphFunderRewardMultiplier
+            pool.poolFunderRewardMultiplier
           );
 
           const poolContract = this.contract.getPool(poolInfo.name);
@@ -669,7 +669,7 @@ interface QueryResult {
           address: string;
           oracleInterestRate: number;
           moneyMarketIncomeIndex: number;
-          mphFunderRewardMultiplier: number;
+          poolFunderRewardMultiplier: number;
         };
         nftID: number;
         recordedFundedDepositAmount: number;
@@ -699,7 +699,7 @@ interface QueryResult {
     unfundedDepositAmount: number;
     oneYearInterestRate: number;
     oracleInterestRate: number;
-    mphFunderRewardMultiplier: number;
+    poolFunderRewardMultiplier: number;
     latestDeposit: {
       nftID: number;
     }[];

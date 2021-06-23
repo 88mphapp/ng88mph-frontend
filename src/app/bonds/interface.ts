@@ -12,7 +12,7 @@ export interface Funding {
     address: string;
     oracleInterestRate: BigNumber;
     moneyMarketIncomeIndex: BigNumber;
-    mphFunderRewardMultiplier: BigNumber;
+    poolFunderRewardMultiplier: BigNumber;
   };
   fromDepositID: number;
   toDepositID: number;

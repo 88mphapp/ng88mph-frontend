@@ -39,7 +39,7 @@ export class ModalWithdrawComponent implements OnInit {
   }
 
   async loadData() {
-    this.mphRewardAmount = this.userDeposit.mintMPHAmount;
+    this.mphRewardAmount = this.userDeposit.realMPHReward;
 
     const mphToken = this.contract.getNamedContract(
       'MPHToken',
