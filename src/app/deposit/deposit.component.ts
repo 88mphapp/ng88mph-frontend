@@ -18,47 +18,6 @@ import { HelpersService } from '../helpers.service';
 import { Timer } from '../timer';
 import { ConstantsService } from '../constants.service';
 
-const mockUser = {
-  totalMPHEarned: 1e3,
-  pools: [
-    {
-      address: '0xb5EE8910A93F8A450E97BE0436F36B9458106682',
-      deposits: [
-        {
-          nftID: 1,
-          amount: 1e3,
-          maturationTimestamp: 1609459200,
-          depositTimestamp: 1601510400,
-          interestEarned: 1e2,
-          mintMPHAmount: 1e2,
-        },
-      ],
-    },
-    {
-      address: '0xEB2F0A3045db12366A9f6A8e922D725D86a117EB',
-      deposits: [
-        {
-          nftID: 1,
-          amount: 1e3,
-          maturationTimestamp: 1601510400,
-          depositTimestamp: 1601510400,
-          interestEarned: 1e2,
-          mintMPHAmount: 1e2,
-        },
-      ],
-    },
-  ],
-  totalDeposits: [
-    {
-      pool: {
-        stablecoin: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      },
-      totalActiveDeposit: 1e6,
-      totalInterestEarned: 1e4,
-    },
-  ],
-};
-
 @Component({
   selector: 'app-deposit',
   templateUrl: './deposit.component.html',
@@ -195,8 +154,8 @@ export class DepositComponent implements OnInit {
                 accumulatedAmount
                 withdrawnAmount
                 vestAmountPerStablecoinPerSecond
+                totalExpectedMPHAmount
               }
-              mintMPHAmount
             }
           }
           totalDepositByPool {
@@ -319,11 +278,18 @@ export class DepositComponent implements OnInit {
               interestEarnedToken.times(stablecoinPrice);
 
             // compute MPH APY
-            let realMPHReward = new BigNumber(deposit.mintMPHAmount);
-            if (deposit.vest && deposit.vest.owner !== user.address) {
-              // vest NFT transferred to another account
-              // reward is zero
-              realMPHReward = new BigNumber(0);
+            let realMPHReward;
+            if (deposit.vest) {
+              if (deposit.vest.owner !== user.address) {
+                // vest NFT transferred to another account
+                // reward is zero
+                realMPHReward = new BigNumber(0);
+              } else {
+                // reward is given to deposit owner
+                realMPHReward = new BigNumber(
+                  deposit.vest.totalExpectedMPHAmount
+                );
+              }
             }
             const mphAPY = realMPHReward
               .times(this.mphPriceUSD)
@@ -362,7 +328,6 @@ export class DepositComponent implements OnInit {
               countdownTimer: new Timer(+deposit.maturationTimestamp, 'down'),
               interestEarnedToken,
               interestEarnedUSD,
-              mintMPHAmount: new BigNumber(deposit.mintMPHAmount),
               realMPHReward: realMPHReward,
               mphAPY: mphAPY,
               virtualTokenTotalSupply: new BigNumber(100),
@@ -576,8 +541,8 @@ interface QueryResult {
           accumulatedAmount: string;
           withdrawnAmount: string;
           vestAmountPerStablecoinPerSecond: string;
+          totalExpectedMPHAmount: string;
         };
-        mintMPHAmount: string;
       }[];
     }[];
     totalDepositByPool: {
