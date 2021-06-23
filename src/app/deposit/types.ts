@@ -31,7 +31,6 @@ export interface UserDeposit {
   countdownTimer: Timer;
   interestEarnedToken: BigNumber;
   interestEarnedUSD: BigNumber;
-  mintMPHAmount: BigNumber;
   realMPHReward: BigNumber;
   mphAPY: BigNumber;
   virtualTokenTotalSupply: BigNumber;

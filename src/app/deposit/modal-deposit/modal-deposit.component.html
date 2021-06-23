@@ -138,8 +138,6 @@
                               {{ selectedDepositToken }}
                               available | Min:
                               {{ minDepositAmount.toFormat() }}
-                              {{ selectedPoolInfo.stablecoinSymbol }} <> Max:
-                              {{ maxDepositAmount.toFormat() }}
                               {{ selectedPoolInfo.stablecoinSymbol }} per
                               deposit</small
                             >
@@ -198,7 +196,6 @@
                                   aria-label=""
                                   aria-describedby=""
                                   [value]="depositTimeInDays"
-                                  min="7"
                                   id="lock-period"
                                   data-mask="#,##0"
                                   data-mask-reverse="true"
@@ -215,7 +212,7 @@
                                 </div>
                               </div>
                               <small class="form-text text-muted my-2">
-                                Min: {{ minDepositPeriod }}d / Max:
+                                Max:
                                 {{ maxDepositPeriod }}d
                               </small>
                             </div>

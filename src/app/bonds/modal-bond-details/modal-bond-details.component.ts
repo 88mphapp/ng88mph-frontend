@@ -56,7 +56,6 @@ export class ModalBondDetailsComponent implements OnInit {
           maturationTimestamp
           depositTimestamp
           interestEarned
-          mintMPHAmount
           initialMoneyMarketIncomeIndex
           fundingInterestPaid
           fundingRefundAmount
@@ -83,7 +82,7 @@ export class ModalBondDetailsComponent implements OnInit {
           ? deposit.maturationTimestamp - this.funding.creationTimestamp
           : 0;
       const funderMPHReward = new BigNumber(deposit.amount)
-        .times(this.funding.pool.mphFunderRewardMultiplier)
+        .times(this.funding.pool.poolFunderRewardMultiplier)
         .times(mphRewardTimeComponent);
       const depositObj: Deposit = {
         ...deposit,
@@ -158,7 +157,6 @@ interface Deposit {
   maturationTimestamp: number;
   depositTimestamp: number;
   interestEarned: BigNumber;
-  mintMPHAmount: BigNumber;
   initialMoneyMarketIncomeIndex: BigNumber;
   fundingInterestPaid: BigNumber;
   fundingRefundAmount: BigNumber;
