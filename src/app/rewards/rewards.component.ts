@@ -47,6 +47,7 @@ export class RewardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData(this.wallet.connected || this.wallet.watching, true);
+
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, false);
       this.loadData(true, false);
@@ -76,7 +77,7 @@ export class RewardsComponent implements OnInit {
       address = this.wallet.watchedAddress;
     }
 
-    if (loadUser) {
+    if (loadUser && address) {
       mph.methods
         .balanceOf(address)
         .call()
@@ -105,8 +106,8 @@ export class RewardsComponent implements OnInit {
       }
 
       // load MPH and xMPH data
-      // @dev will throw an error until xMPH abi and address have been updated
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
+
       xmph.methods
         .getPricePerFullShare()
         .call()
@@ -114,8 +115,8 @@ export class RewardsComponent implements OnInit {
           this.pricePerFullShare = new BigNumber(pricePerFullShare).div(
             this.constants.PRECISION
           );
+          this.xMPHPriceUSD = this.pricePerFullShare.times(this.mphPriceUSD);
         });
-      this.xMPHPriceUSD = this.pricePerFullShare.times(this.mphPriceUSD);
 
       xmph.methods
         .totalSupply()
@@ -127,7 +128,6 @@ export class RewardsComponent implements OnInit {
         });
 
       // load distribution end date
-      // @dev will throw an error until xMPH abi and address have been updated
       xmph.methods
         .currentUnlockEndTimestamp()
         .call()
@@ -144,7 +144,6 @@ export class RewardsComponent implements OnInit {
         });
 
       // load xMPH rewards data
-      // @dev will throw an error until xMPH abi and address have been updated
       const rewardsEndDate = new BigNumber(
         await xmph.methods.currentUnlockEndTimestamp().call()
       );
@@ -224,7 +223,6 @@ export class RewardsComponent implements OnInit {
     });
 
     // compute stkAAVE rewards
-    // @dev confirm poolInfo.address is correct vs poolInfo.moneyMarket once v3 is live
     // @notice 1 AAVE = 1 stkAAVE, so price will be the same
     const aavePools = allPools.filter(
       (poolInfo) => poolInfo.protocol === 'Aave'
@@ -257,7 +255,7 @@ export class RewardsComponent implements OnInit {
             .call()
         ).div(this.constants.PRECISION);
         const rewardClaimed = new BigNumber(
-          await stkaaveToken.methods.balanceOf(poolInfo.address).call()
+          await stkaaveToken.methods.balanceOf(poolInfo.moneyMarket).call()
         ).div(this.constants.PRECISION);
         stkaaveRewardsToken = stkaaveRewardsToken
           .plus(rewardUnclaimed)
@@ -376,10 +374,6 @@ export class RewardsComponent implements OnInit {
     }
   }
 
-  // @dev update assets/abis/xMPH.json to correct ABI for xMPH
-  // @dev update assets/json/contracts.json to correct address for xMPH
-  // @dev update constants.service.ts to correct address for xMPH
-  // @dev needs testing once xMPH contract has been deployed on mainnet
   stake() {
     const mph = this.contract.getNamedContract('MPHToken');
     const xmph = this.contract.getNamedContract('xMPH');
