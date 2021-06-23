@@ -63,6 +63,10 @@ export class RewardsComponent implements OnInit {
       this.resetData(true, false);
       this.loadData(true, false);
     });
+    this.wallet.txConfirmedEvent.subscribe(() => {
+      this.resetData(true, true);
+      this.loadData(true, true);
+    });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
@@ -388,7 +392,9 @@ export class RewardsComponent implements OnInit {
       xmph.options.address,
       stakeAmount,
       () => {},
-      () => {},
+      () => {
+        this.wallet.txConfirmedEvent.emit();
+      },
       (error) => {
         this.wallet.displayGenericError(error);
       }

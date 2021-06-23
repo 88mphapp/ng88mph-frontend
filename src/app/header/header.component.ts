@@ -55,6 +55,13 @@ export class HeaderComponent implements OnInit {
         this.loadData(true, false);
       });
     });
+
+    this.wallet.txConfirmedEvent.subscribe(() => {
+      this.zone.run(() => {
+        this.resetData(true, false);
+        this.loadData(true, false);
+      });
+    });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
