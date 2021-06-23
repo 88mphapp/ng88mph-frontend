@@ -113,6 +113,23 @@ export class ConstantsService {
   WETH_ADDR = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
   ZERO_ADDR = '0x0000000000000000000000000000000000000000';
 
+  DAI = {
+    [this.CHAIN_ID.MAINNET]: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    [this.CHAIN_ID.RINKEBY]: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
+  };
+  USDC = {
+    [this.CHAIN_ID.MAINNET]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  SUSD = {
+    [this.CHAIN_ID.MAINNET]: '0x57ab1ec28d129707052df4df418d58a2d46d5f51',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  UNI = {
+    [this.CHAIN_ID.MAINNET]: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+
   // LP TOKENS //
   SUSHI_LP = '0xb2c29e311916a346304f83aa44527092d5bd4f0f';
   BANCOR_MPHBNT_POOL = '0xabf26410b1cff45641af087ee939e52e328cee46';

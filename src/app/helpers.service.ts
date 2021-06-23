@@ -51,6 +51,34 @@ export class HelpersService {
     ) {
       // CRV:RENWSBTC
       address = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+    } else if (
+      // DAI
+      address.toLowerCase() ===
+      this.constants.DAI[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
+    ) {
+      address =
+        this.constants.DAI[this.constants.CHAIN_ID.MAINNET].toLowerCase();
+    } else if (
+      // USDC
+      address.toLowerCase() ===
+      this.constants.USDC[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
+    ) {
+      address =
+        this.constants.USDC[this.constants.CHAIN_ID.MAINNET].toLowerCase();
+    } else if (
+      // SUSD
+      address.toLowerCase() ===
+      this.constants.SUSD[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
+    ) {
+      address =
+        this.constants.SUSD[this.constants.CHAIN_ID.MAINNET].toLowerCase();
+    } else if (
+      // UNI
+      address.toLowerCase() ===
+      this.constants.UNI[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
+    ) {
+      address =
+        this.constants.UNI[this.constants.CHAIN_ID.MAINNET].toLowerCase();
     }
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
