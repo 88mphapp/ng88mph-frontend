@@ -4,6 +4,7 @@ import { request, gql } from 'graphql-request';
 import { TimeSeriesService } from 'src/app/timeseries.service';
 import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app//helpers.service';
+import { WalletService } from 'src/app//wallet.service';
 import { Chart } from 'chart.js';
 
 @Component({
@@ -20,7 +21,7 @@ export class MphLiquidityComponent implements OnInit {
   timestamps: number[] = [];
   readable: string[] = [];
   blocks: number[] = [];
-  uniswap: number[] = [];
+  uniswap_v2: number[] = [];
   sushiswap: number[] = [];
   bancor: number[] = [];
 
@@ -34,6 +35,7 @@ export class MphLiquidityComponent implements OnInit {
   constructor(
     public helpers: HelpersService,
     public constants: ConstantsService,
+    public wallet: WalletService,
     public timeseries: TimeSeriesService
   ) {}
 
@@ -73,8 +75,8 @@ export class MphLiquidityComponent implements OnInit {
     this.barChartLegend = false;
     this.barChartData = [
       {
-        data: this.uniswap,
-        label: 'Uniswap',
+        data: this.uniswap_v2,
+        label: 'Uniswap V2',
         backgroundColor: 'rgba(221, 107, 229, 0.3)',
         borderColor: 'rgba(221, 107, 229, 1)',
         hoverBackgroundColor: 'rgba(221, 107, 229, 1)',
@@ -120,17 +122,17 @@ export class MphLiquidityComponent implements OnInit {
     this.readable = readable;
 
     // load data
-    this.loadUniswap();
+    this.loadUniswapV2();
     this.loadSushiswap();
     this.loadBancor();
   }
 
-  async loadUniswap() {
+  async loadUniswapV2() {
     // buld the query string
-    let queryString = `query Uniswap {`;
+    let queryString = `query Uniswap_V2 {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pair(
-        id: "0x4d96369002fc5b9687ee924d458a7e5baa5df34e",
+        id: "${this.constants.UNISWAP_V2_LP[this.wallet.networkID]}",
         block: {
           number: ${this.blocks[i]}
         }
@@ -143,10 +145,9 @@ export class MphLiquidityComponent implements OnInit {
       ${queryString}
     `;
 
-    request(
-      this.constants.GRAPHQL_ENDPOINT[this.constants.CHAIN_ID.MAINNET],
-      query
-    ).then((data: QueryResult) => this.handleUniswapData(data));
+    request(this.constants.UNISWAP_V2_GRAPHQL_ENDPOINT, query).then(
+      (data: QueryResult) => this.handleUniswapV2Data(data)
+    );
   }
 
   async loadSushiswap() {
@@ -154,7 +155,7 @@ export class MphLiquidityComponent implements OnInit {
     let queryString = `query Uniswap {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pair(
-        id: "0xb2c29e311916a346304f83aa44527092d5bd4f0f",
+        id: "${this.constants.SUSHISWAP_LP[this.wallet.networkID]}",
         block: {
           number: ${this.blocks[i]}
         }
@@ -167,22 +168,23 @@ export class MphLiquidityComponent implements OnInit {
       ${queryString}
     `;
 
-    request(
-      this.constants.GRAPHQL_ENDPOINT[this.constants.CHAIN_ID.MAINNET],
-      query
-    ).then((data: QueryResult) => this.handleSushiswapData(data));
+    request(this.constants.SUSHISWAP_GRAPHQL_ENDPOINT, query).then(
+      (data: QueryResult) => this.handleSushiswapData(data)
+    );
   }
 
   async loadBancor() {
     // waiting on Bancor to implement historical data queries to their API
   }
 
-  handleUniswapData(data: QueryResult): void {
+  handleUniswapV2Data(data: QueryResult): void {
     for (let key in data) {
       if (data[key] !== null) {
-        this.uniswap.push(parseInt(data[key].reserveUSD));
+        this.uniswap_v2[parseInt(key.substring(1))] = parseInt(
+          data[key].reserveUSD
+        );
       } else {
-        this.uniswap.push(0);
+        this.uniswap_v2[parseInt(key.substring(1))] = 0;
       }
     }
   }
@@ -190,9 +192,11 @@ export class MphLiquidityComponent implements OnInit {
   handleSushiswapData(data: QueryResult): void {
     for (let key in data) {
       if (data[key] !== null) {
-        this.sushiswap.push(parseInt(data[key].reserveUSD));
+        this.sushiswap[parseInt(key.substring(1))] = parseInt(
+          data[key].reserveUSD
+        );
       } else {
-        this.sushiswap.push(0);
+        this.sushiswap[parseInt(key.substring(1))] = 0;
       }
     }
   }

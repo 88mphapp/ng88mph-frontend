@@ -44,11 +44,12 @@ export class ConstantsService {
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
-    [this.CHAIN_ID.RINKEBY]:
-      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks', // TODO: update to rinkeby endpoint
+    [this.CHAIN_ID.RINKEBY]: '',
   };
   UNISWAP_V2_GRAPHQL_ENDPOINT =
     'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
+  UNISWAP_V3_GRAPHQL_ENDPOINT =
+    'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3';
   SUSHISWAP_GRAPHQL_ENDPOINT =
     'https://api.thegraph.com/subgraphs/name/sushiswap/exchange';
 
@@ -81,10 +82,21 @@ export class ConstantsService {
   SUBGRAPH_SYNC_WARNING_THRESHOLD = 20; // if falls behind by 20 blocks, display error banner
 
   // 88MPH CONTRACTS //
-  GOV_TREASURY = '0x56f34826Cc63151f74FA8f701E4f73C5EAae52AD';
-  DEV_WALLET = '0xfecBad5D60725EB6fd10f8936e02fa203fd27E4b';
   DUMPER = '0x5B3C81C86d17786255904c316bFCB38A46146ef8';
-  MPH_MERKLE_DISTRIBUTOR = '0x8c5ddBB0fd86B6480D81A1a5872a63812099C043'; // the MPH V2 distributor
+
+  GOV_TREASURY = {
+    [this.CHAIN_ID.MAINNET]: '0x56f34826Cc63151f74FA8f701E4f73C5EAae52AD',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  DEV_WALLET = {
+    [this.CHAIN_ID.MAINNET]: '0xfecBad5D60725EB6fd10f8936e02fa203fd27E4b',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  MERKLE_DISTRIBUTOR = {
+    [this.CHAIN_ID.MAINNET]: '0x8c5ddBB0fd86B6480D81A1a5872a63812099C043',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+
   MPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
     [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
@@ -130,6 +142,23 @@ export class ConstantsService {
   };
 
   // LP TOKENS //
+  UNISWAP_V2_LP = {
+    [this.CHAIN_ID.MAINNET]: '0x4d96369002fc5b9687ee924d458a7e5baa5df34e',
+    [this.CHAIN_ID.RINKEBY]: '0x52768abae4e3f4a714aee3d0f85b4eba6360fda3',
+  };
+  UNISWAP_V3_LP = {
+    [this.CHAIN_ID.MAINNET]: '0xda7dd9ad1b2af1e50c73a0cc5d23ec5397478763',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  SUSHISWAP_LP = {
+    [this.CHAIN_ID.MAINNET]: '0xb2c29e311916a346304f83aa44527092d5bd4f0f',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  BANCOR_LP = {
+    [this.CHAIN_ID.MAINNET]: '0xabf26410b1cff45641af087ee939e52e328cee46',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+
   SUSHI_LP = '0xb2c29e311916a346304f83aa44527092d5bd4f0f';
   BANCOR_MPHBNT_POOL = '0xabf26410b1cff45641af087ee939e52e328cee46';
 }
