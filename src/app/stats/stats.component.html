@@ -95,9 +95,12 @@
         </div>
       </div>
       <!-- Start Charts -->
-      <div class="card-deck my-5 justify-content-around">
+      <div
+        class="card-deck my-5 justify-content-around"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+      >
         <app-mph-liquidity class="w-50"></app-mph-liquidity>
-        <app-mph-liquidity class="w-50"></app-mph-liquidity>
+        <!-- <app-mph-liquidity class="w-50"></app-mph-liquidity> -->
       </div>
       <!-- End Charts -->
     </div>
