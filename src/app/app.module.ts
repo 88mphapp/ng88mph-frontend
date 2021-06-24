@@ -26,6 +26,7 @@ import { ModalTopUpComponent } from './deposit/modal-top-up/modal-top-up.compone
 import { ModalRollOverComponent } from './deposit/modal-roll-over/modal-roll-over.component';
 import { ChartsModule } from 'ng2-charts';
 import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liquidity.component';
+import { ModalBuyYieldTokenComponent } from './bonds/modal-buy-yield-token/modal-buy-yield-token.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liqu
     ModalTopUpComponent,
     ModalRollOverComponent,
     MphLiquidityComponent,
+    ModalBuyYieldTokenComponent,
   ],
   imports: [
     BrowserModule,
