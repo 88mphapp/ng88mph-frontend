@@ -65,8 +65,11 @@ export class TimeSeriesService {
       this.constants.BLOCKS_GRAPHQL_ENDPOINT[this.wallet.networkID],
       blocksQuery
     ).then((data) => {
-      for (let block of data) {
-        blocks.push(parseInt(block[0].number));
+      for (let block in data) {
+        blocks.push(parseInt(data[block][0].number));
+        blocks.sort(function (a, b) {
+          return a - b;
+        });
       }
     });
 
