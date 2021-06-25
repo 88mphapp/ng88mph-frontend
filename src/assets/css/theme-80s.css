@@ -6234,9 +6234,9 @@ a.close.disabled {
   flex-direction: column;
   width: 100%;
   pointer-events: auto;
-  background-color: #242526;
+  background-color: #080808;
   background-clip: padding-box;
-  border: 1px solid #12263f;
+  border: 1px solid #080808;
   border-radius: 0;
   outline: 0;
 }
@@ -14956,7 +14956,6 @@ button:focus {
 .avatar-xxs {
   width: 20px;
   height: 20px;
-  font-size: 0.54167rem;
 }
 .avatar-xs {
   width: 1.625rem;
@@ -16619,4 +16618,8 @@ input[type="range"]:focus::-ms-fill-upper {
   .navbar-light {
     border: 0 !important;
   }
+}
+
+.mt-lg-n9 {
+  margin-top: -117px !important;
 }
