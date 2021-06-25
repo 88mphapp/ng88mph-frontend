@@ -1,9 +1,16 @@
 import BigNumber from 'bignumber.js';
 import { PoolInfo } from '../contract.service';
+import { Timer } from '../timer';
 
 export interface FunderPool {
   poolInfo: PoolInfo;
   fundings: Funding[];
+}
+
+export interface Fundingv3 {
+  id: number;
+  active: boolean;
+  fundedDeficitAmount: number;
 }
 
 export interface Funding {
@@ -30,6 +37,14 @@ export interface Funding {
   creationTimestamp: number;
 }
 
+export interface FundableDeposit {
+  id: string;
+  //maturationTimestamp: number;
+  countdownTimer: Timer;
+  //funding: Fundingv3;
+  unfundedPrincipalAmount: BigNumber;
+}
+
 export interface Deposit {
   nftID: number;
   amount: BigNumber;
@@ -47,11 +62,11 @@ export interface DPool {
   stablecoinSymbol: string;
   stablecoinDecimals: number;
   iconPath: string;
-  latestFundedDeposit: number;
-  latestDeposit: number;
+  // latestFundedDeposit: number;
+  // latestDeposit: number;
   surplus: BigNumber;
   oneYearInterestRate: BigNumber;
-  unfundedDepositAmount: BigNumber;
-  mphRewardPerTokenPerSecond: BigNumber;
+  // unfundedDepositAmount: BigNumber;
+  // mphRewardPerTokenPerSecond: BigNumber;
   oracleInterestRate: BigNumber;
 }
