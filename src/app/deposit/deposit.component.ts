@@ -78,11 +78,9 @@ export class DepositComponent implements OnInit {
       userID = this.wallet.userAddress.toLowerCase();
     } else if (this.wallet.watching) {
       userID = this.wallet.watchedAddress.toLowerCase();
-    } else {
-      userID = '';
     }
 
-    if (loadUser) {
+    if (loadUser && userID) {
       // load xMPH balance for 'get started' section
       const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
       xmph.methods
@@ -159,7 +157,7 @@ export class DepositComponent implements OnInit {
           pools {
             id
             address
-            deposits(where: { user: "${userID}", active: true }, orderBy: nftID) {
+            deposits(where: { user: "${userID}" }, orderBy: nftID) {
               nftID
               virtualTokenTotalSupply
               maturationTimestamp
@@ -300,7 +298,7 @@ export class DepositComponent implements OnInit {
               interestEarnedToken.times(stablecoinPrice);
 
             // compute MPH APY
-            let realMPHReward;
+            let realMPHReward = new BigNumber(0);
             if (deposit.vest) {
               if (deposit.vest.owner !== user.address) {
                 // vest NFT transferred to another account
