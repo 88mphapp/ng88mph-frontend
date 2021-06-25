@@ -35,6 +35,12 @@ export class DepositComponent implements OnInit {
   userZCBPools: UserZCBPool[];
   mphPriceUSD: BigNumber;
 
+  // variables for get started section
+  stepsCompleted: number;
+  hasDeposit: boolean;
+  claimedMPH: boolean;
+  stakedMPH: boolean;
+
   constructor(
     private modalService: NgbModal,
     public wallet: WalletService,
@@ -77,6 +83,18 @@ export class DepositComponent implements OnInit {
     }
 
     if (loadUser) {
+      // load xMPH balance for 'get started' section
+      const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
+      xmph.methods
+        .balanceOf(userID)
+        .call()
+        .then((xMPHBalance) => {
+          if (new BigNumber(xMPHBalance).gt(0)) {
+            this.stakedMPH = true;
+            this.stepsCompleted += 1;
+          }
+        });
+
       // load Zero Coupon Bond / Preset Maturity data
       const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
       const zcbPoolList = zcbPoolNameList.map((poolName) =>
@@ -258,6 +276,10 @@ export class DepositComponent implements OnInit {
       Promise.all(
         user.pools.map(async (pool) => {
           if (pool.deposits.length == 0) return;
+          if (!this.hasDeposit) {
+            this.hasDeposit = true;
+            this.stepsCompleted += 1;
+          }
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
           const stablecoin = poolInfo.stablecoin.toLowerCase();
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
@@ -289,6 +311,13 @@ export class DepositComponent implements OnInit {
                 realMPHReward = new BigNumber(
                   deposit.vest.totalExpectedMPHAmount
                 );
+              }
+              if (
+                new BigNumber(deposit.vest.withdrawnAmount).gt(0) &&
+                !this.claimedMPH
+              ) {
+                this.claimedMPH = true;
+                this.stepsCompleted += 1;
               }
             }
             const mphAPY = realMPHReward
@@ -403,6 +432,10 @@ export class DepositComponent implements OnInit {
       this.totalMPHEarned = new BigNumber(0);
       this.userPools = [];
       this.userZCBPools = [];
+      this.stepsCompleted = 0;
+      this.hasDeposit = false;
+      this.claimedMPH = false;
+      this.stakedMPH = false;
     }
 
     if (resetGlobal) {

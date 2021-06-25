@@ -1,7 +1,12 @@
 <div class="container mt-5">
-  <div class="alert alert-dark alert-dismissible fade show p-4" role="alert">
+  <div
+    class="alert alert-dark alert-dismissible fade show p-4"
+    role="alert"
+    *ngIf="stepsCompleted < 3"
+  >
     <h6 class="text-uppercase text-muted">
-      Get started (<span class="text-white">1 of 3</span> complete)
+      Get started (<span class="text-white">{{ stepsCompleted }} of 3</span>
+      complete)
     </h6>
     <p class="lead">
       <strong>Let's get you set up.</strong> Follow the steps below to leverage
@@ -12,9 +17,16 @@
         <div class="row">
           <div class="col-auto">
             <div class="avatar avatar-xs">
-              <span class="avatar-title rounded-circle bg-success text-dark"
-                >1</span
+              <span
+                class="avatar-title rounded-circle"
+                [ngClass]="
+                  hasDeposit
+                    ? 'bg-success text-dark'
+                    : 'border-gradient bg-light'
+                "
               >
+                1
+              </span>
             </div>
           </div>
           <div class="col">
@@ -38,9 +50,16 @@
         <div class="row">
           <div class="col-auto">
             <div class="avatar avatar-xs">
-              <span class="avatar-title rounded-circle border-gradient bg-light"
-                >2</span
+              <span
+                class="avatar-title rounded-circle"
+                [ngClass]="
+                  claimedMPH
+                    ? 'bg-success text-dark'
+                    : 'border-gradient bg-light'
+                "
               >
+                2
+              </span>
             </div>
           </div>
           <div class="col">
@@ -56,9 +75,16 @@
         <div class="row">
           <div class="col-auto">
             <div class="avatar avatar-xs">
-              <span class="avatar-title rounded-circle border-gradient bg-light"
-                >3</span
+              <span
+                class="avatar-title rounded-circle"
+                [ngClass]="
+                  stakedMPH
+                    ? 'bg-success text-dark'
+                    : 'border-gradient bg-light'
+                "
               >
+                3
+              </span>
             </div>
           </div>
           <div class="col">
@@ -67,7 +93,11 @@
               earnings share.
             </p>
             <!-- Button -->
-            <button type="button" class="btn btn-sm btn-dark">
+            <button
+              type="button"
+              class="btn btn-sm btn-dark"
+              routerLink="/stake"
+            >
               <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
             </button>
           </div>
