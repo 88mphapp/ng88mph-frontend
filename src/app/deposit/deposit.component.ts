@@ -344,6 +344,9 @@ export class DepositComponent implements OnInit {
                 vestAmountPerStablecoinPerSecond: new BigNumber(
                   deposit.vest.vestAmountPerStablecoinPerSecond
                 ),
+                totalExpectedMPHAmount: new BigNumber(
+                  deposit.vest.totalExpectedMPHAmount
+                ),
               };
             }
 

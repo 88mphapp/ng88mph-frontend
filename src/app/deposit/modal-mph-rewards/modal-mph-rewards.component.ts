@@ -45,34 +45,37 @@ export class ModalMphRewardsComponent implements OnInit {
     });
   }
 
-  // @dev line 61 needs double checked
   loadData(): void {
     // load MPH USD price
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
 
-    // calculate vest per stablecoin
+    // compute currently withdrawable amount
     const vest = this.userDeposit.vest;
-    const vestAmountPerStablecoinPerSecond = new BigNumber(
-      vest.vestAmountPerStablecoinPerSecond
+    const depositAmount = this.userDeposit.amountToken;
+    let currentWithdrawableAmount;
+    const currentTimestamp = Math.min(
+      Math.floor(Date.now() / 1e3),
+      this.userDeposit.maturationTimestamp
     );
-    const depositLength = new BigNumber(this.userDeposit.depositLength);
-    const vestAmountPerStablecoin =
-      vestAmountPerStablecoinPerSecond.times(depositLength);
+    if (currentTimestamp < vest.lastUpdateTimestamp) {
+      currentWithdrawableAmount = vest.accumulatedAmount.minus(
+        vest.withdrawnAmount
+      );
+    } else {
+      currentWithdrawableAmount = vest.accumulatedAmount
+        .plus(
+          depositAmount
+            .times(currentTimestamp - vest.lastUpdateTimestamp)
+            .times(vest.vestAmountPerStablecoinPerSecond)
+        )
+        .minus(vest.withdrawnAmount);
+    }
 
-    // calculate number of stablecoins in the deposit
-    const virtualTokenTotalSupply = new BigNumber(
-      this.userDeposit.virtualTokenTotalSupply
-    );
-    const interestRate = new BigNumber(this.userDeposit.interestRate);
-    const depositAmount = virtualTokenTotalSupply.div(
-      new BigNumber(1).plus(interestRate)
-    );
-
-    this.fullAmount = depositAmount.times(vestAmountPerStablecoin);
-    this.withdrawnAmount = new BigNumber(vest.withdrawnAmount);
-    this.currentWithdrawableAmount = new BigNumber(vest.accumulatedAmount);
+    this.fullAmount = vest.totalExpectedMPHAmount;
+    this.withdrawnAmount = vest.withdrawnAmount;
+    this.currentWithdrawableAmount = currentWithdrawableAmount;
   }
 
   resetData(): void {

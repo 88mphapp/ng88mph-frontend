@@ -56,4 +56,5 @@ export interface Vest {
   accumulatedAmount: BigNumber;
   withdrawnAmount: BigNumber;
   vestAmountPerStablecoinPerSecond: BigNumber;
+  totalExpectedMPHAmount: BigNumber;
 }
