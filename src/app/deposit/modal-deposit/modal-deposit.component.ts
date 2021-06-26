@@ -17,9 +17,6 @@ import {
   styleUrls: ['./modal-deposit.component.css'],
 })
 export class ModalDepositComponent implements OnInit {
-  DEPOSIT_DELAY = 20 * 60; // 20 minutes
-  DEPOSIT_PERIOD_PRESETS = [7, 14, 30, 60, 90, 180, 365];
-
   @Input() defaultPoolName: string;
 
   poolList: PoolInfo[];
@@ -354,7 +351,6 @@ export class ModalDepositComponent implements OnInit {
       this.depositTimeInDays
         .times(this.constants.DAY_IN_SEC)
         .plus(Date.now() / 1e3)
-        .plus(this.DEPOSIT_DELAY)
     );
 
     const zcb: boolean = this.presetMaturity !== null;
@@ -409,7 +405,6 @@ export class ModalDepositComponent implements OnInit {
       this.depositTimeInDays
         .times(this.constants.DAY_IN_SEC)
         .plus(Date.now() / 1e3)
-        .plus(this.DEPOSIT_DELAY)
     );
 
     if (tokenAddress === this.constants.ZERO_ADDR) {
