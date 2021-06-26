@@ -37,7 +37,6 @@ export class ModalDepositComponent implements OnInit {
   maxDepositPeriod: number;
   mphPriceUSD: BigNumber;
   mphAPY: BigNumber;
-  tempMPHAPY: BigNumber;
   mphDepositorRewardMintMultiplier: BigNumber;
   shouldDisplayZap: boolean;
   selectedDepositToken: string;
@@ -106,7 +105,6 @@ export class ModalDepositComponent implements OnInit {
     this.maxDepositPeriod = 0;
     this.mphPriceUSD = new BigNumber(0);
     this.mphAPY = new BigNumber(0);
-    this.tempMPHAPY = new BigNumber(0);
     this.mphDepositorRewardMintMultiplier = new BigNumber(0);
     this.shouldDisplayZap = false;
     this.selectedDepositToken = '';
@@ -329,18 +327,6 @@ export class ModalDepositComponent implements OnInit {
       this.mphAPY = new BigNumber(0);
     } else {
       this.mphAPY = mphAPY;
-    }
-
-    const tempMPHAPY = this.mphRewardAmount
-      .times(this.mphPriceUSD)
-      .div(this.depositAmountUSD)
-      .div(this.depositTimeInDays)
-      .times(365)
-      .times(100);
-    if (tempMPHAPY.isNaN()) {
-      this.tempMPHAPY = new BigNumber(0);
-    } else {
-      this.tempMPHAPY = tempMPHAPY;
     }
   }
 
