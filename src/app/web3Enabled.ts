@@ -259,7 +259,17 @@ export class Web3Enabled {
     );
   }
 
-  async sendTx(func, _onTxHash, _onReceipt, _onError) {
+  async sendTx(
+    func,
+    _onTxHash,
+    _onReceipt,
+    _onError,
+    useNativeTxReceipt?: boolean
+  ) {
+    const onReceiptWithEvent = () => {
+      this.txConfirmedEvent.emit();
+      _onReceipt();
+    };
     const gasLimit = await this.estimateGas(func, 0, _onError);
     if (!isNaN(gasLimit)) {
       return func
@@ -270,10 +280,16 @@ export class Web3Enabled {
         .on('transactionHash', (hash) => {
           _onTxHash(hash);
           const { emitter } = this.notifyInstance.hash(hash);
-          // emitter.on('txConfirmed', _onReceipt);
+          if (!useNativeTxReceipt) {
+            emitter.on('txConfirmed', onReceiptWithEvent);
+          }
           emitter.on('txFailed', _onError);
         })
-        .on('receipt', _onReceipt)
+        .on('receipt', () => {
+          if (useNativeTxReceipt) {
+            onReceiptWithEvent();
+          }
+        })
         .on('error', (e) => {
           if (!e.toString().contains('newBlockHeaders')) {
             _onError(e);
@@ -282,7 +298,18 @@ export class Web3Enabled {
     }
   }
 
-  async sendTxWithValue(func, val, _onTxHash, _onReceipt, _onError) {
+  async sendTxWithValue(
+    func,
+    val,
+    _onTxHash,
+    _onReceipt,
+    _onError,
+    useNativeTxReceipt?: boolean
+  ) {
+    const onReceiptWithEvent = () => {
+      this.txConfirmedEvent.emit();
+      _onReceipt();
+    };
     const gasLimit = await this.estimateGas(func, val, _onError);
     if (!isNaN(gasLimit)) {
       return func
@@ -294,10 +321,16 @@ export class Web3Enabled {
         .on('transactionHash', (hash) => {
           _onTxHash(hash);
           const { emitter } = this.notifyInstance.hash(hash);
-          // emitter.on('txConfirmed', _onReceipt);
+          if (!useNativeTxReceipt) {
+            emitter.on('txConfirmed', onReceiptWithEvent);
+          }
           emitter.on('txFailed', _onError);
         })
-        .on('receipt', _onReceipt)
+        .on('receipt', () => {
+          if (useNativeTxReceipt) {
+            onReceiptWithEvent();
+          }
+        })
         .on('error', (e) => {
           if (!e.toString().contains('newBlockHeaders')) {
             _onError(e);
@@ -332,7 +365,8 @@ export class Web3Enabled {
       () => {
         this.sendTx(func, _onTxHash, _onReceipt, _onError);
       },
-      _onError
+      _onError,
+      true
     );
   }
 
@@ -353,7 +387,8 @@ export class Web3Enabled {
       token.methods.approve(to, maxAllowance),
       _onTxHash,
       _onReceipt,
-      _onError
+      _onError,
+      true
     );
   }
 
