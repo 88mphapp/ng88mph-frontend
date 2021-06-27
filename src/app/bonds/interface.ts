@@ -42,6 +42,7 @@ export interface Funding {
 export interface FundedDeposit {
   maturationTimestamp: number;
   countdownTimer: Timer;
+  yieldTokenBalance: BigNumber;
 }
 
 export interface FundableDeposit {

@@ -129,18 +129,13 @@ export class BondsComponent implements OnInit {
     } else {
       funderID = '';
     }
-    // fundings(where: {funder: "${funderID}", active: true }, orderBy: nftID) {
-    //   id
-    //   nftID
-    //   fundedDeficitAmount
-    //   totalInterestEarned
-    // }
 
     const queryString = gql`
       {
         ${
           loadUser
             ? `funder(id: "${funderID}") {
+          address
           pools {
             address
             fundings(where: { active: true }, orderBy: nftID) {
@@ -275,24 +270,46 @@ export class BondsComponent implements OnInit {
       Promise.all(
         funder.pools.map(async (pool) => {
           if (pool.fundings.length == 0) return;
+
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
-          console.log(poolInfo);
+          const poolContract = this.contract.getContract(
+            pool.address,
+            'DInterest'
+          );
+
+          let yieldToken;
+          await poolContract.methods
+            .fundingMultitoken()
+            .call()
+            .then((yieldTokenAddress) => {
+              yieldToken = this.contract.getContract(
+                yieldTokenAddress,
+                'FundingMultitoken'
+              );
+            });
 
           const fundings: Array<FundedDeposit> = [];
-          for (const funding in pool.fundings) {
-            //console.log(funding);
 
-            const fundingObj: FundedDeposit = {
-              maturationTimestamp:
-                pool.fundings[funding].deposit.maturationTimestamp,
-              countdownTimer: new Timer(
-                pool.fundings[funding].deposit.maturationTimestamp,
-                'down'
-              ),
-            };
-            fundingObj.countdownTimer.start();
-            fundings.push(fundingObj);
-            //console.log(fundingObj);
+          for (const funding in pool.fundings) {
+            const yieldTokenBalance = new BigNumber(
+              await yieldToken.methods
+                .balanceOf(funder.address, pool.fundings[funding].nftID)
+                .call()
+            ).div(this.constants.PRECISION);
+
+            if (yieldTokenBalance.gt(0)) {
+              const fundingObj: FundedDeposit = {
+                maturationTimestamp:
+                  pool.fundings[funding].deposit.maturationTimestamp,
+                countdownTimer: new Timer(
+                  pool.fundings[funding].deposit.maturationTimestamp,
+                  'down'
+                ),
+                yieldTokenBalance: yieldTokenBalance,
+              };
+              fundingObj.countdownTimer.start();
+              fundings.push(fundingObj);
+            }
           }
 
           const funderPool: FunderPool = {
@@ -1011,6 +1028,7 @@ interface QueryResult {
   //   }[];
   // };
   funder: {
+    address: string;
     pools: {
       address: string;
       fundings: {
