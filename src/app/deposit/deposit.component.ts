@@ -161,7 +161,7 @@ export class DepositComponent implements OnInit {
           pools {
             id
             address
-            deposits(where: { user: "${userID}" }, orderBy: nftID) {
+            deposits(where: { user: "${userID}", amount_gt: "0" }, orderBy: nftID) {
               nftID
               virtualTokenTotalSupply
               maturationTimestamp
@@ -567,6 +567,12 @@ export class DepositComponent implements OnInit {
     });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
+    const dpool: DPool = this.allPoolList.find(
+      (pool) => pool.name === poolInfo.name
+    );
+    modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
+      ? dpool.mphDepositorRewardMintMultiplier
+      : new BigNumber(0);
   }
 }
 

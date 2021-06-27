@@ -167,6 +167,9 @@ export class ModalTopUpComponent implements OnInit {
 
   setDepositAmount(amount: string) {
     this.depositAmountToken = new BigNumber(+amount);
+    if (this.depositAmountToken.isNaN()) {
+      this.depositAmountToken = new BigNumber(0);
+    }
     this.updateAPY();
   }
 

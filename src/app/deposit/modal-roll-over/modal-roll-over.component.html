@@ -36,8 +36,7 @@
                               placeholder="0.00"
                               aria-label=""
                               aria-describedby=""
-                              [value]="depositTimeInDays"
-                              min="7"
+                              [value]="depositTimeInDays.toFixed()"
                               id="lock-period"
                               data-mask="#,##0"
                               data-mask-reverse="true"
@@ -47,14 +46,14 @@
                               <button
                                 class="btn btn-lg border-gradient"
                                 type="button"
-                                (click)="setDepositTime(365)"
+                                (click)="setDepositTime(maxDepositPeriodInDays)"
                               >
                                 Max
                               </button>
                             </div>
                           </div>
                           <small class="form-text text-muted my-2">
-                            Min: 000 d / Max: 000 d
+                            Max: {{ maxDepositPeriodInDays }} days
                           </small>
                         </div>
                       </div>
@@ -72,7 +71,9 @@
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">0.00%</h4>
+                          <h4 class="mb-1 glowing">
+                            {{ interestRate.toFormat(4) }}%
+                          </h4>
                         </td>
                       </tr>
                       <tr>
@@ -82,35 +83,58 @@
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">$0.00</h4>
-                          <h5 class="text-muted">0.00 DAI</h5>
+                          <h4 class="mb-1 glowing">
+                            ${{ interestAmountUSD.toFormat(4) }}
+                          </h4>
+                          <h5 class="text-muted">
+                            {{ interestAmountToken.toFormat(4) }}
+                            {{ poolInfo.stablecoinSymbol }}
+                          </h5>
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Total Earned at Maturity | June 6, 2022
+                          Withdrawable at maturity | {{ depositMaturation }}
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">$0.00</h4>
-                          <h5 class="text-muted">0.0000 DAI</h5>
-                          <!-- <small *ngIf="selectedPoolInfo.depositFee">Note: A {{selectedPoolInfo.depositFee * 100}}% fee is taken by the underlying yield protocol ({{selectedPoolInfo.protocol}})</small> -->
-                          <small
-                            >Note: A 10% fee is taken by the underlying yield
-                            protocol (Yearn)</small
+                          <h4 class="mb-1 glowing">
+                            ${{
+                              depositAmountUSD
+                                .plus(interestAmountUSD)
+                                .toFormat(4)
+                            }}
+                          </h4>
+                          <h5 class="text-muted">
+                            {{
+                              depositAmountToken
+                                .plus(interestAmountToken)
+                                .toFormat(4)
+                            }}
+                            {{ poolInfo.stablecoinSymbol }}
+                          </h5>
+                          <small *ngIf="poolInfo.depositFee"
+                            >Note: A {{ poolInfo.depositFee * 100 }}% fee is
+                            taken by the underlying yield protocol ({{
+                              poolInfo.protocol
+                            }})</small
                           >
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH rewards (Vested over 270)
+                          MPH rewards
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">$0.00</h4>
-                          <h5 class="text-muted">0.0000 MPH</h5>
+                          <h4 class="mb-1 glowing">
+                            ${{ mphRewardAmountUSD.toFormat(4) }}
+                          </h4>
+                          <h5 class="text-muted">
+                            {{ mphRewardAmountToken.toFormat(4) }} MPH
+                          </h5>
                         </td>
                       </tr>
                       <tr>
@@ -120,7 +144,9 @@
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">+0.00%</h4>
+                          <h4 class="mb-1 glowing">
+                            +{{ mphRewardAPR.toFormat(4) }}%
+                          </h4>
                         </td>
                       </tr>
                     </tbody>

@@ -31,7 +31,7 @@ export class ModalDepositComponent implements OnInit {
   apy: BigNumber;
   mphRewardAmount: BigNumber;
   minDepositAmount: BigNumber;
-  maxDepositPeriod: number;
+  maxDepositPeriodInDays: number;
   mphPriceUSD: BigNumber;
   mphAPY: BigNumber;
   mphDepositorRewardMintMultiplier: BigNumber;
@@ -99,7 +99,7 @@ export class ModalDepositComponent implements OnInit {
     this.apy = new BigNumber(0);
     this.mphRewardAmount = new BigNumber(0);
     this.minDepositAmount = new BigNumber(0);
-    this.maxDepositPeriod = 0;
+    this.maxDepositPeriodInDays = 0;
     this.mphPriceUSD = new BigNumber(0);
     this.mphAPY = new BigNumber(0);
     this.mphDepositorRewardMintMultiplier = new BigNumber(0);
@@ -136,7 +136,7 @@ export class ModalDepositComponent implements OnInit {
     ).then((data: QueryResult) => {
       const pool = data.dpool;
       this.minDepositAmount = new BigNumber(pool.MinDepositAmount);
-      this.maxDepositPeriod = Math.floor(
+      this.maxDepositPeriodInDays = Math.floor(
         pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
       );
       this.mphDepositorRewardMintMultiplier = new BigNumber(
@@ -204,6 +204,9 @@ export class ModalDepositComponent implements OnInit {
 
   setDepositAmount(amount: string): void {
     this.depositAmount = new BigNumber(+amount);
+    if (this.depositAmount.isNaN()) {
+      this.depositAmount = new BigNumber(0);
+    }
     this.updateAPY();
   }
 
@@ -215,6 +218,9 @@ export class ModalDepositComponent implements OnInit {
   setDepositTime(timeInDays: number | string): void {
     this.presetMaturity = null;
     this.depositTimeInDays = new BigNumber(+timeInDays);
+    if (this.depositTimeInDays.isNaN()) {
+      this.depositTimeInDays = new BigNumber(0);
+    }
     this.depositMaturation = new Date(
       Date.now() +
         this.depositTimeInDays
@@ -685,7 +691,7 @@ export class ModalDepositComponent implements OnInit {
     return (
       this.wallet.connected &&
       this.depositAmount.gte(this.minDepositAmount) &&
-      this.depositTimeInDays.lte(this.maxDepositPeriod) &&
+      this.depositTimeInDays.lte(this.maxDepositPeriodInDays) &&
       this.depositTokenBalance.gte(this.depositAmount)
     );
   }
