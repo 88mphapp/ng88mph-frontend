@@ -30,15 +30,11 @@
               <ng-container *ngIf="userDeposit.locked">
                 <div class="alert border-gradient mb-4">
                   Warning: by withdrawing your principal before the maturation
-                  date, you'll forfeit your interest and MPH tokens earned so
-                  far.
+                  date, you will forfeit your interest earned so far.
                 </div>
               </ng-container>
               <ng-container *ngIf="!userDeposit.locked">
-                <p class="text-white">
-                  Withdraw your principal and interest earned or extend its
-                  duration.
-                </p>
+                <p class="text-white">Withdraw your principal and interest.</p>
               </ng-container>
               <div class="form-group mb-0">
                 <label>Amount</label>
@@ -68,24 +64,18 @@
                 }}
                 {{ poolInfo.stablecoinSymbol }}) available</small
               >
-              <div class="row justify-content-center mb-4">
-                <div class="col-6">
-                  <h6 class="header-pretitle mb-2">MPH reward received</h6>
-                  <h4 class="mb-1 glowing">
-                    {{ mphRewardAmount.toFormat() }} MPH
-                  </h4>
-                  <div class="text-white small d-block">
-                    ${{ mphRewardAmount.times(mphPriceUSD).toFormat(4) }}
-                  </div>
-                </div>
-              </div>
               <button
                 class="btn btn-lg btn-bg-gradient btn-block"
                 type="button"
-                (click)="earlyWithdraw()"
-                *ngIf="userDeposit.locked"
+                (click)="withdraw()"
               >
-                Withdraw early
+                <ng-container *ngIf="userDeposit.locked"
+                  >Withdraw early</ng-container
+                >
+
+                <ng-container *ngIf="!userDeposit.locked"
+                  >Withdraw</ng-container
+                >
               </button>
             </div>
           </div>

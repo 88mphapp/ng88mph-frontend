@@ -59,9 +59,15 @@ export class ModalWithdrawComponent implements OnInit {
 
   withdraw() {
     const pool = this.contract.getPool(this.poolInfo.name);
-    /*const func = pool.methods.withdraw(
+    const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
+    const withdrawVirtualTokenAmount = this.helpers.processWeb3Number(
+      this.getVirtualTokenAmount().times(stablecoinPrecision)
+    );
+    const early = this.userDeposit.locked;
+    const func = pool.methods.withdraw(
       this.userDeposit.nftID,
-      this.userDeposit.fundingID
+      withdrawVirtualTokenAmount,
+      early
     );
 
     this.wallet.sendTx(
@@ -73,42 +79,25 @@ export class ModalWithdrawComponent implements OnInit {
       (error) => {
         this.wallet.displayGenericError(error);
       }
-    );*/
-  }
-
-  earlyWithdraw() {
-    // v2 code //
-    // const pool = this.contract.getPool(this.poolInfo.name);
-    // const mphToken = this.contract.getNamedContract('MPHToken');
-    // const mphMinter = this.contract.getNamedContractAddress('MPHMinter');
-    // const mphAmount = this.helpers.processWeb3Number(this.mphTakeBackAmount.times(this.constants.PRECISION));
-    // const func = pool.methods.earlyWithdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
-    // this.wallet.sendTxWithToken(func, mphToken, mphMinter, mphAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
-
-    // v3 code //
-    // const pool = this.contract.getPool(this.poolInfo.name);
-    // const virtualTokensToWithdraw = this.getVirtualTokenAmount();
-    // console.log(virtualTokensToWithdraw);
-    // const func = pool.methods.withdraw(this.userDeposit.nftID, virtualTokensToWithdraw, true);
-    // console.log(this.userDeposit);
-
-    console.log('You still need to implement this!');
+    );
   }
 
   setWithdrawAmount(amount: string) {
     this.withdrawAmount = new BigNumber(+amount);
-    console.log(this.withdrawAmount);
+    if (this.withdrawAmount.isNaN()) {
+      this.withdrawAmount = new BigNumber(0);
+    }
   }
 
   setMaxWithdrawAmount(): void {
     this.withdrawAmount = new BigNumber(this.userDeposit.amountToken);
-    console.log(this.withdrawAmount);
   }
 
-  //getVirtualTokenAmount(): BigNumber {
-  // const withdrawRatio = this.withdrawAmount.div(this.userDeposit.amountToken);
-  // const virtualTokenTotalSupply = this.userDeposit.virtualTokenTotalSupply;
-  // const virtualTokensToWithdraw = virtualTokenTotalSupply.times(withdrawRatio);
-  // return virtualTokensToWithdraw;
-  //}
+  getVirtualTokenAmount(): BigNumber {
+    const withdrawRatio = this.withdrawAmount.div(this.userDeposit.amountToken);
+    const virtualTokenTotalSupply = this.userDeposit.virtualTokenTotalSupply;
+    const virtualTokensToWithdraw =
+      virtualTokenTotalSupply.times(withdrawRatio);
+    return virtualTokensToWithdraw;
+  }
 }
