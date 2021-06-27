@@ -24,8 +24,12 @@
               <div class="row justify-content-center mb-4">
                 <div class="col">
                   <h6 class="header-pretitle mb-2">Yield tokens available</h6>
-                  <h4 class="mb-1 glowing display-4">0.00 TKN</h4>
-                  <div class="text-muted small d-block">$0.00</div>
+                  <h4 class="mb-1 glowing display-4">
+                    {{ deposit.yieldTokensAvailable.toFormat(18) }} TKN
+                  </h4>
+                  <div class="text-muted small d-block">
+                    ${{ deposit.yieldTokensAvailableUSD.toFormat(2) }}
+                  </div>
                 </div>
               </div>
               <div class="form-group mb-4">
@@ -35,22 +39,33 @@
                     type="text"
                     class="form-control form-control-lg"
                     placeholder="0.00"
-                    aria-label=""
+                    aria-label="fund-amount"
                     aria-describedby=""
+                    [value]="fundAmount.toFormat(18)"
+                    (input)="setFundAmount($event.target.value)"
                   />
                   <div class="input-group-append">
-                    <button class="btn btn-lg border-gradient" type="button">
+                    <button
+                      class="btn btn-lg border-gradient"
+                      type="button"
+                      (click)="
+                        setFundAmount(deposit.yieldTokensAvailable.toFixed(18))
+                      "
+                    >
                       Max
                     </button>
                   </div>
                 </div>
                 <small class="form-text text-muted"
-                  >0.00 TKN available in your balance</small
+                  >{{ stablecoinBalance }}
+                  {{ deposit.pool.stablecoinSymbol }} available in your
+                  balance</small
                 >
               </div>
               <button
                 class="btn btn-lg btn-bg-gradient btn-block"
                 type="button"
+                (click)="buyYieldTokens()"
               >
                 Buy
               </button>
