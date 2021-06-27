@@ -16,10 +16,9 @@ export class ModalWithdrawComponent implements OnInit {
   @Input() userDeposit: UserDeposit;
   @Input() poolInfo: PoolInfo;
 
+  stablecoinPriceUSD: BigNumber;
   withdrawAmount: BigNumber;
-  mphRewardAmount: BigNumber;
-  mphBalance: BigNumber;
-  mphPriceUSD: BigNumber;
+  earlyWithdrawFee: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -33,35 +32,37 @@ export class ModalWithdrawComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
-    this.helpers.getMPHPriceUSD().then((price) => {
-      this.mphPriceUSD = price;
-    });
   }
 
   async loadData() {
-    this.mphRewardAmount = this.userDeposit.realMPHReward;
-
-    const mphToken = this.contract.getNamedContract(
-      'MPHToken',
-      this.wallet.readonlyWeb3()
-    );
-    this.mphBalance = new BigNumber(
-      await mphToken.methods.balanceOf(this.wallet.userAddress).call()
-    ).div(this.constants.PRECISION);
+    if (this.userDeposit.amountToken.gt(0)) {
+      this.stablecoinPriceUSD = this.userDeposit.amountUSD.div(
+        this.userDeposit.amountToken
+      );
+    } else {
+      this.stablecoinPriceUSD = new BigNumber(
+        await this.helpers.getTokenPriceUSD(this.poolInfo.stablecoin)
+      );
+    }
   }
 
   resetData() {
+    this.stablecoinPriceUSD = new BigNumber(0);
     this.withdrawAmount = new BigNumber(0);
-    this.mphRewardAmount = new BigNumber(0);
-    this.mphBalance = new BigNumber(0);
-    this.mphPriceUSD = new BigNumber(0);
+    this.earlyWithdrawFee = new BigNumber(0);
   }
 
   withdraw() {
     const pool = this.contract.getPool(this.poolInfo.name);
-    /*const func = pool.methods.withdraw(
+    const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
+    const withdrawVirtualTokenAmount = this.helpers.processWeb3Number(
+      this.withdrawVirtualTokenAmount.times(stablecoinPrecision)
+    );
+    const early = this.userDeposit.locked;
+    const func = pool.methods.withdraw(
       this.userDeposit.nftID,
-      this.userDeposit.fundingID
+      withdrawVirtualTokenAmount,
+      early
     );
 
     this.wallet.sendTx(
@@ -73,42 +74,84 @@ export class ModalWithdrawComponent implements OnInit {
       (error) => {
         this.wallet.displayGenericError(error);
       }
-    );*/
+    );
   }
 
-  earlyWithdraw() {
-    // v2 code //
-    // const pool = this.contract.getPool(this.poolInfo.name);
-    // const mphToken = this.contract.getNamedContract('MPHToken');
-    // const mphMinter = this.contract.getNamedContractAddress('MPHMinter');
-    // const mphAmount = this.helpers.processWeb3Number(this.mphTakeBackAmount.times(this.constants.PRECISION));
-    // const func = pool.methods.earlyWithdraw(this.userDeposit.nftID, this.userDeposit.fundingID);
-    // this.wallet.sendTxWithToken(func, mphToken, mphMinter, mphAmount, () => { }, () => { this.activeModal.dismiss() }, (error) => { this.wallet.displayGenericError(error) });
-
-    // v3 code //
-    // const pool = this.contract.getPool(this.poolInfo.name);
-    // const virtualTokensToWithdraw = this.getVirtualTokenAmount();
-    // console.log(virtualTokensToWithdraw);
-    // const func = pool.methods.withdraw(this.userDeposit.nftID, virtualTokensToWithdraw, true);
-    // console.log(this.userDeposit);
-
-    console.log('You still need to implement this!');
-  }
-
-  setWithdrawAmount(amount: string) {
+  async setWithdrawAmount(amount: string) {
     this.withdrawAmount = new BigNumber(+amount);
-    console.log(this.withdrawAmount);
+    if (this.withdrawAmount.isNaN()) {
+      this.withdrawAmount = new BigNumber(0);
+    }
+    this.earlyWithdrawFee = await this.getEarlyWithdrawFee();
   }
 
   setMaxWithdrawAmount(): void {
-    this.withdrawAmount = new BigNumber(this.userDeposit.amountToken);
-    console.log(this.withdrawAmount);
+    this.setWithdrawAmount(this.maxWithdrawAmountToken.toString());
   }
 
-  //getVirtualTokenAmount(): BigNumber {
-  // const withdrawRatio = this.withdrawAmount.div(this.userDeposit.amountToken);
-  // const virtualTokenTotalSupply = this.userDeposit.virtualTokenTotalSupply;
-  // const virtualTokensToWithdraw = virtualTokenTotalSupply.times(withdrawRatio);
-  // return virtualTokensToWithdraw;
-  //}
+  get maxWithdrawAmountToken(): BigNumber {
+    if (this.userDeposit.locked) {
+      return this.userDeposit.amountToken;
+    } else {
+      return this.userDeposit.amountToken.plus(
+        this.userDeposit.interestEarnedToken
+      );
+    }
+  }
+
+  get withdrawVirtualTokenAmount(): BigNumber {
+    if (this.userDeposit.locked) {
+      const withdrawRatio = this.withdrawAmount.div(
+        this.userDeposit.amountToken
+      );
+      const virtualTokenTotalSupply = this.userDeposit.virtualTokenTotalSupply;
+      const virtualTokensToWithdraw =
+        virtualTokenTotalSupply.times(withdrawRatio);
+      return virtualTokensToWithdraw;
+    } else {
+      return this.withdrawAmount;
+    }
+  }
+
+  applyWithdrawRatio(n: BigNumber): BigNumber {
+    const withdrawRatio = this.withdrawAmount.div(this.maxWithdrawAmountToken);
+    return withdrawRatio.times(n);
+  }
+
+  async getEarlyWithdrawFee(): Promise<BigNumber> {
+    if (!this.userDeposit.locked) {
+      return new BigNumber(0);
+    }
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const pool = this.contract.getPool(this.poolInfo.name, readonlyWeb3);
+    const feeModelAddress = await pool.methods.feeModel().call();
+    const feeModel = this.contract.getContract(
+      feeModelAddress,
+      'IFeeModel',
+      readonlyWeb3
+    );
+    const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
+    const processedWithdrawAmount = this.helpers.processWeb3Number(
+      this.withdrawAmount.times(stablecoinPrecision)
+    );
+    const feeAmount = new BigNumber(
+      await feeModel.methods
+        .getEarlyWithdrawFeeAmount(
+          this.poolInfo.address,
+          this.userDeposit.nftID,
+          processedWithdrawAmount
+        )
+        .call()
+    ).div(stablecoinPrecision);
+    return feeAmount;
+  }
+
+  get totalWithdrawAmount(): BigNumber {
+    const interestAmountToken = this.userDeposit.locked
+      ? 0
+      : this.userDeposit.interestEarnedToken;
+    return this.applyWithdrawRatio(
+      this.userDeposit.amountToken.plus(interestAmountToken)
+    ).minus(this.earlyWithdrawFee);
+  }
 }

@@ -68,6 +68,12 @@ export class DepositComponent implements OnInit {
       this.resetData(true, false);
       this.loadData(true, false);
     });
+    this.wallet.txConfirmedEvent.subscribe(() => {
+      setTimeout(() => {
+        this.resetData(true, true);
+        this.loadData(true, true);
+      }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
+    });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
@@ -157,7 +163,7 @@ export class DepositComponent implements OnInit {
           pools {
             id
             address
-            deposits(where: { user: "${userID}" }, orderBy: nftID) {
+            deposits(where: { user: "${userID}", amount_gt: "0" }, orderBy: nftID) {
               nftID
               virtualTokenTotalSupply
               maturationTimestamp
@@ -247,6 +253,7 @@ export class DepositComponent implements OnInit {
             mphAPY: mphAPY,
             totalUserDepositsToken: new BigNumber(0),
             totalUserDepositsUSD: new BigNumber(0),
+            mphDepositorRewardMintMultiplier,
           };
           allPoolList.push(dpoolObj);
         })
@@ -339,6 +346,9 @@ export class DepositComponent implements OnInit {
                 vestAmountPerStablecoinPerSecond: new BigNumber(
                   deposit.vest.vestAmountPerStablecoinPerSecond
                 ),
+                totalExpectedMPHAmount: new BigNumber(
+                  deposit.vest.totalExpectedMPHAmount
+                ),
               };
             }
 
@@ -359,12 +369,14 @@ export class DepositComponent implements OnInit {
               mphAPY: mphAPY,
               virtualTokenTotalSupply: new BigNumber(100),
               vest: vest,
-              depositLength: this.constants.YEAR_IN_SEC,
+              depositLength:
+                +deposit.maturationTimestamp - +deposit.depositTimestamp,
               interestRate: interestEarnedToken
                 .div(depositAmount)
                 .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
                 .times(this.constants.YEAR_IN_SEC)
                 .times(100),
+              maturationTimestamp: +deposit.maturationTimestamp,
             };
             userPoolDeposit.countdownTimer.start();
             userPoolDeposits.push(userPoolDeposit);
@@ -452,6 +464,7 @@ export class DepositComponent implements OnInit {
           mphAPY: new BigNumber(0),
           totalUserDepositsToken: new BigNumber(0),
           totalUserDepositsUSD: new BigNumber(0),
+          mphDepositorRewardMintMultiplier: new BigNumber(0),
         };
         allPoolList.push(dpoolObj);
       }
@@ -542,6 +555,12 @@ export class DepositComponent implements OnInit {
     });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
+    const dpool: DPool = this.allPoolList.find(
+      (pool) => pool.name === poolInfo.name
+    );
+    modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
+      ? dpool.mphDepositorRewardMintMultiplier
+      : new BigNumber(0);
   }
 
   openRollOverModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
@@ -550,6 +569,12 @@ export class DepositComponent implements OnInit {
     });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
+    const dpool: DPool = this.allPoolList.find(
+      (pool) => pool.name === poolInfo.name
+    );
+    modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
+      ? dpool.mphDepositorRewardMintMultiplier
+      : new BigNumber(0);
   }
 }
 

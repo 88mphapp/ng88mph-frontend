@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 import { PoolInfo, ZeroCouponBondInfo } from '../contract.service';
 import { Timer } from '../timer';
 
-// v2 DPool
 export interface DPool {
   name: string;
   protocol: string;
@@ -15,6 +14,7 @@ export interface DPool {
   mphAPY: BigNumber;
   totalUserDepositsToken: BigNumber;
   totalUserDepositsUSD: BigNumber;
+  mphDepositorRewardMintMultiplier: BigNumber;
 }
 
 export interface UserPool {
@@ -37,6 +37,7 @@ export interface UserDeposit {
   vest: Vest;
   depositLength: number;
   interestRate: BigNumber;
+  maturationTimestamp: number;
 }
 
 export interface UserZCBPool {
@@ -55,4 +56,5 @@ export interface Vest {
   accumulatedAmount: BigNumber;
   withdrawnAmount: BigNumber;
   vestAmountPerStablecoinPerSecond: BigNumber;
+  totalExpectedMPHAmount: BigNumber;
 }

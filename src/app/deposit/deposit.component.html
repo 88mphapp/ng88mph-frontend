@@ -64,7 +64,7 @@
           </div>
           <div class="col">
             <p>
-              <strong>Claim</strong> you first MPH rewards linked to each of
+              <strong>Claim</strong> your first MPH rewards linked to each of
               your deposit.
             </p>
           </div>
@@ -307,8 +307,17 @@
                                 Custom maturity
                               </h6>
                               <!-- badge -->
-                              <span class="badge mb-1 badge-soft-danger">
+                              <span
+                                class="badge mb-1 badge-soft-danger"
+                                *ngIf="deposit.locked"
+                              >
                                 Locked
+                              </span>
+                              <span
+                                class="badge mb-1 badge-soft-success"
+                                *ngIf="!deposit.locked"
+                              >
+                                Unlocked
                               </span>
 
                               <!-- Text -->
@@ -393,7 +402,7 @@
                             (click)="
                               openRollOverModal(deposit, userPool.poolInfo)
                             "
-                            *ngIf="deposit.locked"
+                            *ngIf="!deposit.locked"
                           >
                             <i class="fe fe-arrow-down mr-2 align-bottom"></i
                             >Roll over

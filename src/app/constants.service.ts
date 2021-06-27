@@ -80,6 +80,7 @@ export class ConstantsService {
   WEEK_IN_SEC = 7 * 24 * 60 * 60;
   DAY_IN_SEC = 24 * 60 * 60;
   SUBGRAPH_SYNC_WARNING_THRESHOLD = 20; // if falls behind by 20 blocks, display error banner
+  TX_CONFIRMATION_REFRESH_WAIT_TIME = 3 * 1e3; // Time between tx confirmation and data refresh, in ms. Should only be used when data is loaded through the subgraph.
 
   // 88MPH CONTRACTS //
   DUMPER = '0x5B3C81C86d17786255904c316bFCB38A46146ef8';
