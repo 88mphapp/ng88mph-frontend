@@ -69,8 +69,10 @@ export class DepositComponent implements OnInit {
       this.loadData(true, false);
     });
     this.wallet.txConfirmedEvent.subscribe(() => {
-      this.resetData(true, true);
-      this.loadData(true, true);
+      setTimeout(() => {
+        this.resetData(true, true);
+        this.loadData(true, true);
+      }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
     });
   }
 
