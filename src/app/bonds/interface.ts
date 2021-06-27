@@ -4,13 +4,15 @@ import { Timer } from '../timer';
 
 export interface FunderPool {
   poolInfo: PoolInfo;
-  fundings: Funding[];
+  fundings: FundedDeposit[];
 }
 
 export interface Fundingv3 {
   id: number;
   active: boolean;
+  totalSupply: number;
   fundedDeficitAmount: number;
+  principalPerToken: number;
 }
 
 export interface Funding {
@@ -37,12 +39,21 @@ export interface Funding {
   creationTimestamp: number;
 }
 
+export interface FundedDeposit {
+  maturationTimestamp: number;
+  countdownTimer: Timer;
+}
+
 export interface FundableDeposit {
   id: string;
-  //maturationTimestamp: number;
+  pool: DPool;
+  maturationTimestamp: number;
   countdownTimer: Timer;
   //funding: Fundingv3;
-  unfundedPrincipalAmount: BigNumber;
+  unfundedDepositAmount: BigNumber;
+  unfundedDepositAmountUSD: BigNumber;
+  yieldTokensAvailable: BigNumber;
+  yieldTokensAvailableUSD: BigNumber;
 }
 
 export interface Deposit {
