@@ -59,11 +59,106 @@
                 </div>
               </div>
               <small class="form-text text-white mb-4"
-                >${{ userDeposit.amountUSD.toFormat(4) }} ({{
-                  userDeposit.amountToken.toFormat()
+                >${{
+                  maxWithdrawAmountToken.times(stablecoinPriceUSD).toFormat(4)
                 }}
+                ({{ maxWithdrawAmountToken.toFormat() }}
                 {{ poolInfo.stablecoinSymbol }}) available</small
               >
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Principal to withdraw
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-1 glowing">
+                          ${{
+                            applyWithdrawRatio(userDeposit.amountUSD).toFormat(
+                              4
+                            )
+                          }}
+                        </h4>
+                        <h5 class="text-muted">
+                          {{
+                            applyWithdrawRatio(
+                              userDeposit.amountToken
+                            ).toFormat(4)
+                          }}
+                          {{ poolInfo.stablecoinSymbol }}
+                        </h5>
+                      </td>
+                    </tr>
+                    <tr *ngIf="!userDeposit.locked">
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Interest to withdraw
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-1 glowing">
+                          ${{
+                            applyWithdrawRatio(
+                              userDeposit.interestEarnedUSD
+                            ).toFormat(4)
+                          }}
+                        </h4>
+                        <h5 class="text-muted">
+                          {{
+                            applyWithdrawRatio(
+                              userDeposit.interestEarnedToken
+                            ).toFormat(4)
+                          }}
+                          {{ poolInfo.stablecoinSymbol }}
+                        </h5>
+                      </td>
+                    </tr>
+                    <tr *ngIf="userDeposit.locked">
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Early withdraw fee
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-1 glowing">
+                          ${{
+                            earlyWithdrawFee
+                              .times(stablecoinPriceUSD)
+                              .toFormat(4)
+                          }}
+                        </h4>
+                        <h5 class="text-muted">
+                          {{ earlyWithdrawFee.toFormat(4) }}
+                          {{ poolInfo.stablecoinSymbol }}
+                        </h5>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Total withdraw amount
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-1 glowing">
+                          ${{
+                            totalWithdrawAmount
+                              .times(stablecoinPriceUSD)
+                              .toFormat(4)
+                          }}
+                        </h4>
+                        <h5 class="text-muted">
+                          {{ totalWithdrawAmount.toFormat(4) }}
+                          {{ poolInfo.stablecoinSymbol }}
+                        </h5>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <button
                 class="btn btn-lg btn-bg-gradient btn-block"
                 type="button"
