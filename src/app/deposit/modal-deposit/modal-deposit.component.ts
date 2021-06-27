@@ -17,9 +17,6 @@ import {
   styleUrls: ['./modal-deposit.component.css'],
 })
 export class ModalDepositComponent implements OnInit {
-  DEPOSIT_DELAY = 20 * 60; // 20 minutes
-  DEPOSIT_PERIOD_PRESETS = [7, 14, 30, 60, 90, 180, 365];
-
   @Input() defaultPoolName: string;
 
   poolList: PoolInfo[];
@@ -34,10 +31,9 @@ export class ModalDepositComponent implements OnInit {
   apy: BigNumber;
   mphRewardAmount: BigNumber;
   minDepositAmount: BigNumber;
-  maxDepositPeriod: number;
+  maxDepositPeriodInDays: number;
   mphPriceUSD: BigNumber;
   mphAPY: BigNumber;
-  tempMPHAPY: BigNumber;
   mphDepositorRewardMintMultiplier: BigNumber;
   shouldDisplayZap: boolean;
   selectedDepositToken: string;
@@ -103,10 +99,9 @@ export class ModalDepositComponent implements OnInit {
     this.apy = new BigNumber(0);
     this.mphRewardAmount = new BigNumber(0);
     this.minDepositAmount = new BigNumber(0);
-    this.maxDepositPeriod = 0;
+    this.maxDepositPeriodInDays = 0;
     this.mphPriceUSD = new BigNumber(0);
     this.mphAPY = new BigNumber(0);
-    this.tempMPHAPY = new BigNumber(0);
     this.mphDepositorRewardMintMultiplier = new BigNumber(0);
     this.shouldDisplayZap = false;
     this.selectedDepositToken = '';
@@ -141,7 +136,7 @@ export class ModalDepositComponent implements OnInit {
     ).then((data: QueryResult) => {
       const pool = data.dpool;
       this.minDepositAmount = new BigNumber(pool.MinDepositAmount);
-      this.maxDepositPeriod = Math.floor(
+      this.maxDepositPeriodInDays = Math.floor(
         pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
       );
       this.mphDepositorRewardMintMultiplier = new BigNumber(
@@ -209,6 +204,9 @@ export class ModalDepositComponent implements OnInit {
 
   setDepositAmount(amount: string): void {
     this.depositAmount = new BigNumber(+amount);
+    if (this.depositAmount.isNaN()) {
+      this.depositAmount = new BigNumber(0);
+    }
     this.updateAPY();
   }
 
@@ -220,6 +218,9 @@ export class ModalDepositComponent implements OnInit {
   setDepositTime(timeInDays: number | string): void {
     this.presetMaturity = null;
     this.depositTimeInDays = new BigNumber(+timeInDays);
+    if (this.depositTimeInDays.isNaN()) {
+      this.depositTimeInDays = new BigNumber(0);
+    }
     this.depositMaturation = new Date(
       Date.now() +
         this.depositTimeInDays
@@ -330,18 +331,6 @@ export class ModalDepositComponent implements OnInit {
     } else {
       this.mphAPY = mphAPY;
     }
-
-    const tempMPHAPY = this.mphRewardAmount
-      .times(this.mphPriceUSD)
-      .div(this.depositAmountUSD)
-      .div(this.depositTimeInDays)
-      .times(365)
-      .times(100);
-    if (tempMPHAPY.isNaN()) {
-      this.tempMPHAPY = new BigNumber(0);
-    } else {
-      this.tempMPHAPY = tempMPHAPY;
-    }
   }
 
   // @dev needs to be fully tested with a deployed v3 contract, including ZCB
@@ -368,7 +357,6 @@ export class ModalDepositComponent implements OnInit {
       this.depositTimeInDays
         .times(this.constants.DAY_IN_SEC)
         .plus(Date.now() / 1e3)
-        .plus(this.DEPOSIT_DELAY)
     );
 
     const zcb: boolean = this.presetMaturity !== null;
@@ -423,7 +411,6 @@ export class ModalDepositComponent implements OnInit {
       this.depositTimeInDays
         .times(this.constants.DAY_IN_SEC)
         .plus(Date.now() / 1e3)
-        .plus(this.DEPOSIT_DELAY)
     );
 
     if (tokenAddress === this.constants.ZERO_ADDR) {
@@ -704,7 +691,7 @@ export class ModalDepositComponent implements OnInit {
     return (
       this.wallet.connected &&
       this.depositAmount.gte(this.minDepositAmount) &&
-      this.depositTimeInDays.lte(this.maxDepositPeriod) &&
+      this.depositTimeInDays.lte(this.maxDepositPeriodInDays) &&
       this.depositTokenBalance.gte(this.depositAmount)
     );
   }

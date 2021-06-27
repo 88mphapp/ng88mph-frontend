@@ -15,6 +15,7 @@ import { DPool, UserPool, UserDeposit } from '../types';
 export class ModalTopUpComponent implements OnInit {
   @Input() userDeposit: UserDeposit;
   @Input() poolInfo: PoolInfo;
+  @Input() mphDepositorRewardMintMultiplier: BigNumber;
 
   depositAmountToken: BigNumber;
   depositAmountUSD: BigNumber;
@@ -101,20 +102,74 @@ export class ModalTopUpComponent implements OnInit {
       this.poolInfo.stablecoin
     );
 
-    // calculate deposit amount
+    // get deposit amount
     this.depositAmountUSD = new BigNumber(this.depositAmountToken).times(
       stablecoinPrice
     );
 
-    // @dev remaining todos
-    // 1- update interest amounts
-    // 2- update mph reward amounts and apr
-    // 3- update fixed-interest rate
-    // 4- update maturity date
+    // get interest amount
+    const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
+    const depositAmountToken = this.helpers.processWeb3Number(
+      this.depositAmountToken.times(stablecoinPrecision)
+    );
+    const currentTimestamp = Math.floor(Date.now() / 1e3);
+    let depositTime: string;
+    if (currentTimestamp >= this.userDeposit.maturationTimestamp) {
+      depositTime = '0';
+    } else {
+      depositTime = this.helpers.processWeb3Number(
+        this.userDeposit.maturationTimestamp - currentTimestamp
+      );
+    }
+    const rawInterestAmountToken = new BigNumber(
+      await pool.methods
+        .calculateInterestAmount(depositAmountToken, depositTime)
+        .call()
+    ).div(stablecoinPrecision);
+    const rawInterestAmountUSD = rawInterestAmountToken.times(stablecoinPrice);
+    this.interestAmountToken = this.helpers.applyFeeToInterest(
+      rawInterestAmountToken,
+      this.poolInfo
+    );
+    this.interestAmountUSD = this.helpers.applyFeeToInterest(
+      rawInterestAmountUSD,
+      this.poolInfo
+    );
+
+    // get APY
+    this.interestRate = this.interestAmountToken
+      .div(this.depositAmountToken)
+      .div(depositTime)
+      .times(this.constants.YEAR_IN_SEC)
+      .times(100);
+    if (this.interestRate.isNaN()) {
+      this.interestRate = new BigNumber(0);
+    }
+
+    // get MPH reward amount
+    this.mphRewardAmountToken = this.mphDepositorRewardMintMultiplier
+      .times(this.depositAmountToken)
+      .times(depositTime);
+    this.mphRewardAmountUSD = this.mphRewardAmountToken.times(this.mphPriceUSD);
+
+    const mphAPY = this.mphRewardAmountToken
+      .times(this.mphPriceUSD)
+      .div(this.depositAmountUSD)
+      .div(depositTime)
+      .times(this.constants.YEAR_IN_SEC)
+      .times(100);
+    if (mphAPY.isNaN()) {
+      this.mphRewardAPR = new BigNumber(0);
+    } else {
+      this.mphRewardAPR = mphAPY;
+    }
   }
 
   setDepositAmount(amount: string) {
     this.depositAmountToken = new BigNumber(+amount);
+    if (this.depositAmountToken.isNaN()) {
+      this.depositAmountToken = new BigNumber(0);
+    }
     this.updateAPY();
   }
 
@@ -123,24 +178,23 @@ export class ModalTopUpComponent implements OnInit {
     this.updateAPY();
   }
 
-  // @dev needs to be tested with a v3 contract
   deposit() {
     const pool = this.contract.getPool(this.poolInfo.name);
     const stablecoin = this.contract.getPoolStablecoin(this.poolInfo.name);
     const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
-    const depositAmount = this.helpers.processWeb3Number(
+    const depositAmountToken = this.helpers.processWeb3Number(
       this.depositAmountToken.times(stablecoinPrecision)
     );
-    const func = pool.methods.topUpDeposit(
+    const func = pool.methods.topupDeposit(
       this.userDeposit.nftID,
-      depositAmount
+      depositAmountToken
     );
 
     this.wallet.sendTxWithToken(
       func,
       stablecoin,
       this.poolInfo.address,
-      depositAmount,
+      depositAmountToken,
       () => {},
       () => {
         this.activeModal.dismiss();
