@@ -25,7 +25,12 @@
                 <div class="col">
                   <h6 class="header-pretitle mb-2">Yield tokens available</h6>
                   <h4 class="mb-1 glowing display-4">
-                    {{ deposit.yieldTokensAvailable.toFormat(18) }} TKN
+                    {{
+                      deposit.yieldTokensAvailable.toFormat(
+                        deposit.pool.stablecoinDecimals
+                      )
+                    }}
+                    TKN
                   </h4>
                   <div class="text-muted small d-block">
                     ${{ deposit.yieldTokensAvailableUSD.toFormat(2) }}
@@ -41,7 +46,9 @@
                     placeholder="0.00"
                     aria-label="fund-amount"
                     aria-describedby=""
-                    [value]="fundAmount.toFormat(18)"
+                    [value]="
+                      fundAmount.dp(deposit.pool.stablecoinDecimals).toFormat()
+                    "
                     (input)="setFundAmount($event.target.value)"
                   />
                   <div class="input-group-append">
@@ -49,7 +56,11 @@
                       class="btn btn-lg border-gradient"
                       type="button"
                       (click)="
-                        setFundAmount(deposit.yieldTokensAvailable.toFixed(18))
+                        setFundAmount(
+                          deposit.yieldTokensAvailable.toFixed(
+                            deposit.pool.stablecoinDecimals
+                          )
+                        )
                       "
                     >
                       Max
