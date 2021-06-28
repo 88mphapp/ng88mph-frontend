@@ -21,53 +21,38 @@
           <div class="card mb-8">
             <div class="card-body">
               <form>
-                <div
-                  class="list-group list-group-flush list-group-activity mb-4"
-                >
-                  <div class="list-group-item">
-                    <div class="row">
-                      <div class="col ml-n2">
-                        <div class="form-group mb-2">
-                          <label
-                            >Top up amount ({{
-                              poolInfo.stablecoinSymbol
-                            }})</label
-                          >
-                          <div class="input-group mb-2">
-                            <input
-                              type="text"
-                              class="form-control form-control-lg"
-                              placeholder="0.00"
-                              aria-label="TopUpAmount"
-                              [value]="depositAmountToken.toFixed()"
-                              (input)="setDepositAmount($event.target.value)"
-                            />
-                            <div class="input-group-append">
-                              <button
-                                class="btn btn-lg border-gradient"
-                                type="button"
-                                (click)="setMaxDepositAmount()"
-                              >
-                                Max
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="row mb-4">
-                          <div class="col">
-                            <small class="form-text text-muted"
-                              >{{ depositTokenBalance.toFormat(4) }}
-                              {{ poolInfo.stablecoinSymbol }} available</small
-                            >
-                          </div>
-                        </div>
-                      </div>
+                <div class="form-group mb-2">
+                  <label>Top up amount ({{ poolInfo.stablecoinSymbol }})</label>
+                  <div class="input-group mb-2">
+                    <input
+                      type="text"
+                      class="form-control form-control-lg"
+                      placeholder="0.00"
+                      aria-label="TopUpAmount"
+                      [value]="depositAmountToken.toFixed()"
+                      (input)="setDepositAmount($event.target.value)"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        class="btn btn-lg border-gradient"
+                        type="button"
+                        (click)="setMaxDepositAmount()"
+                      >
+                        Max
+                      </button>
                     </div>
-                    <!-- / .row -->
                   </div>
                 </div>
-                <div class="table-responsive">
+
+                <div class="row mb-4">
+                  <div class="col">
+                    <small class="form-text text-muted"
+                      >{{ depositTokenBalance.toFormat(4) }}
+                      {{ poolInfo.stablecoinSymbol }} available</small
+                    >
+                  </div>
+                </div>
+                <div class="table-responsive py-3 pr-3">
                   <table class="table">
                     <tbody>
                       <tr>
