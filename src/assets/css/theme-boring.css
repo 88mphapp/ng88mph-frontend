@@ -14461,6 +14461,11 @@ button:focus {
   background-color: #b1c2d9;
 }
 
+.avatar-xxxs {
+  width: 16px;
+  height: 16px;
+  font-size: 0.54167rem;
+}
 .avatar-xxs {
   width: 20px;
   height: 20px;
