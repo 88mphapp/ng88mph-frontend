@@ -284,7 +284,7 @@
                         {{ selectedPool.name }} FRB
                       </h4>
                       <div class="text-muted d-block">
-                        ${{ deposit.yieldTokensAvailableUSD.toFormat(2) }}
+                        ${{ deposit.yieldTokensAvailableUSD.toFormat(4) }}
                       </div>
                     </td>
                     <td>
@@ -293,7 +293,7 @@
                         {{ selectedPool.stablecoinSymbol }}
                       </h4>
                       <div class="text-muted d-block">
-                        ${{ deposit.unfundedDepositAmountUSD.toFormat(2) }}
+                        ${{ deposit.unfundedDepositAmountUSD.toFormat(4) }}
                       </div>
                     </td>
                     <td>
@@ -320,7 +320,7 @@
                               class="avatar-img rounded-circle"
                             />
                           </div>
-                          +0.00% APR
+                          +{{ deposit.mphRewardsAPR.toFormat(2) }}% APR
                         </span>
                       </h4>
                     </td>
