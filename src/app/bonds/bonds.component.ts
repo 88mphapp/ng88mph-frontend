@@ -626,7 +626,7 @@ export class BondsComponent implements OnInit {
         dpool(id: "${poolID}") {
           id
           poolFunderRewardMultiplier
-          deposits(where: {amount_gt: "0"}) {
+          deposits(where: {amount_gt: "${this.constants.DUST_THRESHOLD}"}) {
             id
             nftID
             amount

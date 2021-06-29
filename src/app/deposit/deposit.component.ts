@@ -163,7 +163,7 @@ export class DepositComponent implements OnInit {
           pools {
             id
             address
-            deposits(where: { user: "${userID}", amount_gt: "0" }, orderBy: nftID) {
+            deposits(where: { user: "${userID}", amount_gt: "${this.constants.DUST_THRESHOLD}" }, orderBy: nftID) {
               nftID
               virtualTokenTotalSupply
               maturationTimestamp
