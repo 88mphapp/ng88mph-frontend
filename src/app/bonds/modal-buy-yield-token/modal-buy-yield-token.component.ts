@@ -17,6 +17,9 @@ export class ModalBuyYieldTokenComponent implements OnInit {
 
   fundAmount: BigNumber;
   stablecoinBalance: BigNumber;
+  stablecoinPriceUSD: BigNumber;
+  youPay: BigNumber;
+  earnYieldOn: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -32,10 +35,14 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     this.loadData();
   }
 
-  loadData(): void {
+  async loadData() {
     this.fundAmount = this.deposit.yieldTokensAvailable;
+    this.updateDetails();
 
     const stablecoin = this.contract.getPoolStablecoin(this.deposit.pool.name);
+    this.stablecoinPriceUSD = new BigNumber(
+      await this.helpers.getTokenPriceUSD(this.deposit.pool.stablecoin)
+    );
     stablecoin.methods
       .balanceOf(this.wallet.userAddress)
       .call()
@@ -49,6 +56,9 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   resetData(): void {
     this.fundAmount = new BigNumber(0);
     this.stablecoinBalance = new BigNumber(0);
+    this.stablecoinPriceUSD = new BigNumber(0);
+    this.youPay = new BigNumber(0);
+    this.earnYieldOn = new BigNumber(0);
   }
 
   setFundAmount(amount: number | string) {
@@ -56,22 +66,12 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     if (this.fundAmount.isNaN()) {
       this.fundAmount = new BigNumber(0);
     }
+    this.updateDetails();
   }
 
-  async buyYieldTokens() {
-    const pool = this.contract.getPool(this.deposit.pool.name);
+  async updateDetails() {
     const lens = this.contract.getNamedContract('DInterestLens');
-    const stablecoin = this.contract.getPoolStablecoin(this.deposit.pool.name);
     const depositID = this.deposit.id.split('---')[1];
-
-    // let surplusMagnitude;
-    // await pool.methods
-    //   .rawSurplusOfDeposit(depositID)
-    //   .call()
-    //   .then((result) => {
-    //     surplusMagnitude = new BigNumber(result.surplusAmount).div(this.constants.PRECISION);
-    //   });
-    // console.log(surplusMagnitude.toString());
 
     let surplusMagnitude;
     await lens.methods
@@ -82,33 +82,28 @@ export class ModalBuyYieldTokenComponent implements OnInit {
           this.constants.PRECISION
         );
       });
-    console.log(surplusMagnitude.toString());
-
-    //console.log(this.fundAmount.toString());
-    //console.log(this.deposit.yieldTokensAvailable.toString());
 
     const fundPercent = this.fundAmount.div(this.deposit.yieldTokensAvailable);
+
     let fundAmount = this.fundAmount.minus(
       fundPercent.times(this.deposit.unfundedDepositAmount)
     );
-    console.log(fundAmount.toString());
-    // if fund amount is larger than surplus magnitude, then use the surplus magnitude
     if (fundAmount.gt(surplusMagnitude)) {
       fundAmount = surplusMagnitude;
     }
-    console.log(fundAmount.toString());
 
+    this.youPay = fundAmount;
+    this.earnYieldOn = fundPercent.times(this.deposit.unfundedDepositAmount);
+  }
+
+  async buyYieldTokens() {
+    const pool = this.contract.getPool(this.deposit.pool.name);
+    const stablecoin = this.contract.getPoolStablecoin(this.deposit.pool.name);
+    const depositID = this.deposit.id.split('---')[1];
     const actualFundAmount = this.helpers.processWeb3Number(
-      fundAmount.times(this.constants.PRECISION)
+      this.youPay.times(this.constants.PRECISION)
     );
-    console.log(actualFundAmount);
     const func = pool.methods.fund(depositID, actualFundAmount);
-    console.log(func);
-
-    const received = this.deposit.yieldTokensAvailable
-      .times(fundAmount)
-      .div(surplusMagnitude);
-    console.log(received.toString());
 
     this.wallet.sendTxWithToken(
       func,

@@ -669,6 +669,20 @@ export class BondsComponent implements OnInit {
 
       for (const deposit of data.dpool.deposits) {
         //const poolContract = this.contract.getPool(this.selectedPool.name);
+        // NEW STUFF
+
+        const virtualTokenTotalSupply = new BigNumber(
+          deposit.virtualTokenTotalSupply
+        );
+        const interestRate = new BigNumber(deposit.interestRate);
+        const feeRate = new BigNumber(deposit.feeRate);
+
+        const totalPrincipal = virtualTokenTotalSupply
+          .div(interestRate.plus(1))
+          .times(interestRate.plus(feeRate).plus(1));
+        console.log(totalPrincipal.toString());
+
+        // END NEW STUFF
 
         const depositAmount = new BigNumber(deposit.amount);
 
@@ -695,6 +709,7 @@ export class BondsComponent implements OnInit {
           });
 
         // deposit hasn't been funded yet
+        // @dev yield tokens available will equal the total principal of the deposit
         if (deposit.funding === null) {
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
@@ -703,8 +718,8 @@ export class BondsComponent implements OnInit {
             countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
             unfundedDepositAmount: depositAmount,
             unfundedDepositAmountUSD: depositAmount.times(stablecoinPrice),
-            yieldTokensAvailable: principalAmount,
-            yieldTokensAvailableUSD: principalAmount
+            yieldTokensAvailable: totalPrincipal,
+            yieldTokensAvailableUSD: totalPrincipal
               .minus(depositAmount)
               .times(stablecoinPrice),
           };
@@ -712,7 +727,7 @@ export class BondsComponent implements OnInit {
           fundableDeposits.push(parsedDeposit);
         }
 
-        // deposit has been partially funded
+        // deposit has been partially funded and has a negative surplus
         else if (surplus.lt(0)) {
           let supply = deposit.funding.totalSupply;
           let ppt = deposit.funding.principalPerToken;
