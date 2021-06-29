@@ -14949,6 +14949,10 @@ button:focus {
   background-color: #00d97e;
 }
 
+.avatar-online.rinkeby::before {
+  background-color: #f6c343;
+}
+
 .avatar-offline::before {
   background-color: #b1c2d9;
 }
@@ -14956,6 +14960,7 @@ button:focus {
 .avatar-xxs {
   width: 20px;
   height: 20px;
+  font-size: 0.54167rem;
 }
 .avatar-xs {
   width: 1.625rem;
