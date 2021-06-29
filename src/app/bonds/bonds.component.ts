@@ -623,8 +623,9 @@ export class BondsComponent implements OnInit {
       {
         dpool(id: "${poolID}") {
           id
-          deposits {
+          deposits(where: {amount_gt: "0"}) {
             id
+            nftID
             amount
             virtualTokenTotalSupply
             interestRate
@@ -679,10 +680,7 @@ export class BondsComponent implements OnInit {
 
         let surplus;
         await lens.methods
-          .surplusOfDeposit(
-            this.selectedPool.address,
-            deposit.id.split('---')[1]
-          )
+          .surplusOfDeposit(this.selectedPool.address, deposit.nftID)
           .call()
           .then((result) => {
             if (result.isNegative === true) {
@@ -1069,6 +1067,7 @@ interface FundableDepositsQuery {
     id: string;
     deposits: {
       id: string;
+      nftID: string;
       amount: BigNumber;
       virtualTokenTotalSupply: BigNumber;
       interestRate: BigNumber;
