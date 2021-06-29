@@ -166,11 +166,14 @@ export class BondsComponent implements OnInit {
       }
     `;
 
-    console.log(queryString);
     request(
       this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
       queryString
     ).then((data: QueryResult) => this.handleData(data));
+
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
 
     // ***********
     // V2 CODE
@@ -259,13 +262,13 @@ export class BondsComponent implements OnInit {
     // ***********
     // V3 CODE
     // ***********
-    console.log(data);
+    //console.log(data);
     const funder = data.funder;
     const dpools = data.dpools;
     let stablecoinPriceCache = {};
 
     if (funder) {
-      console.log(funder);
+      //console.log(funder);
       const funderPools: FunderPool[] = [];
       Promise.all(
         funder.pools.map(async (pool) => {
@@ -320,7 +323,7 @@ export class BondsComponent implements OnInit {
         })
       ).then(() => {
         this.funderPools = funderPools;
-        console.log(this.funderPools);
+        //console.log(this.funderPools);
       });
     }
 
@@ -623,6 +626,7 @@ export class BondsComponent implements OnInit {
       {
         dpool(id: "${poolID}") {
           id
+          poolFunderRewardMultiplier
           deposits(where: {amount_gt: "0"}) {
             id
             nftID
@@ -667,6 +671,18 @@ export class BondsComponent implements OnInit {
       const lens = this.contract.getNamedContract('DInterestLens');
       //console.log(lens);
 
+      // get MPH APY
+      const mphFunderRewardMultiplier = new BigNumber(
+        data.dpool.poolFunderRewardMultiplier
+      );
+      //console.log(mphFunderRewardMultiplier.toString());
+      // const mphAPY = mphFunderRewardMintMultiplier
+      //   .times(this.mphPriceUSD)
+      //   .times(this.constants.YEAR_IN_SEC)
+      //   .div(stablecoinPrice)
+      //   .times(100);
+      // console.log(mphAPY.toString());
+
       for (const deposit of data.dpool.deposits) {
         //const poolContract = this.contract.getPool(this.selectedPool.name);
         // NEW STUFF
@@ -680,17 +696,17 @@ export class BondsComponent implements OnInit {
         const totalPrincipal = virtualTokenTotalSupply
           .div(interestRate.plus(1))
           .times(interestRate.plus(feeRate).plus(1));
-        console.log(totalPrincipal.toString());
+        //console.log(totalPrincipal.toString());
 
         // END NEW STUFF
 
         const depositAmount = new BigNumber(deposit.amount);
 
-        const principalAmount = depositAmount.times(
-          new BigNumber(deposit.interestRate)
-            .plus(new BigNumber(deposit.feeRate))
-            .plus(1)
-        );
+        // const principalAmount = depositAmount.times(
+        //   new BigNumber(deposit.interestRate)
+        //     .plus(new BigNumber(deposit.feeRate))
+        //     .plus(1)
+        // );
 
         let surplus;
         await lens.methods
@@ -711,6 +727,28 @@ export class BondsComponent implements OnInit {
         // deposit hasn't been funded yet
         // @dev yield tokens available will equal the total principal of the deposit
         if (deposit.funding === null) {
+          const now = Math.floor(Date.now() / 1e3);
+          const timeTillMaturation = deposit.maturationTimestamp - now;
+
+          let mphRewardAmount = new BigNumber(0);
+          mphRewardAmount = mphRewardAmount.plus(
+            depositAmount
+              .times(mphFunderRewardMultiplier)
+              .times(timeTillMaturation)
+          );
+
+          let mphRewardsAPR = mphRewardAmount
+            .times(this.mphPriceUSD)
+            .div(totalPrincipal.minus(depositAmount).times(stablecoinPrice))
+            .times(100);
+          if (mphRewardsAPR.isNaN()) {
+            mphRewardsAPR = new BigNumber(0);
+          }
+
+          //let mphreward = depositAmount.times(poolFunderRewardMultiplier);
+          // console.log(mphRewardAmount.toString());
+          // console.log(mphRewardsAPR.toString());
+
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
             pool: this.selectedPool,
@@ -722,6 +760,7 @@ export class BondsComponent implements OnInit {
             yieldTokensAvailableUSD: totalPrincipal
               .minus(depositAmount)
               .times(stablecoinPrice),
+            mphRewardsAPR: mphRewardsAPR,
           };
           parsedDeposit.countdownTimer.start();
           fundableDeposits.push(parsedDeposit);
@@ -729,16 +768,32 @@ export class BondsComponent implements OnInit {
 
         // deposit has been partially funded and has a negative surplus
         else if (surplus.lt(0)) {
-          let supply = deposit.funding.totalSupply;
-          let ppt = deposit.funding.principalPerToken;
-          let unfundedPrincipalAmount = principalAmount.minus(supply * ppt);
-          let unfundedDepositAmount = unfundedPrincipalAmount.plus(surplus);
-          //console.log(supply);
-          //console.log(ppt);
-          //console.log(unfundedPrincipalAmount);
-          const yieldTokensAvailable = unfundedPrincipalAmount.div(ppt);
-          //console.log(yieldTokensAvailable);
-          //console.log(surplus);
+          const supply = deposit.funding.totalSupply;
+          const principalPerToken = deposit.funding.principalPerToken;
+          const unfundedPrincipalAmount = totalPrincipal.minus(
+            supply * principalPerToken
+          );
+          const unfundedDepositAmount = unfundedPrincipalAmount.plus(surplus);
+          const yieldTokensAvailable =
+            unfundedPrincipalAmount.div(principalPerToken);
+
+          const now = Math.floor(Date.now() / 1e3);
+          const timeTillMaturation = deposit.maturationTimestamp - now;
+
+          let mphRewardAmount = new BigNumber(0);
+          mphRewardAmount = mphRewardAmount.plus(
+            unfundedDepositAmount
+              .times(mphFunderRewardMultiplier)
+              .times(timeTillMaturation)
+          );
+
+          let mphRewardsAPR = mphRewardAmount
+            .times(this.mphPriceUSD)
+            .div(surplus.negated().times(stablecoinPrice))
+            .times(100);
+          if (mphRewardsAPR.isNaN()) {
+            mphRewardsAPR = new BigNumber(0);
+          }
 
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
@@ -752,6 +807,7 @@ export class BondsComponent implements OnInit {
             yieldTokensAvailableUSD: yieldTokensAvailable
               .minus(unfundedDepositAmount)
               .times(stablecoinPrice),
+            mphRewardsAPR: mphRewardsAPR,
           };
           parsedDeposit.countdownTimer.start();
           fundableDeposits.push(parsedDeposit);
@@ -1080,6 +1136,7 @@ interface QueryResult {
 interface FundableDepositsQuery {
   dpool: {
     id: string;
+    poolFunderRewardMultiplier: BigNumber;
     deposits: {
       id: string;
       nftID: string;
