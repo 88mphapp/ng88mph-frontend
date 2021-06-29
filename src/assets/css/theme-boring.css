@@ -14462,9 +14462,9 @@ button:focus {
 }
 
 .avatar-xxs {
-  width: 1.5rem;
-  height: 1.5rem;
-  font-size: 0.54167rem;
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
 }
 
 .avatar-xs {
