@@ -66,7 +66,7 @@ export class BondsComponent implements OnInit {
   floatingRatePrediction: BigNumber;
   numDepositsToFund: string;
   numFundableDeposits: number;
-  fundableDeposits: Deposit[];
+  fundableDeposits: FundableDeposit[];
   debtToFundToken: BigNumber;
   debtToFundUSD: BigNumber;
   amountToEarnOnToken: BigNumber;
@@ -380,7 +380,7 @@ export class BondsComponent implements OnInit {
         })
       ).then(() => {
         this.allPoolList = allPoolList;
-        //console.log(this.allPoolList);
+        console.log(this.allPoolList);
         this.selectPool(0);
       });
     }
@@ -609,8 +609,7 @@ export class BondsComponent implements OnInit {
     this.selectedPool = this.allPoolList[poolIdx];
     //const selectedPoolContract = this.contract
     //console.log(this.selectedPool);
-    this.floatingRatePrediction =
-      this.selectedPool.oneYearInterestRate.times(2);
+
     // this.numFundableDeposits = Math.min(
     //   this.selectedPool.latestDeposit - this.selectedPool.latestFundedDeposit,
     //   20
@@ -760,6 +759,7 @@ export class BondsComponent implements OnInit {
             yieldTokensAvailableUSD: totalPrincipal
               .minus(depositAmount)
               .times(stablecoinPrice),
+            estimatedAPR: new BigNumber(0),
             mphRewardsAPR: mphRewardsAPR,
           };
           parsedDeposit.countdownTimer.start();
@@ -807,6 +807,7 @@ export class BondsComponent implements OnInit {
             yieldTokensAvailableUSD: yieldTokensAvailable
               .minus(unfundedDepositAmount)
               .times(stablecoinPrice),
+            estimatedAPR: new BigNumber(0),
             mphRewardsAPR: mphRewardsAPR,
           };
           parsedDeposit.countdownTimer.start();
@@ -843,6 +844,8 @@ export class BondsComponent implements OnInit {
       // this.fundableDeposits = fundableDeposits;
       //
       // this.updateNumDepositsToFund(this.numFundableDeposits + 1);
+      this.floatingRatePrediction = this.selectedPool.oracleInterestRate;
+      this.updateEstimatedROI();
     });
   }
 
@@ -850,13 +853,12 @@ export class BondsComponent implements OnInit {
     if (!this.selectedPool) {
       return false;
     }
-    // return this.selectedPool.surplus.lt(0) && this.numFundableDeposits > 0;
-    return true;
+    return this.selectedPool.surplus.lt(0);
   }
 
   updateFloatingRatePrediction(newPrediction: number) {
     this.floatingRatePrediction = new BigNumber(newPrediction);
-    // this.updateEstimatedROI();
+    this.updateEstimatedROI();
   }
 
   async updateNumDepositsToFund(newNum: number) {
@@ -958,10 +960,11 @@ export class BondsComponent implements OnInit {
   }
 
   async updateEstimatedROI() {
-    // // compute estimated ROI
-    // const estimatedFloatingRate = this.floatingRatePrediction.div(100);
-    // let estimatedInterest = new BigNumber(0);
-    // const now = Date.now() / 1e3;
+    console.log('check');
+    // compute estimated ROI
+    const estimatedFloatingRate = this.floatingRatePrediction.div(100);
+    //let estimatedInterest = new BigNumber(0);
+    const now = Date.now() / 1e3;
     // const numDepositsToFund = isNaN(+this.numDepositsToFund)
     //   ? this.fundableDeposits.length
     //   : +this.numDepositsToFund;
@@ -973,6 +976,21 @@ export class BondsComponent implements OnInit {
     //     .div(this.constants.YEAR_IN_SEC);
     //   estimatedInterest = estimatedInterest.plus(depositInterest);
     // }
+    //console.log(this.fundableDeposits);
+    for (const deposit of this.fundableDeposits) {
+      //console.log(deposit);
+
+      const debtToFund = deposit.yieldTokensAvailableUSD;
+      const estimatedInterest = deposit.unfundedDepositAmountUSD
+        .times(estimatedFloatingRate)
+        .times(deposit.maturationTimestamp - now)
+        .div(this.constants.YEAR_IN_SEC);
+      const estimatedProfit = estimatedInterest.minus(debtToFund);
+      const estimatedAPR = estimatedProfit.div(debtToFund).times(100);
+      //console.log(debtToFund.toString());
+      //console.log(estimatedInterest.toString());
+      deposit.estimatedAPR = estimatedAPR;
+    }
     // this.estimatedProfitToken = estimatedInterest.minus(this.debtToFundToken);
     // this.estimatedProfitUSD = this.estimatedProfitToken.times(
     //   await this.helpers.getTokenPriceUSD(
@@ -983,7 +1001,7 @@ export class BondsComponent implements OnInit {
     //   .div(this.debtToFundToken)
     //   .times(100);
     //
-    // this.loadingCalculator = false;
+    this.loadingCalculator = false;
   }
 
   getDepositsToFundByMaturationTime() {
@@ -1061,41 +1079,6 @@ export class BondsComponent implements OnInit {
 }
 
 interface QueryResult {
-  // funder: {
-  //   totalMPHEarned: number;
-  //   pools: {
-  //     address: string;
-  //     fundings: {
-  //       id: number;
-  //       fromDepositID: number;
-  //       toDepositID: number;
-  //       pool: {
-  //         address: string;
-  //         oracleInterestRate: number;
-  //         moneyMarketIncomeIndex: number;
-  //         poolFunderRewardMultiplier: number;
-  //       };
-  //       nftID: number;
-  //       recordedFundedDepositAmount: number;
-  //       recordedMoneyMarketIncomeIndex: number;
-  //       initialFundedDepositAmount: number;
-  //       fundedDeficitAmount: number;
-  //       totalInterestEarned: number;
-  //       mphRewardEarned: number;
-  //       refundAmount: number;
-  //       creationTimestamp: number;
-  //     }[];
-  //   }[];
-  //   totalInterestByPool: {
-  //     pool: {
-  //       id: string;
-  //       stablecoin: string;
-  //     };
-  //     totalDeficitFunded: number;
-  //     totalRecordedFundedDepositAmount: number;
-  //     totalInterestEarned: number;
-  //   }[];
-  // };
   funder: {
     address: string;
     pools: {
@@ -1111,19 +1094,6 @@ interface QueryResult {
       }[];
     }[];
   };
-
-  // dpools: {
-  //   id: string;
-  //   address: string;
-  //   surplus: number;
-  //   unfundedDepositAmount: number;
-  //   oneYearInterestRate: number;
-  //   oracleInterestRate: number;
-  //   poolFunderRewardMultiplier: number;
-  //   latestDeposit: {
-  //     nftID: number;
-  //   }[];
-  // }[];
   dpools: {
     id: string;
     address: string;
