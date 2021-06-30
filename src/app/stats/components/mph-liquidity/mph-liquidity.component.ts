@@ -22,6 +22,7 @@ export class MphLiquidityComponent implements OnInit {
   readable: string[] = [];
   blocks: number[] = [];
   uniswap_v2: number[] = [];
+  uniswap_v3: number[] = [];
   sushiswap: number[] = [];
   bancor: number[] = [];
 
@@ -82,6 +83,13 @@ export class MphLiquidityComponent implements OnInit {
         hoverBackgroundColor: 'rgba(221, 107, 229, 1)',
       },
       {
+        data: this.uniswap_v3,
+        label: 'Uniswap V3',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        borderColor: 'rgba(255, 255, 255, 1)',
+        hoverBackgroundColor: 'rgba(255, 255, 255, 1)',
+      },
+      {
         data: this.sushiswap,
         label: 'Sushiswap',
         backgroundColor: 'rgba(3, 184, 255, 0.3)',
@@ -123,6 +131,7 @@ export class MphLiquidityComponent implements OnInit {
 
     // load data
     this.loadUniswapV2();
+    this.loadUniswapV3();
     this.loadSushiswap();
     this.loadBancor();
   }
@@ -150,9 +159,30 @@ export class MphLiquidityComponent implements OnInit {
     );
   }
 
+  async loadUniswapV3() {
+    let queryString = `query Uniswap_V3 {`;
+    for (let i = 0; i < this.blocks.length; i++) {
+      queryString += `t${i}: pool(
+        id: "${this.constants.UNISWAP_V3_LP[this.wallet.networkID]}",
+        block: {
+          number: ${this.blocks[i]}
+        }
+      ) {
+        totalValueLockedUSD
+      }`;
+    }
+    queryString += `}`;
+    const query = gql`
+      ${queryString}
+    `;
+    request(this.constants.UNISWAP_V3_GRAPHQL_ENDPOINT, query).then(
+      (data: QueryResult) => this.handleUniswapV3Data(data)
+    );
+  }
+
   async loadSushiswap() {
     // buld the query string
-    let queryString = `query Uniswap {`;
+    let queryString = `query Sushiswap {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pair(
         id: "${this.constants.SUSHISWAP_LP[this.wallet.networkID]}",
@@ -189,6 +219,18 @@ export class MphLiquidityComponent implements OnInit {
     }
   }
 
+  handleUniswapV3Data(data: QueryResult): void {
+    for (let key in data) {
+      if (data[key] !== null) {
+        this.uniswap_v3[parseInt(key.substring(1))] = parseInt(
+          data[key].totalValueLockedUSD
+        );
+      } else {
+        this.uniswap_v3[parseInt(key.substring(1))] = 0;
+      }
+    }
+  }
+
   handleSushiswapData(data: QueryResult): void {
     for (let key in data) {
       if (data[key] !== null) {
@@ -205,5 +247,8 @@ export class MphLiquidityComponent implements OnInit {
 interface QueryResult {
   pair: {
     reserveUSD: number;
+  };
+  pool: {
+    totalValueLockedUSD: number;
   };
 }
