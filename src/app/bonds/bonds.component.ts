@@ -141,9 +141,16 @@ export class BondsComponent implements OnInit {
             fundings(where: { active: true }, orderBy: nftID) {
               id
               nftID
+              totalSupply
+              principalPerToken
               fundedDeficitAmount
               totalInterestEarned
+              totalRefundEarned
+              totalMPHEarned
+              recordedMoneyMarketIncomeIndex
               deposit {
+                id
+                amount
                 maturationTimestamp
               }
             }
@@ -274,17 +281,27 @@ export class BondsComponent implements OnInit {
         funder.pools.map(async (pool) => {
           if (pool.fundings.length == 0) return;
 
+          const lens = this.contract.getNamedContract('DInterestLens');
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
           const poolContract = this.contract.getContract(
             pool.address,
             'DInterest'
           );
 
+          // get stablecoin price in USD
+          const stablecoin = poolInfo.stablecoin.toLowerCase();
+          let stablecoinPrice = stablecoinPriceCache[stablecoin];
+          if (!stablecoinPrice) {
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPriceCache[stablecoin] = stablecoinPrice;
+          }
+
           let yieldToken;
           await poolContract.methods
             .fundingMultitoken()
             .call()
             .then((yieldTokenAddress) => {
+              console.log(yieldTokenAddress);
               yieldToken = this.contract.getContract(
                 yieldTokenAddress,
                 'FundingMultitoken'
@@ -301,6 +318,53 @@ export class BondsComponent implements OnInit {
             ).div(this.constants.PRECISION);
 
             if (yieldTokenBalance.gt(0)) {
+              console.log(pool.fundings[funding]);
+              const yieldTokenPercentage = yieldTokenBalance.div(
+                pool.fundings[funding].totalSupply
+              );
+              //console.log(yieldTokenPercentage.toString());
+
+              // calculate amount of deposit earning yield
+              const earnYieldOn = yieldTokenBalance.div(
+                pool.fundings[funding].principalPerToken
+              );
+
+              // calculate amount of yield earned
+              let yieldEarned = new BigNumber(0);
+
+              // some will have been accrued, which is equally split among yield token holders
+              await lens.methods
+                .accruedInterestOfFunding(
+                  pool.address,
+                  pool.fundings[funding].nftID
+                )
+                .call()
+                .then((result) => {
+                  const totalAccruedInterest = new BigNumber(result).div(
+                    this.constants.PRECISION
+                  );
+                  const funderAccruedInterest =
+                    totalAccruedInterest.times(yieldTokenPercentage);
+                  yieldEarned = yieldEarned.plus(funderAccruedInterest);
+                });
+
+              // some will have been paid out already
+              // @dev this value will potentially include the refund amount
+              await yieldToken.methods
+                .accumulativeDividendOf(
+                  pool.fundings[funding].nftID,
+                  stablecoin,
+                  funder.address
+                )
+                .call()
+                .then((result) => {
+                  const funderDistributedInterest = new BigNumber(result).div(
+                    this.constants.PRECISION
+                  );
+                  console.log(funderDistributedInterest.toString());
+                  yieldEarned = yieldEarned.plus(funderDistributedInterest);
+                });
+
               const fundingObj: FundedDeposit = {
                 maturationTimestamp:
                   pool.fundings[funding].deposit.maturationTimestamp,
@@ -309,6 +373,19 @@ export class BondsComponent implements OnInit {
                   'down'
                 ),
                 yieldTokenBalance: yieldTokenBalance,
+                yieldTokenBalanceUSD: new BigNumber(0),
+                earnYieldOn: earnYieldOn,
+                earnYieldOnUSD: earnYieldOn.times(stablecoinPrice),
+                yieldEarned: yieldEarned,
+                yieldEarnedUSD: yieldEarned.times(stablecoinPrice),
+                refundedAmount: new BigNumber(
+                  pool.fundings[funding].totalRefundEarned
+                ),
+                refundedAmountUSD: new BigNumber(0),
+                mphRewardsEarned: new BigNumber(
+                  pool.fundings[funding].totalMPHEarned
+                ),
+                mphRewardsEarnedUSD: new BigNumber(0),
               };
               fundingObj.countdownTimer.start();
               fundings.push(fundingObj);
@@ -1086,9 +1163,16 @@ interface QueryResult {
       fundings: {
         id: number;
         nftID: number;
+        totalSupply: number;
+        principalPerToken: number;
         fundedDeficitAmount: number;
         totalInterestEarned: number;
+        totalRefundEarned: number;
+        totalMPHEarned: number;
+        recordedMoneyMarketIncomeIndex: number;
         deposit: {
+          id;
+          amount: number;
           maturationTimestamp: number;
         };
       }[];

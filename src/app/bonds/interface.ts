@@ -43,6 +43,15 @@ export interface FundedDeposit {
   maturationTimestamp: number;
   countdownTimer: Timer;
   yieldTokenBalance: BigNumber;
+  yieldTokenBalanceUSD: BigNumber;
+  earnYieldOn: BigNumber;
+  earnYieldOnUSD: BigNumber;
+  yieldEarned: BigNumber;
+  yieldEarnedUSD: BigNumber;
+  refundedAmount: BigNumber;
+  refundedAmountUSD: BigNumber;
+  mphRewardsEarned: BigNumber;
+  mphRewardsEarnedUSD: BigNumber;
 }
 
 export interface FundableDeposit {
