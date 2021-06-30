@@ -130,11 +130,13 @@ export class HeaderComponent implements OnInit {
 
   onSubmit() {
     this.wallet.watchWallet(this.watchedModel.address);
-    this.loadData(true, true);
+    this.wallet.accountChangedEvent.emit(this.wallet.watch.address);
   }
 
   switchFocus(watching: boolean) {
     this.wallet.watch.watching = watching;
-    this.loadData(true, true);
+    this.wallet.accountChangedEvent.emit(
+      watching ? this.wallet.watch.address : this.wallet.userAddress
+    );
   }
 }
