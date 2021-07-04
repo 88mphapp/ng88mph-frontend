@@ -367,7 +367,9 @@ export class DepositComponent implements OnInit {
               interestEarnedUSD,
               realMPHReward: realMPHReward,
               mphAPY: mphAPY,
-              virtualTokenTotalSupply: new BigNumber(100),
+              virtualTokenTotalSupply: new BigNumber(
+                deposit.virtualTokenTotalSupply
+              ),
               vest: vest,
               depositLength:
                 +deposit.maturationTimestamp - +deposit.depositTimestamp,

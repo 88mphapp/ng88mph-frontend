@@ -93,16 +93,14 @@ export class ModalWithdrawComponent implements OnInit {
     if (this.userDeposit.locked) {
       return this.userDeposit.amountToken;
     } else {
-      return this.userDeposit.amountToken.plus(
-        this.userDeposit.interestEarnedToken
-      );
+      return this.userDeposit.virtualTokenTotalSupply;
     }
   }
 
   get withdrawVirtualTokenAmount(): BigNumber {
     if (this.userDeposit.locked) {
       const withdrawRatio = this.withdrawAmount.div(
-        this.userDeposit.amountToken
+        this.maxWithdrawAmountToken
       );
       const virtualTokenTotalSupply = this.userDeposit.virtualTokenTotalSupply;
       const virtualTokensToWithdraw =
