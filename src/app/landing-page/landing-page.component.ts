@@ -139,8 +139,10 @@ export class LandingPageComponent implements OnInit {
             .plus(dpoolObj.totalDepositUSD)
             .div(1e6);
           allPoolList.push(dpoolObj);
-          if (dpoolObj.oneYearAPY.gt(maxAPY)) {
-            maxAPY = dpoolObj.oneYearAPY;
+
+          const poolMaxAPY = await this.calculateMaxAPY(dpoolObj);
+          if (poolMaxAPY.gt(maxAPY)) {
+            maxAPY = poolMaxAPY;
           }
         })
       ).then(() => {
@@ -283,6 +285,48 @@ export class LandingPageComponent implements OnInit {
     this.tenYearCompounded = this.initialDepositUSD.times(
       new BigNumber(100).plus(this.apy).plus(this.mphRewardAPY).div(100).pow(10)
     );
+  }
+
+  // @notice max apy is based on 7-day deposit length
+  async calculateMaxAPY(dpool: DPool): Promise<BigNumber> {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const pool = this.contract.getPool(dpool.name, readonlyWeb3);
+    const poolInfo = this.contract.getPoolInfo(dpool.name);
+    const stablecoinPrice = await this.helpers.getTokenPriceUSD(
+      poolInfo.stablecoin
+    );
+
+    // get interest amount
+    const deposit = new BigNumber(10000);
+    const depositLength = new BigNumber(7);
+    const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
+    const depositAmount = this.helpers.processWeb3Number(
+      deposit.times(stablecoinPrecision)
+    );
+    const depositTime = this.helpers.processWeb3Number(
+      depositLength.times(this.constants.DAY_IN_SEC)
+    );
+    const rawInterestAmountToken = new BigNumber(
+      await pool.methods
+        .calculateInterestAmount(depositAmount, depositTime)
+        .call()
+    ).div(stablecoinPrecision);
+    const interestEarnedToken = this.helpers.applyFeeToInterest(
+      rawInterestAmountToken,
+      poolInfo
+    );
+
+    // get APY
+    const apy = interestEarnedToken
+      .div(deposit)
+      .div(depositLength)
+      .times(365)
+      .times(100);
+    if (this.apy.isNaN()) {
+      this.apy = new BigNumber(0);
+    }
+
+    return apy;
   }
 
   setDepositAmount(amount: string): void {
