@@ -11,6 +11,7 @@ export interface DPool {
   totalDepositToken: BigNumber;
   totalDepositUSD: BigNumber;
   oneYearInterestRate: BigNumber;
+  maxAPY: BigNumber;
   mphAPY: BigNumber;
   totalUserDepositsToken: BigNumber;
   totalUserDepositsUSD: BigNumber;

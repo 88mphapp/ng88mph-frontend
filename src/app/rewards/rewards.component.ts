@@ -5,6 +5,7 @@ import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
 import { ConstantsService } from '../constants.service';
 import { HelpersService } from '../helpers.service';
+import { DataService } from '../data.service';
 import { ModalUnstakeComponent } from './modal-unstake/modal-unstake.component';
 
 @Component({
@@ -34,13 +35,15 @@ export class RewardsComponent implements OnInit {
   stkaaveRewardsToken: BigNumber;
   stkaaveRewardsUSD: BigNumber;
   totalRewardsUSD: BigNumber;
+  maxAPY: BigNumber;
 
   constructor(
     private modalService: NgbModal,
     public wallet: WalletService,
     public contract: ContractService,
     public constants: ConstantsService,
-    public helpers: HelpersService
+    public helpers: HelpersService,
+    public datas: DataService
   ) {
     this.resetData(true, true);
   }
@@ -103,6 +106,8 @@ export class RewardsComponent implements OnInit {
     }
 
     if (loadGlobal) {
+      this.maxAPY = await this.datas.getMaxAPY();
+
       // load reward accumulation stats
       // only available on mainnet
       if (this.wallet.networkID == this.constants.CHAIN_ID.MAINNET) {
@@ -191,6 +196,7 @@ export class RewardsComponent implements OnInit {
       this.stkaaveRewardsToken = new BigNumber(0);
       this.stkaaveRewardsUSD = new BigNumber(0);
       this.totalRewardsUSD = new BigNumber(0);
+      this.maxAPY = new BigNumber(0);
     }
   }
 

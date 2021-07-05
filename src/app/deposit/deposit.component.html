@@ -242,8 +242,7 @@
                   </td>
                   <td>
                     <span class="h4 mb-0 glowing"
-                      >Up to
-                      {{ pool.oneYearInterestRate.toFormat(DECIMALS) }}%</span
+                      >Up to {{ pool.maxAPY.toFormat(DECIMALS) }}%</span
                     >
                     <span
                       class="
@@ -736,7 +735,7 @@
                 </td>
                 <td>
                   <span class="h4 mb-0 glowing"
-                    >Up to {{ pool.oneYearInterestRate.toFormat(2) }}%</span
+                    >Up to {{ pool.maxAPY.toFormat(2) }}%</span
                   >
                   <span
                     class="

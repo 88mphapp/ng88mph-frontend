@@ -3,6 +3,7 @@ import { ConstantsService } from '../constants.service';
 import { ContractService, PoolInfo } from '../contract.service';
 import { WalletService } from '../wallet.service';
 import { HelpersService } from '../helpers.service';
+import { DataService } from '../data.service';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 
@@ -34,6 +35,7 @@ export class LandingPageComponent implements OnInit {
     public contract: ContractService,
     public wallet: WalletService,
     public helpers: HelpersService,
+    public datas: DataService,
     private zone: NgZone
   ) {
     this.resetData(true, true);
@@ -74,6 +76,8 @@ export class LandingPageComponent implements OnInit {
     }
 
     if (loadGlobal) {
+      this.maxAPY = await this.datas.getMaxAPY();
+
       const queryString = gql`
         {
           ${
@@ -139,11 +143,6 @@ export class LandingPageComponent implements OnInit {
             .plus(dpoolObj.totalDepositUSD)
             .div(1e6);
           allPoolList.push(dpoolObj);
-
-          const poolMaxAPY = await this.calculateMaxAPY(dpoolObj);
-          if (poolMaxAPY.gt(maxAPY)) {
-            maxAPY = poolMaxAPY;
-          }
         })
       ).then(() => {
         allPoolList.sort((a, b) => {
@@ -160,7 +159,6 @@ export class LandingPageComponent implements OnInit {
         this.totalDepositUSD = totalDepositUSD;
         this.allPoolList = allPoolList;
         this.selectedPool = this.allPoolList[0];
-        this.maxAPY = maxAPY;
         this.updateAPY();
       });
     }
@@ -285,48 +283,6 @@ export class LandingPageComponent implements OnInit {
     this.tenYearCompounded = this.initialDepositUSD.times(
       new BigNumber(100).plus(this.apy).plus(this.mphRewardAPY).div(100).pow(10)
     );
-  }
-
-  // @notice max apy is based on 7-day deposit length
-  async calculateMaxAPY(dpool: DPool): Promise<BigNumber> {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const pool = this.contract.getPool(dpool.name, readonlyWeb3);
-    const poolInfo = this.contract.getPoolInfo(dpool.name);
-    const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-      poolInfo.stablecoin
-    );
-
-    // get interest amount
-    const deposit = new BigNumber(10000);
-    const depositLength = new BigNumber(7);
-    const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
-    const depositAmount = this.helpers.processWeb3Number(
-      deposit.times(stablecoinPrecision)
-    );
-    const depositTime = this.helpers.processWeb3Number(
-      depositLength.times(this.constants.DAY_IN_SEC)
-    );
-    const rawInterestAmountToken = new BigNumber(
-      await pool.methods
-        .calculateInterestAmount(depositAmount, depositTime)
-        .call()
-    ).div(stablecoinPrecision);
-    const interestEarnedToken = this.helpers.applyFeeToInterest(
-      rawInterestAmountToken,
-      poolInfo
-    );
-
-    // get APY
-    const apy = interestEarnedToken
-      .div(deposit)
-      .div(depositLength)
-      .times(365)
-      .times(100);
-    if (this.apy.isNaN()) {
-      this.apy = new BigNumber(0);
-    }
-
-    return apy;
   }
 
   setDepositAmount(amount: string): void {
