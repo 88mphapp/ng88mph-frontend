@@ -85,9 +85,9 @@ export class MphLiquidityComponent implements OnInit {
       {
         data: this.uniswap_v3,
         label: 'Uniswap V3',
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        borderColor: 'rgba(255, 255, 255, 1)',
-        hoverBackgroundColor: 'rgba(255, 255, 255, 1)',
+        backgroundColor: 'rgba(75, 179, 154, 0.3)',
+        borderColor: 'rgba(75, 179, 154, 1)',
+        hoverBackgroundColor: 'rgba(75, 179, 154, 1)',
       },
       {
         data: this.sushiswap,
@@ -204,7 +204,14 @@ export class MphLiquidityComponent implements OnInit {
   }
 
   async loadBancor() {
-    // waiting on Bancor to implement historical data queries to their API
+    const start_date = this.timestamps[0];
+    const end_date = this.timestamps[this.timestamps.length - 1];
+    const apiStr = `https://api-v2.bancor.network/history/liquidity-depth/?dlt_type=ethereum&token_dlt_id=${
+      this.constants.MPH_ADDRESS[this.wallet.networkID]
+    }&start_date=${start_date}&end_date=${end_date}&interval=day`;
+    const result = await this.helpers.httpsGet(apiStr);
+
+    this.handleBancorData(result.data);
   }
 
   handleUniswapV2Data(data: QueryResult): void {
@@ -242,6 +249,44 @@ export class MphLiquidityComponent implements OnInit {
       }
     }
   }
+
+  async handleBancorData(data: Array<BancorNetworkHistory>) {
+    const days =
+      (this.timeseries.getLatestUTCDate() -
+        this.FIRST_INDEX +
+        this.constants.DAY_IN_SEC) /
+      this.constants.DAY_IN_SEC;
+    let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(
+      this.constants.MPH_ADDRESS[this.wallet.networkID],
+      `${days}`
+    );
+
+    for (let time in this.timestamps) {
+      const entry = data.find(
+        (key) => key.timestamp === this.timestamps[time] * 1e3
+      );
+      const mphPrice = mphPriceData.find(
+        (key) => key[0] === this.timestamps[time] * 1e3
+      );
+      if (entry && mphPrice) {
+        this.bancor[parseInt(time) + 1] = parseInt(
+          (entry.base * mphPrice[1]).toFixed(0)
+        );
+      } else {
+        this.bancor[parseInt(time) + 1] = 0;
+      }
+    }
+  }
+}
+
+interface BancorNetworkHistory {
+  timestamp: number;
+  bnt: number;
+  eth: number;
+  usd: number;
+  eur: number;
+  eos: number;
+  base: number;
 }
 
 interface QueryResult {
