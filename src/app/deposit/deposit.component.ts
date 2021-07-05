@@ -17,6 +17,7 @@ import { DPool, UserPool, UserDeposit, UserZCBPool, Vest } from './types';
 import { HelpersService } from '../helpers.service';
 import { Timer } from '../timer';
 import { ConstantsService } from '../constants.service';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-deposit',
@@ -46,7 +47,8 @@ export class DepositComponent implements OnInit {
     public wallet: WalletService,
     public contract: ContractService,
     public helpers: HelpersService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    public datas: DataService
   ) {
     this.resetData(true, true);
   }
@@ -250,6 +252,7 @@ export class DepositComponent implements OnInit {
             oneYearInterestRate: this.helpers
               .applyFeeToInterest(pool.oneYearInterestRate, poolInfo)
               .times(100),
+            maxAPY: await this.datas.getPoolMaxAPY(poolInfo.address),
             mphAPY: mphAPY,
             totalUserDepositsToken: new BigNumber(0),
             totalUserDepositsUSD: new BigNumber(0),
@@ -463,6 +466,7 @@ export class DepositComponent implements OnInit {
           totalDepositToken: new BigNumber(0),
           totalDepositUSD: new BigNumber(0),
           oneYearInterestRate: new BigNumber(0),
+          maxAPY: new BigNumber(0),
           mphAPY: new BigNumber(0),
           totalUserDepositsToken: new BigNumber(0),
           totalUserDepositsUSD: new BigNumber(0),
