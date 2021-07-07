@@ -41,5 +41,13 @@
       }
     ]
   },
-  "4": {}
+  "4": {
+    "cDAI": [
+      {
+        "series": "July 2021",
+        "symbol": "88MPH-CDAI-JUL-2021",
+        "address": "0xf28556c90899029ff83A98F68ECF0c8bba3d1335"
+      }
+    ]
+  }
 }
