@@ -109,11 +109,27 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td></td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-dark btn-rounded-circle"
+                      type="button"
+                      data-toggle="collapse"
+                      [attr.data-target]="'#' + funderPool.poolInfo.name"
+                      aria-expanded="false"
+                      [attr.aria-controls]="funderPool.poolInfo.name"
+                    >
+                      <i class="fe fe-chevron-down"></i>
+                    </button>
+                  </td>
                 </tr>
 
+                <!-- <cdk-virtual-scroll-viewport [itemSize]="8" style="height: 500px; width: auto;"> -->
+                <!-- <ng-container *cdkVirtualFor="let funding of funderPool.fundings"> -->
                 <ng-container *ngFor="let funding of funderPool.fundings">
-                  <tr>
+                  <tr
+                    class="multi-collapse collapse show"
+                    id="{{ funderPool.poolInfo.name }}"
+                  >
                     <td>
                       <h6 class="text-muted text-uppercase mb-1">
                         Custom maturity
@@ -176,6 +192,7 @@
                     <td></td>
                   </tr>
                 </ng-container>
+                <!-- </cdk-virtual-scroll-viewport> -->
               </ng-container>
             </tbody>
           </table>
