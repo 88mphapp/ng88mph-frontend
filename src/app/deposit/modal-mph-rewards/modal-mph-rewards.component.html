@@ -30,7 +30,7 @@
                   </div>
                 </div>
                 <div class="col-6">
-                  <h6 class="header-pretitle mb-2">Withdrawn Amount</h6>
+                  <h6 class="header-pretitle mb-2">Claimed Amount</h6>
                   <h4 class="mb-1 glowing">
                     {{ withdrawnAmount.toFormat(4) }} MPH
                   </h4>
@@ -41,9 +41,7 @@
               </div>
               <div class="row justify-content-center mb-4">
                 <div class="col">
-                  <h6 class="header-pretitle mb-2">
-                    Current Withdrawable Amount
-                  </h6>
+                  <h6 class="header-pretitle mb-2">Current Claimable Amount</h6>
                   <h4 class="mb-1 glowing display-4">
                     {{ currentWithdrawableAmount.toFormat(4) }} MPH
                   </h4>
@@ -60,7 +58,7 @@
                 (click)="withdraw()"
                 [disabled]="!canContinue()"
               >
-                Withdraw
+                Claim
               </button>
             </div>
           </div>
@@ -84,15 +82,6 @@
                     >Provide liquidity on our trading pools, and get rewarded by
                     doing so from trading fees and liquidity mining rewards paid
                     in $MPH.</small
-                  >
-                  <small class="text-primary ml-2">Learn more</small>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action px-4">
-                  <h4 class="mb-1">Earn up to 8% fixed APY</h4>
-                  <small class="text-muted"
-                    >Deposit your crypto or stablecoin to start earning
-                    fixed-interest rates. Boost your APY with MPH tokens. Exit
-                    anytime.</small
                   >
                   <small class="text-primary ml-2">Learn more</small>
                 </a>

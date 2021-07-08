@@ -1,0 +1,1 @@
+ng deploy --repo=git@github.com:88mphapp/rinkeby.git --branch=main --base-href=https://88mph.app/rinkeby/

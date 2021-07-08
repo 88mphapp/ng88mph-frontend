@@ -109,11 +109,27 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td></td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-dark btn-rounded-circle"
+                      type="button"
+                      data-toggle="collapse"
+                      [attr.data-target]="'#' + funderPool.poolInfo.name"
+                      aria-expanded="false"
+                      [attr.aria-controls]="funderPool.poolInfo.name"
+                    >
+                      <i class="fe fe-chevron-down"></i>
+                    </button>
+                  </td>
                 </tr>
 
+                <!-- <cdk-virtual-scroll-viewport [itemSize]="8" style="height: 500px; width: auto;"> -->
+                <!-- <ng-container *cdkVirtualFor="let funding of funderPool.fundings"> -->
                 <ng-container *ngFor="let funding of funderPool.fundings">
-                  <tr>
+                  <tr
+                    class="multi-collapse collapse show"
+                    id="{{ funderPool.poolInfo.name }}"
+                  >
                     <td>
                       <h6 class="text-muted text-uppercase mb-1">
                         Custom maturity
@@ -176,6 +192,7 @@
                     <td></td>
                   </tr>
                 </ng-container>
+                <!-- </cdk-virtual-scroll-viewport> -->
               </ng-container>
             </tbody>
           </table>
@@ -259,102 +276,106 @@
             class="table-responsive mb-0"
             *ngIf="selectedPoolHasDebt() && !loadingCalculator"
           >
-            <table class="table table-sm table-nowrap card-table">
-              <thead>
-                <tr>
-                  <th>Maturity</th>
-                  <th>Yield tokens available</th>
-                  <th>You earn yield on</th>
-                  <th>Est. APR / MPH rewards APR</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody class="list">
-                <ng-container *ngFor="let deposit of fundableDeposits">
-                  <tr
-                    class="multi-collapse collapse show"
-                    id="multiCollapseaDAI"
-                  >
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div>
-                          <h6 class="text-muted text-uppercase mb-1">
-                            Custom maturity
-                          </h6>
-                          <!-- badge -->
-                          <span class="badge mb-1 badge-soft-danger">
-                            Locked
-                          </span>
-
-                          <!-- Text -->
-                          <small class="text-muted d-block">
-                            {{ deposit.countdownTimer.days }}d
-                            {{ deposit.countdownTimer.hours }}h
-                            {{ deposit.countdownTimer.minutes }}m
-                            {{ deposit.countdownTimer.seconds }}s
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <h4 class="mb-1 font-weight-bold glowing">
-                        {{ deposit.yieldTokensAvailable.toFormat(4) }}
-                        {{ selectedPool.name }} YT
-                      </h4>
-                      <div class="text-muted d-block">
-                        ${{ deposit.yieldTokensAvailableUSD.toFormat(4) }}
-                      </div>
-                    </td>
-                    <td>
-                      <h4 class="mb-1 font-weight-bold glowing">
-                        {{ deposit.unfundedDepositAmount.toFormat(4) }}
-                        {{ selectedPool.stablecoinSymbol }}
-                      </h4>
-                      <div class="text-muted d-block">
-                        ${{ deposit.unfundedDepositAmountUSD.toFormat(4) }}
-                      </div>
-                    </td>
-                    <td>
-                      <h4 class="mb-1 font-weight-bold glowing">
-                        {{ deposit.estimatedAPR.toFormat(2) }}% APR
-                        <span
-                          class="
-                            badge badge-dark
-                            border border-light
-                            py-0
-                            pl-0
-                            ml-2
-                            mt-n1
-                          "
-                          style="border-radius: 14px"
-                          placement="top"
-                          ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)"
-                        >
-                          <div class="avatar avatar-xs">
-                            <img
-                              src="./assets/img/token-icons/mph-logo-24.svg"
-                              width="16"
-                              alt="..."
-                              class="avatar-img rounded-circle"
-                            />
-                          </div>
-                          +{{ deposit.mphRewardsAPR.toFormat(2) }}% APR
-                        </span>
-                      </h4>
-                    </td>
-                    <td class="text-right">
-                      <!-- cf modal-buy-yield-token -->
-                      <button
-                        class="btn btn-lg btn-bg-gradient"
-                        (click)="buyYieldTokens(deposit)"
-                      >
-                        Buy
-                      </button>
-                    </td>
+            <cdk-virtual-scroll-viewport [itemSize]="8" style="height: 500px">
+              <table class="table table-sm table-nowrap card-table">
+                <thead>
+                  <tr>
+                    <th>Maturity</th>
+                    <th>Yield tokens available</th>
+                    <th>You earn yield on</th>
+                    <th>Est. APR / MPH rewards APR</th>
+                    <th></th>
                   </tr>
-                </ng-container>
-              </tbody>
-            </table>
+                </thead>
+                <tbody class="list">
+                  <ng-container
+                    *cdkVirtualFor="let deposit of fundableDeposits"
+                  >
+                    <tr
+                      class="multi-collapse collapse show"
+                      id="multiCollapseaDAI"
+                    >
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div>
+                            <h6 class="text-muted text-uppercase mb-1">
+                              Custom maturity
+                            </h6>
+                            <!-- badge -->
+                            <span class="badge mb-1 badge-soft-danger">
+                              Locked
+                            </span>
+
+                            <!-- Text -->
+                            <small class="text-muted d-block">
+                              {{ deposit.countdownTimer.days }}d
+                              {{ deposit.countdownTimer.hours }}h
+                              {{ deposit.countdownTimer.minutes }}m
+                              {{ deposit.countdownTimer.seconds }}s
+                            </small>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <h4 class="mb-1 font-weight-bold glowing">
+                          {{ deposit.yieldTokensAvailable.toFormat(4) }}
+                          {{ selectedPool.name }} YT
+                        </h4>
+                        <div class="text-muted d-block">
+                          ${{ deposit.yieldTokensAvailableUSD.toFormat(4) }}
+                        </div>
+                      </td>
+                      <td>
+                        <h4 class="mb-1 font-weight-bold glowing">
+                          {{ deposit.unfundedDepositAmount.toFormat(4) }}
+                          {{ selectedPool.stablecoinSymbol }}
+                        </h4>
+                        <div class="text-muted d-block">
+                          ${{ deposit.unfundedDepositAmountUSD.toFormat(4) }}
+                        </div>
+                      </td>
+                      <td>
+                        <h4 class="mb-1 font-weight-bold glowing">
+                          {{ deposit.estimatedAPR.toFormat(2) }}% APR
+                          <span
+                            class="
+                              badge badge-dark
+                              border border-light
+                              py-0
+                              pl-0
+                              ml-2
+                              mt-n1
+                            "
+                            style="border-radius: 14px"
+                            placement="top"
+                            ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)"
+                          >
+                            <div class="avatar avatar-xs">
+                              <img
+                                src="./assets/img/token-icons/mph-logo-24.svg"
+                                width="16"
+                                alt="..."
+                                class="avatar-img rounded-circle"
+                              />
+                            </div>
+                            +{{ deposit.mphRewardsAPR.toFormat(2) }}% APR
+                          </span>
+                        </h4>
+                      </td>
+                      <td class="text-right">
+                        <!-- cf modal-buy-yield-token -->
+                        <button
+                          class="btn btn-lg btn-bg-gradient"
+                          (click)="buyYieldTokens(deposit)"
+                        >
+                          Buy
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </cdk-virtual-scroll-viewport>
           </div>
         </div>
       </div>
