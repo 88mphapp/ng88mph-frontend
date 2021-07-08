@@ -693,6 +693,7 @@ export class BondsComponent implements OnInit {
     // );
     //
     const poolID = this.selectedPool.address.toLowerCase();
+    const now = Math.floor(Date.now() / 1e3);
 
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
       this.selectedPool.stablecoin
@@ -703,7 +704,12 @@ export class BondsComponent implements OnInit {
         dpool(id: "${poolID}") {
           id
           poolFunderRewardMultiplier
-          deposits(where: {amount_gt: "${this.constants.DUST_THRESHOLD}"}) {
+          deposits(
+            where: {
+              amount_gt: "${this.constants.DUST_THRESHOLD}",
+              maturationTimestamp_gt: "${now}"
+            }
+          ) {
             id
             nftID
             amount
