@@ -24,7 +24,7 @@
             <div class="card-body">
               <form>
                 <div
-                  class="list-group list-group-flush list-group-activity mb-4"
+                  class="list-group list-group-flush list-group-activity mb-2"
                 >
                   <div class="list-group-item">
                     <div class="row">
@@ -147,7 +147,7 @@
                     </div>
                     <!-- / .row -->
                   </div>
-                  <div class="list-group-item">
+                  <div class="list-group-item pb-0">
                     <div class="row">
                       <div class="col-auto text-center">
                         <div class="avatar avatar-sm">
@@ -251,6 +251,56 @@
                             </div>
                           </div>
                         </div>
+                        <div class="form-row">
+                          <div class="col">
+                            <div class="form-group mb-0">
+                              <a
+                                class="btn btn-link text-primary p-0"
+                                data-toggle="collapse"
+                                href="#collapseExample"
+                                role="button"
+                                aria-expanded="false"
+                                aria-controls="collapseExample"
+                              >
+                                <label for="NFTmetadata"
+                                  >Custom NFT metadata (optional)
+                                  <i class="fe fe-chevron-down ml-auto"></i
+                                ></label>
+                              </a>
+                              <div class="collapse" id="collapseExample">
+                                <input
+                                  type="text"
+                                  class="form-control mb-1"
+                                  id="NFTmetadata"
+                                  aria-describedby="NFTmetadataHelp"
+                                  placeholder="Link to your JSON file"
+                                />
+                                <small
+                                  id="NFTmetadataHelp"
+                                  class="form-text text-muted"
+                                  >88mph's deposits are ERC-720 tokens that you
+                                  can customize with JSON metadata schemas, for
+                                  example, a title, a description, an image,
+                                  etc. We invite you to learn more about NFT
+                                  metadata on
+                                  <a
+                                    href="https://nftschool.dev/reference/metadata-schemas/#intro-to-json-schemas"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    >NFT School</a
+                                  >
+                                  and to store your files on
+                                  <a
+                                    href="https://nft.storage/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    >NFT Storage</a
+                                  >.</small
+                                >
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <!-- / .row -->
@@ -271,7 +321,7 @@
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Interest earned
+                          Expected Interest
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
