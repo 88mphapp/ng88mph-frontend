@@ -182,88 +182,6 @@ export class BondsComponent implements OnInit {
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
-
-    // ***********
-    // V2 CODE
-    // ***********
-
-    //const funderID = this.wallet.connected ? this.wallet.userAddress.toLowerCase() : '';
-    // let funderID;
-    // if (this.wallet.connected && !this.wallet.watching) {
-    //   funderID = this.wallet.userAddress.toLowerCase();
-    // } else if (this.wallet.watching) {
-    //   funderID = this.wallet.watchedAddress.toLowerCase();
-    // } else {
-    //   funderID = '';
-    // }
-    // const queryString = gql`
-    //   {
-    //     ${
-    //       loadUser
-    //         ? `funder(id: "${funderID}") {
-    //       totalMPHEarned
-    //       pools {
-    //         id
-    //         address
-    //         fundings(where: { funder: "${funderID}", active: true }, orderBy: nftID) {
-    //           id
-    //           pool {
-    //             address
-    //             oracleInterestRate
-    //             moneyMarketIncomeIndex
-    //             poolFunderRewardMultiplier
-    //           }
-    //           fromDepositID
-    // 					toDepositID
-    //           nftID
-    //           recordedFundedDepositAmount
-    //           recordedMoneyMarketIncomeIndex
-    //           initialFundedDepositAmount
-    //           fundedDeficitAmount
-    //           totalInterestEarned
-    //           mphRewardEarned
-    //           refundAmount
-    //           creationTimestamp
-    //         }
-    //       }
-    //       totalInterestByPool {
-    //         pool {
-    //           id
-    //           stablecoin
-    //         }
-    //         totalDeficitFunded
-    //         totalRecordedFundedDepositAmount
-    //         totalInterestEarned
-    //       }
-    //     }`
-    //         : ''
-    //     }
-    //     ${
-    //       loadGlobal
-    //         ? `dpools {
-    //       id
-    //       address
-    //       surplus
-    //       unfundedDepositAmount
-    //       oneYearInterestRate
-    //       oracleInterestRate
-    //       poolFunderRewardMultiplier
-    //       latestDeposit: deposits(orderBy: nftID, orderDirection: desc, first: 1) {
-    //         nftID
-    //       }
-    //     }`
-    //         : ''
-    //     }
-    //   }
-    // `;
-    // request(
-    //   this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
-    //   queryString
-    // ).then((data: QueryResult) => this.handleData(data));
-    //
-    // this.helpers.getMPHPriceUSD().then((price) => {
-    //   this.mphPriceUSD = price;
-    // });
   }
 
   async handleData(data: QueryResult) {
@@ -274,6 +192,7 @@ export class BondsComponent implements OnInit {
     const funder = data.funder;
     const dpools = data.dpools;
     let stablecoinPriceCache = {};
+    const now = Math.floor(Date.now() / 1e3);
 
     if (funder) {
       //console.log(funder);
@@ -318,7 +237,11 @@ export class BondsComponent implements OnInit {
                 .call()
             ).div(this.constants.PRECISION);
 
-            if (yieldTokenBalance.gt(0)) {
+            const maturity = new BigNumber(
+              pool.fundings[funding].deposit.maturationTimestamp
+            );
+
+            if (yieldTokenBalance.gt(0) && maturity.gt(now)) {
               console.log(pool.fundings[funding]);
               const yieldTokenPercentage = yieldTokenBalance.div(
                 pool.fundings[funding].totalSupply
@@ -392,6 +315,11 @@ export class BondsComponent implements OnInit {
               fundings.push(fundingObj);
             }
           }
+
+          // sort active positions by maturation timestamp
+          fundings.sort((a, b) => {
+            return a.maturationTimestamp - b.maturationTimestamp;
+          });
 
           const funderPool: FunderPool = {
             poolInfo: poolInfo,
@@ -1058,8 +986,7 @@ export class BondsComponent implements OnInit {
   }
 
   timestampToDateString(timestampSec: number): string {
-    // return new Date(timestampSec * 1e3).toLocaleDateString();
-    return 'hello';
+    return new Date(timestampSec * 1e3).toLocaleDateString();
   }
 
   buyYieldTokens(deposit: FundableDeposit) {
