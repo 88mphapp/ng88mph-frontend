@@ -484,6 +484,7 @@ export class DepositComponent implements OnInit {
     bond: ZeroCouponBondInfo,
     pool: PoolInfo
   ): Promise<BigNumber> {
+    return new BigNumber(1);
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const pair = this.contract.getContract(
       bond.sushiSwapPair,
