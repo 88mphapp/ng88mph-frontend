@@ -92,4 +92,5 @@ export interface DPool {
   // unfundedDepositAmount: BigNumber;
   // mphRewardPerTokenPerSecond: BigNumber;
   oracleInterestRate: BigNumber;
+  poolFunderRewardMultiplier: BigNumber;
 }
