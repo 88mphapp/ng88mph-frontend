@@ -167,6 +167,7 @@ export class BondsComponent implements OnInit {
           surplus
           oneYearInterestRate
           oracleInterestRate
+          poolFunderRewardMultiplier
         }`
             : ''
         }
@@ -452,6 +453,9 @@ export class BondsComponent implements OnInit {
             oracleInterestRate: new BigNumber(pool.oracleInterestRate)
               .times(this.constants.YEAR_IN_SEC)
               .times(100),
+            poolFunderRewardMultiplier: new BigNumber(
+              pool.poolFunderRewardMultiplier
+            ),
           };
           allPoolList.push(dpoolObj);
         })
@@ -809,28 +813,6 @@ export class BondsComponent implements OnInit {
         // deposit hasn't been funded yet
         // @dev yield tokens available will equal the total principal of the deposit
         if (deposit.funding === null) {
-          const now = Math.floor(Date.now() / 1e3);
-          const timeTillMaturation = deposit.maturationTimestamp - now;
-
-          let mphRewardAmount = new BigNumber(0);
-          mphRewardAmount = mphRewardAmount.plus(
-            depositAmount
-              .times(mphFunderRewardMultiplier)
-              .times(timeTillMaturation)
-          );
-
-          let mphRewardsAPR = mphRewardAmount
-            .times(this.mphPriceUSD)
-            .div(totalPrincipal.minus(depositAmount).times(stablecoinPrice))
-            .times(100);
-          if (mphRewardsAPR.isNaN()) {
-            mphRewardsAPR = new BigNumber(0);
-          }
-
-          //let mphreward = depositAmount.times(poolFunderRewardMultiplier);
-          // console.log(mphRewardAmount.toString());
-          // console.log(mphRewardsAPR.toString());
-
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
             pool: this.selectedPool,
@@ -843,7 +825,7 @@ export class BondsComponent implements OnInit {
               .minus(depositAmount)
               .times(stablecoinPrice),
             estimatedAPR: new BigNumber(0),
-            mphRewardsAPR: mphRewardsAPR,
+            mphRewardsAPR: new BigNumber(0),
           };
           parsedDeposit.countdownTimer.start();
           fundableDeposits.push(parsedDeposit);
@@ -860,24 +842,6 @@ export class BondsComponent implements OnInit {
           const yieldTokensAvailable =
             unfundedPrincipalAmount.div(principalPerToken);
 
-          const now = Math.floor(Date.now() / 1e3);
-          const timeTillMaturation = deposit.maturationTimestamp - now;
-
-          let mphRewardAmount = new BigNumber(0);
-          mphRewardAmount = mphRewardAmount.plus(
-            unfundedDepositAmount
-              .times(mphFunderRewardMultiplier)
-              .times(timeTillMaturation)
-          );
-
-          let mphRewardsAPR = mphRewardAmount
-            .times(this.mphPriceUSD)
-            .div(surplus.negated().times(stablecoinPrice))
-            .times(100);
-          if (mphRewardsAPR.isNaN()) {
-            mphRewardsAPR = new BigNumber(0);
-          }
-
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
             pool: this.selectedPool,
@@ -891,7 +855,7 @@ export class BondsComponent implements OnInit {
               .minus(unfundedDepositAmount)
               .times(stablecoinPrice),
             estimatedAPR: new BigNumber(0),
-            mphRewardsAPR: mphRewardsAPR,
+            mphRewardsAPR: new BigNumber(0),
           };
           parsedDeposit.countdownTimer.start();
           fundableDeposits.push(parsedDeposit);
@@ -1043,26 +1007,14 @@ export class BondsComponent implements OnInit {
   }
 
   async updateEstimatedROI() {
-    console.log('check');
-    // compute estimated ROI
     const estimatedFloatingRate = this.floatingRatePrediction.div(100);
-    //let estimatedInterest = new BigNumber(0);
+    const mphFunderRewardMultiplier = new BigNumber(
+      this.selectedPool.poolFunderRewardMultiplier
+    );
     const now = Date.now() / 1e3;
-    // const numDepositsToFund = isNaN(+this.numDepositsToFund)
-    //   ? this.fundableDeposits.length
-    //   : +this.numDepositsToFund;
-    // for (const deposit of this.fundableDeposits.slice(0, numDepositsToFund)) {
-    //   if (!deposit.active || deposit.maturationTimestamp < now) continue;
-    //   const depositInterest = deposit.amount
-    //     .times(estimatedFloatingRate)
-    //     .times(deposit.maturationTimestamp - now)
-    //     .div(this.constants.YEAR_IN_SEC);
-    //   estimatedInterest = estimatedInterest.plus(depositInterest);
-    // }
-    //console.log(this.fundableDeposits);
-    for (const deposit of this.fundableDeposits) {
-      //console.log(deposit);
 
+    for (const deposit of this.fundableDeposits) {
+      // calculate APR
       const debtToFund = deposit.yieldTokensAvailableUSD;
       const estimatedInterest = deposit.unfundedDepositAmountUSD
         .times(estimatedFloatingRate)
@@ -1070,20 +1022,21 @@ export class BondsComponent implements OnInit {
         .div(this.constants.YEAR_IN_SEC);
       const estimatedProfit = estimatedInterest.minus(debtToFund);
       const estimatedAPR = estimatedProfit.div(debtToFund).times(100);
-      //console.log(debtToFund.toString());
-      //console.log(estimatedInterest.toString());
       deposit.estimatedAPR = estimatedAPR;
+
+      // calculate MPH APR
+      const estimatedInterestToken = deposit.unfundedDepositAmount
+        .times(Math.pow(10, this.selectedPool.stablecoinDecimals))
+        .times(estimatedFloatingRate)
+        .times(deposit.maturationTimestamp - now)
+        .div(this.constants.YEAR_IN_SEC);
+      const mphReward = estimatedInterestToken
+        .times(mphFunderRewardMultiplier)
+        .div(this.constants.PRECISION);
+      const mphRewardUSD = mphReward.times(this.mphPriceUSD);
+      const mphRewardAPR = mphRewardUSD.div(debtToFund).times(100);
+      deposit.mphRewardsAPR = mphRewardAPR;
     }
-    // this.estimatedProfitToken = estimatedInterest.minus(this.debtToFundToken);
-    // this.estimatedProfitUSD = this.estimatedProfitToken.times(
-    //   await this.helpers.getTokenPriceUSD(
-    //     this.selectedPool.stablecoin.toLowerCase()
-    //   )
-    // );
-    // this.estimatedROI = this.estimatedProfitToken
-    //   .div(this.debtToFundToken)
-    //   .times(100);
-    //
     this.loadingCalculator = false;
   }
 
@@ -1190,6 +1143,7 @@ interface QueryResult {
     surplus: number;
     oneYearInterestRate: number;
     oracleInterestRate: number;
+    poolFunderRewardMultiplier: BigNumber;
   }[];
 }
 
