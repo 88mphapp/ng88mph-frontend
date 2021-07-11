@@ -56,7 +56,7 @@
               <div class="input-group">
                 <input
                   type="tel"
-                  class="form-control form-control-lg bg-light"
+                  class="form-control form-control-lg bg-light text-white"
                   aria-label="Text input with dropdown button"
                   [value]="initialDeposit"
                   (input)="setDepositAmount($event.target.value)"
@@ -105,6 +105,7 @@
                       text-right
                       pr-3
                       bg-light
+                      text-white
                     "
                     [value]="termInDays"
                     (input)="setTermLength($event.target.value)"
