@@ -133,7 +133,7 @@
     <div class="card mb-5 mb-lg-0">
       <div class="card-body">
         <!-- Title -->
-        <h5 class="text-uppercase">Interest earned</h5>
+        <h5 class="text-uppercase">Interest earned at maturity</h5>
 
         <!-- Heading -->
         <h2 class="mb-0 glowing">${{ totalInterestUSD.toFormat(DECIMALS) }}</h2>
@@ -142,7 +142,7 @@
     <div class="card mb-4 mb-lg-0">
       <div class="card-body">
         <!-- Title -->
-        <h5 class="text-uppercase">Claimable rewards</h5>
+        <h5 class="text-uppercase">Claimable MPH rewards</h5>
         <!-- Heading -->
         <h2 class="mb-1 glowing">
           {{ totalMPHEarned.toFormat(DECIMALS) }} MPH
@@ -161,14 +161,14 @@
       <!-- Heading -->
       <h2 class="mb-4 glowing">${{ totalDepositUSD.toFormat(DECIMALS) }}</h2>
       <!-- Title -->
-      <h5 class="text-uppercase">Interest earned</h5>
+      <h5 class="text-uppercase">Interest earned at maturity</h5>
 
       <!-- Heading -->
       <h2 class="mb-0 glowing">${{ totalInterestUSD.toFormat(DECIMALS) }}</h2>
     </div>
     <div class="col-6">
       <!-- Title -->
-      <h5 class="text-uppercase">Claimable rewards</h5>
+      <h5 class="text-uppercase">Claimable MPH rewards</h5>
       <!-- Heading -->
       <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(DECIMALS) }} MPH</h2>
       <h5 class="mb-3 text-muted">
@@ -200,7 +200,7 @@
             <thead>
               <tr>
                 <th>Pool</th>
-                <th>Your balance</th>
+                <th>Your deposits balance</th>
                 <th>Fixed APY / MPH rewards</th>
                 <th></th>
               </tr>
@@ -265,7 +265,7 @@
                           class="avatar-img rounded-circle"
                         />
                       </div>
-                      +{{ pool.mphAPY.toFormat(DECIMALS) }}% APR
+                      +{{ pool.mphAPY.toFormat(DECIMALS) }}% APY
                     </span>
                   </td>
                   <td class="text-right">
@@ -362,13 +362,13 @@
                                 class="avatar-img rounded-circle"
                               />
                             </div>
-                            +{{ deposit.mphAPY.toFormat(DECIMALS) }}% APR
+                            +{{ deposit.mphAPY.toFormat(DECIMALS) }}% APY
                           </span>
                           <span class="text-muted d-block"
                             >${{
                               deposit.interestEarnedUSD.toFormat(DECIMALS)
                             }}
-                            / ${{
+                            (0.0 TKN) / ${{
                               deposit.realMPHReward
                                 .times(mphPriceUSD)
                                 .toFormat(DECIMALS)
@@ -620,7 +620,7 @@
                             class="avatar-img rounded-circle"
                           />
                         </div>
-                        +{{ deposit.mphAPY.toFormat(2) }}% APR
+                        +{{ deposit.mphAPY.toFormat(2) }}% APY
                       </span>
                       <span class="text-white d-block"
                         >{{

@@ -1,8 +1,9 @@
 <div class="container my-5">
-  <div class="row d-flex align-items-center mb-5">
+  <div class="row d-flex align-items-center mb-6">
     <div class="col-12 mb-4 mb-lg-0 col-lg-8">
       <h1 class="title-bg-gradient display-2">
-        Earn up to {{ maxAPY.toFormat(2) }}% fixed APY on your crypto.
+        Earn up to {{ maxAPY.toFormat(2) }}% fixed APY + 17.3% MPH APY on your
+        crypto
       </h1>
       <p class="text-white font-weight-bold mb-5 lead">
         Deposit crypto or stablecoins to earn a fixed interest rate & MPH
@@ -12,10 +13,10 @@
         Get started
       </button>
 
-      <div class="row my-6">
+      <div class="row mt-5 mb-7">
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">Total current deposits</h6>
+          <h6 class="text-uppercase text-muted">TVL</h6>
 
           <!-- Heading -->
           <h2 class="display-4 mb-2 glowing">
@@ -24,7 +25,7 @@
         </div>
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">Total interest earned</h6>
+          <h6 class="text-uppercase text-muted">Total interest</h6>
 
           <!-- Heading -->
           <h2 class="display-4 mb-2 glowing">
@@ -33,9 +34,7 @@
         </div>
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">
-            Protocol earnings distributed
-          </h6>
+          <h6 class="text-uppercase text-muted">Total revenue</h6>
 
           <!-- Heading -->
           <h2 class="display-4 mb-2 glowing">
@@ -51,8 +50,8 @@
         </div>
         <div class="card-body">
           <form action="">
-            <div class="form-group mb-3">
-              <label>Initial deposit</label>
+            <div class="form-group mb-4">
+              <label>Initial deposit (TKN)</label>
               <div class="input-group">
                 <input
                   type="tel"
@@ -112,10 +111,14 @@
                   />
                 </div>
               </div>
-              <div class="col">
+              <div class="col-auto">
                 <div class="form-group mb-2">
-                  <h4 class="mb-3 font-weight-normal mt-1">Fixed APY</h4>
-                  <h2 class="mb-0 glowing">{{ apy.toFormat(2) }}%</h2>
+                  <h4 class="mb-3 font-weight-normal mt-1">
+                    Fixed APY / MPH APY
+                  </h4>
+                  <h2 class="mb-0 glowing">
+                    {{ apy.toFormat(2) }}% +{{ mphRewardAPY.toFormat(2) }}%
+                  </h2>
                 </div>
               </div>
             </div>
@@ -144,22 +147,22 @@
                       <h4 class="mb-1 glowing">
                         +${{ mphRewardUSD.toFormat(2) }}
                       </h4>
-                      <h5 class="text-muted mb-0">
-                        +{{ mphRewardAPY.toFormat(2) }}% APY
-                      </h5>
+                      <h5 class="text-muted mb-0">0.00 MPH</h5>
                     </td>
                   </tr>
                   <tr>
                     <td class="px-0 py-2 text-white border-0 small">
                       Total earned at maturity
                     </td>
-                    <td class="px-0 py-2 text-white text-right border-0 small">
-                      <h4 class="mb-0 glowing">
+                    <td
+                      class="px-0 py-2 text-success text-right border-0 small"
+                    >
+                      <h4 class="mb-0 success">
                         ${{ totalEarnedUSD.toFormat(2) }}
                       </h4>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="d-none">
                     <td class="px-0 py-2 text-white border-0 small">
                       Total compounded on 10y
                     </td>
@@ -174,10 +177,10 @@
             </div>
           </form>
         </div>
-        <div class="card-footer">
+        <div class="card-footer small">
           DeFi Banking trusted since
-          <a class="text-success" href=""
-            ><span class="text-success fe fe-box"></span> 12,420,690</a
+          <a class="text-secondary" href=""
+            ><span class="text-secondary fe fe-box"></span> 12,420,690</a
           >
         </div>
       </div>
@@ -186,12 +189,12 @@
 </div>
 <div class="container pt-6 px-6 pb-4 mt-lg-n9 mb-7 bg-white rounded">
   <div class="row justify-content-center mb-4">
-    <div class="col-8">
+    <div class="col-9">
       <h2 class="display-2 text-center text-dark">Earn fixed-rate interest</h2>
       <p class="lead text-center text-muted">
         88mph has a variety of features that make it the best place to start
-        earning a fixed-interest rate on your capital, and our leading
-        protection measures give you the peace of mind you deserve.
+        earning a fixed-interest rate on your capital. Our leading protection
+        measures give you the peace of mind you deserve.
       </p>
     </div>
   </div>
