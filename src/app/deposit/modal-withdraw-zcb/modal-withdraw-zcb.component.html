@@ -1,0 +1,73 @@
+<!-- Modal: withdraw money -->
+<!-- IDEA: modal modalWithdraw -->
+<div class="modal-dialog modal-dialog-vertical" role="document">
+  <div class="modal-content">
+    <div class="modal-body pt-0 py-lg-0">
+      <div class="row no-gutters align-items-center">
+        <div class="col-auto">
+          <a
+            class="btn btn-link border-0 text-white pl-0"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
+            <i class="fe fe-arrow-left h2 mb-0"></i>
+          </a>
+        </div>
+        <div class="col">
+          <h1 class="mb-0 h3">Withdraw</h1>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-6 pt-0">
+          <div class="card mb-8">
+            <div class="card-body">
+              <p class="text-white">
+                Convert your zero coupon bonds 1:1 for the underlying asset.
+              </p>
+              <div class="form-group mb-0">
+                <label>Amount</label>
+                <div class="input-group mb-2">
+                  <input
+                    type="text"
+                    class="form-control form-control-lg"
+                    placeholder="0.00"
+                    aria-label="withdraw-amount"
+                    [value]="withdrawAmount.toFixed()"
+                    (input)="setWithdrawAmount($event.target.value)"
+                  />
+                  <div class="input-group-append">
+                    <button
+                      class="btn btn-lg border-gradient"
+                      type="button"
+                      (click)="setMaxWithdrawAmount()"
+                    >
+                      Max
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <small class="form-text text-white mb-4"
+                >${{
+                  this.userZCBPool.amountToken
+                    .times(stablecoinPriceUSD)
+                    .toFormat(4)
+                }}
+                ({{ this.userZCBPool.amountToken.toFormat() }}
+                {{ this.userZCBPool.poolInfo.stablecoinSymbol }})
+                available</small
+              >
+              <button
+                class="btn btn-lg btn-bg-gradient btn-block"
+                type="button"
+                (click)="withdraw()"
+              >
+                Withdraw
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
