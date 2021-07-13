@@ -96,7 +96,10 @@ export class ModalMphRewardsComponent implements OnInit {
       func,
       () => {},
       () => {
-        this.loadData();
+        setTimeout(() => {
+          this.resetData();
+          this.loadData();
+        }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
       },
       (error) => {
         this.wallet.displayGenericError(error);
