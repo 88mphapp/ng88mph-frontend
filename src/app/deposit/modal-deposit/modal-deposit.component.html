@@ -185,7 +185,9 @@
                         </div>
                         <div class="form-row">
                           <div
-                            [ngClass]="selectedZCBPools ? 'col-6' : 'col-12'"
+                            [ngClass]="
+                              selectedZCBPools.length > 0 ? 'col-6' : 'col-12'
+                            "
                           >
                             <div class="form-group">
                               <label>Select a custom maturity</label>
@@ -220,7 +222,10 @@
                               </small>
                             </div>
                           </div>
-                          <div class="col-6" *ngIf="selectedZCBPools">
+                          <div
+                            class="col-6"
+                            *ngIf="selectedZCBPools.length > 0"
+                          >
                             <div class="form-group">
                               <label for="PresetMaturity"
                                 >OR a preset maturity</label
