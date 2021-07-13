@@ -113,7 +113,10 @@ export class ModalDepositComponent implements OnInit {
 
   async selectPool(poolName: string) {
     this.selectedPoolInfo = this.contract.getPoolInfo(poolName);
-    this.selectedZCBPools = this.contract.getZeroCouponBondPool(poolName);
+    // only display ZCB pools that aren't mature
+    this.selectedZCBPools = this.contract
+      .getZeroCouponBondPool(poolName)
+      .filter((zcbInfo) => zcbInfo.maturationTimestamp > Date.now() / 1e3);
     this.shouldDisplayZap = !!this.selectedPoolInfo.zapDepositTokens;
     this.selectedDepositToken = this.selectedPoolInfo.stablecoinSymbol;
     this.zapDepositTokens = [this.selectedPoolInfo.stablecoinSymbol].concat(
