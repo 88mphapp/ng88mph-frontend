@@ -43,11 +43,11 @@ export interface UserDeposit {
 
 export interface UserZCBPool {
   zcbPoolInfo: ZeroCouponBondInfo;
-  poolName: string;
-  poolAddress: string;
+  poolInfo: PoolInfo;
   amountToken: BigNumber;
   amountUSD: BigNumber;
   maturation: string;
+  locked: boolean;
 }
 
 // @dev vest interface for v3

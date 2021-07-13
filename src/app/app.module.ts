@@ -9,6 +9,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DepositComponent } from './deposit/deposit.component';
 import { ModalDepositComponent } from './deposit/modal-deposit/modal-deposit.component';
 import { ModalWithdrawComponent } from './deposit/modal-withdraw/modal-withdraw.component';
+import { ModalWithdrawZCBComponent } from './deposit/modal-withdraw-zcb/modal-withdraw-zcb.component';
 import { RewardsComponent } from './rewards/rewards.component';
 import { BondsComponent } from './bonds/bonds.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
@@ -36,6 +37,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     DepositComponent,
     ModalDepositComponent,
     ModalWithdrawComponent,
+    ModalWithdrawZCBComponent,
     RewardsComponent,
     BondsComponent,
     ModalBondDetailsComponent,

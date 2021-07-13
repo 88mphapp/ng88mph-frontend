@@ -18,6 +18,7 @@ import { HelpersService } from '../helpers.service';
 import { Timer } from '../timer';
 import { ConstantsService } from '../constants.service';
 import { DataService } from '../data.service';
+import { ModalWithdrawZCBComponent } from './modal-withdraw-zcb/modal-withdraw-zcb.component';
 
 @Component({
   selector: 'app-deposit',
@@ -121,7 +122,7 @@ export class DepositComponent implements OnInit {
           await zcbContract.methods.balanceOf(userID).call()
         ).div(Math.pow(10, poolInfo.stablecoinDecimals));
 
-        if (userBalance.gt(0)) {
+        if (userBalance.gt(this.constants.DUST_THRESHOLD)) {
           const zcbPriceUSD = new BigNumber(
             await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo)
           );
@@ -138,11 +139,11 @@ export class DepositComponent implements OnInit {
           });
           let userZCB: UserZCBPool = {
             zcbPoolInfo: zcbPool,
-            poolName: poolInfo.name,
-            poolAddress: poolInfo.address,
+            poolInfo: poolInfo,
             amountToken: userBalance,
             amountUSD: userBalanceUSD,
             maturation: maturationDate,
+            locked: +maturationTimestamp >= Date.now() / 1e3,
           };
           userZCBPools.push(userZCB);
           totalDepositUSD = totalDepositUSD.plus(userBalanceUSD);
@@ -547,6 +548,13 @@ export class DepositComponent implements OnInit {
     });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
+  }
+
+  openWithdrawZCBModal(userZCBPool: UserZCBPool) {
+    const modalRef = this.modalService.open(ModalWithdrawZCBComponent, {
+      windowClass: 'fullscreen',
+    });
+    modalRef.componentInstance.userZCBPool = userZCBPool;
   }
 
   openRewardsModal(userDeposit: UserDeposit) {
