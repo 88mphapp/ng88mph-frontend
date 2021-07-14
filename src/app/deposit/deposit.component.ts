@@ -388,6 +388,11 @@ export class DepositComponent implements OnInit {
             userPoolDeposits.push(userPoolDeposit);
           }
 
+          // sort pool deposits by maturation timestamp
+          userPoolDeposits.sort((a, b) => {
+            return a.maturationTimestamp - b.maturationTimestamp;
+          });
+
           const userPool: UserPool = {
             poolInfo: poolInfo,
             deposits: userPoolDeposits,
@@ -396,9 +401,6 @@ export class DepositComponent implements OnInit {
         })
       ).then(() => {
         this.userPools = userPools;
-        //console.log(this.userPools);
-        //let test = userPools.indexOf((userPool) => userPool.poolInfo.name === "cDaI") ;
-        //console.log(test);
         this.totalMPHEarned = totalMPHEarned;
       });
 
