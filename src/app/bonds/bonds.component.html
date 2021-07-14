@@ -30,7 +30,7 @@
 
             <!-- Heading -->
             <h2 class="mb-0 glowing">
-              ${{ totalCurrentDepositUSD.toFormat(4) }}
+              ${{ totalDepositEarningYield.toFormat(4) }}
             </h2>
           </div>
         </div>
@@ -39,7 +39,7 @@
             <!-- Title -->
             <h5 class="text-uppercase">Yield earned</h5>
             <!-- Heading -->
-            <h2 class="mb-1 glowing">${{ totalInterestUSD.toFormat(4) }}</h2>
+            <h2 class="mb-1 glowing">${{ totalYieldEarnedUSD.toFormat(4) }}</h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
@@ -110,7 +110,7 @@
                   <td></td>
                   <td></td>
                   <td>
-                    <!-- <button
+                    <button
                       class="btn btn-sm btn-dark btn-rounded-circle"
                       type="button"
                       data-toggle="collapse"
@@ -119,7 +119,7 @@
                       [attr.aria-controls]="funderPool.poolInfo.name"
                     >
                       <i class="fe fe-chevron-down"></i>
-                    </button> -->
+                    </button>
                   </td>
                 </tr>
 
