@@ -396,6 +396,9 @@ export class DepositComponent implements OnInit {
         })
       ).then(() => {
         this.userPools = userPools;
+        //console.log(this.userPools);
+        //let test = userPools.indexOf((userPool) => userPool.poolInfo.name === "cDaI") ;
+        //console.log(test);
         this.totalMPHEarned = totalMPHEarned;
       });
 
@@ -590,6 +593,13 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
       ? dpool.mphDepositorRewardMintMultiplier
       : new BigNumber(0);
+  }
+
+  userHasDeposit(poolName: string): boolean {
+    const userPool = this.userPools.find(
+      (userPool) => userPool.poolInfo.name === poolName
+    );
+    return userPool ? true : false;
   }
 }
 

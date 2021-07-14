@@ -191,6 +191,7 @@
             data-target=".multi-collapse"
             aria-expanded="false"
             aria-controls="multiCollapseaDAI multiCollapseaUSDC"
+            *ngIf="userPools.length > 0"
           >
             Toggle all
           </button>
@@ -285,6 +286,7 @@
                       [attr.data-target]="'#' + pool.name"
                       aria-expanded="false"
                       [attr.aria-controls]="pool.name"
+                      *ngIf="userHasDeposit(pool.name)"
                     >
                       <i class="fe fe-chevron-down"></i>
                     </button>
