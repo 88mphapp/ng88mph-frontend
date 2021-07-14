@@ -177,6 +177,7 @@ export class BondsComponent implements OnInit {
     if (funder) {
       //console.log(funder);
       const funderPools: FunderPool[] = [];
+      let totalYieldTokenBalanceUSD = new BigNumber(0);
       let totalDepositEarningYield = new BigNumber(0);
       let totalYieldEarnedUSD = new BigNumber(0);
       let totalMPHEarned = new BigNumber(0);
@@ -235,22 +236,28 @@ export class BondsComponent implements OnInit {
               const yieldTokenPercentage = yieldTokenBalance.div(
                 pool.fundings[funding].totalSupply
               );
-              //console.log(yieldTokenPercentage.toString());
-
-              // calculate value of yield tokens
-              //console.log(pool.fundings[funding].fundedDeficitAmount);
 
               // calculate amount of deposit earning yield
               const earnYieldOn = yieldTokenBalance.times(
                 pool.fundings[funding].principalPerToken
               );
 
-              // console.log("principal");
-              // console.log(earnYieldOn.toFixed(18));
+              console.log('principal');
+              console.log(earnYieldOn.toFixed(18));
 
-              // let test = earnYieldOn.times(1 - pool.fundings[funding].deposit.interestRate - pool.fundings[funding].deposit.feeRate);
-              // console.log("test deposit");
-              // console.log(test);
+              // calculate USD value of yield tokens
+              const interestRate = new BigNumber(
+                pool.fundings[funding].deposit.interestRate
+              );
+              const feeRate = new BigNumber(
+                pool.fundings[funding].deposit.feeRate
+              );
+              const fundedDepositAmount = earnYieldOn.div(
+                interestRate.plus(feeRate).plus(1)
+              );
+              const yieldTokenBalanceUSD = earnYieldOn
+                .minus(fundedDepositAmount)
+                .times(stablecoinPrice);
 
               // calculate amount of yield earned
               let yieldEarned = new BigNumber(0);
@@ -325,7 +332,7 @@ export class BondsComponent implements OnInit {
                   'down'
                 ),
                 yieldTokenBalance: yieldTokenBalance,
-                yieldTokenBalanceUSD: new BigNumber(0),
+                yieldTokenBalanceUSD: yieldTokenBalanceUSD,
                 earnYieldOn: earnYieldOn,
                 earnYieldOnUSD: earnYieldOn.times(stablecoinPrice),
                 yieldEarned: yieldEarned,
@@ -339,6 +346,8 @@ export class BondsComponent implements OnInit {
               fundings.push(fundingObj);
 
               // update user totals
+              totalYieldTokenBalanceUSD =
+                totalYieldTokenBalanceUSD.plus(yieldTokenBalanceUSD);
               totalDepositEarningYield = totalDepositEarningYield.plus(
                 earnYieldOn.times(stablecoinPrice)
               );
@@ -362,6 +371,7 @@ export class BondsComponent implements OnInit {
         })
       ).then(() => {
         this.funderPools = funderPools;
+        this.totalYieldTokenBalanceUSD = totalYieldTokenBalanceUSD;
         this.totalDepositEarningYield = totalDepositEarningYield;
         this.totalYieldEarnedUSD = totalYieldEarnedUSD;
         this.totalMPHEarned = totalMPHEarned;
