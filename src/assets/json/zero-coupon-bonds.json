@@ -52,6 +52,12 @@
         "symbol": "88MPH-CDAI-JUL-2021",
         "address": "0xf28556c90899029ff83A98F68ECF0c8bba3d1335",
         "maturationTimestamp": 1625778000
+      },
+      {
+        "series": "July 17 2021",
+        "symbol": "88MPH-CDAI-JUL-17-2021",
+        "address": "0x184A845578B107a26436cDB6e9412AdE5822dC4E",
+        "maturationTimestamp": 1626566400
       }
     ]
   }
