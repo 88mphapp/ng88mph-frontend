@@ -126,6 +126,36 @@
         "internalType": "uint64",
         "name": "vestID",
         "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "poolAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "depositID",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "currentDepositAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "depositAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "vestAmountPerStablecoinPerSecond",
+        "type": "uint256"
       }
     ],
     "name": "EUpdateVest",
@@ -473,6 +503,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint64[]",
+        "name": "vestIDList",
+        "type": "uint64[]"
+      }
+    ],
+    "name": "multiWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
