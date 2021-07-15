@@ -388,6 +388,11 @@ export class DepositComponent implements OnInit {
             userPoolDeposits.push(userPoolDeposit);
           }
 
+          // sort pool deposits by maturation timestamp
+          userPoolDeposits.sort((a, b) => {
+            return a.maturationTimestamp - b.maturationTimestamp;
+          });
+
           const userPool: UserPool = {
             poolInfo: poolInfo,
             deposits: userPoolDeposits,
@@ -485,54 +490,7 @@ export class DepositComponent implements OnInit {
     bond: ZeroCouponBondInfo,
     pool: PoolInfo
   ): Promise<BigNumber> {
-    return new BigNumber(1);
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const pair = this.contract.getContract(
-      bond.sushiSwapPair,
-      'MPHLP',
-      readonlyWeb3
-    );
-    const reservesObj = await pair.methods.getReserves().call();
-    if (+reservesObj._reserve0 === 0 || +reservesObj._reserve1 === 0) {
-      // no liquidity, return NaN
-      return new BigNumber(NaN);
-    }
-    const baseToken = this.contract.getERC20(
-      bond.sushiSwapPairBaseTokenAddress,
-      readonlyWeb3
-    );
-    const baseTokenPrecision = Math.pow(
-      10,
-      +(await baseToken.methods.decimals().call())
-    );
-    let baseTokenReserve;
-    let bondReserve;
-    if (
-      new BigNumber(bond.sushiSwapPairBaseTokenAddress, 16).lt(
-        new BigNumber(bond.address, 16)
-      )
-    ) {
-      // base token is token0
-      baseTokenReserve = new BigNumber(reservesObj._reserve0).div(
-        baseTokenPrecision
-      );
-      bondReserve = new BigNumber(reservesObj._reserve1).div(
-        Math.pow(10, pool.stablecoinDecimals)
-      );
-    } else {
-      // base token is token1
-      bondReserve = new BigNumber(reservesObj._reserve0).div(
-        Math.pow(10, pool.stablecoinDecimals)
-      );
-      baseTokenReserve = new BigNumber(reservesObj._reserve1).div(
-        baseTokenPrecision
-      );
-    }
-    const bondPriceInBaseToken = baseTokenReserve.div(bondReserve);
-    const baseTokenPriceInUSD = await this.helpers.getTokenPriceUSD(
-      bond.sushiSwapPairBaseTokenAddress
-    );
-    return bondPriceInBaseToken.times(baseTokenPriceInUSD);
+    return new BigNumber(await this.helpers.getTokenPriceUSD(pool.stablecoin));
   }
 
   openDepositModal(poolName?: string) {
@@ -590,6 +548,13 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
       ? dpool.mphDepositorRewardMintMultiplier
       : new BigNumber(0);
+  }
+
+  userHasDeposit(poolName: string): boolean {
+    const userPool = this.userPools.find(
+      (userPool) => userPool.poolInfo.name === poolName
+    );
+    return userPool ? true : false;
   }
 }
 
