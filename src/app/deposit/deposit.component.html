@@ -37,7 +37,7 @@
             <!-- Button -->
             <button
               type="button"
-              class="btn btn-sm btn-dark"
+              class="btn btn-sm btn-dark d-none"
               (click)="openDepositModal()"
               [disabled]="wallet.watching"
             >
@@ -150,6 +150,10 @@
         <h5 class="mb-3 text-white">
           ${{ totalMPHEarned.times(mphPriceUSD).toFormat(DECIMALS) }}
         </h5>
+        <!-- Button -->
+        <button type="button" class="btn btn-sm btn-dark">
+          <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim all
+        </button>
       </div>
     </div>
   </div>
@@ -379,23 +383,17 @@
                                 .toFormat(DECIMALS)
                             }}
                             ({{ deposit.realMPHReward.toFormat(DECIMALS) }} MPH)
-                            <button
-                              type="button"
-                              class="
-                                btn btn-sm btn-link
-                                text-primary
-                                p-0
-                                mt-n1
-                                ml-2
-                              "
-                              (click)="openRewardsModal(deposit)"
-                            >
-                              <i class="fe fe-arrow-down mr-2 align-bottom"></i
-                              >Claim
-                            </button>
                           </span>
                         </td>
                         <td class="text-right">
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-3"
+                            (click)="openRewardsModal(deposit)"
+                          >
+                            <i class="fe fe-arrow-down mr-2 align-bottom"></i
+                            >Claim
+                          </button>
                           <button
                             type="button"
                             class="btn btn-sm btn-dark mr-3"
