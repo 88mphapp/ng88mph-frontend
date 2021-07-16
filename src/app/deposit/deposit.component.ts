@@ -556,6 +556,36 @@ export class DepositComponent implements OnInit {
     );
     return userPool ? true : false;
   }
+
+  claimAllRewards() {
+    const userPools = this.userPools;
+    const vestContract = this.contract.getNamedContract('Vesting02');
+    let vestIdList = new Array<number>(0);
+
+    for (let pool in userPools) {
+      // for each pool
+      const userDeposits = userPools[pool].deposits;
+      for (let deposit in userDeposits) {
+        // for each deposit
+        const vest = userDeposits[deposit].vest;
+        const vestID = vest.nftID;
+        vestIdList.push(vestID);
+      }
+    }
+
+    const func = vestContract.methods.multiWithdraw(vestIdList);
+
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {
+        this.wallet.txConfirmedEvent.emit();
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
+  }
 }
 
 interface QueryResult {
