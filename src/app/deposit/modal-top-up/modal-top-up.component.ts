@@ -125,20 +125,24 @@ export class ModalTopUpComponent implements OnInit {
       await pool.methods
         .calculateInterestAmount(depositAmountToken, depositTime)
         .call()
-    ).div(stablecoinPrecision);
-    const rawInterestAmountUSD = rawInterestAmountToken.times(stablecoinPrice);
-    this.interestAmountToken = this.helpers.applyFeeToInterest(
-      rawInterestAmountToken,
-      this.poolInfo
     );
-    this.interestAmountUSD = this.helpers.applyFeeToInterest(
-      rawInterestAmountUSD,
-      this.poolInfo
+    const interestAmountToken = new BigNumber(
+      await this.helpers.applyFeeToInterest(
+        rawInterestAmountToken,
+        this.poolInfo
+      )
     );
 
+    this.interestAmountToken = new BigNumber(interestAmountToken).div(
+      stablecoinPrecision
+    );
+    this.interestAmountUSD = new BigNumber(interestAmountToken)
+      .div(stablecoinPrecision)
+      .times(stablecoinPrice);
+
     // get APY
-    this.interestRate = this.interestAmountToken
-      .div(this.depositAmountToken)
+    this.interestRate = interestAmountToken
+      .div(depositAmountToken)
       .div(depositTime)
       .times(this.constants.YEAR_IN_SEC)
       .times(100);

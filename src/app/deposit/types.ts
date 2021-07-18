@@ -10,7 +10,6 @@ export interface DPool {
   iconPath: string;
   totalDepositToken: BigNumber;
   totalDepositUSD: BigNumber;
-  oneYearInterestRate: BigNumber;
   maxAPY: BigNumber;
   mphAPY: BigNumber;
   totalUserDepositsToken: BigNumber;

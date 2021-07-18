@@ -131,9 +131,6 @@ export class LandingPageComponent implements OnInit {
               stablecoinPrice
             ),
             oneYearInterestRate: new BigNumber(pool.oneYearInterestRate),
-            oneYearAPY: this.helpers
-              .applyFeeToInterest(pool.oneYearInterestRate, poolInfo)
-              .times(100),
             poolDepositorRewardMintMultiplier: new BigNumber(
               pool.poolDepositorRewardMintMultiplier
             ),
@@ -185,7 +182,6 @@ export class LandingPageComponent implements OnInit {
           totalDepositToken: new BigNumber(0),
           totalDepositUSD: new BigNumber(0),
           oneYearInterestRate: new BigNumber(0),
-          oneYearAPY: new BigNumber(0),
           poolDepositorRewardMintMultiplier: new BigNumber(0),
         };
         allPoolList.push(dpoolObj);
@@ -233,22 +229,23 @@ export class LandingPageComponent implements OnInit {
       await pool.methods
         .calculateInterestAmount(depositAmount, depositTime)
         .call()
-    ).div(stablecoinPrecision);
-    const rawInterestAmountUSD = rawInterestAmountToken.times(stablecoinPrice);
-    this.interestEarnedToken = this.helpers.applyFeeToInterest(
-      rawInterestAmountToken,
-      poolInfo
     );
-    this.interestEarnedUSD = this.helpers.applyFeeToInterest(
-      rawInterestAmountUSD,
-      poolInfo
+    const interestAmountToken = new BigNumber(
+      await this.helpers.applyFeeToInterest(rawInterestAmountToken, poolInfo)
     );
 
+    this.interestEarnedToken = new BigNumber(interestAmountToken).div(
+      stablecoinPrecision
+    );
+    this.interestEarnedUSD = new BigNumber(interestAmountToken)
+      .div(stablecoinPrecision)
+      .times(stablecoinPrice);
+
     // get APY
-    this.apy = this.interestEarnedToken
-      .div(this.initialDeposit)
-      .div(this.termInDays)
-      .times(365)
+    this.apy = interestAmountToken
+      .div(depositAmount)
+      .div(depositTime)
+      .times(this.constants.YEAR_IN_SEC)
       .times(100);
     if (this.apy.isNaN()) {
       this.apy = new BigNumber(0);
@@ -328,6 +325,5 @@ interface DPool {
   totalDepositToken: BigNumber;
   totalDepositUSD: BigNumber;
   oneYearInterestRate: BigNumber;
-  oneYearAPY: BigNumber;
   poolDepositorRewardMintMultiplier: BigNumber;
 }
