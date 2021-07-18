@@ -277,6 +277,8 @@ export class DepositComponent implements OnInit {
 
     if (user) {
       let totalMPHEarned = new BigNumber(0);
+      let totalClaimableMPH = new BigNumber(0);
+      const vestingContract = this.contract.getNamedContract('Vesting02');
 
       // process user deposit list
       const userPools: UserPool[] = [];
@@ -354,6 +356,13 @@ export class DepositComponent implements OnInit {
               };
             }
 
+            let claimableMPH = new BigNumber(
+              await vestingContract.methods
+                .getVestWithdrawableAmount(deposit.vest.nftID)
+                .call()
+            ).div(this.constants.PRECISION);
+            totalClaimableMPH = totalClaimableMPH.plus(claimableMPH);
+
             const userPoolDeposit: UserDeposit = {
               nftID: +deposit.nftID,
               locked: +deposit.maturationTimestamp >= Date.now() / 1e3,
@@ -399,7 +408,7 @@ export class DepositComponent implements OnInit {
         })
       ).then(() => {
         this.userPools = userPools;
-        this.totalMPHEarned = totalMPHEarned;
+        this.totalMPHEarned = totalClaimableMPH;
       });
 
       // compute total deposit & interest in USD
