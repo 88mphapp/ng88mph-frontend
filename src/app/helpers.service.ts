@@ -243,12 +243,23 @@ export class HelpersService {
       : totalValueLocked.div(lpTotalSupply);
   }
 
-  applyFeeToInterest(rawInterestAmount, poolInfo: PoolInfo): BigNumber {
-    let interestFee = 0.1;
-    if (poolInfo.interestFee) {
-      interestFee = poolInfo.interestFee;
-    }
-    return new BigNumber(rawInterestAmount).times(1 - interestFee);
+  async applyFeeToInterest(
+    rawInterestAmount,
+    poolInfo: PoolInfo
+  ): Promise<BigNumber> {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const pool = this.contract.getPool(poolInfo.name, readonlyWeb3);
+    const feeModelAddress = await pool.methods.feeModel().call();
+    const feeModelContract = this.contract.getContract(
+      feeModelAddress,
+      'IFeeModel',
+      readonlyWeb3
+    );
+    const feeAmount = await feeModelContract.methods
+      .getInterestFeeAmount(poolInfo.address, rawInterestAmount)
+      .call();
+
+    return new BigNumber(rawInterestAmount).minus(feeAmount);
   }
 
   applyDepositFee(rawDepositAmount, poolInfo: PoolInfo): BigNumber {

@@ -69,17 +69,18 @@ export class DataService {
       await pool.methods
         .calculateInterestAmount(depositAmount, depositTime)
         .call()
-    ).div(stablecoinPrecision);
-    const interestEarnedToken = this.helpers.applyFeeToInterest(
+    );
+
+    const interestEarnedToken = await this.helpers.applyFeeToInterest(
       rawInterestAmountToken,
       poolInfo
     );
 
     // get APY
     let apy = interestEarnedToken
-      .div(deposit)
-      .div(depositLength)
-      .times(365)
+      .div(depositAmount)
+      .div(depositTime)
+      .times(this.constants.YEAR_IN_SEC)
       .times(100);
     if (apy.isNaN()) {
       apy = new BigNumber(0);

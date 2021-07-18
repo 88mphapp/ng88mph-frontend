@@ -172,6 +172,8 @@ export class DepositComponent implements OnInit {
               maturationTimestamp
               depositTimestamp
               interestRate
+              feeRate
+              amount
               vest {
                 nftID
                 owner
@@ -200,7 +202,6 @@ export class DepositComponent implements OnInit {
           id
           address
           totalDeposit
-          oneYearInterestRate
           poolDepositorRewardMintMultiplier
         }`
             : ''
@@ -250,9 +251,6 @@ export class DepositComponent implements OnInit {
             totalDepositUSD: new BigNumber(pool.totalDeposit).times(
               stablecoinPrice
             ),
-            oneYearInterestRate: this.helpers
-              .applyFeeToInterest(pool.oneYearInterestRate, poolInfo)
-              .times(100),
             maxAPY: await this.datas.getPoolMaxAPY(poolInfo.address),
             mphAPY: mphAPY,
             totalUserDepositsToken: new BigNumber(0),
@@ -471,7 +469,6 @@ export class DepositComponent implements OnInit {
           iconPath: poolInfo.iconPath,
           totalDepositToken: new BigNumber(0),
           totalDepositUSD: new BigNumber(0),
-          oneYearInterestRate: new BigNumber(0),
           maxAPY: new BigNumber(0),
           mphAPY: new BigNumber(0),
           totalUserDepositsToken: new BigNumber(0),
@@ -600,6 +597,8 @@ interface QueryResult {
         maturationTimestamp: string;
         depositTimestamp: string;
         interestRate: string;
+        feeRate: string;
+        amount: string;
         vest: {
           owner: string;
           nftID: string;
@@ -624,7 +623,6 @@ interface QueryResult {
     id: string;
     address: string;
     totalDeposit: string;
-    oneYearInterestRate: string;
     poolDepositorRewardMintMultiplier: string;
   }[];
 }

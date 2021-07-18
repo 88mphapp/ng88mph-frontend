@@ -273,6 +273,14 @@ export class ModalDepositComponent implements OnInit {
       this.selectedPoolInfo.name,
       readonlyWeb3
     );
+    const feeModelAddress = await pool.methods.feeModel().call();
+    const feeModelContract = this.contract.getContract(
+      feeModelAddress,
+      'IFeeModel',
+      readonlyWeb3
+    );
+    console.log(feeModelContract);
+
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
       this.selectedPoolInfo.stablecoin
     );
@@ -297,22 +305,28 @@ export class ModalDepositComponent implements OnInit {
       await pool.methods
         .calculateInterestAmount(depositAmount, depositTime)
         .call()
-    ).div(stablecoinPrecision);
-    const rawInterestAmountUSD = rawInterestAmountToken.times(stablecoinPrice);
-    this.interestAmountToken = this.helpers.applyFeeToInterest(
-      rawInterestAmountToken,
-      this.selectedPoolInfo
     );
-    this.interestAmountUSD = this.helpers.applyFeeToInterest(
-      rawInterestAmountUSD,
-      this.selectedPoolInfo
+    const rawFeeAmountToken = new BigNumber(
+      await feeModelContract.methods
+        .getInterestFeeAmount(
+          this.selectedPoolInfo.address,
+          rawInterestAmountToken
+        )
+        .call()
     );
+    this.interestAmountToken = rawInterestAmountToken
+      .minus(rawFeeAmountToken)
+      .div(stablecoinPrecision);
+    this.interestAmountUSD = rawInterestAmountToken
+      .minus(rawFeeAmountToken)
+      .div(stablecoinPrecision)
+      .times(stablecoinPrice);
 
     // get APY
     this.apy = this.interestAmountToken
       .div(this.depositAmount)
-      .div(this.depositTimeInDays)
-      .times(365)
+      .div(depositTime)
+      .times(this.constants.YEAR_IN_SEC)
       .times(100);
     if (this.apy.isNaN()) {
       this.apy = new BigNumber(0);
@@ -326,8 +340,8 @@ export class ModalDepositComponent implements OnInit {
     const mphAPY = this.mphRewardAmount
       .times(this.mphPriceUSD)
       .div(this.depositAmountUSD)
-      .div(this.depositTimeInDays)
-      .times(365)
+      .div(depositTime)
+      .times(this.constants.YEAR_IN_SEC)
       .times(100);
     if (mphAPY.isNaN()) {
       this.mphAPY = new BigNumber(0);
