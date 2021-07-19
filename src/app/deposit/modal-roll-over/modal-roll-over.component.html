@@ -25,7 +25,7 @@
                   class="list-group list-group-flush list-group-activity mb-4"
                 >
                   <div class="list-group-item">
-                    <div class="row">
+                    <div class="form-row">
                       <div class="col ml-n2">
                         <div class="form-group mb-2">
                           <label>Select a custom maturity</label>
@@ -42,7 +42,7 @@
                               data-mask-reverse="true"
                               (input)="setDepositTime($event.target.value)"
                             />
-                            <div class="input-group-append">
+                            <!-- <div class="input-group-append">
                               <button
                                 class="btn btn-lg border-gradient"
                                 type="button"
@@ -50,7 +50,16 @@
                               >
                                 Max
                               </button>
-                            </div>
+                            </div> -->
+                            <input
+                              type="range"
+                              class="custom-range"
+                              min="7"
+                              max="365"
+                              step="1"
+                              [value]="depositTimeInDays"
+                              (input)="setDepositTime($event.target.value)"
+                            />
                           </div>
                           <small class="form-text text-muted my-2">
                             Max: {{ maxDepositPeriodInDays }} days

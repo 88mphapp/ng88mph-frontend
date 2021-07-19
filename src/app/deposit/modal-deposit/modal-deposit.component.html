@@ -225,7 +225,7 @@
                                   data-mask-reverse="true"
                                   (input)="setDepositTime($event.target.value)"
                                 />
-                                <div class="input-group-append">
+                                <!-- <div class="input-group-append">
                                   <button
                                     class="btn btn-lg border-gradient"
                                     type="button"
@@ -235,7 +235,16 @@
                                   >
                                     Max
                                   </button>
-                                </div>
+                                </div> -->
+                                <input
+                                  type="range"
+                                  class="custom-range"
+                                  min="7"
+                                  max="365"
+                                  step="1"
+                                  [value]="depositTimeInDays"
+                                  (input)="setDepositTime($event.target.value)"
+                                />
                               </div>
                               <small class="form-text text-muted my-2">
                                 Max:
