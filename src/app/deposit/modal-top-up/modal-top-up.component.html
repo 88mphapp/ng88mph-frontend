@@ -80,52 +80,141 @@
                         <td class="px-0 py-2 text-white border-0 small">
                           Fixed-interest rate
                         </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Top Up Amount
+                        </td>
                         <td
-                          class="px-0 py-2 text-white text-right border-0 small"
+                          class="px-0 py-1 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
-                            {{ interestRate.toFormat(4) }}%
-                          </h4>
+                          {{ interestRate.toFormat(4) }}%
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Total Deposit
+                        </td>
+                        <td
+                          class="px-0 py-1 text-white text-right border-0 small"
+                        >
+                          {{
+                            userDeposit.interestEarnedToken
+                              .plus(interestAmountToken)
+                              .div(
+                                userDeposit.amountToken.plus(depositAmountToken)
+                              )
+                              .div(userDeposit.depositLength)
+                              .times(constants.YEAR_IN_SEC)
+                              .times(100)
+                              .toFormat(4)
+                          }}%
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           Interest earned
                         </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Top Up Amount
+                        </td>
                         <td
-                          class="px-0 py-2 text-white text-right border-0 small"
+                          class="px-0 py-1 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
-                            ${{ interestAmountUSD.toFormat(4) }}
-                          </h4>
-                          <h5 class="text-muted">
+                          <span class="mb-1 glowing">
                             {{ interestAmountToken.toFormat(4) }}
                             {{ poolInfo.stablecoinSymbol }}
-                          </h5>
+                          </span>
+                          <span class="text-muted">
+                            (${{ interestAmountUSD.toFormat(4) }})
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Total Deposit
+                        </td>
+                        <td
+                          class="px-0 py-1 text-white text-right border-0 small"
+                        >
+                          <span class="mb-1 glowing">
+                            {{
+                              userDeposit.interestEarnedToken
+                                .plus(interestAmountToken)
+                                .toFormat(4)
+                            }}
+                            {{ poolInfo.stablecoinSymbol }}
+                          </span>
+                          <span class="text-muted">
+                            (${{
+                              userDeposit.interestEarnedUSD
+                                .plus(interestAmountUSD)
+                                .toFormat(4)
+                            }})
+                          </span>
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           Withdrawable at maturity | {{ depositMaturation }}
                         </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Top Up Amount
+                        </td>
                         <td
-                          class="px-0 py-2 text-white text-right border-0 small"
+                          class="px-0 py-1 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
-                            ${{
-                              depositAmountUSD
-                                .plus(interestAmountUSD)
-                                .toFormat(4)
-                            }}
-                          </h4>
-                          <h5 class="text-muted">
+                          <span class="mb-1 glowing">
                             {{
                               depositAmountToken
                                 .plus(interestAmountToken)
                                 .toFormat(4)
                             }}
                             {{ poolInfo.stablecoinSymbol }}
-                          </h5>
+                          </span>
+                          <span class="text-muted">
+                            (${{
+                              depositAmountUSD
+                                .plus(interestAmountUSD)
+                                .toFormat(4)
+                            }})
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Total Deposit
+                        </td>
+                        <td
+                          class="px-0 py-1 text-white text-right border-0 small"
+                        >
+                          <span class="mb-1 glowing">
+                            {{
+                              userDeposit.amountToken
+                                .plus(userDeposit.interestEarnedToken)
+                                .plus(depositAmountToken)
+                                .plus(interestAmountToken)
+                                .toFormat(4)
+                            }}
+                            {{ poolInfo.stablecoinSymbol }}
+                          </span>
+                          <span class="text-muted">
+                            (${{
+                              userDeposit.amountUSD
+                                .plus(userDeposit.interestEarnedUSD)
+                                .plus(depositAmountUSD)
+                                .plus(interestAmountUSD)
+                                .toFormat(4)
+                            }})
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-2 text-muted border-0 small">
                           <small *ngIf="poolInfo.depositFee"
                             >Note: A {{ poolInfo.depositFee * 100 }}% fee is
                             taken by the underlying yield protocol ({{
@@ -138,27 +227,85 @@
                         <td class="px-0 py-2 text-white border-0 small">
                           MPH rewards
                         </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Top Up Amount
+                        </td>
                         <td
-                          class="px-0 py-2 text-white text-right border-0 small"
+                          class="px-0 py-1 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
-                            ${{ mphRewardAmountUSD.toFormat(4) }}
-                          </h4>
-                          <h5 class="text-muted">
+                          <span class="mb-1 glowing">
                             {{ mphRewardAmountToken.toFormat(4) }} MPH
-                          </h5>
+                          </span>
+                          <span class="text-muted">
+                            (${{ mphRewardAmountUSD.toFormat(4) }})
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Total Deposit
+                        </td>
+                        <td
+                          class="px-0 py-1 text-white text-right border-0 small"
+                        >
+                          <span class="mb-1 glowing">
+                            {{
+                              userDeposit.realMPHReward
+                                .plus(mphRewardAmountToken)
+                                .toFormat(4)
+                            }}
+                            MPH
+                          </span>
+                          <span class="text-muted">
+                            (${{
+                              userDeposit.realMPHReward
+                                .plus(mphRewardAmountToken)
+                                .times(mphPriceUSD)
+                                .toFormat(4)
+                            }})
+                          </span>
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           MPH APR
                         </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Top Up Amount
+                        </td>
                         <td
-                          class="px-0 py-2 text-white text-right border-0 small"
+                          class="px-0 py-1 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
+                          <span class="mb-1 glowing">
                             +{{ mphRewardAPR.toFormat(4) }}%
-                          </h4>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                          Total Deposit
+                        </td>
+                        <td
+                          class="px-0 py-1 text-white text-right border-0 small"
+                        >
+                          <span class="mb-1 glowing">
+                            +{{
+                              userDeposit.realMPHReward
+                                .times(mphPriceUSD)
+                                .plus(mphRewardAmountUSD)
+                                .div(
+                                  userDeposit.amountUSD.plus(depositAmountUSD)
+                                )
+                                .div(userDeposit.depositLength)
+                                .times(constants.YEAR_IN_SEC)
+                                .times(100)
+                                .toFormat(4)
+                            }}%
+                          </span>
                         </td>
                       </tr>
                     </tbody>
