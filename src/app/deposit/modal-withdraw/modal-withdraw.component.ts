@@ -85,6 +85,12 @@ export class ModalWithdrawComponent implements OnInit {
     this.earlyWithdrawFee = await this.getEarlyWithdrawFee();
   }
 
+  async presetWithdrawAmount(percent: string | number) {
+    const ratio = new BigNumber(percent).div(100);
+    const withdrawAmount = this.maxWithdrawAmountToken.times(ratio);
+    this.setWithdrawAmount(withdrawAmount.toString());
+  }
+
   setMaxWithdrawAmount(): void {
     this.setWithdrawAmount(this.maxWithdrawAmountToken.toString());
   }
