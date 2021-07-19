@@ -47,22 +47,43 @@
                     [value]="withdrawAmount.toFixed()"
                     (input)="setWithdrawAmount($event.target.value)"
                   />
-                  <div class="input-group-append">
-                    <button
-                      class="btn btn-lg border-gradient"
-                      type="button"
-                      (click)="setMaxWithdrawAmount()"
-                    >
-                      Max
-                    </button>
-                  </div>
                 </div>
+              </div>
+              <div class="mb-4 d-flex justify-content-between">
+                <button
+                  class="btn btn-lg border-gradient"
+                  type="button"
+                  (click)="presetWithdrawAmount(25)"
+                >
+                  25%
+                </button>
+                <button
+                  class="btn btn-lg border-gradient"
+                  type="button"
+                  (click)="presetWithdrawAmount(50)"
+                >
+                  50%
+                </button>
+                <button
+                  class="btn btn-lg border-gradient"
+                  type="button"
+                  (click)="presetWithdrawAmount(75)"
+                >
+                  75%
+                </button>
+                <button
+                  class="btn btn-lg border-gradient"
+                  type="button"
+                  (click)="presetWithdrawAmount(100)"
+                >
+                  100%
+                </button>
               </div>
               <small class="form-text text-white mb-4"
                 >${{
                   maxWithdrawAmountToken.times(stablecoinPriceUSD).toFormat(4)
                 }}
-                ({{ maxWithdrawAmountToken.toFormat() }}
+                ({{ maxWithdrawAmountToken.toFormat(4) }}
                 {{ poolInfo.stablecoinSymbol }}) available</small
               >
               <div class="table-responsive py-3 pr-3">

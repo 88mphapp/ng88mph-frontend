@@ -101,15 +101,6 @@
                               [value]="depositAmount.toFixed()"
                               (input)="setDepositAmount($event.target.value)"
                             />
-                            <div class="input-group-append">
-                              <button
-                                class="btn btn-lg border-gradient"
-                                type="button"
-                                (click)="setMaxDepositAmount()"
-                              >
-                                Max
-                              </button>
-                            </div>
                           </div>
                         </div>
                         <div class="form-group mb-2" *ngIf="shouldDisplayZap">
@@ -130,6 +121,36 @@
                               </option>
                             </select>
                           </div>
+                        </div>
+                        <div class="mb-4 d-flex justify-content-between">
+                          <button
+                            class="btn btn-lg border-gradient"
+                            type="button"
+                            (click)="presetDepositAmount(25)"
+                          >
+                            25%
+                          </button>
+                          <button
+                            class="btn btn-lg border-gradient"
+                            type="button"
+                            (click)="presetDepositAmount(50)"
+                          >
+                            50%
+                          </button>
+                          <button
+                            class="btn btn-lg border-gradient"
+                            type="button"
+                            (click)="presetDepositAmount(75)"
+                          >
+                            75%
+                          </button>
+                          <button
+                            class="btn btn-lg border-gradient"
+                            type="button"
+                            (click)="presetDepositAmount(100)"
+                          >
+                            100%
+                          </button>
                         </div>
                         <div class="row mb-4">
                           <div class="col">
@@ -322,7 +343,7 @@
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">{{ apy.toFormat(18) }}%</h4>
+                          <h4 class="mb-1 glowing">{{ apy.toFormat(4) }}%</h4>
                         </td>
                       </tr>
                       <tr>

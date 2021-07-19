@@ -213,8 +213,9 @@ export class ModalDepositComponent implements OnInit {
     this.updateAPY();
   }
 
-  setMaxDepositAmount(): void {
-    this.depositAmount = this.depositTokenBalance;
+  presetDepositAmount(percent: string | number): void {
+    const ratio = new BigNumber(percent).div(100);
+    this.depositAmount = this.depositTokenBalance.times(ratio);
     this.updateAPY();
   }
 
@@ -279,7 +280,6 @@ export class ModalDepositComponent implements OnInit {
       'IFeeModel',
       readonlyWeb3
     );
-    console.log(feeModelContract);
 
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
       this.selectedPoolInfo.stablecoin
