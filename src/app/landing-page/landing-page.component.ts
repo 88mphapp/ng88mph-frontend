@@ -24,6 +24,7 @@ export class LandingPageComponent implements OnInit {
   apy: BigNumber;
   interestEarnedToken: BigNumber;
   interestEarnedUSD: BigNumber;
+  mphReward: BigNumber;
   mphRewardUSD: BigNumber;
   mphRewardAPY: BigNumber;
   totalEarnedUSD: BigNumber;
@@ -193,6 +194,7 @@ export class LandingPageComponent implements OnInit {
       this.apy = new BigNumber(0);
       this.interestEarnedToken = new BigNumber(0);
       this.interestEarnedUSD = new BigNumber(0);
+      this.mphReward = new BigNumber(0);
       this.mphRewardUSD = new BigNumber(0);
       this.mphRewardAPY = new BigNumber(0);
       this.totalEarnedUSD = new BigNumber(0);
@@ -250,6 +252,12 @@ export class LandingPageComponent implements OnInit {
     if (this.apy.isNaN()) {
       this.apy = new BigNumber(0);
     }
+
+    // get MPH reward amount
+    this.mphReward = this.selectedPool.poolDepositorRewardMintMultiplier
+      .times(depositAmount)
+      .times(depositTime)
+      .div(this.constants.PRECISION);
 
     // get MPH reward USD amount
     const mphPriceUSD = await this.helpers.getMPHPriceUSD();
