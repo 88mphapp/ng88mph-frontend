@@ -177,6 +177,12 @@ export class ModalTopUpComponent implements OnInit {
     this.updateAPY();
   }
 
+  presetDepositAmount(percent: string | number): void {
+    const ratio = new BigNumber(percent).div(100);
+    this.depositAmountToken = this.depositTokenBalance.times(ratio);
+    this.updateAPY();
+  }
+
   setMaxDepositAmount() {
     this.depositAmountToken = this.depositTokenBalance;
     this.updateAPY();
