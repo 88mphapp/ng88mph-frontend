@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import { TimeSeriesService } from 'src/app/timeseries.service';
@@ -13,18 +13,21 @@ import { Chart } from 'chart.js';
   styleUrls: ['./mph-liquidity.component.css'],
 })
 export class MphLiquidityComponent implements OnInit {
-  FIRST_INDEX: number = 1605744000;
+  FIRST_INDEX = {
+    [this.constants.CHAIN_ID.MAINNET]: 1605744000,
+    [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+  };
   PERIOD: number = this.constants.DAY_IN_SEC;
 
   // data variables
-  timeseriesdata: number[][] = [];
-  timestamps: number[] = [];
-  readable: string[] = [];
-  blocks: number[] = [];
-  uniswap_v2: number[] = [];
-  uniswap_v3: number[] = [];
-  sushiswap: number[] = [];
-  bancor: number[] = [];
+  timeseriesdata: number[][];
+  timestamps: number[];
+  readable: string[];
+  blocks: number[];
+  uniswap_v2: number[];
+  uniswap_v3: number[];
+  sushiswap: number[];
+  bancor: number[];
 
   // chart variables
   public barChartOptions;
@@ -37,11 +40,30 @@ export class MphLiquidityComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService,
     public wallet: WalletService,
-    public timeseries: TimeSeriesService
+    public timeseries: TimeSeriesService,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
+    this.resetChart();
     this.drawChart();
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.zone.run(() => {
+        this.resetChart();
+        this.drawChart();
+      });
+    });
+  }
+
+  resetChart() {
+    this.timeseriesdata = [];
+    this.timestamps = [];
+    this.readable = [];
+    this.blocks = [];
+    this.uniswap_v2 = [];
+    this.uniswap_v3 = [];
+    this.sushiswap = [];
+    this.bancor = [];
   }
 
   async drawChart() {
@@ -109,7 +131,7 @@ export class MphLiquidityComponent implements OnInit {
   async loadData() {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
-      this.FIRST_INDEX,
+      this.FIRST_INDEX[this.wallet.networkID],
       this.PERIOD
     );
 
@@ -204,6 +226,9 @@ export class MphLiquidityComponent implements OnInit {
   }
 
   async loadBancor() {
+    if (this.wallet.networkID !== this.constants.CHAIN_ID.MAINNET) {
+      return;
+    }
     const start_date = this.timestamps[0];
     const end_date = this.timestamps[this.timestamps.length - 1];
     const apiStr = `https://api-v2.bancor.network/history/liquidity-depth/?dlt_type=ethereum&token_dlt_id=${
@@ -253,7 +278,7 @@ export class MphLiquidityComponent implements OnInit {
   async handleBancorData(data: Array<BancorNetworkHistory>) {
     const days =
       (this.timeseries.getLatestUTCDate() -
-        this.FIRST_INDEX +
+        this.FIRST_INDEX[this.wallet.networkID] +
         this.constants.DAY_IN_SEC) /
       this.constants.DAY_IN_SEC;
     let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(

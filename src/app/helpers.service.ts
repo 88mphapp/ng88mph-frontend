@@ -150,6 +150,14 @@ export class HelpersService {
     ) {
       address =
         this.constants.UNI[this.constants.CHAIN_ID.MAINNET].toLowerCase();
+    } else if (
+      address.toLowerCase() ===
+      this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
+    ) {
+      address =
+        this.constants.MPH_ADDRESS[
+          this.constants.CHAIN_ID.MAINNET
+        ].toLowerCase();
     }
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=${days}`;
     const rawResult = await this.httpsGet(apiStr, 300);
