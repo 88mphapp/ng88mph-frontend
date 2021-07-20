@@ -45,7 +45,8 @@ export class ConstantsService {
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
-    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.RINKEBY]:
+      'https://api.thegraph.com/subgraphs/name/blocklytics/rinkeby-blocks',
   };
   UNISWAP_V2_GRAPHQL_ENDPOINT =
     'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
