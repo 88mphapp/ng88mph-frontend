@@ -29,6 +29,7 @@ import { ChartsModule } from 'ng2-charts';
 import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liquidity.component';
 import { ModalBuyYieldTokenComponent } from './bonds/modal-buy-yield-token/modal-buy-yield-token.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { HistoricalAssetTvlComponent } from './stats/components/historical-asset-tvl/historical-asset-tvl.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     ModalRollOverComponent,
     MphLiquidityComponent,
     ModalBuyYieldTokenComponent,
+    HistoricalAssetTvlComponent,
   ],
   imports: [
     BrowserModule,
