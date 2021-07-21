@@ -280,7 +280,7 @@ export class HelpersService {
   }
 
   async applyFeeToInterest(
-    rawInterestAmount,
+    rawInterestAmount: BigNumber,
     poolInfo: PoolInfo
   ): Promise<BigNumber> {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
@@ -292,7 +292,7 @@ export class HelpersService {
       readonlyWeb3
     );
     const feeAmount = await feeModelContract.methods
-      .getInterestFeeAmount(poolInfo.address, rawInterestAmount)
+      .getInterestFeeAmount(poolInfo.address, rawInterestAmount.toString())
       .call();
 
     return new BigNumber(rawInterestAmount).minus(feeAmount);

@@ -306,11 +306,12 @@ export class ModalDepositComponent implements OnInit {
         .calculateInterestAmount(depositAmount, depositTime)
         .call()
     );
+    console.log(rawInterestAmountToken.toString());
     const rawFeeAmountToken = new BigNumber(
       await feeModelContract.methods
         .getInterestFeeAmount(
           this.selectedPoolInfo.address,
-          rawInterestAmountToken
+          rawInterestAmountToken.toString()
         )
         .call()
     );
