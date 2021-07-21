@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="row justify-content-center">
-        <div class="col-6 pt-0">
+        <div class="col-12 col-lg-6 pt-0">
           <div class="card mb-8">
             <div class="card-body">
               <form>
@@ -45,7 +45,7 @@
                         </div>
                       </div>
                       <div class="col ml-n2">
-                        <div class="form-group">
+                        <div class="form-group mb-0">
                           <label>Lending pool</label>
                           <div class="input-group input-group-lg">
                             <select
@@ -87,7 +87,7 @@
                         </div>
                       </div>
                       <div class="col ml-n2">
-                        <div class="form-group mb-2">
+                        <div class="form-group mb-1">
                           <label
                             >Deposit amount ({{ selectedDepositToken }})</label
                           >
@@ -103,7 +103,7 @@
                             />
                           </div>
                         </div>
-                        <div class="form-group mb-2" *ngIf="shouldDisplayZap">
+                        <div class="form-group mb-1" *ngIf="shouldDisplayZap">
                           <label>Deposit token</label>
                           <div class="input-group input-group-lg">
                             <select
@@ -122,39 +122,37 @@
                             </select>
                           </div>
                         </div>
-                        <div class="mb-4 d-flex justify-content-between">
-                          <button
-                            class="btn btn-lg border-gradient"
-                            type="button"
-                            (click)="presetDepositAmount(25)"
-                          >
-                            25%
-                          </button>
-                          <button
-                            class="btn btn-lg border-gradient"
-                            type="button"
-                            (click)="presetDepositAmount(50)"
-                          >
-                            50%
-                          </button>
-                          <button
-                            class="btn btn-lg border-gradient"
-                            type="button"
-                            (click)="presetDepositAmount(75)"
-                          >
-                            75%
-                          </button>
-                          <button
-                            class="btn btn-lg border-gradient"
-                            type="button"
-                            (click)="presetDepositAmount(100)"
-                          >
-                            100%
-                          </button>
-                        </div>
-                        <div class="row mb-4">
+                        <button
+                          class="btn btn-sm btn-dark mr-2"
+                          type="button"
+                          (click)="presetDepositAmount(25)"
+                        >
+                          25%
+                        </button>
+                        <button
+                          class="btn btn-sm btn-dark mr-2"
+                          type="button"
+                          (click)="presetDepositAmount(50)"
+                        >
+                          50%
+                        </button>
+                        <button
+                          class="btn btn-sm btn-dark mr-2"
+                          type="button"
+                          (click)="presetDepositAmount(75)"
+                        >
+                          75%
+                        </button>
+                        <button
+                          class="btn btn-sm btn-dark mr-2"
+                          type="button"
+                          (click)="presetDepositAmount(100)"
+                        >
+                          100%
+                        </button>
+                        <div class="row mb-0">
                           <div class="col">
-                            <small class="form-text text-muted"
+                            <small class="form-text text-muted mb-0"
                               >{{ depositTokenBalance.toFormat(4) }}
                               {{ selectedDepositToken }}
                               available | Min:
@@ -187,7 +185,7 @@
                         </div>
                       </div>
                       <div class="col ml-n2">
-                        <div class="form-row mb-2">
+                        <div class="form-row mb-0">
                           <div class="col">
                             <h4 class="mb-2">Maturity</h4>
                             <small class="text-muted"
@@ -204,13 +202,13 @@
                             >
                           </div>
                         </div>
-                        <div class="form-row">
+                        <div class="form-row mb-0">
                           <div
                             [ngClass]="
                               selectedZCBPools.length > 0 ? 'col-6' : 'col-12'
                             "
                           >
-                            <div class="form-group">
+                            <div class="form-group mt-1">
                               <label>Select a custom maturity</label>
                               <div class="input-group">
                                 <input
@@ -256,7 +254,7 @@
                             class="col-6"
                             *ngIf="selectedZCBPools.length > 0"
                           >
-                            <div class="form-group">
+                            <div class="form-group mb-0">
                               <label for="PresetMaturity"
                                 >OR a preset maturity</label
                               >
@@ -284,56 +282,6 @@
                                 can sell the principal at a discounted market
                                 price on xx before it has reached its maturity.
                               </small>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-row">
-                          <div class="col">
-                            <div class="form-group mb-0">
-                              <a
-                                class="btn btn-link text-primary p-0"
-                                data-toggle="collapse"
-                                href="#collapseExample"
-                                role="button"
-                                aria-expanded="false"
-                                aria-controls="collapseExample"
-                              >
-                                <label for="NFTmetadata"
-                                  >Custom NFT metadata (optional)
-                                  <i class="fe fe-chevron-down ml-auto"></i
-                                ></label>
-                              </a>
-                              <div class="collapse" id="collapseExample">
-                                <input
-                                  type="text"
-                                  class="form-control mb-1"
-                                  id="NFTmetadata"
-                                  aria-describedby="NFTmetadataHelp"
-                                  placeholder="Link to your JSON file"
-                                />
-                                <small
-                                  id="NFTmetadataHelp"
-                                  class="form-text text-muted"
-                                  >88mph's deposits are ERC-720 tokens that you
-                                  can customize with JSON metadata schemas, for
-                                  example, a title, a description, an image,
-                                  etc. We invite you to learn more about NFT
-                                  metadata on
-                                  <a
-                                    href="https://nftschool.dev/reference/metadata-schemas/#intro-to-json-schemas"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    >NFT School</a
-                                  >
-                                  and to store your files on
-                                  <a
-                                    href="https://nft.storage/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    >NFT Storage</a
-                                  >.</small
-                                >
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -506,13 +454,66 @@
                   </table>
                 </div>
                 <button
-                  class="btn btn-lg btn-bg-gradient btn-block"
+                  class="btn btn-lg btn-bg-gradient btn-block mb-4"
                   type="button"
                   (click)="deposit()"
                   [disabled]="!canContinue()"
                 >
                   Deposit
                 </button>
+                <div class="form-row text-center">
+                  <div class="col">
+                    <div class="form-group mb-0">
+                      <a
+                        class="btn btn-link text-primary p-0"
+                        data-toggle="collapse"
+                        href="#collapseExample"
+                        role="button"
+                        aria-expanded="false"
+                        aria-controls="collapseExample"
+                      >
+                        <label for="NFTmetadata"
+                          >Custom NFT metadata (optional)
+                          <i class="fe fe-chevron-down ml-auto"></i
+                        ></label>
+                      </a>
+                      <div class="collapse" id="collapseExample">
+                        <input
+                          type="text"
+                          class="form-control mb-1"
+                          id="NFTmetadata"
+                          aria-describedby="NFTmetadataHelp"
+                          placeholder="Link to your JSON file"
+                        />
+                        <small
+                          id="NFTmetadataHelp"
+                          class="form-text text-muted text-left"
+                          >88mph's deposits are ERC-720 tokens that you can
+                          customize with JSON metadata schemas, for example, a
+                          title, a description, an image, etc
+                          <a
+                            href="https://opensea.io/assets/0x9d481e42d9a2b52397262cdbe76abf3ca7b52203/34"
+                            target="_blank"
+                            >(example)</a
+                          >. We invite you to learn more about NFT metadata on
+                          <a
+                            href="https://nftschool.dev/reference/metadata-schemas/#intro-to-json-schemas"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >NFT School</a
+                          >
+                          and to store your files on
+                          <a
+                            href="https://nft.storage/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >NFT Storage</a
+                          >.</small
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
