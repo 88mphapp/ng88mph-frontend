@@ -30,6 +30,7 @@ import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liqu
 import { ModalBuyYieldTokenComponent } from './bonds/modal-buy-yield-token/modal-buy-yield-token.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { HistoricalAssetTvlComponent } from './stats/components/historical-asset-tvl/historical-asset-tvl.component';
+import { MphSupplyDistributionComponent } from './stats/components/mph-supply-distribution/mph-supply-distribution.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { HistoricalAssetTvlComponent } from './stats/components/historical-asset
     MphLiquidityComponent,
     ModalBuyYieldTokenComponent,
     HistoricalAssetTvlComponent,
+    MphSupplyDistributionComponent,
   ],
   imports: [
     BrowserModule,
