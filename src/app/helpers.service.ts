@@ -291,8 +291,9 @@ export class HelpersService {
       'IFeeModel',
       readonlyWeb3
     );
+    const interestAmount = this.processWeb3Number(rawInterestAmount);
     const feeAmount = await feeModelContract.methods
-      .getInterestFeeAmount(poolInfo.address, rawInterestAmount.toString())
+      .getInterestFeeAmount(poolInfo.address, interestAmount)
       .call();
 
     return new BigNumber(rawInterestAmount).minus(feeAmount);
