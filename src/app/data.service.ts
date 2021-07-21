@@ -47,6 +47,39 @@ export class DataService {
     return maxAPY;
   }
 
+  async getMaxMPHAPY(): Promise<BigNumber> {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    let maxMPHAPY = new BigNumber(0);
+    let dpools = new Array<DPool>(0);
+
+    const queryString = gql`
+      {
+        dpools {
+          address
+          poolDepositorRewardMintMultiplier
+        }
+      }
+    `;
+    await request(
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
+      queryString
+    ).then((data: QueryResult) => {
+      dpools = data.dpools;
+    });
+
+    for (let dpool in dpools) {
+      const apy = await this.getPoolMPHAPY(
+        dpools[dpool].address,
+        dpools[dpool].poolDepositorRewardMintMultiplier
+      );
+      if (apy.gt(maxMPHAPY)) {
+        maxMPHAPY = apy;
+      }
+    }
+
+    return maxMPHAPY;
+  }
+
   async getPoolMaxAPY(address: string): Promise<BigNumber> {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const poolInfo = this.contract.getPoolInfoFromAddress(address);
@@ -88,14 +121,40 @@ export class DataService {
 
     return apy;
   }
+
+  async getPoolMPHAPY(
+    address: string,
+    mintMintiplier: BigNumber
+  ): Promise<BigNumber> {
+    const poolInfo = this.contract.getPoolInfoFromAddress(address);
+    const stablecoinPriceUSD = await this.helpers.getTokenPriceUSD(
+      poolInfo.stablecoin
+    );
+    const mphPriceUSD = await this.helpers.getMPHPriceUSD();
+
+    const rewardPerWeek = new BigNumber(mintMintiplier)
+      .times(mphPriceUSD)
+      .times(this.constants.DAY_IN_SEC)
+      .times(7);
+    let rewardAPY = rewardPerWeek
+      .div(stablecoinPriceUSD)
+      .div(this.constants.DAY_IN_SEC)
+      .div(7)
+      .times(this.constants.YEAR_IN_SEC)
+      .times(100);
+
+    return new BigNumber(rewardAPY);
+  }
 }
 
 interface QueryResult {
   dpools: {
     address: string;
+    poolDepositorRewardMintMultiplier: BigNumber;
   }[];
 }
 
 interface DPool {
   address: string;
+  poolDepositorRewardMintMultiplier: BigNumber;
 }

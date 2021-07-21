@@ -30,6 +30,7 @@ export class LandingPageComponent implements OnInit {
   totalEarnedUSD: BigNumber;
   tenYearCompounded: BigNumber;
   maxAPY: BigNumber;
+  maxMPHAPY: BigNumber;
 
   constructor(
     public constants: ConstantsService,
@@ -78,6 +79,7 @@ export class LandingPageComponent implements OnInit {
 
     if (loadGlobal) {
       this.maxAPY = await this.datas.getMaxAPY();
+      this.maxMPHAPY = await this.datas.getMaxMPHAPY();
 
       const queryString = gql`
         {
@@ -200,6 +202,7 @@ export class LandingPageComponent implements OnInit {
       this.totalEarnedUSD = new BigNumber(0);
       this.tenYearCompounded = new BigNumber(0);
       this.maxAPY = new BigNumber(0);
+      this.maxMPHAPY = new BigNumber(0);
     }
   }
 
@@ -270,8 +273,8 @@ export class LandingPageComponent implements OnInit {
     // get MPH reward APY
     const mphAPY = this.mphRewardUSD
       .div(this.initialDepositUSD)
-      .div(this.termInDays)
-      .times(365)
+      .div(depositTime)
+      .times(this.constants.YEAR_IN_SEC)
       .times(100);
     if (mphAPY.isNaN()) {
       this.mphRewardAPY = new BigNumber(0);
