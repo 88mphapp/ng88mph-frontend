@@ -19,575 +19,497 @@
         </div>
       </div>
       <div class="row justify-content-center">
-        <div class="col-10 pt-0">
+        <div class="col-12 col-lg-6 pt-0">
           <div class="card mb-8">
             <div class="card-body">
               <form>
-                <div class="row">
-                  <div class="col-12 col-lg-6">
-                    <div
-                      class="
-                        list-group list-group-flush list-group-activity
-                        mb-2
-                      "
-                    >
-                      <div class="list-group-item">
-                        <div class="row">
-                          <div class="col-auto">
-                            <div class="avatar avatar-sm">
-                              <div
-                                class="
-                                  avatar-title
-                                  font-size-lg
-                                  bg-dark
-                                  rounded-circle
-                                  text-white
-                                  border-gradient
-                                "
-                              >
-                                1
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col ml-n2">
-                            <div class="form-group mb-0">
-                              <label>Lending pool</label>
-                              <div class="input-group input-group-lg">
-                                <select
-                                  class="custom-select"
-                                  (change)="selectPool($event.target.value)"
-                                >
-                                  <option
-                                    value="{{ pool.name }}"
-                                    *ngFor="let pool of poolList"
-                                    [selected]="
-                                      pool.name === selectedPoolInfo.name
-                                    "
-                                  >
-                                    {{ pool.stablecoinSymbol }} ({{
-                                      pool.protocol
-                                    }})
-                                  </option>
-                                </select>
-                              </div>
-                            </div>
+                <div
+                  class="list-group list-group-flush list-group-activity mb-2"
+                >
+                  <div class="list-group-item">
+                    <div class="row">
+                      <div class="col-auto">
+                        <div class="avatar avatar-sm">
+                          <div
+                            class="
+                              avatar-title
+                              font-size-lg
+                              bg-dark
+                              rounded-circle
+                              text-white
+                              border-gradient
+                            "
+                          >
+                            1
                           </div>
                         </div>
-                        <!-- / .row -->
                       </div>
-                      <div class="list-group-item">
-                        <div class="row">
-                          <div class="col-auto text-center">
-                            <div class="avatar avatar-sm">
-                              <div
-                                class="
-                                  avatar-title
-                                  font-size-lg
-                                  bg-dark
-                                  rounded-circle
-                                  text-white
-                                  border-gradient
-                                "
+                      <div class="col ml-n2">
+                        <div class="form-group mb-0">
+                          <label>Lending pool</label>
+                          <div class="input-group input-group-lg">
+                            <select
+                              class="custom-select"
+                              (change)="selectPool($event.target.value)"
+                            >
+                              <option
+                                value="{{ pool.name }}"
+                                *ngFor="let pool of poolList"
+                                [selected]="pool.name === selectedPoolInfo.name"
                               >
-                                2
-                              </div>
-                            </div>
+                                {{ pool.stablecoinSymbol }} ({{
+                                  pool.protocol
+                                }})
+                              </option>
+                            </select>
                           </div>
-                          <div class="col ml-n2">
-                            <div class="form-group mb-2">
-                              <label
-                                >Deposit amount ({{
-                                  selectedDepositToken
-                                }})</label
+                        </div>
+                      </div>
+                    </div>
+                    <!-- / .row -->
+                  </div>
+                  <div class="list-group-item">
+                    <div class="row">
+                      <div class="col-auto text-center">
+                        <div class="avatar avatar-sm">
+                          <div
+                            class="
+                              avatar-title
+                              font-size-lg
+                              bg-dark
+                              rounded-circle
+                              text-white
+                              border-gradient
+                            "
+                          >
+                            2
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col ml-n2">
+                        <div class="form-group mb-1">
+                          <label
+                            >Deposit amount ({{ selectedDepositToken }})</label
+                          >
+                          <div class="input-group">
+                            <input
+                              type="text"
+                              class="form-control form-control-lg"
+                              placeholder="0.00"
+                              aria-label=""
+                              aria-describedby=""
+                              [value]="depositAmount.toFixed()"
+                              (input)="setDepositAmount($event.target.value)"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group mb-1" *ngIf="shouldDisplayZap">
+                          <label>Deposit token</label>
+                          <div class="input-group input-group-lg">
+                            <select
+                              class="custom-select"
+                              (change)="
+                                selectZapDepositToken($event.target.value)
+                              "
+                            >
+                              <option
+                                value="{{ token }}"
+                                *ngFor="let token of zapDepositTokens"
+                                [selected]="token === selectedDepositToken"
                               >
+                                {{ token }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <button
+                          class="btn btn-sm btn-dark mr-2"
+                          type="button"
+                          (click)="presetDepositAmount(25)"
+                        >
+                          25%
+                        </button>
+                        <button
+                          class="btn btn-sm btn-dark mr-2"
+                          type="button"
+                          (click)="presetDepositAmount(50)"
+                        >
+                          50%
+                        </button>
+                        <button
+                          class="btn btn-sm btn-dark mr-2"
+                          type="button"
+                          (click)="presetDepositAmount(75)"
+                        >
+                          75%
+                        </button>
+                        <button
+                          class="btn btn-sm btn-dark mr-2"
+                          type="button"
+                          (click)="presetDepositAmount(100)"
+                        >
+                          100%
+                        </button>
+                        <div class="row mb-0">
+                          <div class="col">
+                            <small class="form-text text-muted mb-0"
+                              >{{ depositTokenBalance.toFormat(4) }}
+                              {{ selectedDepositToken }}
+                              available | Min:
+                              {{ minDepositAmount.toFormat() }}
+                              {{ selectedPoolInfo.stablecoinSymbol }} per
+                              deposit</small
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- / .row -->
+                  </div>
+                  <div class="list-group-item pb-0">
+                    <div class="row">
+                      <div class="col-auto text-center">
+                        <div class="avatar avatar-sm">
+                          <div
+                            class="
+                              avatar-title
+                              font-size-lg
+                              bg-dark
+                              rounded-circle
+                              text-white
+                              border-gradient
+                            "
+                          >
+                            3
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col ml-n2">
+                        <div class="form-row mb-0">
+                          <div class="col">
+                            <h4 class="mb-2">Maturity</h4>
+                            <small class="text-muted"
+                              >You will be able to redeem your principal & fixed
+                              interest on the corresponding maturity selected.
+                              Early withdrawal of your principal is allowed
+                              minus a 0.5% fee.
+                              <a
+                                href="https://docs.88mph.app"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >Learn more.</a
+                              ></small
+                            >
+                          </div>
+                        </div>
+                        <div class="form-row mb-0">
+                          <div
+                            [ngClass]="
+                              selectedZCBPools.length > 0 ? 'col-6' : 'col-12'
+                            "
+                          >
+                            <div class="form-group mt-1">
+                              <label>Select a custom maturity</label>
                               <div class="input-group">
                                 <input
-                                  type="text"
+                                  type="tel"
                                   class="form-control form-control-lg"
                                   placeholder="0.00"
                                   aria-label=""
                                   aria-describedby=""
-                                  [value]="depositAmount.toFixed()"
-                                  (input)="
-                                    setDepositAmount($event.target.value)
-                                  "
+                                  [value]="depositTimeInDays.toFixed()"
+                                  id="lock-period"
+                                  data-mask="#,##0"
+                                  data-mask-reverse="true"
+                                  (input)="setDepositTime($event.target.value)"
+                                />
+                                <!-- <div class="input-group-append">
+                                  <button
+                                    class="btn btn-lg border-gradient"
+                                    type="button"
+                                    (click)="
+                                      setDepositTime(maxDepositPeriodInDays)
+                                    "
+                                  >
+                                    Max
+                                  </button>
+                                </div> -->
+                                <input
+                                  type="range"
+                                  class="custom-range"
+                                  min="7"
+                                  max="365"
+                                  step="1"
+                                  [value]="depositTimeInDays"
+                                  (input)="setDepositTime($event.target.value)"
                                 />
                               </div>
+                              <small class="form-text text-muted my-2">
+                                Max:
+                                {{ maxDepositPeriodInDays }} days
+                              </small>
                             </div>
-                            <div
-                              class="form-group mb-2"
-                              *ngIf="shouldDisplayZap"
-                            >
-                              <label>Deposit token</label>
+                          </div>
+                          <div
+                            class="col-6"
+                            *ngIf="selectedZCBPools.length > 0"
+                          >
+                            <div class="form-group mb-0">
+                              <label for="PresetMaturity"
+                                >OR a preset maturity</label
+                              >
                               <div class="input-group input-group-lg">
                                 <select
-                                  class="custom-select"
-                                  (change)="
-                                    selectZapDepositToken($event.target.value)
-                                  "
+                                  [(ngModel)]="presetMaturity"
+                                  name="maturity"
+                                  class="form-select custom-select"
+                                  id="PresetMaturity"
+                                  data-toggle="select"
+                                  (ngModelChange)="setPresetMaturity()"
                                 >
+                                  <option [ngValue]="null">None</option>
                                   <option
-                                    value="{{ token }}"
-                                    *ngFor="let token of zapDepositTokens"
-                                    [selected]="token === selectedDepositToken"
+                                    *ngFor="let pool of selectedZCBPools"
+                                    [ngValue]="pool"
                                   >
-                                    {{ token }}
+                                    {{ pool.series }}
                                   </option>
                                 </select>
                               </div>
-                            </div>
-                            <div class="mb-2">
-                              <button
-                                class="btn btn-sm btn-dark mr-3"
-                                type="button"
-                                (click)="presetDepositAmount(25)"
-                              >
-                                25%
-                              </button>
-                              <button
-                                class="btn btn-sm btn-dark mr-3"
-                                type="button"
-                                (click)="presetDepositAmount(50)"
-                              >
-                                50%
-                              </button>
-                              <button
-                                class="btn btn-sm btn-dark mr-3"
-                                type="button"
-                                (click)="presetDepositAmount(75)"
-                              >
-                                75%
-                              </button>
-                              <button
-                                class="btn btn-sm btn-dark mr-3"
-                                type="button"
-                                (click)="presetDepositAmount(100)"
-                              >
-                                100%
-                              </button>
-                            </div>
-                            <div class="row mb-0">
-                              <div class="col">
-                                <small class="form-text text-muted"
-                                  >{{ depositTokenBalance.toFormat(4) }}
-                                  {{ selectedDepositToken }}
-                                  available | Min:
-                                  {{ minDepositAmount.toFormat() }}
-                                  {{ selectedPoolInfo.stablecoinSymbol }} per
-                                  deposit</small
-                                >
-                              </div>
+                              <small class="form-text text-muted my-2">
+                                Unlike custom maturity, preset maturity doesn't
+                                allow early withdrawal of the principal. But you
+                                can sell the principal at a discounted market
+                                price on xx before it has reached its maturity.
+                              </small>
                             </div>
                           </div>
                         </div>
-                        <!-- / .row -->
-                      </div>
-                      <div class="list-group-item pb-0">
-                        <div class="row">
-                          <div class="col-auto text-center">
-                            <div class="avatar avatar-sm">
-                              <div
-                                class="
-                                  avatar-title
-                                  font-size-lg
-                                  bg-dark
-                                  rounded-circle
-                                  text-white
-                                  border-gradient
-                                "
-                              >
-                                3
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col ml-n2">
-                            <div class="form-row mb-2">
-                              <div class="col">
-                                <h4 class="mb-2">Maturity</h4>
-                                <small class="text-muted"
-                                  >You will be able to redeem your principal &
-                                  fixed interest on the corresponding maturity
-                                  selected. Early withdrawal of your principal
-                                  is allowed minus a 0.5% fee.
-                                  <a
-                                    href="https://docs.88mph.app"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    >Learn more.</a
-                                  ></small
-                                >
-                              </div>
-                            </div>
-                            <div class="form-row">
-                              <div
-                                [ngClass]="
-                                  selectedZCBPools.length > 0
-                                    ? 'col-6'
-                                    : 'col-12'
-                                "
-                              >
-                                <div class="form-group mb-0">
-                                  <label>Select a custom maturity</label>
-                                  <div class="input-group">
-                                    <input
-                                      type="tel"
-                                      class="form-control form-control-lg"
-                                      placeholder="0.00"
-                                      aria-label=""
-                                      aria-describedby=""
-                                      [value]="depositTimeInDays.toFixed()"
-                                      id="lock-period"
-                                      data-mask="#,##0"
-                                      data-mask-reverse="true"
-                                      (input)="
-                                        setDepositTime($event.target.value)
-                                      "
-                                    />
-                                    <!-- <div class="input-group-append">
-                                      <button
-                                        class="btn btn-lg border-gradient"
-                                        type="button"
-                                        (click)="
-                                          setDepositTime(maxDepositPeriodInDays)
-                                        "
-                                      >
-                                        Max
-                                      </button>
-                                    </div> -->
-                                    <input
-                                      type="range"
-                                      class="custom-range"
-                                      min="7"
-                                      max="365"
-                                      step="1"
-                                      [value]="depositTimeInDays"
-                                      (input)="
-                                        setDepositTime($event.target.value)
-                                      "
-                                    />
-                                  </div>
-                                  <small class="form-text text-muted my-2">
-                                    Max:
-                                    {{ maxDepositPeriodInDays }} days
-                                  </small>
-                                </div>
-                              </div>
-                              <div
-                                class="col-6"
-                                *ngIf="selectedZCBPools.length > 0"
-                              >
-                                <div class="form-group mb-0">
-                                  <label for="PresetMaturity"
-                                    >OR a preset maturity</label
-                                  >
-                                  <div class="input-group input-group-lg">
-                                    <select
-                                      [(ngModel)]="presetMaturity"
-                                      name="maturity"
-                                      class="form-select custom-select"
-                                      id="PresetMaturity"
-                                      data-toggle="select"
-                                      (ngModelChange)="setPresetMaturity()"
-                                    >
-                                      <option [ngValue]="null">None</option>
-                                      <option
-                                        *ngFor="let pool of selectedZCBPools"
-                                        [ngValue]="pool"
-                                      >
-                                        {{ pool.series }}
-                                      </option>
-                                    </select>
-                                  </div>
-                                  <small class="form-text text-muted my-2">
-                                    Unlike custom maturity, preset maturity
-                                    doesn't allow early withdrawal of the
-                                    principal. But you can sell the principal at
-                                    a discounted market price on xx before it
-                                    has reached its maturity.
-                                  </small>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- / .row -->
                       </div>
                     </div>
+                    <!-- / .row -->
                   </div>
-                  <div class="col-12 col-lg-6">
-                    <div class="table-responsive p-3 border-1">
-                      <table class="table">
-                        <tbody>
-                          <tr>
-                            <td class="px-0 py-2 text-white border-0 small">
-                              Fixed-interest rate
-                            </td>
-                            <td
-                              class="
-                                px-0
-                                py-2
-                                text-white text-right
-                                border-0
-                                small
-                              "
-                            >
-                              <h4 class="mb-1 glowing">
-                                {{ apy.toFormat(4) }}%
-                              </h4>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="px-0 py-2 text-white border-0 small">
-                              Interest earned at maturity
-                            </td>
-                            <td
-                              class="
-                                px-0
-                                py-2
-                                text-white text-right
-                                border-0
-                                small
-                              "
-                            >
-                              <h4 class="mb-1 glowing">
-                                ${{
-                                  helpers
-                                    .applyDepositFee(
-                                      interestAmountUSD,
-                                      selectedPoolInfo
-                                    )
-                                    .toFormat(4)
-                                }}
-                              </h4>
-                              <h5 class="text-muted">
-                                {{
-                                  helpers
-                                    .applyDepositFee(
-                                      interestAmountToken,
-                                      selectedPoolInfo
-                                    )
-                                    .toFormat(4)
-                                }}
-                                {{ selectedPoolInfo.stablecoinSymbol }}
-                              </h5>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="px-0 py-2 text-white border-0 small">
-                              Withdrawable at maturity | {{ depositMaturation }}
-                            </td>
-                            <td
-                              class="
-                                px-0
-                                py-2
-                                text-white text-right
-                                border-0
-                                small
-                              "
-                            >
-                              <h4 class="mb-1 glowing">
-                                ${{
-                                  helpers
-                                    .applyDepositFee(
-                                      depositAmountUSD,
-                                      selectedPoolInfo
-                                    )
-                                    .plus(
-                                      helpers.applyDepositFee(
-                                        interestAmountUSD,
-                                        selectedPoolInfo
-                                      )
-                                    )
-                                    .toFormat(4)
-                                }}
-                              </h4>
-                              <h5 class="text-muted">
-                                {{
-                                  helpers
-                                    .applyDepositFee(
-                                      depositAmount,
-                                      selectedPoolInfo
-                                    )
-                                    .plus(
-                                      helpers.applyDepositFee(
-                                        interestAmountToken,
-                                        selectedPoolInfo
-                                      )
-                                    )
-                                    .toFormat(4)
-                                }}
-                                {{ selectedPoolInfo.stablecoinSymbol }}
-                              </h5>
-                              <small *ngIf="selectedPoolInfo.depositFee"
-                                >Note: A
-                                {{ selectedPoolInfo.depositFee * 100 }}% fee is
-                                taken by the underlying yield protocol ({{
-                                  selectedPoolInfo.protocol
-                                }})</small
-                              >
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="px-0 py-2 text-white border-0 small">
-                              MPH rewards (Vested linearly over the deposit
-                              duration)
-                            </td>
-                            <td
-                              class="
-                                px-0
-                                py-2
-                                text-white text-right
-                                border-0
-                                small
-                              "
-                            >
-                              <h4 class="mb-1 glowing">
-                                ${{
-                                  mphRewardAmount.times(mphPriceUSD).toFormat(4)
-                                }}
-                              </h4>
-                              <h5 class="text-muted">
-                                {{ mphRewardAmount.toFormat(4) }} MPH
-                              </h5>
-                            </td>
-                          </tr>
-                          <!--displayed if preset maturity selected-->
-                          <tr *ngIf="presetMaturity">
-                            <td class="px-0 py-2 text-white border-0 small">
-                              MPH APR (earned by
-                              <a href="">providing liquidity</a>)
-                            </td>
-                            <td
-                              class="
-                                px-0
-                                py-2
-                                text-white text-right
-                                border-0
-                                small
-                              "
-                            >
-                              <h4 class="mb-1 glowing">
-                                +{{ mphAPY.toFormat(4) }}%
-                              </h4>
-                            </td>
-                          </tr>
-                          <tr *ngIf="!presetMaturity">
-                            <td class="px-0 py-2 text-white border-0 small">
-                              MPH APR
-                            </td>
-                            <td
-                              class="
-                                px-0
-                                py-2
-                                text-white text-right
-                                border-0
-                                small
-                              "
-                            >
-                              <h4 class="mb-1 glowing">
-                                +{{ mphAPY.toFormat(4) }}%
-                              </h4>
-                            </td>
-                          </tr>
-                          <tr style="border-top: 1px dotted white">
-                            <td class="px-0 py-2 text-white border-0 small">
-                              Total earned at maturity
-                            </td>
-                            <td
-                              class="
-                                px-0
-                                py-2
-                                text-white text-right
-                                border-0
-                                small
-                              "
-                            >
-                              <h4 class="mb-1 glowing">
-                                ${{
-                                  helpers
-                                    .applyDepositFee(
-                                      depositAmountUSD,
-                                      selectedPoolInfo
-                                    )
-                                    .plus(
-                                      helpers.applyDepositFee(
-                                        interestAmountUSD,
-                                        selectedPoolInfo
-                                      )
-                                    )
-                                    .plus(mphRewardAmount.times(mphPriceUSD))
-                                    .toFormat(4)
-                                }}
-                              </h4>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <button
-                        class="btn btn-lg btn-bg-gradient btn-block mb-4"
-                        type="button"
-                        (click)="deposit()"
-                        [disabled]="!canContinue()"
+                </div>
+                <div class="table-responsive p-3">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          Fixed-interest rate
+                        </td>
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
+                          <h4 class="mb-1 glowing">{{ apy.toFormat(4) }}%</h4>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          Interest earned at maturity
+                        </td>
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
+                          <h4 class="mb-1 glowing">
+                            ${{
+                              helpers
+                                .applyDepositFee(
+                                  interestAmountUSD,
+                                  selectedPoolInfo
+                                )
+                                .toFormat(4)
+                            }}
+                          </h4>
+                          <h5 class="text-muted">
+                            {{
+                              helpers
+                                .applyDepositFee(
+                                  interestAmountToken,
+                                  selectedPoolInfo
+                                )
+                                .toFormat(4)
+                            }}
+                            {{ selectedPoolInfo.stablecoinSymbol }}
+                          </h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          Withdrawable at maturity | {{ depositMaturation }}
+                        </td>
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
+                          <h4 class="mb-1 glowing">
+                            ${{
+                              helpers
+                                .applyDepositFee(
+                                  depositAmountUSD,
+                                  selectedPoolInfo
+                                )
+                                .plus(
+                                  helpers.applyDepositFee(
+                                    interestAmountUSD,
+                                    selectedPoolInfo
+                                  )
+                                )
+                                .toFormat(4)
+                            }}
+                          </h4>
+                          <h5 class="text-muted">
+                            {{
+                              helpers
+                                .applyDepositFee(
+                                  depositAmount,
+                                  selectedPoolInfo
+                                )
+                                .plus(
+                                  helpers.applyDepositFee(
+                                    interestAmountToken,
+                                    selectedPoolInfo
+                                  )
+                                )
+                                .toFormat(4)
+                            }}
+                            {{ selectedPoolInfo.stablecoinSymbol }}
+                          </h5>
+                          <small *ngIf="selectedPoolInfo.depositFee"
+                            >Note: A {{ selectedPoolInfo.depositFee * 100 }}%
+                            fee is taken by the underlying yield protocol ({{
+                              selectedPoolInfo.protocol
+                            }})</small
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          MPH rewards (Vested linearly over the deposit
+                          duration)
+                        </td>
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
+                          <h4 class="mb-1 glowing">
+                            ${{
+                              mphRewardAmount.times(mphPriceUSD).toFormat(4)
+                            }}
+                          </h4>
+                          <h5 class="text-muted">
+                            {{ mphRewardAmount.toFormat(4) }} MPH
+                          </h5>
+                        </td>
+                      </tr>
+                      <!--displayed if preset maturity selected-->
+                      <tr *ngIf="presetMaturity">
+                        <td class="px-0 py-2 text-white border-0 small">
+                          MPH APR (earned by <a href="">providing liquidity</a>)
+                        </td>
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
+                          <h4 class="mb-1 glowing">
+                            +{{ mphAPY.toFormat(4) }}%
+                          </h4>
+                        </td>
+                      </tr>
+                      <tr *ngIf="!presetMaturity">
+                        <td class="px-0 py-2 text-white border-0 small">
+                          MPH APR
+                        </td>
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
+                          <h4 class="mb-1 glowing">
+                            +{{ mphAPY.toFormat(4) }}%
+                          </h4>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2 text-white border-0 small">
+                          Total earned at maturity
+                        </td>
+                        <td
+                          class="px-0 py-2 text-white text-right border-0 small"
+                        >
+                          <h4 class="mb-1 glowing">
+                            ${{
+                              helpers
+                                .applyDepositFee(
+                                  depositAmountUSD,
+                                  selectedPoolInfo
+                                )
+                                .plus(
+                                  helpers.applyDepositFee(
+                                    interestAmountUSD,
+                                    selectedPoolInfo
+                                  )
+                                )
+                                .plus(mphRewardAmount.times(mphPriceUSD))
+                                .toFormat(4)
+                            }}
+                          </h4>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button
+                  class="btn btn-lg btn-bg-gradient btn-block mb-4"
+                  type="button"
+                  (click)="deposit()"
+                  [disabled]="!canContinue()"
+                >
+                  Deposit
+                </button>
+                <div class="form-row text-center">
+                  <div class="col">
+                    <div class="form-group mb-0">
+                      <a
+                        class="btn btn-link text-primary p-0"
+                        data-toggle="collapse"
+                        href="#collapseExample"
+                        role="button"
+                        aria-expanded="false"
+                        aria-controls="collapseExample"
                       >
-                        Deposit
-                      </button>
-
-                      <div class="form-row text-center">
-                        <div class="col">
-                          <div class="form-group mb-0">
-                            <a
-                              class="btn btn-link text-primary p-0"
-                              data-toggle="collapse"
-                              href="#collapseExample"
-                              role="button"
-                              aria-expanded="false"
-                              aria-controls="collapseExample"
-                            >
-                              <label for="NFTmetadata"
-                                >Custom NFT metadata (optional)
-                                <i class="fe fe-chevron-down ml-auto"></i
-                              ></label>
-                            </a>
-                            <div class="collapse" id="collapseExample">
-                              <input
-                                type="text"
-                                class="form-control mb-1"
-                                id="NFTmetadata"
-                                aria-describedby="NFTmetadataHelp"
-                                placeholder="Link to your JSON file"
-                              />
-                              <small
-                                id="NFTmetadataHelp"
-                                class="form-text text-muted text-left"
-                                >88mph's deposits are ERC-720 tokens that you
-                                can customize with JSON metadata schemas, for
-                                example, a title, a description, an image, etc.
-                                It's an experimental feature mixing creative
-                                content and DeFi
-                                <a
-                                  href="https://opensea.io/assets/0xdaa6bd333c83362579d9621954e9451e319d09ea/10"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  >(example)</a
-                                >. We invite you to learn more about NFT
-                                metadata on
-                                <a
-                                  href="https://nftschool.dev/reference/metadata-schemas/#intro-to-json-schemas"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  >NFT School</a
-                                >
-                                and to store your files on
-                                <a
-                                  href="https://nft.storage/"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  >NFT Storage</a
-                                >.</small
-                              >
-                            </div>
-                          </div>
-                        </div>
+                        <label for="NFTmetadata"
+                          >Custom NFT metadata (optional)
+                          <i class="fe fe-chevron-down ml-auto"></i
+                        ></label>
+                      </a>
+                      <div class="collapse" id="collapseExample">
+                        <input
+                          type="text"
+                          class="form-control mb-1"
+                          id="NFTmetadata"
+                          aria-describedby="NFTmetadataHelp"
+                          placeholder="Link to your JSON file"
+                        />
+                        <small
+                          id="NFTmetadataHelp"
+                          class="form-text text-muted text-left"
+                          >88mph's deposits are ERC-720 tokens that you can
+                          customize with JSON metadata schemas, for example, a
+                          title, a description, an image, etc
+                          <a
+                            href="https://opensea.io/assets/0x9d481e42d9a2b52397262cdbe76abf3ca7b52203/34"
+                            target="_blank"
+                            >(example)</a
+                          >. We invite you to learn more about NFT metadata on
+                          <a
+                            href="https://nftschool.dev/reference/metadata-schemas/#intro-to-json-schemas"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >NFT School</a
+                          >
+                          and to store your files on
+                          <a
+                            href="https://nft.storage/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >NFT Storage</a
+                          >.</small
+                        >
                       </div>
                     </div>
                   </div>
