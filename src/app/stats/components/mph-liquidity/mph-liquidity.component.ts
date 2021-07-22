@@ -46,11 +46,11 @@ export class MphLiquidityComponent implements OnInit {
 
   ngOnInit(): void {
     this.resetChart();
-    this.drawChart();
+    this.drawChart(this.wallet.networkID);
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.zone.run(() => {
         this.resetChart();
-        this.drawChart();
+        this.drawChart(networkID);
       });
     });
   }
@@ -66,8 +66,12 @@ export class MphLiquidityComponent implements OnInit {
     this.bancor = [];
   }
 
-  async drawChart() {
+  async drawChart(networkID: number) {
+    // wait for data to load
     await this.loadData();
+    if (networkID !== this.wallet.networkID) {
+      return;
+    }
 
     // then draw the chart
     this.barChartOptions = {
