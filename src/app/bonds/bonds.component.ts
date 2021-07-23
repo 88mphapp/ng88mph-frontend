@@ -217,11 +217,16 @@ export class BondsComponent implements OnInit {
           const fundings: Array<FundedDeposit> = [];
 
           for (const funding in pool.fundings) {
+            const stablecoinPrecision = Math.pow(
+              10,
+              this.contract.getPoolInfoFromAddress(pool.address)
+                .stablecoinDecimals
+            );
             const yieldTokenBalance = new BigNumber(
               await yieldToken.methods
                 .balanceOf(funder.address, pool.fundings[funding].nftID)
                 .call()
-            ).div(this.constants.PRECISION);
+            ).div(stablecoinPrecision);
 
             const maturity = new BigNumber(
               pool.fundings[funding].deposit.maturationTimestamp
@@ -269,7 +274,7 @@ export class BondsComponent implements OnInit {
                 .call()
                 .then((result) => {
                   const fundingTotalAccruedInterest = new BigNumber(result).div(
-                    this.constants.PRECISION
+                    stablecoinPrecision
                   );
                   funderAccruedInterest =
                     fundingTotalAccruedInterest.times(yieldTokenPercentage);
@@ -287,7 +292,7 @@ export class BondsComponent implements OnInit {
                 .call()
                 .then((result) => {
                   const funderDistributedInterest = new BigNumber(result).div(
-                    this.constants.PRECISION
+                    stablecoinPrecision
                   );
                   console.log('yield paid out');
                   console.log(funderDistributedInterest.toFixed(18));
@@ -541,17 +546,21 @@ export class BondsComponent implements OnInit {
         const depositAmount = new BigNumber(deposit.amount);
 
         let surplus;
+        const stablecoinPrecision = Math.pow(
+          10,
+          this.selectedPool.stablecoinDecimals
+        );
         await lens.methods
           .surplusOfDeposit(this.selectedPool.address, deposit.nftID)
           .call()
           .then((result) => {
             if (result.isNegative === true) {
               surplus = new BigNumber(result.surplusAmount)
-                .div(this.constants.PRECISION)
+                .div(stablecoinPrecision)
                 .negated();
             } else {
               surplus = new BigNumber(result.surplusAmount).div(
-                this.constants.PRECISION
+                stablecoinPrecision
               );
             }
           });
