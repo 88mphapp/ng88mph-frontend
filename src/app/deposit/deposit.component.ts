@@ -82,12 +82,7 @@ export class DepositComponent implements OnInit {
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
-    let userID;
-    if (this.wallet.connected && !this.wallet.watching) {
-      userID = this.wallet.userAddress.toLowerCase();
-    } else if (this.wallet.watching) {
-      userID = this.wallet.watchedAddress.toLowerCase();
-    }
+    let userID = this.wallet.actualAddress.toLowerCase();
 
     if (loadUser && userID) {
       // load xMPH balance for 'get started' section

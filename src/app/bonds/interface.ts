@@ -15,6 +15,7 @@ export interface Fundingv3 {
   principalPerToken: number;
 }
 
+// @dev deprecated
 export interface Funding {
   id: number;
   pool: {
@@ -40,6 +41,10 @@ export interface Funding {
 }
 
 export interface FundedDeposit {
+  yieldToken: any;
+  fundingID: number;
+  stablecoinPrice: number;
+  funderAccruedInterest: BigNumber;
   maturationTimestamp: number;
   countdownTimer: Timer;
   yieldTokenBalance: BigNumber;
@@ -85,12 +90,8 @@ export interface DPool {
   stablecoinSymbol: string;
   stablecoinDecimals: number;
   iconPath: string;
-  // latestFundedDeposit: number;
-  // latestDeposit: number;
   surplus: BigNumber;
   oneYearInterestRate: BigNumber;
-  // unfundedDepositAmount: BigNumber;
-  // mphRewardPerTokenPerSecond: BigNumber;
   oracleInterestRate: BigNumber;
   poolFunderRewardMultiplier: BigNumber;
 }
