@@ -33,6 +33,16 @@ export class WalletService extends Web3Enabled {
     return this.watch.watching;
   }
 
+  public get actualAddress(): string {
+    if (this.connected && !this.watching) {
+      return this.userAddress;
+    } else if (this.watching) {
+      return this.watchedAddress;
+    } else {
+      return '';
+    }
+  }
+
   watchWallet(address: string) {
     this.watch.watching = true;
     this.watch.address = address;
