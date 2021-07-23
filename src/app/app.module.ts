@@ -32,6 +32,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { HistoricalAssetTvlComponent } from './stats/components/historical-asset-tvl/historical-asset-tvl.component';
 import { MphSupplyDistributionComponent } from './stats/components/mph-supply-distribution/mph-supply-distribution.component';
 import { HistoricalFixedInterestRatesComponent } from './stats/components/historical-fixed-interest-rates/historical-fixed-interest-rates.component';
+import { FundedInterestExpensesComponent } from './stats/components/funded-interest-expenses/funded-interest-expenses.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { HistoricalFixedInterestRatesComponent } from './stats/components/histor
     HistoricalAssetTvlComponent,
     MphSupplyDistributionComponent,
     HistoricalFixedInterestRatesComponent,
+    FundedInterestExpensesComponent,
   ],
   imports: [
     BrowserModule,

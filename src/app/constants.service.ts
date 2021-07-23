@@ -42,6 +42,11 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby', // v3
   };
+  MPH_TOKEN_GRAPHQL_ENDPOINT = {
+    [this.CHAIN_ID.MAINNET]:
+      'https://api.thegraph.com/subgraphs/name/0xszeth/mph-token',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
@@ -100,7 +105,6 @@ export class ConstantsService {
     [this.CHAIN_ID.MAINNET]: '0x8c5ddBB0fd86B6480D81A1a5872a63812099C043',
     [this.CHAIN_ID.RINKEBY]: '',
   };
-
   MPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '0x8888801af4d980682e47f1a9036e589479e835c5',
     [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
