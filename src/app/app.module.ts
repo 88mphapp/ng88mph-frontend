@@ -33,6 +33,7 @@ import { HistoricalAssetTvlComponent } from './stats/components/historical-asset
 import { MphSupplyDistributionComponent } from './stats/components/mph-supply-distribution/mph-supply-distribution.component';
 import { HistoricalFixedInterestRatesComponent } from './stats/components/historical-fixed-interest-rates/historical-fixed-interest-rates.component';
 import { FundedInterestExpensesComponent } from './stats/components/funded-interest-expenses/funded-interest-expenses.component';
+import { ModalWithdrawYieldTokenInterestComponent } from './bonds/modal-withdraw-yield-token-interest/modal-withdraw-yield-token-interest.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { FundedInterestExpensesComponent } from './stats/components/funded-inter
     MphSupplyDistributionComponent,
     HistoricalFixedInterestRatesComponent,
     FundedInterestExpensesComponent,
+    ModalWithdrawYieldTokenInterestComponent,
   ],
   imports: [
     BrowserModule,

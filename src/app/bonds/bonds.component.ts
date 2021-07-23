@@ -3,21 +3,19 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { request, gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from '../constants.service';
-import { ContractService } from '../contract.service';
+import { ContractService, PoolInfo } from '../contract.service';
 import { HelpersService } from '../helpers.service';
 import { WalletService } from '../wallet.service';
-import { ModalBondDetailsComponent } from './modal-bond-details/modal-bond-details.component';
 import { ModalBuyYieldTokenComponent } from './modal-buy-yield-token/modal-buy-yield-token.component';
 import {
   FunderPool,
-  Deposit,
   FundedDeposit,
   FundableDeposit,
-  Funding,
   Fundingv3,
   DPool,
 } from './interface';
 import { Timer } from '../timer';
+import { ModalWithdrawYieldTokenInterestComponent } from './modal-withdraw-yield-token-interest/modal-withdraw-yield-token-interest.component';
 
 @Component({
   selector: 'app-bonds',
@@ -91,6 +89,12 @@ export class BondsComponent implements OnInit {
         this.loadData(true, false);
       });
     });
+    this.wallet.txConfirmedEvent.subscribe(() => {
+      setTimeout(() => {
+        this.resetData(true, true);
+        this.loadData(true, true);
+      }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
+    });
   }
 
   loadData(loadUser: boolean, loadGlobal: boolean): void {
@@ -98,14 +102,7 @@ export class BondsComponent implements OnInit {
     // V3 CODE
     // ***********
 
-    let funderID;
-    if (this.wallet.connected && !this.wallet.watching) {
-      funderID = this.wallet.userAddress.toLowerCase();
-    } else if (this.wallet.watching) {
-      funderID = this.wallet.watchedAddress.toLowerCase();
-    } else {
-      funderID = '';
-    }
+    let funderID = this.wallet.actualAddress.toLowerCase();
 
     const queryString = gql`
       {
@@ -217,11 +214,16 @@ export class BondsComponent implements OnInit {
           const fundings: Array<FundedDeposit> = [];
 
           for (const funding in pool.fundings) {
+            const stablecoinPrecision = Math.pow(
+              10,
+              this.contract.getPoolInfoFromAddress(pool.address)
+                .stablecoinDecimals
+            );
             const yieldTokenBalance = new BigNumber(
               await yieldToken.methods
                 .balanceOf(funder.address, pool.fundings[funding].nftID)
                 .call()
-            ).div(this.constants.PRECISION);
+            ).div(stablecoinPrecision);
 
             const maturity = new BigNumber(
               pool.fundings[funding].deposit.maturationTimestamp
@@ -255,6 +257,7 @@ export class BondsComponent implements OnInit {
               let yieldEarned = new BigNumber(0);
 
               // some will have been accrued, which is equally split among yield token holders
+              let funderAccruedInterest;
               await lens.methods
                 .accruedInterestOfFunding(
                   pool.address,
@@ -262,11 +265,11 @@ export class BondsComponent implements OnInit {
                 )
                 .call()
                 .then((result) => {
-                  const totalAccruedInterest = new BigNumber(result).div(
-                    this.constants.PRECISION
+                  const fundingTotalAccruedInterest = new BigNumber(result).div(
+                    stablecoinPrecision
                   );
-                  const funderAccruedInterest =
-                    totalAccruedInterest.times(yieldTokenPercentage);
+                  funderAccruedInterest =
+                    fundingTotalAccruedInterest.times(yieldTokenPercentage);
                   yieldEarned = yieldEarned.plus(funderAccruedInterest);
                 });
 
@@ -281,7 +284,7 @@ export class BondsComponent implements OnInit {
                 .call()
                 .then((result) => {
                   const funderDistributedInterest = new BigNumber(result).div(
-                    this.constants.PRECISION
+                    stablecoinPrecision
                   );
 
                   yieldEarned = yieldEarned.plus(funderDistributedInterest);
@@ -315,6 +318,10 @@ export class BondsComponent implements OnInit {
                 });
 
               const fundingObj: FundedDeposit = {
+                yieldToken,
+                fundingID: pool.fundings[funding].nftID,
+                stablecoinPrice,
+                funderAccruedInterest,
                 maturationTimestamp:
                   pool.fundings[funding].deposit.maturationTimestamp,
                 countdownTimer: new Timer(
@@ -521,17 +528,21 @@ export class BondsComponent implements OnInit {
         const depositAmount = new BigNumber(deposit.amount);
 
         let surplus;
+        const stablecoinPrecision = Math.pow(
+          10,
+          this.selectedPool.stablecoinDecimals
+        );
         await lens.methods
           .surplusOfDeposit(this.selectedPool.address, deposit.nftID)
           .call()
           .then((result) => {
             if (result.isNegative === true) {
               surplus = new BigNumber(result.surplusAmount)
-                .div(this.constants.PRECISION)
+                .div(stablecoinPrecision)
                 .negated();
             } else {
               surplus = new BigNumber(result.surplusAmount).div(
-                this.constants.PRECISION
+                stablecoinPrecision
               );
             }
           });
@@ -653,6 +664,21 @@ export class BondsComponent implements OnInit {
       windowClass: 'fullscreen',
     });
     modalRef.componentInstance.deposit = deposit;
+  }
+
+  openWithdrawYieldTokenInterestModal(
+    poolInfo: PoolInfo,
+    fundedDeposit: FundedDeposit
+  ) {
+    const modalRef = this.modalService.open(
+      ModalWithdrawYieldTokenInterestComponent,
+      {
+        windowClass: 'fullscreen',
+      }
+    );
+    modalRef.componentInstance.poolInfo = poolInfo;
+    modalRef.componentInstance.fundedDeposit = fundedDeposit;
+    modalRef.componentInstance.mphPriceUSD = this.mphPriceUSD;
   }
 
   canContinue() {
