@@ -56,12 +56,7 @@ export class ModalTopUpComponent implements OnInit {
   }
 
   async loadData() {
-    let address;
-    if (this.wallet.connected && !this.wallet.watching) {
-      address = this.wallet.userAddress.toLowerCase();
-    } else if (this.wallet.watching) {
-      address = this.wallet.watchedAddress.toLowerCase();
-    }
+    let address = this.wallet.actualAddress;
 
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;

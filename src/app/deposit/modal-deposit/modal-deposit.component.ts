@@ -147,12 +147,7 @@ export class ModalDepositComponent implements OnInit {
       );
     });
 
-    let userAddress: string;
-    if (this.wallet.connected && !this.wallet.watching) {
-      userAddress = this.wallet.userAddress.toLowerCase();
-    } else if (this.wallet.connected && this.wallet.watching) {
-      userAddress = this.wallet.watchedAddress.toLowerCase();
-    }
+    let userAddress: string = this.wallet.actualAddress;
 
     if (this.wallet.connected) {
       const stablecoin = this.contract.getPoolStablecoin(poolName);
