@@ -83,13 +83,6 @@ export class ModalRollOverComponent implements OnInit {
       );
     });
 
-    let address;
-    if (this.wallet.connected && !this.wallet.watching) {
-      address = this.wallet.userAddress.toLowerCase();
-    } else if (this.wallet.watching) {
-      address = this.wallet.watchedAddress.toLowerCase();
-    }
-
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });

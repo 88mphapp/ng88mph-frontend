@@ -274,12 +274,7 @@ export class FarmingComponent implements OnInit {
       );
     }
 
-    let address;
-    if (!this.wallet.watching) {
-      address = this.wallet.userAddress;
-    } else {
-      address = this.wallet.watchedAddress;
-    }
+    let address = this.wallet.actualAddress;
 
     if (loadUser) {
       this.unstakedMPHBalance = new BigNumber(
