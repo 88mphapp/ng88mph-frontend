@@ -104,7 +104,7 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
         ],
       },
       hover: {
-        mode: 'point',
+        mode: 'dataset',
       },
     };
     this.lineChartLabels = this.readable;
@@ -175,6 +175,8 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
       dataobj = {
         label: dpools[i].address,
         data: [],
+        borderWidth: 3,
+        hoverBorderWidth: 3,
         borderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         hoverBorderColor:
@@ -233,6 +235,8 @@ interface QueryResult {
 interface DataObject {
   label: string;
   data: Array<number>;
+  borderWidth: number;
+  hoverBorderWidth: number;
   borderColor: string;
   hoverBorderColor: string;
   pointBorderColor: string;
