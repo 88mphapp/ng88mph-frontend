@@ -67,12 +67,7 @@ export class HeaderComponent implements OnInit {
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
-    let address;
-    if (this.wallet.connected && !this.wallet.watching) {
-      address = this.wallet.userAddress;
-    } else if (this.wallet.watching) {
-      address = this.wallet.watchedAddress;
-    }
+    let address = this.wallet.actualAddress;
 
     if (loadUser && address) {
       const mph = await this.contract.getContract(

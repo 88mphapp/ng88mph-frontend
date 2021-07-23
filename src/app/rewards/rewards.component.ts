@@ -77,12 +77,7 @@ export class RewardsComponent implements OnInit {
     const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
     const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
 
-    let address;
-    if (!this.wallet.watching) {
-      address = this.wallet.userAddress;
-    } else {
-      address = this.wallet.watchedAddress;
-    }
+    let address = this.wallet.actualAddress;
 
     if (loadUser && address) {
       mph.methods
