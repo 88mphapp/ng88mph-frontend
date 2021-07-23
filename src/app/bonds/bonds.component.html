@@ -287,7 +287,7 @@
           </h2>
           <h2
             class="glowing text-center py-4 mb-0"
-            *ngIf="!selectedPoolHasDebt()"
+            *ngIf="!selectedPoolHasDebt() && !loadingCalculator"
           >
             No debt available. Select another pool.
           </h2>
