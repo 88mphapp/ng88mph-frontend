@@ -175,7 +175,6 @@ export class BondsComponent implements OnInit {
     const now = Math.floor(Date.now() / 1e3);
 
     if (funder) {
-      //console.log(funder);
       const funderPools: FunderPool[] = [];
       let totalYieldTokenBalanceUSD = new BigNumber(0);
       let totalDepositEarningYield = new BigNumber(0);
@@ -195,7 +194,6 @@ export class BondsComponent implements OnInit {
           const poolFunderRewardMultiplier = new BigNumber(
             pool.poolFunderRewardMultiplier
           );
-          console.log(poolFunderRewardMultiplier.toFixed(18));
 
           // get stablecoin price in USD
           const stablecoin = poolInfo.stablecoin.toLowerCase();
@@ -210,7 +208,6 @@ export class BondsComponent implements OnInit {
             .fundingMultitoken()
             .call()
             .then((yieldTokenAddress) => {
-              console.log(yieldTokenAddress);
               yieldToken = this.contract.getContract(
                 yieldTokenAddress,
                 'FundingMultitoken'
@@ -231,8 +228,6 @@ export class BondsComponent implements OnInit {
             );
 
             if (yieldTokenBalance.gt(0) && maturity.gt(now)) {
-              console.log(pool.fundings[funding]);
-
               const yieldTokenPercentage = yieldTokenBalance.div(
                 pool.fundings[funding].totalSupply
               );
@@ -241,9 +236,6 @@ export class BondsComponent implements OnInit {
               const earnYieldOn = yieldTokenBalance.times(
                 pool.fundings[funding].principalPerToken
               );
-
-              console.log('principal');
-              console.log(earnYieldOn.toFixed(18));
 
               // calculate USD value of yield tokens
               const interestRate = new BigNumber(
@@ -291,8 +283,7 @@ export class BondsComponent implements OnInit {
                   const funderDistributedInterest = new BigNumber(result).div(
                     this.constants.PRECISION
                   );
-                  console.log('yield paid out');
-                  console.log(funderDistributedInterest.toFixed(18));
+
                   yieldEarned = yieldEarned.plus(funderDistributedInterest);
                 });
 
@@ -320,7 +311,6 @@ export class BondsComponent implements OnInit {
                   const funderDistributedMPH = new BigNumber(result).div(
                     this.constants.PRECISION
                   );
-                  console.log(funderDistributedMPH.toFixed(18));
                   mphEarned = mphEarned.plus(funderDistributedMPH);
                 });
 
@@ -418,7 +408,6 @@ export class BondsComponent implements OnInit {
         })
       ).then(() => {
         this.allPoolList = allPoolList;
-        console.log(this.allPoolList);
         this.selectPool(0);
       });
     }
@@ -465,14 +454,7 @@ export class BondsComponent implements OnInit {
 
   async selectPool(poolIdx: number) {
     this.selectedPool = this.allPoolList[poolIdx];
-    //const selectedPoolContract = this.contract
-    //console.log(this.selectedPool);
 
-    // this.numFundableDeposits = Math.min(
-    //   this.selectedPool.latestDeposit - this.selectedPool.latestFundedDeposit,
-    //   20
-    // );
-    //
     const poolID = this.selectedPool.address.toLowerCase();
     const now = Math.floor(Date.now() / 1e3);
 
@@ -556,7 +538,7 @@ export class BondsComponent implements OnInit {
 
         // deposit hasn't been funded yet
         // @dev yield tokens available will equal the total principal of the deposit
-        if (deposit.funding === null) {
+        if (deposit.funding === null && surplus.lt(0)) {
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
             pool: this.selectedPool,
