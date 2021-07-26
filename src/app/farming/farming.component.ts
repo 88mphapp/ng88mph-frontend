@@ -18,8 +18,8 @@ export class FarmingComponent implements OnInit {
   BLOCK_TIME_IN_SEC = 14.256; // used for sushi APY
 
   // liquidity mining pool select options
-  selectedPool: string = 'Uniswap v2';
-  liquidityPools: Array<string> = ['Uniswap v2', 'SushiSwap', 'Bancor'];
+  selectedPool: string = 'SushiSwap';
+  liquidityPools: Array<string> = ['SushiSwap', 'Uniswap v2', 'Bancor'];
   bancorSelectedToken: string = 'MPH';
   bancorTokens: Array<string> = ['MPH', 'BNT'];
   stakeAmount: BigNumber;
@@ -40,6 +40,7 @@ export class FarmingComponent implements OnInit {
   dailyROI: BigNumber;
   rewardStartTime: string;
   rewardEndTime: string;
+  active: boolean;
 
   sushiUnstakedLPBalance: BigNumber;
   sushiStakedLPBalance: BigNumber;
@@ -174,14 +175,18 @@ export class FarmingComponent implements OnInit {
 
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
       this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
-      const secondROI = this.totalRewardPerSecond
-        .times(this.mphPriceUSD)
-        .div(this.totalStakedMPHBalance.times(this.mphLPPriceUSD))
-        .times(100);
-      this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
-      this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
-      this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
-      this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
+      if (parseInt(this.rewardEndTime) >= Date.now() / 1e3) {
+        const secondROI = this.totalRewardPerSecond
+          .times(this.mphPriceUSD)
+          .div(this.totalStakedMPHBalance.times(this.mphLPPriceUSD))
+          .times(100);
+        this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+        this.monthlyROI = secondROI.times(this.constants.MONTH_IN_SEC);
+        this.weeklyROI = secondROI.times(this.constants.WEEK_IN_SEC);
+        this.dailyROI = secondROI.times(this.constants.DAY_IN_SEC);
+      } else {
+        this.active = false;
+      }
 
       // sushi
       let sushiLPToken = this.contract.getERC20(
@@ -493,6 +498,7 @@ export class FarmingComponent implements OnInit {
       this.monthlyROI = new BigNumber(0);
       this.weeklyROI = new BigNumber(0);
       this.dailyROI = new BigNumber(0);
+      this.active = true;
 
       this.sushiTotalStakedLPBalance = new BigNumber(0);
       this.sushiTotalRewardPerSecond = new BigNumber(0);
