@@ -77,6 +77,7 @@ export class FarmingComponent implements OnInit {
   bancorDepositIDs: Array<string>;
   bancorMPHDeposits: Array<number>;
   bancorBNTDeposits: Array<number>;
+  bancorActive: boolean;
 
   constructor(
     private modalService: NgbModal,
@@ -233,6 +234,9 @@ export class FarmingComponent implements OnInit {
         .times(this.constants.DAY_IN_SEC);
 
       // bancor
+      this.bntPriceUSD = new BigNumber(
+        await this.helpers.getTokenPriceUSD(this.constants.BNT)
+      );
       this.bancorTotalStakedMPH = new BigNumber(
         await bancorLiquidityProtectionStats.methods
           .totalReserveAmount(
@@ -253,11 +257,9 @@ export class FarmingComponent implements OnInit {
         await bancorStakingStore.methods
           .poolProgram(this.constants.BANCOR_MPHBNT_POOL)
           .call();
-      console.log(poolProgram);
       const poolProgramEndDate = poolProgram[1];
       if (poolProgramEndDate >= Date.now() / 1e3) {
         this.bancorTotalRewardPerSecond = new BigNumber(poolProgram[2]);
-        console.log(this.bancorTotalRewardPerSecond);
         if (
           poolProgram[3][0].toLowerCase() ===
           this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
@@ -284,9 +286,6 @@ export class FarmingComponent implements OnInit {
               this.constants.PRECISION
           );
         }
-        this.bntPriceUSD = new BigNumber(
-          await this.helpers.getTokenPriceUSD(this.constants.BNT)
-        );
         const bancorMPHSecondROI = this.bancorRewardPerMPHPerSecond
           .times(this.bntPriceUSD)
           .div(this.bancorTotalStakedMPH.times(this.mphPriceUSD))
@@ -303,6 +302,8 @@ export class FarmingComponent implements OnInit {
         this.bancorBNTYearlyROI = bancorBNTSecondROI.times(
           this.constants.YEAR_IN_SEC
         );
+      } else {
+        this.bancorActive = false;
       }
     }
 
@@ -514,6 +515,7 @@ export class FarmingComponent implements OnInit {
       this.bancorDepositIDs = [];
       this.bancorMPHDeposits = [];
       this.bancorBNTDeposits = [];
+      this.bancorActive = true;
     }
   }
 
