@@ -451,7 +451,7 @@
                         </h4>
                       </td>
                     </tr>
-                    <tr *ngIf="selectedPool == 'Bancor'">
+                    <tr *ngIf="selectedPool == 'Bancor' && bancorActive">
                       <td class="px-0 py-1 text-white border-0 small">
                         <strong>Variable APR to provide MPH </strong>
                       </td>
@@ -463,7 +463,7 @@
                         </h4>
                       </td>
                     </tr>
-                    <tr *ngIf="selectedPool == 'Bancor'">
+                    <tr *ngIf="selectedPool == 'Bancor' && bancorActive">
                       <td class="px-0 py-1 text-white border-0 small">
                         <strong>Variable APR to provide BNT </strong>
                       </td>
@@ -477,6 +477,13 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              <div
+                class="px-0 py-3 alert text-center text-warning border-warning"
+                *ngIf="!bancorActive && selectedPool == 'Bancor'"
+              >
+                Bancor liquidity mining has ended. You can continue to stake MPH
+                and BNT to earn trading fees.
               </div>
               <button
                 type="button"
