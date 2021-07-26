@@ -45,9 +45,9 @@ export class FarmingComponent implements OnInit {
   sushiStakedLPBalance: BigNumber;
   sushiStakedLPPoolProportion: BigNumber;
   sushiClaimableRewards: BigNumber;
-  sushiRewardPerDay: BigNumber;
+  mphClaimableRewards: BigNumber;
   sushiTotalRewardPerSecond: BigNumber;
-  sushiRewardPerLPPerSecond: BigNumber;
+  mphTotalRewardPerSecond: BigNumber;
   sushiTotalStakedLPBalance: BigNumber;
   sushiPriceUSD: BigNumber;
   sushiLPPriceUSD: BigNumber;
@@ -117,6 +117,16 @@ export class FarmingComponent implements OnInit {
       'MasterChef',
       readonlyWeb3
     );
+    const sushiMasterChefV2 = this.contract.getContract(
+      this.constants.SUSHI_MASTERCHEF_V2[this.wallet.networkID],
+      'MasterChefV2',
+      readonlyWeb3
+    );
+    const sushiMPHRewarder = this.contract.getContract(
+      this.constants.SUSHI_MPH_REWARDER[this.wallet.networkID],
+      'MPHRewarder',
+      readonlyWeb3
+    );
     const bancorLiquidityProtectionStats = this.contract.getContract(
       this.constants.BANCOR_LP_STATS,
       'LiquidityProtectionStats',
@@ -177,27 +187,24 @@ export class FarmingComponent implements OnInit {
         this.constants.SUSHI_LP,
         readonlyWeb3
       );
-      const sushiPoolInfo = await sushiMasterChef.methods
-        .poolInfo(this.constants.SUSHI_MPH_ONSEN_ID)
+      const sushiPoolInfo = await sushiMasterChefV2.methods
+        .poolInfo(this.constants.SUSHI_MPH_REWARDER_ID[this.wallet.networkID])
         .call();
       this.sushiTotalStakedLPBalance = new BigNumber(
         await sushiLPToken.methods
-          .balanceOf(this.constants.SUSHI_MASTERCHEF)
+          .balanceOf(this.constants.SUSHI_MASTERCHEF_V2[this.wallet.networkID])
           .call()
       ).div(this.constants.PRECISION);
       this.sushiTotalRewardPerSecond = new BigNumber(
-        await sushiMasterChef.methods.sushiPerBlock().call()
+        await sushiMasterChefV2.methods.sushiPerBlock().call()
       )
         .div(this.BLOCK_TIME_IN_SEC)
         .div(this.constants.PRECISION)
         .times(sushiPoolInfo.allocPoint)
-        .div(await sushiMasterChef.methods.totalAllocPoint().call());
-      this.sushiRewardPerLPPerSecond = this.sushiTotalRewardPerSecond.div(
-        this.sushiTotalStakedLPBalance
-      );
-      if (this.sushiTotalStakedLPBalance.isZero()) {
-        this.sushiRewardPerLPPerSecond = new BigNumber(0);
-      }
+        .div(await sushiMasterChefV2.methods.totalAllocPoint().call());
+      this.mphTotalRewardPerSecond = new BigNumber(
+        await sushiMPHRewarder.methods.rewardPerSecond().call()
+      ).div(this.constants.PRECISION);
       this.sushiPriceUSD = new BigNumber(
         await this.helpers.getTokenPriceUSD(this.constants.SUSHI)
       );
@@ -208,10 +215,22 @@ export class FarmingComponent implements OnInit {
         .times(this.sushiPriceUSD)
         .div(this.sushiTotalStakedLPBalance.times(this.sushiLPPriceUSD))
         .times(100);
-      this.sushiYearlyROI = sushiSecondROI.times(this.constants.YEAR_IN_SEC);
-      this.sushiMonthlyROI = sushiSecondROI.times(this.constants.MONTH_IN_SEC);
-      this.sushiWeeklyROI = sushiSecondROI.times(this.constants.WEEK_IN_SEC);
-      this.sushiDailyROI = sushiSecondROI.times(this.constants.DAY_IN_SEC);
+      const mphSecondROI = this.mphTotalRewardPerSecond
+        .times(this.mphPriceUSD)
+        .div(this.sushiTotalStakedLPBalance.times(this.sushiLPPriceUSD))
+        .times(100);
+      this.sushiYearlyROI = sushiSecondROI
+        .plus(mphSecondROI)
+        .times(this.constants.YEAR_IN_SEC);
+      this.sushiMonthlyROI = sushiSecondROI
+        .plus(mphSecondROI)
+        .times(this.constants.MONTH_IN_SEC);
+      this.sushiWeeklyROI = sushiSecondROI
+        .plus(mphSecondROI)
+        .times(this.constants.WEEK_IN_SEC);
+      this.sushiDailyROI = sushiSecondROI
+        .plus(mphSecondROI)
+        .times(this.constants.DAY_IN_SEC);
 
       // bancor
       this.bancorTotalStakedMPH = new BigNumber(
@@ -307,12 +326,26 @@ export class FarmingComponent implements OnInit {
 
       let sushiUserInfo;
       await Promise.all([
-        (sushiUserInfo = await sushiMasterChef.methods
-          .userInfo(this.constants.SUSHI_MPH_ONSEN_ID, address)
+        (sushiUserInfo = await sushiMasterChefV2.methods
+          .userInfo(
+            this.constants.SUSHI_MPH_REWARDER_ID[this.wallet.networkID],
+            address
+          )
           .call()),
         (this.sushiClaimableRewards = new BigNumber(
-          await sushiMasterChef.methods
-            .pendingSushi(this.constants.SUSHI_MPH_ONSEN_ID, address)
+          await sushiMasterChefV2.methods
+            .pendingSushi(
+              this.constants.SUSHI_MPH_REWARDER_ID[this.wallet.networkID],
+              address
+            )
+            .call()
+        ).div(this.constants.PRECISION)),
+        (this.mphClaimableRewards = new BigNumber(
+          await sushiMPHRewarder.methods
+            .pendingToken(
+              this.constants.SUSHI_MPH_REWARDER_ID[this.wallet.networkID],
+              address
+            )
             .call()
         ).div(this.constants.PRECISION)),
       ]);
@@ -325,9 +358,6 @@ export class FarmingComponent implements OnInit {
       if (this.sushiTotalStakedLPBalance.isZero()) {
         this.sushiStakedLPPoolProportion = new BigNumber(0);
       }
-      this.sushiRewardPerDay = this.sushiStakedLPBalance
-        .times(this.sushiRewardPerLPPerSecond)
-        .times(this.constants.DAY_IN_SEC);
 
       // bancor
       let mph = this.contract.getERC20(
@@ -423,7 +453,7 @@ export class FarmingComponent implements OnInit {
       this.sushiStakedLPBalance = new BigNumber(0);
       this.sushiStakedLPPoolProportion = new BigNumber(0);
       this.sushiClaimableRewards = new BigNumber(0);
-      this.sushiRewardPerDay = new BigNumber(0);
+      this.mphClaimableRewards = new BigNumber(0);
 
       this.bancorUnstakedMPHBalance = new BigNumber(0);
       this.bancorUnstakedBNTBalance = new BigNumber(0);
@@ -451,8 +481,8 @@ export class FarmingComponent implements OnInit {
       this.dailyROI = new BigNumber(0);
 
       this.sushiTotalStakedLPBalance = new BigNumber(0);
-      this.sushiRewardPerLPPerSecond = new BigNumber(0);
       this.sushiTotalRewardPerSecond = new BigNumber(0);
+      this.mphTotalRewardPerSecond = new BigNumber(0);
       this.sushiPriceUSD = new BigNumber(0);
       this.sushiLPPriceUSD = new BigNumber(0);
       this.sushiYearlyROI = new BigNumber(0);
@@ -542,6 +572,7 @@ export class FarmingComponent implements OnInit {
     let rewards;
     let lpToken;
     let func;
+    const address = this.wallet.actualAddress;
     const stakeAmount = this.helpers.processWeb3Number(
       this.stakeAmount.times(this.constants.PRECISION)
     );
@@ -551,11 +582,15 @@ export class FarmingComponent implements OnInit {
       lpToken = this.contract.getNamedContract('MPHLP');
       func = rewards.methods.stake(stakeAmount);
     } else if (this.selectedPool === 'SushiSwap') {
-      rewards = this.contract.getNamedContract('MasterChef');
+      rewards = this.contract.getContract(
+        this.constants.SUSHI_MASTERCHEF_V2[this.wallet.networkID],
+        'MasterChefV2'
+      );
       lpToken = this.contract.getNamedContract('SushiLP');
       func = rewards.methods.deposit(
-        this.constants.SUSHI_MPH_ONSEN_ID,
-        stakeAmount
+        this.constants.SUSHI_MPH_REWARDER_ID[this.wallet.networkID],
+        stakeAmount,
+        address
       );
     } else if (this.selectedPool === 'Bancor') {
       rewards = this.contract.getNamedContract('BancorLP');
@@ -592,13 +627,20 @@ export class FarmingComponent implements OnInit {
   claim() {
     let rewards;
     let func;
+    const address = this.wallet.actualAddress;
 
     if (this.selectedPool === 'Uniswap v2') {
       rewards = this.contract.getNamedContract('Farming');
       func = rewards.methods.getReward();
     } else if (this.selectedPool === 'SushiSwap') {
-      rewards = this.contract.getNamedContract('MasterChef');
-      func = rewards.methods.deposit(this.constants.SUSHI_MPH_ONSEN_ID, 0);
+      rewards = this.contract.getContract(
+        this.constants.SUSHI_MASTERCHEF_V2[this.wallet.networkID],
+        'MasterChefV2'
+      );
+      func = rewards.methods.harvest(
+        this.constants.SUSHI_MPH_REWARDER_ID[this.wallet.networkID],
+        address
+      );
     } else if (this.selectedPool === 'Bancor') {
       rewards = this.contract.getNamedContract('BancorStaking');
       func = rewards.methods.claimRewards();
