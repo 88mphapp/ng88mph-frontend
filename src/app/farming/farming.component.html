@@ -109,10 +109,10 @@
                       </h5>
                       <!-- Heading -->
                       <h2 class="mb-0 glowing">
-                        0.0000 MPH
+                        {{mphClaimableRewards.toFormat(4)}} MPH
                       </h2>
                       <h5 class="mb-3 text-white">
-                        $0.0000 
+                        ${{mphClaimableRewards.times(mphPriceUSD).toFormat(4)}}
                       </h5>
                       <a class="text-purple"
                         href="https://app.sushi.com/"
@@ -124,14 +124,14 @@
                       </h5>
                       <!-- Heading -->
                       <h2 class="mb-1 glowing">
-                        0.0000%
+                        {{sushiYearlyROI.toFormat(4)}}%
                       </h2>
                     </div>
                   </div>
               </div>
             </div>
           </div>
-          
+
           <div class="card-deck my-5">
             <div class="card mb-4 mb-lg-0">
               <div class="card-body py-0">

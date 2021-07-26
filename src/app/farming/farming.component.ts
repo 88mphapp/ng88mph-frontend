@@ -36,8 +36,10 @@ export class FarmingComponent implements OnInit {
   sushiStakedLPBalance: BigNumber;
   sushiStakedLPPoolProportion: BigNumber;
   sushiClaimableRewards: BigNumber;
+  mphClaimableRewards: BigNumber;
   sushiRewardPerDay: BigNumber;
   sushiTotalRewardPerSecond: BigNumber;
+  mphTotalRewardPerSecond: BigNumber;
   sushiRewardPerLPPerSecond: BigNumber;
   sushiTotalStakedLPBalance: BigNumber;
   sushiPriceUSD: BigNumber;
@@ -90,6 +92,8 @@ export class FarmingComponent implements OnInit {
     const rewards = this.contract.getNamedContract('Farming', readonlyWeb3);
 
     const sushiMasterChef = this.contract.getContract(this.constants.SUSHI_MASTERCHEF, 'MasterChef', readonlyWeb3);
+    const sushiMasterChefV2 = this.contract.getContract(this.constants.SUSHI_MASTERCHEF_V2, 'MasterChefV2', readonlyWeb3);
+    const sushiMphRewarder = this.contract.getContract(this.constants.SUSHI_MPH_REWARDER, 'MphRewarder', readonlyWeb3);
     const yflinkStaking = this.contract.getContract(this.constants.LINKSWAP_STAKING, 'LinkSwapStaking', readonlyWeb3);
     const bancorLiquidityProtectionStats = this.contract.getContract(this.constants.BANCOR_LP_STATS, 'LiquidityProtectionStats', readonlyWeb3);
     const bancorStaking = this.contract.getContract(this.constants.BANCOR_STAKING_REWARDS, 'BancorStaking', readonlyWeb3);
@@ -119,8 +123,13 @@ export class FarmingComponent implements OnInit {
       // sushi
       const sushiLPToken = this.contract.getERC20(this.constants.SUSHI_LP, readonlyWeb3);
       const sushiPoolInfo = await sushiMasterChef.methods.poolInfo(this.constants.SUSHI_MPH_ONSEN_ID).call();
+      const sushiPoolInfoV2 = await sushiMasterChefV2.methods.poolInfo(this.constants.SUSHI_MPH_REWARDER_ID).call();
       this.sushiTotalStakedLPBalance = new BigNumber(await sushiLPToken.methods.balanceOf(this.constants.SUSHI_MASTERCHEF).call()).div(this.constants.PRECISION);
-      this.sushiTotalRewardPerSecond = new BigNumber(await sushiMasterChef.methods.sushiPerBlock().call()).div(this.BLOCK_TIME_IN_SEC).div(this.constants.PRECISION).times(sushiPoolInfo.allocPoint).div(await sushiMasterChef.methods.totalAllocPoint().call());
+      this.sushiTotalStakedLPBalance = this.sushiTotalStakedLPBalance.plus(await sushiLPToken.methods.balanceOf(this.constants.SUSHI_MASTERCHEF_V2).call()).div(this.constants.PRECISION);
+      this.sushiTotalRewardPerSecond = new BigNumber(await sushiMasterChefV2.methods.sushiPerBlock().call()).div(this.BLOCK_TIME_IN_SEC).div(this.constants.PRECISION).times(sushiPoolInfoV2.allocPoint).div(await sushiMasterChefV2.methods.totalAllocPoint().call());
+      console.log(this.sushiTotalRewardPerSecond.toString());
+      this.mphTotalRewardPerSecond = new BigNumber(await sushiMphRewarder.methods.rewardPerSecond().call()).div(this.constants.PRECISION);
+      console.log(this.mphTotalRewardPerSecond.toString());
       this.sushiRewardPerLPPerSecond = this.sushiTotalRewardPerSecond.div(this.sushiTotalStakedLPBalance);
       if (this.sushiTotalStakedLPBalance.isZero()) {
         this.sushiRewardPerLPPerSecond = new BigNumber(0);
@@ -128,10 +137,11 @@ export class FarmingComponent implements OnInit {
       this.sushiPriceUSD = new BigNumber(await this.helpers.getTokenPriceUSD(this.constants.SUSHI));
       this.sushiLPPriceUSD = await this.helpers.getLPPriceUSD(this.constants.SUSHI_LP);
       const sushiSecondROI = this.sushiTotalRewardPerSecond.times(this.sushiPriceUSD).div(this.sushiTotalStakedLPBalance.times(this.sushiLPPriceUSD)).times(100);
-      this.sushiYearlyROI = sushiSecondROI.times(this.constants.YEAR_IN_SEC);
-      this.sushiMonthlyROI = sushiSecondROI.times(this.constants.MONTH_IN_SEC);
-      this.sushiWeeklyROI = sushiSecondROI.times(this.constants.WEEK_IN_SEC);
-      this.sushiDailyROI = sushiSecondROI.times(this.constants.DAY_IN_SEC);
+      const mphSecondROI = this.mphTotalRewardPerSecond.times(this.mphPriceUSD).div(this.sushiTotalStakedLPBalance.times(this.sushiLPPriceUSD)).times(100);
+      this.sushiYearlyROI = sushiSecondROI.plus(mphSecondROI).times(this.constants.YEAR_IN_SEC);
+      this.sushiMonthlyROI = sushiSecondROI.plus(mphSecondROI).times(this.constants.MONTH_IN_SEC);
+      this.sushiWeeklyROI = sushiSecondROI.plus(mphSecondROI).times(this.constants.WEEK_IN_SEC);
+      this.sushiDailyROI = sushiSecondROI.plus(mphSecondROI).times(this.constants.DAY_IN_SEC);
 
       // bancor
       this.bancorTotalStakedMPH = new BigNumber(await bancorLiquidityProtectionStats.methods.totalReserveAmount(this.constants.BANCOR_MPHBNT_POOL, this.constants.MPH).call()).div(this.constants.PRECISION);
@@ -170,11 +180,16 @@ export class FarmingComponent implements OnInit {
 
       // sushi
       let sushiUserInfo;
+      let sushiUserInfoV2;
       await Promise.all([
         sushiUserInfo = await sushiMasterChef.methods.userInfo(this.constants.SUSHI_MPH_ONSEN_ID, address).call(),
-        this.sushiClaimableRewards = new BigNumber(await sushiMasterChef.methods.pendingSushi(this.constants.SUSHI_MPH_ONSEN_ID, address).call()).div(this.constants.PRECISION)
+        sushiUserInfoV2 = await sushiMasterChefV2.methods.userInfo(this.constants.SUSHI_MPH_REWARDER_ID, address).call(),
+        this.sushiClaimableRewards = new BigNumber(await sushiMasterChef.methods.pendingSushi(this.constants.SUSHI_MPH_ONSEN_ID, address).call()).div(this.constants.PRECISION),
+        this.sushiClaimableRewards = this.sushiClaimableRewards.plus(await sushiMasterChefV2.methods.pendingSushi(this.constants.SUSHI_MPH_REWARDER_ID, address).call()).div(this.constants.PRECISION),
+        this.mphClaimableRewards = new BigNumber(await sushiMphRewarder.methods.pendingToken(this.constants.SUSHI_MPH_REWARDER_ID, address).call()).div(this.constants.PRECISION)
       ]);
       this.sushiStakedLPBalance = new BigNumber(sushiUserInfo.amount).div(this.constants.PRECISION);
+      this.sushiStakedLPBalance = this.sushiStakedLPBalance.plus(new BigNumber(sushiUserInfoV2.amount).div(this.constants.PRECISION));
       this.sushiStakedLPPoolProportion = this.sushiStakedLPBalance.div(this.sushiTotalStakedLPBalance).times(100);
       if (this.sushiTotalStakedLPBalance.isZero()) {
         this.sushiStakedLPPoolProportion = new BigNumber(0);
@@ -204,6 +219,7 @@ export class FarmingComponent implements OnInit {
       this.sushiStakedLPBalance = new BigNumber(0);
       this.sushiStakedLPPoolProportion = new BigNumber(0);
       this.sushiClaimableRewards = new BigNumber(0);
+      this.mphClaimableRewards = new BigNumber(0);
       this.sushiRewardPerDay = new BigNumber(0);
 
       this.bancorStakedMPHBalance = new BigNumber(0);
@@ -230,6 +246,7 @@ export class FarmingComponent implements OnInit {
       this.sushiTotalStakedLPBalance = new BigNumber(0);
       this.sushiRewardPerLPPerSecond = new BigNumber(0);
       this.sushiTotalRewardPerSecond = new BigNumber(0);
+      this.mphTotalRewardPerSecond = new BigNumber(0);
       this.sushiPriceUSD = new BigNumber(0);
       this.sushiLPPriceUSD = new BigNumber(0);
       this.sushiYearlyROI = new BigNumber(0);
