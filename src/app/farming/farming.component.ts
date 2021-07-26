@@ -253,44 +253,57 @@ export class FarmingComponent implements OnInit {
         await bancorStakingStore.methods
           .poolProgram(this.constants.BANCOR_MPHBNT_POOL)
           .call();
-      this.bancorTotalRewardPerSecond = new BigNumber(poolProgram[2]);
-      if (
-        poolProgram[3][0].toLowerCase() ===
-        this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
-      ) {
-        this.bancorRewardPerMPHPerSecond = new BigNumber(
-          (poolProgram[2] * poolProgram[4][0]) / 1e6 / this.constants.PRECISION
+      console.log(poolProgram);
+      const poolProgramEndDate = poolProgram[1];
+      if (poolProgramEndDate >= Date.now() / 1e3) {
+        this.bancorTotalRewardPerSecond = new BigNumber(poolProgram[2]);
+        console.log(this.bancorTotalRewardPerSecond);
+        if (
+          poolProgram[3][0].toLowerCase() ===
+          this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
+        ) {
+          this.bancorRewardPerMPHPerSecond = new BigNumber(
+            (poolProgram[2] * poolProgram[4][0]) /
+              1e6 /
+              this.constants.PRECISION
+          );
+          this.bancorRewardPerBNTPerSecond = new BigNumber(
+            (poolProgram[2] * poolProgram[4][1]) /
+              1e6 /
+              this.constants.PRECISION
+          );
+        } else {
+          this.bancorRewardPerMPHPerSecond = new BigNumber(
+            (poolProgram[2] * poolProgram[4][1]) /
+              1e6 /
+              this.constants.PRECISION
+          );
+          this.bancorRewardPerBNTPerSecond = new BigNumber(
+            (poolProgram[2] * poolProgram[4][0]) /
+              1e6 /
+              this.constants.PRECISION
+          );
+        }
+        this.bntPriceUSD = new BigNumber(
+          await this.helpers.getTokenPriceUSD(this.constants.BNT)
         );
-        this.bancorRewardPerBNTPerSecond = new BigNumber(
-          (poolProgram[2] * poolProgram[4][1]) / 1e6 / this.constants.PRECISION
+        const bancorMPHSecondROI = this.bancorRewardPerMPHPerSecond
+          .times(this.bntPriceUSD)
+          .div(this.bancorTotalStakedMPH.times(this.mphPriceUSD))
+          .times(100)
+          .times(2); // based on 2x multiplier
+        this.bancorMPHYearlyROI = bancorMPHSecondROI.times(
+          this.constants.YEAR_IN_SEC
         );
-      } else {
-        this.bancorRewardPerMPHPerSecond = new BigNumber(
-          (poolProgram[2] * poolProgram[4][1]) / 1e6 / this.constants.PRECISION
-        );
-        this.bancorRewardPerBNTPerSecond = new BigNumber(
-          (poolProgram[2] * poolProgram[4][0]) / 1e6 / this.constants.PRECISION
+        const bancorBNTSecondROI = this.bancorRewardPerBNTPerSecond
+          .times(this.bntPriceUSD)
+          .div(this.bancorTotalStakedBNT.times(this.bntPriceUSD))
+          .times(100)
+          .times(2); // based on 2x multiplier
+        this.bancorBNTYearlyROI = bancorBNTSecondROI.times(
+          this.constants.YEAR_IN_SEC
         );
       }
-      this.bntPriceUSD = new BigNumber(
-        await this.helpers.getTokenPriceUSD(this.constants.BNT)
-      );
-      const bancorMPHSecondROI = this.bancorRewardPerMPHPerSecond
-        .times(this.bntPriceUSD)
-        .div(this.bancorTotalStakedMPH.times(this.mphPriceUSD))
-        .times(100)
-        .times(2); // based on 2x multiplier
-      this.bancorMPHYearlyROI = bancorMPHSecondROI.times(
-        this.constants.YEAR_IN_SEC
-      );
-      const bancorBNTSecondROI = this.bancorRewardPerBNTPerSecond
-        .times(this.bntPriceUSD)
-        .div(this.bancorTotalStakedBNT.times(this.bntPriceUSD))
-        .times(100)
-        .times(2); // based on 2x multiplier
-      this.bancorBNTYearlyROI = bancorBNTSecondROI.times(
-        this.constants.YEAR_IN_SEC
-      );
     }
 
     let address = this.wallet.actualAddress;
