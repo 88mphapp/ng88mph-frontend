@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApolloQueryResult } from '@apollo/client/core';
+import { ApolloQueryResult, ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
 import BigNumber from 'bignumber.js';
 import gql from 'graphql-tag';
@@ -72,18 +72,51 @@ export class HeaderComponent implements OnInit {
     }
 
     if (loadGlobal) {
-      //uni
-      const rewards = this.contract.getNamedContract('Farming', readonlyWeb3);
-      const totalStakedMPHLPBalance = new BigNumber(await rewards.methods.totalSupply().call()).div(this.constants.PRECISION);
-      const mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
-      this.farmingValueLocked = totalStakedMPHLPBalance.times(mphLPPriceUSD);
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
 
+      //uni
+      const uniswap = new ApolloClient({
+        uri: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2',
+        cache: new InMemoryCache(),
+      });
+
+      let uniswapQueryString = `query Uniswap {`;
+      uniswapQueryString +=
+      `pair(
+        id: "${this.constants.UNISWAP_LP.toLowerCase()}",
+      ) {
+        reserveUSD
+      }`;
+      uniswapQueryString += `}`;
+      const uniswapQuery = gql`${uniswapQueryString}`;
+
+      uniswap.query<QueryResult>({
+        query: uniswapQuery
+      }).then(result =>
+        this.farmingValueLocked = new BigNumber(result.data.pair.reserveUSD)
+      );
+
       //sushi
-      const sushiLPToken = this.contract.getERC20(this.constants.SUSHI_LP, readonlyWeb3);
-      const stakedSushiLPToken = new BigNumber(await sushiLPToken.methods.balanceOf(this.constants.SUSHI_MASTERCHEF).call()).div(this.constants.PRECISION);
-      const sushiMphLPPriceUSD  = await this.helpers.getLPPriceUSD(this.constants.SUSHI_LP);
-      this.sushiFarmingValueLocked = stakedSushiLPToken.times(sushiMphLPPriceUSD);
+      const sushiswap = new ApolloClient({
+        uri: 'https://api.thegraph.com/subgraphs/name/sushiswap/exchange',
+        cache: new InMemoryCache(),
+      });
+
+      let sushiswapQueryString = `query SushiSwap {`;
+        sushiswapQueryString +=
+        `pair(
+          id: "${this.constants.SUSHI_LP.toLowerCase()}",
+        ) {
+          reserveUSD
+        }`;
+      sushiswapQueryString += `}`;
+      const sushiswapQuery = gql`${sushiswapQueryString}`;
+
+      sushiswap.query<QueryResult>({
+        query: sushiswapQuery
+      }).then(result =>
+        this.sushiFarmingValueLocked = new BigNumber(result.data.pair.reserveUSD)
+      );
 
       //bancor
       const apiStr = `https://api-v2.bancor.network/pools?dlt_type=ethereum&dlt_id=${this.constants.BANCOR_MPHBNT_POOL}`;
@@ -153,4 +186,7 @@ interface QueryResult {
     stablecoin: string;
     totalActiveDeposit: number;
   }[];
+  pair: {
+    reserveUSD: number;
+  }
 }
