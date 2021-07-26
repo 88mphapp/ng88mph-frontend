@@ -135,15 +135,20 @@ export class ModalUnstakeLPComponent implements OnInit {
     );
     let rewards;
     let func;
+    const address = this.wallet.actualAddress;
 
     if (this.selectedPool === 'Uniswap v2') {
       rewards = this.contract.getNamedContract('Farming');
       func = rewards.methods.withdraw(unstakeAmount);
     } else if (this.selectedPool === 'SushiSwap') {
-      rewards = this.contract.getNamedContract('MasterChef');
-      func = rewards.methods.withdraw(
-        this.constants.SUSHI_MPH_ONSEN_ID,
-        unstakeAmount
+      rewards = this.contract.getContract(
+        this.constants.SUSHI_MASTERCHEF_V2[this.wallet.networkID],
+        'MasterChefV2'
+      );
+      func = rewards.methods.withdrawAndHarvest(
+        this.constants.SUSHI_MPH_REWARDER_ID[this.wallet.networkID],
+        unstakeAmount,
+        address
       );
     } else if (this.selectedPool === 'Bancor') {
       rewards = this.contract.getNamedContract('BancorLP');
