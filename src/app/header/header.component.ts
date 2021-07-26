@@ -86,13 +86,9 @@ export class HeaderComponent implements OnInit {
       this.sushiFarmingValueLocked = stakedSushiLPToken.times(sushiMphLPPriceUSD);
 
       //bancor
-      const bancorLiquidityProtectionStats = this.contract.getContract(this.constants.BANCOR_LP_STATS, 'LiquidityProtectionStats', readonlyWeb3);
-      const bancorTotalStakedMPH = new BigNumber(await bancorLiquidityProtectionStats.methods.totalReserveAmount(this.constants.BANCOR_MPHBNT_POOL, this.constants.MPH).call()).div(this.constants.PRECISION);
-      const bancorTotalStakedBNT = new BigNumber(await bancorLiquidityProtectionStats.methods.totalReserveAmount(this.constants.BANCOR_MPHBNT_POOL, this.constants.BNT).call()).div(this.constants.PRECISION);
-      this.bntPriceUSD = new BigNumber(await this.helpers.getTokenPriceUSD(this.constants.BNT));
-      this.bancorFarmingValueLocked = bancorTotalStakedMPH.times(this.mphPriceUSD).plus(bancorTotalStakedBNT.times(this.bntPriceUSD));
-      // this seems to be off by a little bit, likely because it only accounts for protected liquidity
-
+      const apiStr = `https://api-v2.bancor.network/pools?dlt_type=ethereum&dlt_id=${this.constants.BANCOR_MPHBNT_POOL}`;
+      const result = await this.helpers.httpsGet(apiStr);
+      this.bancorFarmingValueLocked = new BigNumber(result.data[0].liquidity.usd);
     }
   }
 
