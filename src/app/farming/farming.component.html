@@ -96,13 +96,13 @@
                               target="_blank"
                               >Provide liquidity</a
                             >
-                            to the Uniswap MPH-ETH pair and earn MPH
+                            to the Uniswap MPH-ETH pair and earn trading fees.
                           </small>
                           <small
                             class="text-muted"
                             *ngIf="selectedPool == 'Bancor'"
                             >Provide liquidity to the Bancor MPH-BNT pair and
-                            earn BNT.
+                            earn trading fees.
                             <a
                               class="text-primary"
                               href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
@@ -431,25 +431,29 @@
                       </td>
                     </tr>
                     <tr *ngIf="selectedPool != 'Bancor'">
-                      <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Variable APR </strong>
-                      </td>
-                      <td
-                        class="px-0 py-1 text-white text-right border-0 small"
+                      <ng-container
+                        *ngIf="selectedPool == 'SushiSwap' || active"
                       >
-                        <h4
-                          class="mb-0 glowing"
-                          *ngIf="selectedPool == 'Uniswap v2'"
+                        <td class="px-0 py-1 text-white border-0 small">
+                          <strong>Variable APR </strong>
+                        </td>
+                        <td
+                          class="px-0 py-1 text-white text-right border-0 small"
                         >
-                          {{ yearlyROI.toFormat(4) }}%
-                        </h4>
-                        <h4
-                          class="mb-0 glowing"
-                          *ngIf="selectedPool == 'SushiSwap'"
-                        >
-                          {{ sushiYearlyROI.toFormat(4) }}%
-                        </h4>
-                      </td>
+                          <h4
+                            class="mb-0 glowing"
+                            *ngIf="selectedPool == 'Uniswap v2'"
+                          >
+                            {{ yearlyROI.toFormat(4) }}%
+                          </h4>
+                          <h4
+                            class="mb-0 glowing"
+                            *ngIf="selectedPool == 'SushiSwap'"
+                          >
+                            {{ sushiYearlyROI.toFormat(4) }}%
+                          </h4>
+                        </td>
+                      </ng-container>
                     </tr>
                     <tr *ngIf="selectedPool == 'Bancor' && bancorActive">
                       <td class="px-0 py-1 text-white border-0 small">
@@ -484,6 +488,13 @@
               >
                 Bancor liquidity mining has ended. You can continue to stake MPH
                 and BNT to earn trading fees.
+              </div>
+              <div
+                class="px-0 py-3 alert text-center text-warning border-warning"
+                *ngIf="!active && selectedPool == 'Uniswap v2'"
+              >
+                Uniswap v2 liquidity mining has ended. You can continue to
+                provide liquidity to earn trading fees.
               </div>
               <button
                 type="button"
