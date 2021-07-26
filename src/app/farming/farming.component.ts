@@ -127,9 +127,7 @@ export class FarmingComponent implements OnInit {
       this.sushiTotalStakedLPBalance = new BigNumber(await sushiLPToken.methods.balanceOf(this.constants.SUSHI_MASTERCHEF).call()).div(this.constants.PRECISION);
       this.sushiTotalStakedLPBalance = this.sushiTotalStakedLPBalance.plus(await sushiLPToken.methods.balanceOf(this.constants.SUSHI_MASTERCHEF_V2).call()).div(this.constants.PRECISION);
       this.sushiTotalRewardPerSecond = new BigNumber(await sushiMasterChefV2.methods.sushiPerBlock().call()).div(this.BLOCK_TIME_IN_SEC).div(this.constants.PRECISION).times(sushiPoolInfoV2.allocPoint).div(await sushiMasterChefV2.methods.totalAllocPoint().call());
-      console.log(this.sushiTotalRewardPerSecond.toString());
       this.mphTotalRewardPerSecond = new BigNumber(await sushiMphRewarder.methods.rewardPerSecond().call()).div(this.constants.PRECISION);
-      console.log(this.mphTotalRewardPerSecond.toString());
       this.sushiRewardPerLPPerSecond = this.sushiTotalRewardPerSecond.div(this.sushiTotalStakedLPBalance);
       if (this.sushiTotalStakedLPBalance.isZero()) {
         this.sushiRewardPerLPPerSecond = new BigNumber(0);
