@@ -1,1 +1,16 @@
-<p>net-interest-margin works!</p>
+<div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
+  <div class="card-body">
+    <h5 class="text-uppercase text-center">
+      Estimated Net Interest Margin (%)
+    </h5>
+    <canvas
+      baseChart
+      [datasets]="lineChartData"
+      [labels]="lineChartLabels"
+      [options]="lineChartOptions"
+      [legend]="lineChartLegend"
+      [chartType]="lineChartType"
+    >
+    </canvas>
+  </div>
+</div>

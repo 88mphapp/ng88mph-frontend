@@ -5,25 +5,19 @@
       <div class="card-deck mb-4">
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <!-- Title -->
             <h5 class="text-uppercase">Total deposit</h5>
-            <!-- Heading -->
             <h2 class="mb-1 glowing">${{ totalDepositUSD.toFormat(4) }}</h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <!-- Title -->
             <h5 class="text-uppercase">Historical interest distributed</h5>
-            <!-- Heading -->
             <h2 class="mb-3 glowing">${{ totalInterestUSD.toFormat(4) }}</h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <!-- Title -->
             <h5 class="text-uppercase">MPH price</h5>
-            <!-- Heading -->
             <h2 class="mb-3 glowing">${{ mphPriceUSD.toFormat(4) }}</h2>
           </div>
         </div>
@@ -31,9 +25,7 @@
       <div class="card-deck">
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <!-- Title -->
             <h5 class="text-uppercase">MPH total supply</h5>
-            <!-- Heading -->
             <h2 class="mb-3 glowing">{{ mphTotalSupply.toFormat(4) }} MPH</h2>
             <h5 class="text-white">
               ${{ mphTotalSupply.times(mphPriceUSD).toFormat(4) }}
@@ -42,7 +34,6 @@
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <!-- Title -->
             <h5 class="text-uppercase">
               MPH circulating supply
               <button
@@ -55,7 +46,6 @@
               </button>
             </h5>
 
-            <!-- Heading -->
             <h2 class="mb-3 glowing">
               {{ mphCirculatingSupply.toFormat(4) }} MPH
             </h2>
@@ -66,9 +56,7 @@
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <!-- Title -->
             <h5 class="text-uppercase">MPH staked in rewards pool</h5>
-            <!-- Heading -->
             <h2 class="mb-3 glowing">{{ mphStakedPercentage.toFormat(4) }}%</h2>
             <h5 class="text-white">
               ${{
@@ -83,11 +71,9 @@
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <!-- Title -->
             <h5 class="text-uppercase">
               Historical MPH staking rewards distributed
             </h5>
-            <!-- Heading -->
             <h2 class="mb-3 glowing">
               {{ mphTotalHistoricalReward.toFormat(4) }} DAI
             </h2>
@@ -107,7 +93,10 @@
           class="w-50"
         ></app-funded-interest-expenses>
       </div>
-      <div class="card-deck my-5 justify-content-around"></div>
+      <div class="card-deck my-5 justify-content-around">
+        <app-net-interest-margin class="w-50"></app-net-interest-margin>
+        <!-- <app-mph-supply-distribution class="w-50"></app-mph-supply-distribution> -->
+      </div>
       <!-- End Charts -->
     </div>
   </div>
