@@ -98,7 +98,7 @@
                               placeholder="0.00"
                               aria-label=""
                               aria-describedby=""
-                              [value]="depositAmount.toFixed()"
+                              [value]="depositAmount.toFixed(18)"
                               (input)="setDepositAmount($event.target.value)"
                             />
                           </div>
