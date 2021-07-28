@@ -91,6 +91,9 @@ export class LandingPageComponent implements OnInit {
             totalDeposit
             oneYearInterestRate
             poolDepositorRewardMintMultiplier
+          }
+          globalStats (id: "0") {
+            xMPHRewardDistributed
           }`
               : ''
           }
@@ -161,6 +164,13 @@ export class LandingPageComponent implements OnInit {
         this.selectedPool = this.allPoolList[0];
         this.updateAPY();
       });
+    }
+    const mphPriceUSD = await this.helpers.getMPHPriceUSD();
+    this.totalEarningsUSD = new BigNumber(
+      data.globalStats.xMPHRewardDistributed
+    ).times(mphPriceUSD);
+    if (this.totalEarningsUSD.isNaN()) {
+      this.totalEarningsUSD = new BigNumber(0);
     }
   }
 
@@ -325,6 +335,9 @@ interface QueryResult {
     oneYearInterestRate: number;
     poolDepositorRewardMintMultiplier: number;
   }[];
+  globalStats: {
+    xMPHRewardDistributed: number;
+  };
 }
 
 interface DPool {
