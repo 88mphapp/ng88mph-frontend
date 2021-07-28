@@ -454,6 +454,27 @@
                   </table>
                 </div>
                 <button
+                  *ngIf="depositAmount.lte(0)"
+                  class="btn btn-lg btn-outline-primary disabled btn-block mb-4"
+                  type="button"
+                >
+                  Enter an amount
+                </button>
+                <button
+                  *ngIf="
+                    tokenAllowance.lt(depositAmount) && depositAmount.gt(0)
+                  "
+                  class="btn btn-lg btn-bg-gradient btn-block mb-4"
+                  type="button"
+                  (click)="approve()"
+                  [disabled]="!this.wallet.connected"
+                >
+                  Approve
+                </button>
+                <button
+                  *ngIf="
+                    tokenAllowance.gte(depositAmount) && depositAmount.gt(0)
+                  "
                   class="btn btn-lg btn-bg-gradient btn-block mb-4"
                   type="button"
                   (click)="deposit()"
