@@ -42,15 +42,6 @@
                               data-mask-reverse="true"
                               (input)="setDepositTime($event.target.value)"
                             />
-                            <!-- <div class="input-group-append">
-                              <button
-                                class="btn btn-lg border-gradient"
-                                type="button"
-                                (click)="setDepositTime(maxDepositPeriodInDays)"
-                              >
-                                Max
-                              </button>
-                            </div> -->
                             <input
                               type="range"
                               class="custom-range"
@@ -93,11 +84,11 @@
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            ${{ interestAmountUSD.toFormat(4) }}
-                          </h4>
-                          <h5 class="text-muted">
                             {{ interestAmountToken.toFormat(4) }}
                             {{ poolInfo.stablecoinSymbol }}
+                          </h4>
+                          <h5 class="text-muted">
+                            ${{ interestAmountUSD.toFormat(4) }}
                           </h5>
                         </td>
                       </tr>
@@ -109,19 +100,19 @@
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            ${{
-                              depositAmountUSD
-                                .plus(interestAmountUSD)
-                                .toFormat(4)
-                            }}
-                          </h4>
-                          <h5 class="text-muted">
                             {{
                               depositAmountToken
                                 .plus(interestAmountToken)
                                 .toFormat(4)
                             }}
                             {{ poolInfo.stablecoinSymbol }}
+                          </h4>
+                          <h5 class="text-muted">
+                            ${{
+                              depositAmountUSD
+                                .plus(interestAmountUSD)
+                                .toFormat(4)
+                            }}
                           </h5>
                           <small *ngIf="poolInfo.depositFee"
                             >Note: A {{ poolInfo.depositFee * 100 }}% fee is
@@ -139,10 +130,10 @@
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            ${{ mphRewardAmountUSD.toFormat(4) }}
+                            {{ mphRewardAmountToken.toFormat(4) }} MPH
                           </h4>
                           <h5 class="text-muted">
-                            {{ mphRewardAmountToken.toFormat(4) }} MPH
+                            ${{ mphRewardAmountUSD.toFormat(4) }}
                           </h5>
                         </td>
                       </tr>
