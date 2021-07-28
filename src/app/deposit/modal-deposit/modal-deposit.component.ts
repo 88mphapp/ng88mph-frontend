@@ -80,7 +80,7 @@ export class ModalDepositComponent implements OnInit {
   resetData(): void {
     this.poolList = [];
     this.depositTokenBalance = new BigNumber(0);
-    this.depositTimeInDays = new BigNumber(365);
+    this.depositTimeInDays = new BigNumber(30);
     this.depositMaturation = new Date(
       Date.now() +
         this.depositTimeInDays
