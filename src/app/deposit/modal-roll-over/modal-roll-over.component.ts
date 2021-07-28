@@ -96,7 +96,7 @@ export class ModalRollOverComponent implements OnInit {
   resetData() {
     this.depositAmountToken = new BigNumber(0);
     this.depositAmountUSD = new BigNumber(0);
-    this.depositTimeInDays = new BigNumber(365);
+    this.depositTimeInDays = new BigNumber(30);
 
     this.mphPriceUSD = new BigNumber(0);
     this.stablecoinPriceUSD = new BigNumber(0);
