@@ -311,16 +311,6 @@
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            ${{
-                              helpers
-                                .applyDepositFee(
-                                  interestAmountUSD,
-                                  selectedPoolInfo
-                                )
-                                .toFormat(4)
-                            }}
-                          </h4>
-                          <h5 class="text-muted">
                             {{
                               helpers
                                 .applyDepositFee(
@@ -330,6 +320,16 @@
                                 .toFormat(4)
                             }}
                             {{ selectedPoolInfo.stablecoinSymbol }}
+                          </h4>
+                          <h5 class="text-muted">
+                            ${{
+                              helpers
+                                .applyDepositFee(
+                                  interestAmountUSD,
+                                  selectedPoolInfo
+                                )
+                                .toFormat(4)
+                            }}
                           </h5>
                         </td>
                       </tr>
@@ -341,22 +341,6 @@
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            ${{
-                              helpers
-                                .applyDepositFee(
-                                  depositAmountUSD,
-                                  selectedPoolInfo
-                                )
-                                .plus(
-                                  helpers.applyDepositFee(
-                                    interestAmountUSD,
-                                    selectedPoolInfo
-                                  )
-                                )
-                                .toFormat(4)
-                            }}
-                          </h4>
-                          <h5 class="text-muted">
                             {{
                               helpers
                                 .applyDepositFee(
@@ -372,6 +356,22 @@
                                 .toFormat(4)
                             }}
                             {{ selectedPoolInfo.stablecoinSymbol }}
+                          </h4>
+                          <h5 class="text-muted">
+                            ${{
+                              helpers
+                                .applyDepositFee(
+                                  depositAmountUSD,
+                                  selectedPoolInfo
+                                )
+                                .plus(
+                                  helpers.applyDepositFee(
+                                    interestAmountUSD,
+                                    selectedPoolInfo
+                                  )
+                                )
+                                .toFormat(4)
+                            }}
                           </h5>
                           <small *ngIf="selectedPoolInfo.depositFee"
                             >Note: A {{ selectedPoolInfo.depositFee * 100 }}%
@@ -390,12 +390,12 @@
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
+                            {{ mphRewardAmount.toFormat(4) }} MPH
+                          </h4>
+                          <h5 class="text-muted">
                             ${{
                               mphRewardAmount.times(mphPriceUSD).toFormat(4)
                             }}
-                          </h4>
-                          <h5 class="text-muted">
-                            {{ mphRewardAmount.toFormat(4) }} MPH
                           </h5>
                         </td>
                       </tr>
