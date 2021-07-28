@@ -1,4 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConstantsService } from '../constants.service';
 import { ContractService, PoolInfo } from '../contract.service';
 import { WalletService } from '../wallet.service';
@@ -6,6 +7,7 @@ import { HelpersService } from '../helpers.service';
 import { DataService } from '../data.service';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
+import { ModalDepositComponent } from '../deposit/modal-deposit/modal-deposit.component';
 
 @Component({
   selector: 'app-landing-page',
@@ -33,6 +35,7 @@ export class LandingPageComponent implements OnInit {
   maxMPHAPY: BigNumber;
 
   constructor(
+    private modalService: NgbModal,
     public constants: ConstantsService,
     public contract: ContractService,
     public wallet: WalletService,
@@ -324,6 +327,15 @@ export class LandingPageComponent implements OnInit {
   selectPool(poolName: string) {
     this.selectedPool = this.allPoolList.find((pool) => (pool.name = poolName));
     this.updateAPY();
+  }
+
+  openDepositModal(poolName?: string) {
+    const modalRef = this.modalService.open(ModalDepositComponent, {
+      windowClass: 'fullscreen',
+    });
+    modalRef.componentInstance.defaultPoolName = poolName;
+    modalRef.componentInstance.inputDepositAmount = this.initialDeposit;
+    modalRef.componentInstance.inputDepositLength = this.termInDays;
   }
 }
 

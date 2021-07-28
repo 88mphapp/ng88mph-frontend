@@ -18,6 +18,8 @@ import {
 })
 export class ModalDepositComponent implements OnInit {
   @Input() defaultPoolName: string;
+  @Input() inputDepositAmount: BigNumber;
+  @Input() inputDepositLength: BigNumber;
 
   poolList: PoolInfo[];
   selectedPoolInfo: PoolInfo;
@@ -75,12 +77,18 @@ export class ModalDepositComponent implements OnInit {
     this.selectPool(
       this.defaultPoolName ? this.defaultPoolName : this.poolList[0].name
     );
+    this.setDepositAmount(
+      this.inputDepositAmount ? this.inputDepositAmount.toNumber() : 0
+    );
+    this.setDepositTime(
+      this.inputDepositLength ? this.inputDepositLength.toNumber() : 30
+    );
   }
 
   resetData(): void {
     this.poolList = [];
     this.depositTokenBalance = new BigNumber(0);
-    this.depositTimeInDays = new BigNumber(30);
+    this.depositTimeInDays = new BigNumber(0);
     this.depositMaturation = new Date(
       Date.now() +
         this.depositTimeInDays
@@ -133,7 +141,7 @@ export class ModalDepositComponent implements OnInit {
         }
       }
     `;
-    request(
+    await request(
       this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
       queryString
     ).then((data: QueryResult) => {
@@ -200,7 +208,7 @@ export class ModalDepositComponent implements OnInit {
     }
   }
 
-  setDepositAmount(amount: string): void {
+  setDepositAmount(amount: string | number): void {
     this.depositAmount = new BigNumber(+amount);
     if (this.depositAmount.isNaN()) {
       this.depositAmount = new BigNumber(0);
