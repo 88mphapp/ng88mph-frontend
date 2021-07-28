@@ -40,6 +40,7 @@ export class ModalDepositComponent implements OnInit {
   shouldDisplayZap: boolean;
   selectedDepositToken: string;
   zapDepositTokens: string[];
+  tokenAllowance: BigNumber;
 
   presetMaturity: ZeroCouponBondInfo;
   selectedZCBPools: ZeroCouponBondInfo[];
@@ -114,6 +115,7 @@ export class ModalDepositComponent implements OnInit {
     this.shouldDisplayZap = false;
     this.selectedDepositToken = '';
     this.zapDepositTokens = [];
+    this.tokenAllowance = new BigNumber(0);
 
     this.presetMaturity = null;
     this.selectedZCBPools = [];
@@ -165,6 +167,11 @@ export class ModalDepositComponent implements OnInit {
       );
       this.depositTokenBalance = new BigNumber(
         await stablecoin.methods.balanceOf(userAddress).call()
+      ).div(stablecoinPrecision);
+      this.tokenAllowance = new BigNumber(
+        await stablecoin.methods
+          .allowance(userAddress, this.selectedPoolInfo.address)
+          .call()
       ).div(stablecoinPrecision);
     }
 
@@ -344,6 +351,36 @@ export class ModalDepositComponent implements OnInit {
     } else {
       this.mphAPY = mphAPY;
     }
+  }
+
+  approve() {
+    const userAddress: string = this.wallet.actualAddress;
+    const stablecoin = this.contract.getPoolStablecoin(
+      this.selectedPoolInfo.name
+    );
+    const stablecoinPrecision = Math.pow(
+      10,
+      this.selectedPoolInfo.stablecoinDecimals
+    );
+    const depositAmount = this.helpers.processWeb3Number(
+      this.depositAmount.times(stablecoinPrecision)
+    );
+    this.wallet.approveToken(
+      stablecoin,
+      this.selectedPoolInfo.address,
+      depositAmount,
+      () => {},
+      async () => {
+        this.tokenAllowance = new BigNumber(
+          await stablecoin.methods
+            .allowance(userAddress, this.selectedPoolInfo.address)
+            .call()
+        ).div(stablecoinPrecision);
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 
   // @dev needs to be fully tested with a deployed v3 contract, including ZCB
@@ -705,7 +742,8 @@ export class ModalDepositComponent implements OnInit {
       this.wallet.connected &&
       this.depositAmount.gte(this.minDepositAmount) &&
       this.depositTimeInDays.lte(this.maxDepositPeriodInDays) &&
-      this.depositTokenBalance.gte(this.depositAmount)
+      this.depositTokenBalance.gte(this.depositAmount) &&
+      this.tokenAllowance.gte(this.depositAmount)
     );
   }
 }
