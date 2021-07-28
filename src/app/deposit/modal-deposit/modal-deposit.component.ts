@@ -79,10 +79,10 @@ export class ModalDepositComponent implements OnInit {
       this.defaultPoolName ? this.defaultPoolName : this.poolList[0].name
     );
     this.setDepositAmount(
-      this.inputDepositAmount ? this.inputDepositAmount.toNumber() : 0
+      this.inputDepositAmount ? this.inputDepositAmount.toFixed(18) : 0
     );
     this.setDepositTime(
-      this.inputDepositLength ? this.inputDepositLength.toNumber() : 30
+      this.inputDepositLength ? this.inputDepositLength.toFixed(18) : 30
     );
   }
 
@@ -216,7 +216,7 @@ export class ModalDepositComponent implements OnInit {
   }
 
   setDepositAmount(amount: string | number): void {
-    this.depositAmount = new BigNumber(+amount);
+    this.depositAmount = new BigNumber(amount);
     if (this.depositAmount.isNaN()) {
       this.depositAmount = new BigNumber(0);
     }

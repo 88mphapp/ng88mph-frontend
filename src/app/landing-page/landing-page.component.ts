@@ -33,6 +33,7 @@ export class LandingPageComponent implements OnInit {
   tenYearCompounded: BigNumber;
   maxAPY: BigNumber;
   maxMPHAPY: BigNumber;
+  depositTokenBalance: BigNumber;
 
   constructor(
     private modalService: NgbModal,
@@ -78,6 +79,17 @@ export class LandingPageComponent implements OnInit {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
     if (loadUser) {
+      const userAddress: string = this.wallet.actualAddress;
+      const stablecoin = this.contract.getPoolStablecoin(
+        this.selectedPool.name
+      );
+      const stablecoinPrecision = Math.pow(
+        10,
+        this.selectedPool.stablecoinDecimals
+      );
+      this.depositTokenBalance = new BigNumber(
+        await stablecoin.methods.balanceOf(userAddress).call()
+      ).div(stablecoinPrecision);
     }
 
     if (loadGlobal) {
@@ -134,6 +146,7 @@ export class LandingPageComponent implements OnInit {
             protocol: poolInfo.protocol,
             stablecoin: poolInfo.stablecoin,
             stablecoinSymbol: poolInfo.stablecoinSymbol,
+            stablecoinDecimals: poolInfo.stablecoinDecimals,
             iconPath: poolInfo.iconPath,
             totalDepositToken: new BigNumber(pool.totalDeposit),
             totalDepositUSD: new BigNumber(pool.totalDeposit).times(
@@ -179,6 +192,7 @@ export class LandingPageComponent implements OnInit {
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
+      this.depositTokenBalance = new BigNumber(0);
     }
 
     if (resetGlobal) {
@@ -194,6 +208,7 @@ export class LandingPageComponent implements OnInit {
           protocol: poolInfo.protocol,
           stablecoin: poolInfo.stablecoin,
           stablecoinSymbol: poolInfo.stablecoinSymbol,
+          stablecoinDecimals: poolInfo.stablecoinDecimals,
           iconPath: poolInfo.iconPath,
           totalDepositToken: new BigNumber(0),
           totalDepositUSD: new BigNumber(0),
@@ -307,7 +322,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   setDepositAmount(amount: string): void {
-    this.initialDeposit = new BigNumber(+amount);
+    this.initialDeposit = new BigNumber(amount);
     if (this.initialDeposit.isNaN()) {
       this.initialDeposit = new BigNumber(0);
     }
@@ -357,6 +372,7 @@ interface DPool {
   protocol: string;
   stablecoin: string;
   stablecoinSymbol: string;
+  stablecoinDecimals: number;
   iconPath: string;
   totalDepositToken: BigNumber;
   totalDepositUSD: BigNumber;

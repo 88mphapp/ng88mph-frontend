@@ -61,6 +61,13 @@
                   (input)="setDepositAmount($event.target.value)"
                 />
                 <div class="input-group-append">
+                  <button
+                    class="btn btn-lg border-gradient"
+                    type="button"
+                    (click)="setDepositAmount(depositTokenBalance.toFixed(18))"
+                  >
+                    Max
+                  </button>
                   <!-- <button
                     class="btn border-gradient dropdown-toggle"
                     type="button"
@@ -88,6 +95,11 @@
                   </select>
                 </div>
               </div>
+              <small class="form-text text-muted mb-0">
+                {{ depositTokenBalance.toFormat(4) }}
+                {{ selectedPool.stablecoinSymbol }}
+                available
+              </small>
             </div>
             <div class="form-row">
               <div class="col">
