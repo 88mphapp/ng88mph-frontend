@@ -35,6 +35,7 @@ import { HistoricalFixedInterestRatesComponent } from './stats/components/histor
 import { FundedInterestExpensesComponent } from './stats/components/funded-interest-expenses/funded-interest-expenses.component';
 import { ModalWithdrawYieldTokenInterestComponent } from './bonds/modal-withdraw-yield-token-interest/modal-withdraw-yield-token-interest.component';
 import { NetInterestMarginComponent } from './stats/components/net-interest-margin/net-interest-margin.component';
+import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { NetInterestMarginComponent } from './stats/components/net-interest-marg
     FundedInterestExpensesComponent,
     ModalWithdrawYieldTokenInterestComponent,
     NetInterestMarginComponent,
+    TermsOfServiceComponent,
   ],
   imports: [
     BrowserModule,
