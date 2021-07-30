@@ -1,0 +1,59 @@
+<div class="modal-dialog modal-dialog-vertical" role="document">
+  <div class="modal-content">
+    <div class="modal-body pt-0 py-lg-0">
+      <div class="row no-gutters">
+        <div class="col-auto mr-auto">
+          <button
+            class="btn btn-link text-white pl-0"
+            type="button"
+            name="button"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.close(false)"
+          >
+            <i class="fe fe-arrow-left h2 mb-0"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-6 col-xl-6 pt-0 pr-lg-5">
+          <div class="row justify-content-center no-gutters">
+            <div class="col-12 col-lg-10 pt-3 pb-5">
+              <h1 class="display-4 text-center">Terms of Service</h1>
+              <div class="card mb-6">
+                <div class="card-body">
+                  <div class="text-center mb-4">
+                    This is a disclaimer for legal purposes. This is a
+                    disclaimer for legal purposes. This is a disclaimer for
+                    legal purposes. This is a disclaimer for legal purposes.
+                    This is a disclaimer for legal purposes.
+                  </div>
+                  <div class="form-check text-center mb-1">
+                    <input
+                      [(ngModel)]="acceptedTerms"
+                      class="form-check-input"
+                      type="checkbox"
+                      id="termsOfServiceCheck"
+                    />
+                    <label class="form-check-label" for="termsOfServiceCheck">
+                      I have read and accept 88mph's
+                      <a href="/earn">Terms of Service</a> and
+                      <a href="/earn">Privacy Policy</a>
+                    </label>
+                  </div>
+                  <button
+                    class="btn btn-lg btn-block btn-bg-gradient"
+                    (click)="acceptTerms()"
+                    [disabled]="!acceptedTerms"
+                  >
+                    Accept
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

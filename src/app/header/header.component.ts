@@ -1,4 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import BigNumber from 'bignumber.js';
 import { AppComponent } from '../app.component';
@@ -6,6 +7,7 @@ import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
 import { Watch } from '../watch';
+import { TermsOfServiceComponent } from '../terms-of-service/terms-of-service.component';
 
 @Component({
   selector: 'app-header',
@@ -16,9 +18,11 @@ export class HeaderComponent implements OnInit {
   gasPrice: BigNumber;
   mphBalance: BigNumber;
   xMPHBalance: BigNumber;
+  acceptedTerms: boolean;
   watchedModel = new Watch(false, '');
 
   constructor(
+    private modalService: NgbModal,
     public route: Router,
     public wallet: WalletService,
     public contract: ContractService,
@@ -112,15 +116,20 @@ export class HeaderComponent implements OnInit {
 
     if (resetGlobal) {
       this.gasPrice = new BigNumber(0);
+      this.acceptedTerms = false;
     }
   }
 
   connectWallet() {
-    this.wallet.connect(
-      () => {},
-      () => {},
-      false
-    );
+    if (!this.wallet.connected && !this.acceptedTerms) {
+      this.openTermsOfServiceModal();
+    } else {
+      this.wallet.connect(
+        () => {},
+        () => {},
+        false
+      );
+    }
   }
 
   onSubmit() {
@@ -133,5 +142,21 @@ export class HeaderComponent implements OnInit {
     this.wallet.accountChangedEvent.emit(
       watching ? this.wallet.watch.address : this.wallet.userAddress
     );
+  }
+
+  openTermsOfServiceModal() {
+    const modalRef = this.modalService.open(TermsOfServiceComponent, {
+      windowClass: 'fullscreen',
+    });
+    modalRef.result.then((event) => {
+      this.acceptedTerms = event;
+      if (event) {
+        this.wallet.connect(
+          () => {},
+          () => {},
+          false
+        );
+      }
+    });
   }
 }
