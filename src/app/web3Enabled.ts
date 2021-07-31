@@ -291,7 +291,7 @@ export class Web3Enabled {
           }
         })
         .on('error', (e) => {
-          if (!e.toString().contains('newBlockHeaders')) {
+          if (!e.toString().includes('newBlockHeaders')) {
             _onError(e);
           }
         });
@@ -332,7 +332,7 @@ export class Web3Enabled {
           }
         })
         .on('error', (e) => {
-          if (!e.toString().contains('newBlockHeaders')) {
+          if (!e.toString().includes('newBlockHeaders')) {
             _onError(e);
           }
         });
@@ -346,7 +346,8 @@ export class Web3Enabled {
     amount,
     _onTxHash,
     _onReceipt,
-    _onError
+    _onError,
+    useNativeTxReceipt?: boolean
   ) {
     const maxAllowance = new BigNumber(2)
       .pow(256)
@@ -357,13 +358,19 @@ export class Web3Enabled {
       await token.methods.allowance(this.state.address, to).call()
     );
     if (allowance.gte(amount)) {
-      return this.sendTx(func, _onTxHash, _onReceipt, _onError);
+      return this.sendTx(
+        func,
+        _onTxHash,
+        _onReceipt,
+        _onError,
+        useNativeTxReceipt
+      );
     }
     return this.sendTx(
       token.methods.approve(to, maxAllowance),
       this.doNothing,
       () => {
-        this.sendTx(func, _onTxHash, _onReceipt, _onError);
+        this.sendTx(func, _onTxHash, _onReceipt, _onError, useNativeTxReceipt);
       },
       _onError,
       true

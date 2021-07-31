@@ -420,13 +420,16 @@ export class ModalDepositComponent implements OnInit {
         stablecoin,
         this.selectedPoolInfo.address,
         depositAmount,
-        () => {},
         () => {
           this.activeModal.dismiss();
         },
+        () => {
+          //this.activeModal.dismiss();
+        },
         (error) => {
           this.wallet.displayGenericError(error);
-        }
+        },
+        false
       );
     } else {
       const zcbContract = this.contract.getZeroCouponBondContract(
@@ -439,13 +442,16 @@ export class ModalDepositComponent implements OnInit {
         stablecoin,
         this.presetMaturity.address,
         depositAmount,
-        () => {},
         () => {
           this.activeModal.dismiss();
         },
+        () => {
+          //this.activeModal.dismiss();
+        },
         (error) => {
           this.wallet.displayGenericError(error);
-        }
+        },
+        false
       );
     }
   }
