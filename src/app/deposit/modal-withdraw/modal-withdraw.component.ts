@@ -67,13 +67,16 @@ export class ModalWithdrawComponent implements OnInit {
 
     this.wallet.sendTx(
       func,
-      () => {},
       () => {
         this.activeModal.dismiss();
       },
+      () => {
+        //this.activeModal.dismiss();
+      },
       (error) => {
         this.wallet.displayGenericError(error);
-      }
+      },
+      false
     );
   }
 

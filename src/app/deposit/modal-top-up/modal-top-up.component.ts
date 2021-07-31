@@ -200,13 +200,16 @@ export class ModalTopUpComponent implements OnInit {
       stablecoin,
       this.poolInfo.address,
       depositAmountToken,
-      () => {},
       () => {
         this.activeModal.dismiss();
       },
+      () => {
+        //this.activeModal.dismiss();
+      },
       (error) => {
         this.wallet.displayGenericError(error);
-      }
+      },
+      false
     );
   }
 

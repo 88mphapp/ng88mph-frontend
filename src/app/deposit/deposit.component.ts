@@ -580,11 +580,12 @@ export class DepositComponent implements OnInit {
       func,
       () => {},
       () => {
-        this.wallet.txConfirmedEvent.emit();
+        //this.wallet.txConfirmedEvent.emit();
       },
       (error) => {
         this.wallet.displayGenericError(error);
-      }
+      },
+      false
     );
   }
 }
