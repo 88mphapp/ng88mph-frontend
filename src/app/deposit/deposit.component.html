@@ -156,7 +156,7 @@
           class="btn btn-sm btn-bg-gradient"
           (click)="claimAllRewards()"
         >
-          <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim all
+          <i class="fe fe-dollar-sign mr-2 align-bottom"></i>Claim all
         </button>
       </div>
     </div>
@@ -393,9 +393,16 @@
                           <button
                             type="button"
                             class="btn btn-sm btn-dark mr-3"
+                            (click)="openNFTModal(deposit, userPool.poolInfo)"
+                          >
+                            <i class="fe fe-settings mr-2 align-bottom"></i>NFT
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-3"
                             (click)="openRewardsModal(deposit)"
                           >
-                            <i class="fe fe-arrow-down mr-2 align-bottom"></i
+                            <i class="fe fe-dollar-sign mr-2 align-bottom"></i
                             >Claim
                           </button>
                           <button
@@ -404,8 +411,7 @@
                             (click)="openTopUpModal(deposit, userPool.poolInfo)"
                             *ngIf="deposit.locked"
                           >
-                            <i class="fe fe-arrow-down mr-2 align-bottom"></i
-                            >Top up
+                            <i class="fe fe-plus mr-2 align-bottom"></i>Top up
                           </button>
                           <button
                             type="button"
@@ -415,7 +421,7 @@
                             "
                             *ngIf="!deposit.locked"
                           >
-                            <i class="fe fe-arrow-down mr-2 align-bottom"></i
+                            <i class="fe fe-rotate-cw mr-2 align-bottom"></i
                             >Roll over
                           </button>
                           <button
