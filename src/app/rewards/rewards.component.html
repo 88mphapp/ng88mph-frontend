@@ -13,6 +13,81 @@
           Learn more <i class="fe fe-external-link"></i>
         </a>
       </p>
+      <!--desktop user's data-->
+      <div class="card-deck d-none d-lg-flex my-5">
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase">xMPH balance</h5>
+
+            <!-- Heading -->
+            <h2 class="mb-3 glowing">{{ xMPHBalance.toFormat(4) }} xMPH</h2>
+            <!-- Button -->
+            <button
+              *ngIf="xMPHBalance.gt(0)"
+              type="button"
+              class="btn btn-sm btn-bg-gradient"
+              (click)="openUnstakeModal()"
+              [disabled]="!canUnstake() || wallet.watching"
+            >
+              <i class="fe fe-arrow-down mr-2 align-bottom"></i>Unstake
+            </button>
+          </div>
+        </div>
+
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase">Value in MPH</h5>
+            <span
+              class="badge badge-dark border border-light py-0 pl-0 mt-n2 ml-0"
+              style="border-radius: 14px"
+              placement="right"
+              ngbTooltip="1 xMPH = {{ pricePerFullShare.toFormat(4) }} MPH"
+            >
+              <!-- Heading -->
+              <h2 class="mb-0 glowing">
+                {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }} MPH
+              </h2>
+            </span>
+            <h5 class="mb-3 text-white">
+              ${{ xMPHBalance.times(xMPHPriceUSD).toFormat(4) }}
+            </h5>
+          </div>
+        </div>
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase">Variable APR</h5>
+            <!-- Heading -->
+            <h2 class="mb-1 glowing">{{ yearlyROI.toFormat(4) }} %</h2>
+          </div>
+        </div>
+      </div>
+      <!--mobile user's data-->
+      <div class="row d-lg-none my-5">
+        <div class="col-6">
+          <!-- Title -->
+          <h5 class="text-uppercase">xMPH balance</h5>
+          <!-- Heading -->
+          <h2 class="mb-4 glowing">{{ xMPHBalance.toFormat(4) }} xMPH</h2>
+          <!-- Title -->
+          <h5 class="text-uppercase">Value in MPH</h5>
+          <!-- Heading -->
+          <h2 class="mb-0 glowing">
+            {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }} MPH
+          </h2>
+          <h5 class="mb-3 text-white">
+            ${{ xMPHBalance.times(xMPHPriceUSD).toFormat(4) }}
+          </h5>
+        </div>
+        <div class="col-6">
+          <!-- Title -->
+          <h5 class="text-uppercase">Variable APR</h5>
+          <!-- Heading -->
+          <h2 class="mb-1 glowing">{{ yearlyROI.toFormat(4) }} %</h2>
+        </div>
+      </div>
       <div class="row">
         <div class="col-12 col-lg-8">
           <div class="card">
