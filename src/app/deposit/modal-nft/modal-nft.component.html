@@ -1,0 +1,130 @@
+<div class="modal-dialog modal-dialog-vertical" role="document">
+  <div class="modal-content">
+    <div class="modal-body pt-0 py-lg-0">
+      <div class="row no-gutters align-items-center">
+        <div class="col-auto">
+          <a
+            class="btn btn-link border-0 text-white pl-0"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
+            <i class="fe fe-arrow-left h2 mb-0"></i>
+          </a>
+        </div>
+        <div class="col">
+          <h1 class="mb-0 h3">NFT</h1>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-6 pt-0">
+          <div class="card mb-8">
+            <div class="card-body">
+              <ng-container *ngIf="loadedNFTAddress">
+                <nft-card-wrapper> </nft-card-wrapper>
+              </ng-container>
+
+              <div class="">
+                <label>Name</label>
+                <div class="">The name to refer to your NFT.</div>
+                <input
+                  type="text"
+                  class="form-control form-control-lg"
+                  [(ngModel)]="name"
+                  placeholder="Item Name"
+                />
+              </div>
+
+              <div class="">
+                <label>Upload Image</label>
+                <div class="">An image for your NFT.</div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  (change)="updateImageFile($event.target.files)"
+                />
+                <div class="preview-image-holder">
+                  <img class="preview-image" [src]="imageURL" />
+                </div>
+              </div>
+
+              <div class="">
+                <div class="">Description</div>
+                <div class="">A longer description for your NFT.</div>
+                <textarea
+                  name="message"
+                  [(ngModel)]="description"
+                  placeholder="More information about your NFT."
+                ></textarea>
+              </div>
+
+              <div class="">
+                <div class="">Attributes</div>
+                <div class="">
+                  Any additional properties and traits for your NFT.
+                </div>
+                <div
+                  *ngFor="let a of attributes.controls; let i = index"
+                  class="attribute-item"
+                  [formGroup]="a"
+                >
+                  <div>
+                    <div class="">Attribute Name</div>
+                    <input type="text" formControlName="trait_type" />
+                  </div>
+                  <div>
+                    <div class="">Attribute Value</div>
+                    <input type="text" formControlName="value" />
+                  </div>
+                  <div>
+                    <button
+                      class="btn btn-lg btn-bg-gradient mb-4"
+                      type="button"
+                      (click)="deleteAttribute(i)"
+                    >
+                      Delete Attribute
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    class="btn btn-lg btn-bg-gradient mb-4"
+                    type="button"
+                    (click)="addAttribute()"
+                  >
+                    Add Attribute
+                  </button>
+                </div>
+              </div>
+
+              <div class="">
+                <div class="">External URL</div>
+                <div class="">An external link related to your NFT.</div>
+                <input
+                  type="text"
+                  [(ngModel)]="externalURL"
+                  placeholder="https://example.com"
+                />
+              </div>
+
+              <div *ngIf="isLoading" class="load-holder">
+                <div class="loader"></div>
+                <span class=""> &nbsp; {{ loadingMessage }}</span>
+              </div>
+
+              <div>
+                <button
+                  (click)="clickUpdateMetadata()"
+                  class="btn btn-lg btn-bg-gradient btn-block mb-4"
+                  type="button"
+                >
+                  Update NFT metadata
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
