@@ -66,10 +66,11 @@ export class ModalWithdrawZCBComponent implements OnInit {
 
     this.wallet.sendTx(
       func,
-      () => {},
       () => {
         this.activeModal.dismiss();
       },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }

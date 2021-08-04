@@ -110,6 +110,9 @@ export class ModalBuyYieldTokenComponent implements OnInit {
       stablecoin,
       this.deposit.pool.address,
       actualFundAmount,
+      () => {
+        this.activeModal.dismiss();
+      },
       () => {},
       () => {},
       (error) => {

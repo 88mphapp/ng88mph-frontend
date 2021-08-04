@@ -5,6 +5,8 @@ import BigNumber from 'bignumber.js';
 import { ConstantsService } from './constants.service';
 import { EventEmitter } from '@angular/core';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { ModalTransactionAlertsComponent } from 'src/app/modal-transaction-alerts/modal-transaction-alerts.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class Web3Enabled {
   connectedEvent: EventEmitter<null>;
@@ -18,7 +20,11 @@ export class Web3Enabled {
   state: any;
   networkID: number;
 
-  constructor(public web3: Web3, public constants: ConstantsService) {
+  constructor(
+    public web3: Web3,
+    public constants: ConstantsService,
+    public modalService: NgbModal
+  ) {
     this.networkID = 1;
     this.state = {
       address: null,
@@ -259,17 +265,8 @@ export class Web3Enabled {
     );
   }
 
-  async sendTx(
-    func,
-    _onTxHash,
-    _onReceipt,
-    _onError,
-    useNativeTxReceipt?: boolean
-  ) {
-    const onReceiptWithEvent = () => {
-      this.txConfirmedEvent.emit();
-      _onReceipt();
-    };
+  async sendTx(func, _onTxHash, _onReceipt, _onConfirmation, _onError) {
+    let modalRef;
     const gasLimit = await this.estimateGas(func, 0, _onError);
     if (!isNaN(gasLimit)) {
       return func
@@ -279,15 +276,22 @@ export class Web3Enabled {
         })
         .on('transactionHash', (hash) => {
           _onTxHash(hash);
-          const { emitter } = this.notifyInstance.hash(hash);
-          if (!useNativeTxReceipt) {
-            emitter.on('txConfirmed', onReceiptWithEvent);
-          }
-          emitter.on('txFailed', _onError);
+          modalRef = this.openTxModal(hash, false);
         })
         .on('receipt', () => {
-          if (useNativeTxReceipt) {
-            onReceiptWithEvent();
+          _onReceipt();
+        })
+        .once('confirmation', (number, receipt) => {
+          _onConfirmation();
+          this.txConfirmedEvent.emit();
+          if (modalRef.componentInstance !== undefined) {
+            modalRef.componentInstance.txConfirmed = true;
+          } else {
+            this.notifyInstance.notification({
+              eventCode: 'transactionSuccess',
+              type: 'success',
+              message: 'Your transaction has succeeded',
+            });
           }
         })
         .on('error', (e) => {
@@ -303,13 +307,10 @@ export class Web3Enabled {
     val,
     _onTxHash,
     _onReceipt,
-    _onError,
-    useNativeTxReceipt?: boolean
+    _onConfirmation,
+    _onError
   ) {
-    const onReceiptWithEvent = () => {
-      this.txConfirmedEvent.emit();
-      _onReceipt();
-    };
+    let modalRef;
     const gasLimit = await this.estimateGas(func, val, _onError);
     if (!isNaN(gasLimit)) {
       return func
@@ -320,15 +321,22 @@ export class Web3Enabled {
         })
         .on('transactionHash', (hash) => {
           _onTxHash(hash);
-          const { emitter } = this.notifyInstance.hash(hash);
-          if (!useNativeTxReceipt) {
-            emitter.on('txConfirmed', onReceiptWithEvent);
-          }
-          emitter.on('txFailed', _onError);
+          modalRef = this.openTxModal(hash, false);
         })
         .on('receipt', () => {
-          if (useNativeTxReceipt) {
-            onReceiptWithEvent();
+          _onReceipt();
+        })
+        .once('confirmation', (number, receipt) => {
+          _onConfirmation();
+          this.txConfirmedEvent.emit();
+          if (modalRef.componentInstance !== undefined) {
+            modalRef.componentInstance.txConfirmed = true;
+          } else {
+            this.notifyInstance.notification({
+              eventCode: 'transactionSuccess',
+              type: 'success',
+              message: 'Your transaction has succeeded',
+            });
           }
         })
         .on('error', (e) => {
@@ -346,8 +354,8 @@ export class Web3Enabled {
     amount,
     _onTxHash,
     _onReceipt,
-    _onError,
-    useNativeTxReceipt?: boolean
+    _onConfirmation,
+    _onError
   ) {
     const maxAllowance = new BigNumber(2)
       .pow(256)
@@ -362,22 +370,30 @@ export class Web3Enabled {
         func,
         _onTxHash,
         _onReceipt,
-        _onError,
-        useNativeTxReceipt
+        _onConfirmation,
+        _onError
       );
     }
     return this.sendTx(
       token.methods.approve(to, maxAllowance),
       this.doNothing,
       () => {
-        this.sendTx(func, _onTxHash, _onReceipt, _onError, useNativeTxReceipt);
+        this.sendTx(func, _onTxHash, _onReceipt, _onConfirmation, _onError);
       },
-      _onError,
-      true
+      _onConfirmation,
+      _onError
     );
   }
 
-  async approveToken(token, to, amount, _onTxHash, _onReceipt, _onError) {
+  async approveToken(
+    token,
+    to,
+    amount,
+    _onTxHash,
+    _onReceipt,
+    _onConfirmation,
+    _onError
+  ) {
     const maxAllowance = new BigNumber(2)
       .pow(256)
       .minus(1)
@@ -394,8 +410,8 @@ export class Web3Enabled {
       token.methods.approve(to, maxAllowance),
       _onTxHash,
       _onReceipt,
-      _onError,
-      true
+      _onConfirmation,
+      _onError
     );
   }
 
@@ -412,6 +428,17 @@ export class Web3Enabled {
       type: 'error',
       message: errorMessage,
     });
+  }
+
+  openTxModal(hash: string, txConfirmed: boolean): any {
+    const modalRef = this.modalService.open(ModalTransactionAlertsComponent, {
+      centered: true,
+      windowClass: 'windowed',
+    });
+    modalRef.componentInstance.hash = hash;
+    modalRef.componentInstance.networkID = this.networkID;
+    modalRef.componentInstance.txConfirmed = txConfirmed;
+    return modalRef;
   }
 
   doNothing() {}

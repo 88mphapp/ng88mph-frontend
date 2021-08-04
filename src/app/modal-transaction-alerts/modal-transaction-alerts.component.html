@@ -1,0 +1,35 @@
+<div class="modal-body text-center p-0">
+  <div class="col-12 pt-0 pb-5">
+    <div class="row no-gutters align-items-center">
+      <div class="col-auto">
+        <a
+          class="btn btn-link border-0 text-white pl-0"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="activeModal.dismiss()"
+        >
+          <i class="fe fe-arrow-left h2 mb-0"></i>
+        </a>
+      </div>
+    </div>
+    <div class="card-body">
+      <h1 class="display-4 text-center m-0" *ngIf="!txConfirmed">
+        Transaction Pending
+      </h1>
+      <h1 class="display-4 text-center m-0" *ngIf="txConfirmed">
+        Transaction Confirmed
+      </h1>
+      <div
+        [ngClass]="
+          txConfirmed ? 'circle-loader load-complete' : 'circle-loader'
+        "
+        class="my-5"
+      >
+        <div [ngClass]="txConfirmed ? 'draw' : 'checkmark'"></div>
+      </div>
+      <h4 class="text-primary" style="pointer-events: auto">
+        <a href="{{ explorerLink }}" target="_blank"> View your transaction </a>
+      </h4>
+    </div>
+  </div>
+</div>

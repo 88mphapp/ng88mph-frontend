@@ -103,10 +103,11 @@ export class ModalStakeLPComponent implements OnInit {
       lpToken,
       rewards.options.address,
       stakeAmount,
-      () => {},
       () => {
         this.activeModal.dismiss();
       },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }

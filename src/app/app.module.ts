@@ -36,6 +36,8 @@ import { FundedInterestExpensesComponent } from './stats/components/funded-inter
 import { ModalWithdrawYieldTokenInterestComponent } from './bonds/modal-withdraw-yield-token-interest/modal-withdraw-yield-token-interest.component';
 import { NetInterestMarginComponent } from './stats/components/net-interest-margin/net-interest-margin.component';
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
+import { ModalTransactionAlertsComponent } from './modal-transaction-alerts/modal-transaction-alerts.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -68,6 +70,7 @@ import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.com
     ModalWithdrawYieldTokenInterestComponent,
     NetInterestMarginComponent,
     TermsOfServiceComponent,
+    ModalTransactionAlertsComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,6 +80,7 @@ import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.com
     FormsModule,
     ChartsModule,
     ScrollingModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

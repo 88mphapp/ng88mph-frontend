@@ -70,13 +70,11 @@ export class ModalWithdrawComponent implements OnInit {
       () => {
         this.activeModal.dismiss();
       },
-      () => {
-        //this.activeModal.dismiss();
-      },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
-      },
-      false
+      }
     );
   }
 

@@ -170,10 +170,11 @@ export class ModalUnstakeLPComponent implements OnInit {
 
     this.wallet.sendTx(
       func,
-      () => {},
       () => {
         this.activeModal.dismiss();
       },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }
