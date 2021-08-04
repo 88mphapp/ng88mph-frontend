@@ -19,6 +19,7 @@ export class RewardsComponent implements OnInit {
   stakeAmount: BigNumber;
   xMPHBalance: BigNumber;
   unstakedMPHBalance: BigNumber;
+  tokenAllowance: BigNumber;
 
   mphPriceUSD: BigNumber;
   xMPHPriceUSD: BigNumber;
@@ -88,6 +89,15 @@ export class RewardsComponent implements OnInit {
             this.constants.PRECISION
           );
           this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
+        });
+
+      mph.methods
+        .allowance(address, xmph.options.address)
+        .call()
+        .then((allowance) => {
+          this.tokenAllowance = new BigNumber(allowance).div(
+            this.constants.PRECISION
+          );
         });
 
       xmph.methods
@@ -175,6 +185,7 @@ export class RewardsComponent implements OnInit {
       this.stakeAmount = new BigNumber(0);
       this.unstakedMPHBalance = new BigNumber(0);
       this.xMPHBalance = new BigNumber(0);
+      this.tokenAllowance = new BigNumber(0);
     }
 
     if (resetGlobal) {
@@ -401,11 +412,38 @@ export class RewardsComponent implements OnInit {
     );
   }
 
+  approve() {
+    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
+    const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
+    const userAddress: string = this.wallet.actualAddress;
+    const stakeAmount = this.helpers.processWeb3Number(
+      this.stakeAmount.times(this.constants.PRECISION)
+    );
+
+    this.wallet.approveToken(
+      mph,
+      xmph.options.address,
+      stakeAmount,
+      () => {},
+      () => {},
+      async () => {
+        this.tokenAllowance = new BigNumber(
+          await mph.methods.allowance(userAddress, xmph.options.address).call()
+        ).div(this.constants.PRECISION);
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      },
+      true
+    );
+  }
+
   canStake(): boolean {
     return (
       this.wallet.connected &&
-      this.unstakedMPHBalance.gte(this.stakeAmount) &&
-      this.stakeAmount.gt(0)
+      this.stakeAmount.gt(0) &&
+      this.unstakedMPHBalance.gte(this.stakeAmount)
     );
   }
 
