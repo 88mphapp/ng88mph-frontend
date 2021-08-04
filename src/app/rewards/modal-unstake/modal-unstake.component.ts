@@ -88,9 +88,8 @@ export class ModalUnstakeComponent implements OnInit {
       () => {
         this.activeModal.dismiss();
       },
-      () => {
-        this.wallet.txConfirmedEvent.emit();
-      },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }

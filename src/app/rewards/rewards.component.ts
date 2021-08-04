@@ -393,9 +393,8 @@ export class RewardsComponent implements OnInit {
       xmph.options.address,
       stakeAmount,
       () => {},
-      () => {
-        this.wallet.txConfirmedEvent.emit();
-      },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }

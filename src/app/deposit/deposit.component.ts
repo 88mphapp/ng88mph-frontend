@@ -579,13 +579,11 @@ export class DepositComponent implements OnInit {
     this.wallet.sendTx(
       func,
       () => {},
-      () => {
-        //this.wallet.txConfirmedEvent.emit();
-      },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
-      },
-      false
+      }
     );
   }
 }

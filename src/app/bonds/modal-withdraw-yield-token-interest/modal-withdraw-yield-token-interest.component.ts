@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, NgZone } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
@@ -27,7 +27,8 @@ export class ModalWithdrawYieldTokenInterestComponent implements OnInit {
     public wallet: WalletService,
     public contract: ContractService,
     public helpers: HelpersService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    private zone: NgZone
   ) {
     this.resetData();
   }
@@ -46,12 +47,17 @@ export class ModalWithdrawYieldTokenInterestComponent implements OnInit {
       this.loadData();
     });
     this.wallet.txConfirmedEvent.subscribe(() => {
-      this.resetData();
-      this.loadData();
+      //this.zone.run(() => {
+      setTimeout(() => {
+        this.resetData();
+        this.loadData();
+      }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
+      //});
     });
   }
 
   loadData(): void {
+    console.log(this.fundedDeposit);
     // fetch withdrwableInterest
     this.fundedDeposit.yieldToken.methods
       .dividendOf(
@@ -111,6 +117,7 @@ export class ModalWithdrawYieldTokenInterestComponent implements OnInit {
       func,
       () => {},
       () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }
@@ -126,11 +133,16 @@ export class ModalWithdrawYieldTokenInterestComponent implements OnInit {
       func,
       () => {},
       () => {},
+      () => {
+        this.fundedDeposit.funderAccruedInterest = new BigNumber(0);
+      },
       (error) => {
         this.wallet.displayGenericError(error);
       }
     );
   }
+
+  updateAccruedInterestOfFunding() {}
 
   canContinue() {
     return this.wallet.connected;

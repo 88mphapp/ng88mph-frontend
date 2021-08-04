@@ -583,6 +583,7 @@ export class FarmingComponent implements OnInit {
       func,
       () => {},
       () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }
@@ -639,6 +640,7 @@ export class FarmingComponent implements OnInit {
       stakeAmount,
       () => {},
       () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }
@@ -669,6 +671,7 @@ export class FarmingComponent implements OnInit {
 
     this.wallet.sendTx(
       func,
+      () => {},
       () => {},
       () => {},
       (error) => {

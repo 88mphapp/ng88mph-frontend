@@ -5,6 +5,7 @@ import { WEB3 } from './web3';
 import { isNullOrUndefined } from 'util';
 import { Watch } from './watch';
 import { ConstantsService } from './constants.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +13,12 @@ import { ConstantsService } from './constants.service';
 export class WalletService extends Web3Enabled {
   watch: Watch;
 
-  constructor(@Inject(WEB3) public web3: Web3, constants: ConstantsService) {
-    super(web3, constants);
+  constructor(
+    @Inject(WEB3) public web3: Web3,
+    constants: ConstantsService,
+    modalService: NgbModal
+  ) {
+    super(web3, constants, modalService);
     this.watch = new Watch(false, null);
   }
 
