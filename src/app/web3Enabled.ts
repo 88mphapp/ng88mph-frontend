@@ -265,7 +265,14 @@ export class Web3Enabled {
     );
   }
 
-  async sendTx(func, _onTxHash, _onReceipt, _onConfirmation, _onError) {
+  async sendTx(
+    func,
+    _onTxHash,
+    _onReceipt,
+    _onConfirmation,
+    _onError,
+    preventReload?: boolean
+  ) {
     let modalRef;
     const gasLimit = await this.estimateGas(func, 0, _onError);
     if (!isNaN(gasLimit)) {
@@ -283,7 +290,9 @@ export class Web3Enabled {
         })
         .once('confirmation', (number, receipt) => {
           _onConfirmation();
-          this.txConfirmedEvent.emit();
+          if (!preventReload) {
+            this.txConfirmedEvent.emit();
+          }
           if (modalRef.componentInstance !== undefined) {
             modalRef.componentInstance.txConfirmed = true;
           } else {
@@ -392,7 +401,8 @@ export class Web3Enabled {
     _onTxHash,
     _onReceipt,
     _onConfirmation,
-    _onError
+    _onError,
+    preventReload?: boolean
   ) {
     const maxAllowance = new BigNumber(2)
       .pow(256)
@@ -411,7 +421,8 @@ export class Web3Enabled {
       _onTxHash,
       _onReceipt,
       _onConfirmation,
-      _onError
+      _onError,
+      preventReload
     );
   }
 

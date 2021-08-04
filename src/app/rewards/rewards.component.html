@@ -164,6 +164,30 @@
                 </table>
               </div>
               <button
+                *ngIf="this.stakeAmount.lte(0)"
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                [disabled]="true"
+              >
+                Enter an Amount
+              </button>
+              <button
+                *ngIf="
+                  this.tokenAllowance.lt(this.stakeAmount) &&
+                  this.stakeAmount.gt(0)
+                "
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                (click)="approve()"
+                [disabled]="wallet.watching"
+              >
+                Approve
+              </button>
+              <button
+                *ngIf="
+                  this.tokenAllowance.gte(this.stakeAmount) &&
+                  this.stakeAmount.gt(0)
+                "
                 type="button"
                 class="btn btn-lg btn-block btn-bg-gradient mb-3"
                 (click)="stake()"
@@ -174,6 +198,7 @@
               <div class="row">
                 <div class="col-12 mb-3 mb-lg-0">
                   <button
+                    *ngIf="xMPHBalance.gt(0)"
                     type="button"
                     class="btn btn-block btn-lg border-gradient"
                     (click)="openUnstakeModal()"
