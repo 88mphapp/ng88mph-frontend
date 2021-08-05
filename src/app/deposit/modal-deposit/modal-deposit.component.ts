@@ -370,6 +370,7 @@ export class ModalDepositComponent implements OnInit {
       this.selectedPoolInfo.address,
       depositAmount,
       () => {},
+      () => {},
       async () => {
         this.tokenAllowance = new BigNumber(
           await stablecoin.methods
@@ -377,10 +378,10 @@ export class ModalDepositComponent implements OnInit {
             .call()
         ).div(stablecoinPrecision);
       },
-      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
-      }
+      },
+      true
     );
   }
 
