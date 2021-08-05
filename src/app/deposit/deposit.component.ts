@@ -215,7 +215,7 @@ export class DepositComponent implements OnInit {
 
     if (dpools) {
       let allPoolList = new Array<DPool>(0);
-      await Promise.all(
+      Promise.all(
         dpools.map(async (pool) => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
@@ -248,9 +248,7 @@ export class DepositComponent implements OnInit {
             ),
             maxAPY: await this.datas.getPoolMaxAPY(poolInfo.address),
             mphAPY: mphAPY,
-            totalUserDepositsToken: new BigNumber(0),
-            totalUserDepositsUSD: new BigNumber(0),
-            mphDepositorRewardMintMultiplier,
+            mphDepositorRewardMintMultiplier: mphDepositorRewardMintMultiplier,
           };
           allPoolList.push(dpoolObj);
         })
@@ -287,6 +285,8 @@ export class DepositComponent implements OnInit {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
           const stablecoin = poolInfo.stablecoin.toLowerCase();
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
+          let totalUserDepositsToken = new BigNumber(0);
+          let totalUserDepositsUSD = new BigNumber(0);
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
@@ -388,6 +388,12 @@ export class DepositComponent implements OnInit {
             };
             userPoolDeposit.countdownTimer.start();
             userPoolDeposits.push(userPoolDeposit);
+            totalUserDepositsToken = totalUserDepositsToken.plus(
+              new BigNumber(depositAmount)
+            );
+            totalUserDepositsUSD = totalUserDepositsUSD.plus(
+              new BigNumber(depositAmount).times(stablecoinPrice)
+            );
           }
 
           // sort pool deposits by maturation timestamp
@@ -398,6 +404,8 @@ export class DepositComponent implements OnInit {
           const userPool: UserPool = {
             poolInfo: poolInfo,
             deposits: userPoolDeposits,
+            totalUserDepositsToken: totalUserDepositsToken,
+            totalUserDepositsUSD: totalUserDepositsUSD,
           };
           userPools.push(userPool);
         })
@@ -436,10 +444,6 @@ export class DepositComponent implements OnInit {
           ).times(stablecoinPrice);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-          activePool.totalUserDepositsToken =
-            activePool.totalUserDepositsToken.plus(poolDeposit);
-          activePool.totalUserDepositsUSD =
-            activePool.totalUserDepositsUSD.plus(poolDepositUSD);
         })
       ).then(() => {
         this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
@@ -459,10 +463,6 @@ export class DepositComponent implements OnInit {
       this.hasDeposit = false;
       this.claimedMPH = false;
       this.stakedMPH = false;
-      for (const pool in this.allPoolList) {
-        this.allPoolList[pool].totalUserDepositsToken = new BigNumber(0);
-        this.allPoolList[pool].totalUserDepositsUSD = new BigNumber(0);
-      }
     }
 
     if (resetGlobal) {
@@ -479,8 +479,6 @@ export class DepositComponent implements OnInit {
           totalDepositUSD: new BigNumber(0),
           maxAPY: new BigNumber(0),
           mphAPY: new BigNumber(0),
-          totalUserDepositsToken: new BigNumber(0),
-          totalUserDepositsUSD: new BigNumber(0),
           mphDepositorRewardMintMultiplier: new BigNumber(0),
         };
         allPoolList.push(dpoolObj);

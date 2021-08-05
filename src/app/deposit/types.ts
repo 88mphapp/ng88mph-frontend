@@ -12,14 +12,16 @@ export interface DPool {
   totalDepositUSD: BigNumber;
   maxAPY: BigNumber;
   mphAPY: BigNumber;
-  totalUserDepositsToken: BigNumber;
-  totalUserDepositsUSD: BigNumber;
+  // totalUserDepositsToken: BigNumber;
+  // totalUserDepositsUSD: BigNumber;
   mphDepositorRewardMintMultiplier: BigNumber;
 }
 
 export interface UserPool {
   poolInfo: PoolInfo;
   deposits: UserDeposit[];
+  totalUserDepositsToken: BigNumber;
+  totalUserDepositsUSD: BigNumber;
 }
 
 export interface UserDeposit {
