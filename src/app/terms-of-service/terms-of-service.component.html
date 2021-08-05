@@ -16,40 +16,105 @@
         </div>
       </div>
       <div class="row justify-content-center">
-        <div class="col-12 col-lg-6 col-xl-6 pt-0 pr-lg-5">
-          <div class="row justify-content-center no-gutters">
-            <div class="col-12 col-lg-10 pt-3 pb-5">
-              <h1 class="display-4 text-center">Terms of Service</h1>
-              <div class="card mb-6">
-                <div class="card-body">
-                  <div class="text-center mb-4">
-                    This is a disclaimer for legal purposes. This is a
-                    disclaimer for legal purposes. This is a disclaimer for
-                    legal purposes. This is a disclaimer for legal purposes.
-                    This is a disclaimer for legal purposes.
-                  </div>
-                  <div class="form-check text-center mb-1">
-                    <input
-                      [(ngModel)]="acceptedTerms"
-                      class="form-check-input"
-                      type="checkbox"
-                      id="termsOfServiceCheck"
-                    />
-                    <label class="form-check-label" for="termsOfServiceCheck">
-                      I have read and accept 88mph's
-                      <a href="/earn">Terms of Service</a> and
-                      <a href="/earn">Privacy Policy</a>
-                    </label>
-                  </div>
-                  <button
-                    class="btn btn-lg btn-block btn-bg-gradient"
-                    (click)="acceptTerms()"
-                    [disabled]="!acceptedTerms"
-                  >
-                    Accept
-                  </button>
-                </div>
+        <div class="col-12 col-lg-8 pt-0 pr-lg-5">
+          <h1 class="display-4 text-center">Acknowledge terms</h1>
+          <div class="card mb-6">
+            <div class="card-body">
+              <p class="text-muted">
+                The Platform only serves as an introducing platform and
+                facilitator between investors and third party protocols and/or
+                platforms. The Platform does not make any profits in relation to
+                such introducing activity and the Platform shall under no
+                circumstances be considered as a party to any relationship
+                created between Users, investors and/or third party protocols or
+                platforms and any such relations are entered into at the User’s
+                sole liability and risk.
+              </p>
+              <p class="text-muted">
+                The Platform does not have any power over any crypto assets
+                and/or deposits of Users and does not provide any advice,
+                investment advice, execution only or custody services. In
+                addition, the Platform does not buy or sell any financial
+                instruments or provide any banking, portfolio management,
+                trustee, manager of collective assets, fund management or
+                securities firm services. In particular, the Platform does not
+                manage any assets or financial instruments and/or issues or
+                holds any securities or financial instruments whatsoever.
+              </p>
+              <p class="text-muted">
+                Moreover, the Platform does not act as a financial market
+                infrastructure, in particular a stock exchange, multilateral
+                trading facility (MTF), central counterparty, central securities
+                depository or a payment system. In particular, the Platform does
+                not allow for any simultaneous exchange of bids between several
+                participants on the Platform. The Platform shall not be
+                considered as an organized trading facility (système organisé de
+                négociation / SON) given that it does not allow (a) for
+                multilateral trading in securities or other financial
+                instruments or the conclusion of contracts based on
+                discretionary rules; (b) multilateral trading in financial
+                instruments other than securities whose purpose is the exchange
+                of bids or the conclusion of contracts based on
+                non-discretionary rules or (c) bilateral trading in securities
+                or other financial instruments whose purpose is the exchange of
+                bids. Indeed, the Platform does intervene as party or
+                counterparty at the level of any transactions on securities or
+                financial instruments, whether simultaneous or not. For this
+                reasons, it does not qualify as SON under Swiss regulation.
+                Trading is deemed to be multilateral if it collects / gathers
+                the interests of multiple participants in the acquisition and
+                sale of securities or other financial instruments within the
+                trading facility with a view to concluding a contract.
+              </p>
+              <p class="text-muted">
+                No funds transit via the Platform. The Platform does not perform
+                any financial intermediary activities on a professional basis
+                and does not perform any KYC (know your client) verifications on
+                Users.
+              </p>
+              <p class="text-muted">
+                The Platform, Services, MPH Tokens and related materials, any
+                payment processing and other tasks are provided on an "as is",
+                "with all faults" and "as available" basis. Users expressly
+                agree that their use is at their sole risk. To the fullest
+                extent permitted by applicable law, the Platform makes no
+                representations or warranties of any kind, express or implied,
+                as to the operation of the Platform, Services, MPH Tokens and
+                related materials, any payment processing or other tasks, and
+                disclaims any and all representations or warranties of any kind,
+                express or implied, including without limitation: (a) any
+                implied warranties of merchantability, fitness for a particular
+                purpose, title, or non-infringement; (b) any warranty that the
+                Platform, related materials, the payment processing or other
+                tasks will meet Users’ requirements, will always be available,
+                accessible, uninterrupted, timely, secure, operate without
+                error, or will contain any particular features or functionality;
+                (c) any warranty that the information, content, materials, or
+                submissions included on the Platform will be as represented by
+                Users that the tasks are lawful, or that Users will perform as
+                promised or to Users’ satisfaction; or (d) any implied warranty
+                arising from course of dealing or usage of trade.
+              </p>
+              <div class="form-check text-center mb-3">
+                <input
+                  [(ngModel)]="acceptedTerms"
+                  class="form-check-input"
+                  type="checkbox"
+                  id="termsOfServiceCheck"
+                />
+                <label class="form-check-label" for="termsOfServiceCheck">
+                  By using 88mph, you agree to 88mph's
+                  <a href="/earn">Terms of Service</a>.
+                </label>
               </div>
+
+              <button
+                class="btn btn-lg btn-block btn-bg-gradient"
+                (click)="acceptTerms()"
+                [disabled]="!acceptedTerms"
+              >
+                Accept
+              </button>
             </div>
           </div>
         </div>
