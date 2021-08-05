@@ -242,12 +242,12 @@
                   </td>
                   <td>
                     <h4 class="mb-1 glowing">
-                      ${{ pool.totalUserDepositsUSD.toFormat(DECIMALS) }}
+                      {{ pool.totalUserDepositsToken.toFormat(DECIMALS) }}
+                      {{ pool.stablecoinSymbol }}
                     </h4>
-                    <span class="text-white"
-                      >{{ pool.totalUserDepositsToken.toFormat(DECIMALS) }}
-                      {{ pool.stablecoinSymbol }}</span
-                    >
+                    <span class="text-white">
+                      ${{ pool.totalUserDepositsUSD.toFormat(DECIMALS) }}
+                    </span>
                   </td>
                   <td>
                     <span class="h4 mb-0 glowing"
@@ -341,11 +341,11 @@
                         </td>
                         <td>
                           <h4 class="mb-1 font-weight-normal glowing">
-                            ${{ deposit.amountUSD.toFormat(DECIMALS) }}
-                          </h4>
-                          <div class="text-muted d-block">
                             {{ deposit.amountToken.toFormat(DECIMALS) }}
                             {{ userPool.poolInfo.stablecoinSymbol }}
+                          </h4>
+                          <div class="text-muted d-block">
+                            ${{ deposit.amountUSD.toFormat(DECIMALS) }}
                           </div>
                         </td>
                         <td>
@@ -375,18 +375,19 @@
                             +{{ deposit.mphAPY.toFormat(DECIMALS) }}% APY
                           </span>
                           <span class="text-muted d-block"
-                            >${{
-                              deposit.interestEarnedUSD.toFormat(DECIMALS)
-                            }}
-                            ({{
+                            >{{
                               deposit.interestEarnedToken.toFormat(DECIMALS)
                             }}
-                            {{ userPool.poolInfo.stablecoinSymbol }}) / ${{
+                            {{ userPool.poolInfo.stablecoinSymbol }}
+                            (${{
+                              deposit.interestEarnedUSD.toFormat(DECIMALS)
+                            }}) /
+                            {{ deposit.realMPHReward.toFormat(DECIMALS) }} MPH
+                            (${{
                               deposit.realMPHReward
                                 .times(mphPriceUSD)
                                 .toFormat(DECIMALS)
-                            }}
-                            ({{ deposit.realMPHReward.toFormat(DECIMALS) }} MPH)
+                            }})
                           </span>
                         </td>
                         <td class="text-right">
