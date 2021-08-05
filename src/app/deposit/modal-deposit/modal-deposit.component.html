@@ -470,10 +470,11 @@
                 </div>
                 <button
                   *ngIf="depositAmount.lte(0)"
-                  class="btn btn-lg btn-outline-primary disabled btn-block mb-4"
                   type="button"
+                  class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                  [disabled]="true"
                 >
-                  Enter an amount
+                  Enter an Amount
                 </button>
                 <button
                   *ngIf="
@@ -482,18 +483,32 @@
                   class="btn btn-lg btn-bg-gradient btn-block mb-4"
                   type="button"
                   (click)="approve()"
-                  [disabled]="!this.wallet.connected"
+                  [disabled]="!this.wallet.connected || this.wallet.watching"
                 >
                   Approve
                 </button>
                 <button
                   *ngIf="
-                    tokenAllowance.gte(depositAmount) && depositAmount.gt(0)
+                    tokenAllowance.gte(depositAmount) &&
+                    depositTokenBalance.lt(depositAmount) &&
+                    depositAmount.gt(0)
+                  "
+                  type="button"
+                  class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                  [disabled]="true"
+                >
+                  Not enough {{ selectedPoolInfo.stablecoinSymbol }} available
+                </button>
+                <button
+                  *ngIf="
+                    tokenAllowance.gte(depositAmount) &&
+                    depositTokenBalance.gte(depositAmount) &&
+                    depositAmount.gt(0)
                   "
                   class="btn btn-lg btn-bg-gradient btn-block mb-4"
                   type="button"
                   (click)="deposit()"
-                  [disabled]="!canContinue()"
+                  [disabled]="!canContinue() || this.wallet.watching"
                 >
                   Deposit
                 </button>
