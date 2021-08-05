@@ -241,13 +241,23 @@
                     </div>
                   </td>
                   <td>
-                    <h4 class="mb-1 glowing">
-                      {{ pool.totalUserDepositsToken.toFormat(DECIMALS) }}
-                      {{ pool.stablecoinSymbol }}
-                    </h4>
-                    <span class="text-white">
-                      ${{ pool.totalUserDepositsUSD.toFormat(DECIMALS) }}
-                    </span>
+                    <ng-container *ngFor="let userPool of userPools">
+                      <ng-container
+                        *ngIf="userPool.poolInfo.name === pool.name"
+                      >
+                        <h4 class="mb-1 glowing">
+                          {{
+                            userPool.totalUserDepositsToken.toFormat(DECIMALS)
+                          }}
+                          {{ pool.stablecoinSymbol }}
+                        </h4>
+                        <span class="text-white">
+                          ${{
+                            userPool.totalUserDepositsUSD.toFormat(DECIMALS)
+                          }}
+                        </span>
+                      </ng-container>
+                    </ng-container>
                   </td>
                   <td>
                     <span class="h4 mb-0 glowing"
