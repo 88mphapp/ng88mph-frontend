@@ -186,6 +186,19 @@
               <button
                 *ngIf="
                   this.tokenAllowance.gte(this.stakeAmount) &&
+                  this.unstakedMPHBalance.lt(this.stakeAmount) &&
+                  this.stakeAmount.gt(0)
+                "
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                [disabled]="true"
+              >
+                Not enough MPH available
+              </button>
+              <button
+                *ngIf="
+                  this.tokenAllowance.gte(this.stakeAmount) &&
+                  this.unstakedMPHBalance.gte(this.stakeAmount) &&
                   this.stakeAmount.gt(0)
                 "
                 type="button"
