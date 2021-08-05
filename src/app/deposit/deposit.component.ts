@@ -215,7 +215,7 @@ export class DepositComponent implements OnInit {
 
     if (dpools) {
       let allPoolList = new Array<DPool>(0);
-      Promise.all(
+      await Promise.all(
         dpools.map(async (pool) => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
@@ -460,7 +460,6 @@ export class DepositComponent implements OnInit {
       this.claimedMPH = false;
       this.stakedMPH = false;
       for (const pool in this.allPoolList) {
-        console.log(this.allPoolList[pool]);
         this.allPoolList[pool].totalUserDepositsToken = new BigNumber(0);
         this.allPoolList[pool].totalUserDepositsUSD = new BigNumber(0);
       }
@@ -487,6 +486,7 @@ export class DepositComponent implements OnInit {
         allPoolList.push(dpoolObj);
       }
       this.allPoolList = allPoolList;
+      this.allPoolList = [];
       this.allZCBPoolList = [];
       this.mphPriceUSD = new BigNumber(0);
     }
