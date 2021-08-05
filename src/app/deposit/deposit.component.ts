@@ -459,6 +459,11 @@ export class DepositComponent implements OnInit {
       this.hasDeposit = false;
       this.claimedMPH = false;
       this.stakedMPH = false;
+      for (const pool in this.allPoolList) {
+        console.log(this.allPoolList[pool]);
+        this.allPoolList[pool].totalUserDepositsToken = new BigNumber(0);
+        this.allPoolList[pool].totalUserDepositsUSD = new BigNumber(0);
+      }
     }
 
     if (resetGlobal) {
