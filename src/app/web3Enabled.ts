@@ -438,6 +438,7 @@ export class Web3Enabled {
       eventCode: 'genericError',
       type: 'error',
       message: errorMessage,
+      autoDismiss: 10000,
     });
   }
 
