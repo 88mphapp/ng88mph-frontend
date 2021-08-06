@@ -23,39 +23,18 @@ import { ModalWithdrawYieldTokenInterestComponent } from './modal-withdraw-yield
   styleUrls: ['./bonds.component.css'],
 })
 export class BondsComponent implements OnInit {
-  // V3 variables
+  funderPools: FunderPool[];
   totalYieldTokenBalanceUSD: BigNumber;
   totalDepositEarningYield: BigNumber;
   totalYieldEarnedUSD: BigNumber;
   totalMPHEarned: BigNumber;
 
-  // V2 variables
   allPoolList: DPool[];
-  funderPools: FunderPool[];
-
-  totalDeficitFundedUSD: BigNumber;
-  totalCurrentDepositUSD: BigNumber;
-  totalInterestUSD: BigNumber;
-
-  selectedPool: DPool;
-  floatingRatePrediction: BigNumber;
-  numDepositsToFund: string;
-  numFundableDeposits: number;
   fundableDeposits: FundableDeposit[];
-  debtToFundToken: BigNumber;
-  debtToFundUSD: BigNumber;
-  amountToEarnOnToken: BigNumber;
-  amountToEarnOnUSD: BigNumber;
-  mphRewardAmount: BigNumber;
-  estimatedProfitToken: BigNumber;
-  estimatedROI: BigNumber;
-  estimatedProfitUSD: BigNumber;
   loadingCalculator: boolean;
+  floatingRatePrediction: BigNumber;
   mphPriceUSD: BigNumber;
-  mphROI: BigNumber;
-  averageMaturationTime: BigNumber;
-  medianMaturationTime: BigNumber;
-  depositListIsCollapsed: boolean;
+  selectedPool: DPool;
 
   constructor(
     private modalService: NgbModal,
@@ -368,6 +347,7 @@ export class BondsComponent implements OnInit {
         })
       ).then(() => {
         this.funderPools = funderPools;
+        console.log(this.funderPools);
         this.totalYieldTokenBalanceUSD = totalYieldTokenBalanceUSD;
         this.totalDepositEarningYield = totalDepositEarningYield;
         this.totalYieldEarnedUSD = totalYieldEarnedUSD;
@@ -422,40 +402,19 @@ export class BondsComponent implements OnInit {
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
-      // v3
+      this.funderPools = [];
       this.totalYieldTokenBalanceUSD = new BigNumber(0);
       this.totalDepositEarningYield = new BigNumber(0);
       this.totalYieldEarnedUSD = new BigNumber(0);
-
-      // end v3
-
-      this.totalDeficitFundedUSD = new BigNumber(0);
-      this.totalCurrentDepositUSD = new BigNumber(0);
-      this.totalInterestUSD = new BigNumber(0);
       this.totalMPHEarned = new BigNumber(0);
-      this.funderPools = [];
     }
 
     if (resetGlobal) {
-      this.floatingRatePrediction = new BigNumber(0);
       this.allPoolList = [];
-      this.numDepositsToFund = 'All';
-      this.numFundableDeposits = 0;
       this.fundableDeposits = [];
-      this.debtToFundToken = new BigNumber(0);
-      this.debtToFundUSD = new BigNumber(0);
-      this.amountToEarnOnToken = new BigNumber(0);
-      this.amountToEarnOnUSD = new BigNumber(0);
-      this.mphRewardAmount = new BigNumber(0);
-      this.estimatedProfitToken = new BigNumber(0);
-      this.estimatedProfitUSD = new BigNumber(0);
-      this.estimatedROI = new BigNumber(0);
       this.loadingCalculator = true;
+      this.floatingRatePrediction = new BigNumber(0);
       this.mphPriceUSD = new BigNumber(0);
-      this.mphROI = new BigNumber(0);
-      this.averageMaturationTime = new BigNumber(0);
-      this.medianMaturationTime = new BigNumber(0);
-      this.depositListIsCollapsed = true;
     }
   }
 
@@ -684,8 +643,7 @@ export class BondsComponent implements OnInit {
   canContinue() {
     // return (
     //   this.wallet.connected &&
-    //   this.selectedPoolHasDebt() &&
-    //   this.debtToFundToken.gt(0)
+    //   this.selectedPoolHasDebt()
     // );
   }
 }
@@ -724,6 +682,19 @@ interface QueryResult {
     oracleInterestRate: number;
     poolFunderRewardMultiplier: BigNumber;
   }[];
+}
+
+interface FunderQuery {
+  funder: {
+    address: string;
+    fundings: {
+      pool: {
+        address: string;
+      };
+      active: string;
+      principalPerToken: string;
+    }[];
+  };
 }
 
 interface FundableDepositsQuery {
