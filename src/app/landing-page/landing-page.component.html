@@ -3,20 +3,24 @@
     <div class="col-12 mb-4 mb-lg-0 col-lg-8">
       <h1 class="title-bg-gradient display-2">
         Earn up to {{ maxAPY.toFormat(2) }}% fixed APY +
-        {{ maxMPHAPY.toFormat(2) }}% MPH APY on your crypto
+        {{ maxMPHAPY.toFormat(2) }}% $MPH rewards APY on your crypto
       </h1>
       <p class="text-white font-weight-bold mb-5 lead">
         Deposit crypto or stablecoins to earn a fixed interest rate & MPH
         rewards.
       </p>
-      <button class="btn btn-lg btn-bg-gradient" routerLink="earn">
-        Get started
-      </button>
 
       <div class="row mt-5 mb-7">
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">TVL</h6>
+          <h6 class="text-uppercase text-muted">
+            TVL
+            <i
+              class="fe fe-info ml-1 align-bottom"
+              placement="top"
+              ngbTooltip="Total value locked"
+            ></i>
+          </h6>
 
           <!-- Heading -->
           <h2 class="display-4 mb-2 glowing">
@@ -25,7 +29,14 @@
         </div>
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">Total interest</h6>
+          <h6 class="text-uppercase text-muted">
+            Total interest distributed
+            <i
+              class="fe fe-info ml-1 align-bottom"
+              placement="top"
+              ngbTooltip="Amount of interest earned by 88mph's users since v3 launch."
+            ></i>
+          </h6>
 
           <!-- Heading -->
           <h2 class="display-4 mb-2 glowing">
@@ -34,8 +45,16 @@
         </div>
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">Total revenue</h6>
-
+          <h6 class="text-uppercase text-muted">
+            Total protocol revenue
+            <i
+              class="fe fe-info ml-1 align-bottom"
+              placement="top"
+              ngbTooltip="The protocol revenues originates from 88mph protocol fees (10% of the fixed-rate interest promised to depositors at deposit time and 0.5% on early withdrawals).
+            Yield-farmed tokens earned from the protocols 88mph is connected to (COMP, FARM, stkAAVE, etc.).
+            100% of the protocol revenues are distributed to MPH stakers."
+            ></i>
+          </h6>
           <!-- Heading -->
           <h2 class="display-4 mb-2 glowing">
             ${{ totalEarningsUSD.toFormat(3) }}m
@@ -50,50 +69,37 @@
         </div>
         <div class="card-body">
           <form action="">
-            <div class="form-group mb-4">
+            <div class="form-group mb-3">
               <label>Initial deposit</label>
-              <div class="input-group">
+              <div class="input-group input-group-lg mb-2">
                 <input
                   type="tel"
-                  class="form-control form-control-lg bg-light text-white"
+                  class="form-control bg-light text-white"
                   aria-label="Text input with dropdown button"
                   [value]="initialDeposit"
                   (input)="setDepositAmount($event.target.value)"
                 />
-                <div class="input-group-append">
+                <div class="input-group-prepend">
                   <button
-                    class="btn btn-lg border-gradient"
+                    class="btn btn-dark"
                     type="button"
                     (click)="setDepositAmount(depositTokenBalance.toFixed(18))"
                   >
                     Max
                   </button>
-                  <!-- <button
-                    class="btn border-gradient dropdown-toggle"
-                    type="button"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    DAI
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">DAI (Aave)</a>
-                    <a class="dropdown-item" href="#">DAI (Compound)</a>
-                  </div> -->
-                  <select
-                    class="btn border-gradient"
-                    (change)="selectPool($event.target.value)"
-                  >
-                    <option
-                      value="{{ pool.stablecoinSymbol }}"
-                      *ngFor="let pool of allPoolList"
-                      [selected]="pool.name === selectedPool.name"
-                    >
-                      {{ pool.stablecoinSymbol }} ({{ pool.protocol }})
-                    </option>
-                  </select>
                 </div>
+                <select
+                  class="custom-select"
+                  (change)="selectPool($event.target.value)"
+                >
+                  <option
+                    value="{{ pool.stablecoinSymbol }}"
+                    *ngFor="let pool of allPoolList"
+                    [selected]="pool.name === selectedPool.name"
+                  >
+                    {{ pool.stablecoinSymbol }}-{{ pool.protocol }} Pool
+                  </option>
+                </select>
               </div>
               <small class="form-text text-muted mb-0">
                 {{ depositTokenBalance.toFormat(4) }}
@@ -106,7 +112,7 @@
                 <div class="form-group mb-2">
                   <label>Term in days</label>
                   <input
-                    type="tel"
+                    type="number"
                     min="1"
                     data-mask="#,##0"
                     data-mask-reverse="true"
@@ -139,34 +145,49 @@
                 <tbody>
                   <tr>
                     <td class="px-0 py-2 text-white border-0 small">
-                      Interest earned at maturity
+                      Fixed-rate APY earned at maturity
+                      <i
+                        class="fe fe-info ml-1 align-bottom"
+                        placement="top"
+                        ngbTooltip="88mph offers a series of fixed-rate yield pools for various assets, such as DAI, USDC, WBTC, and ETH. When users/protocols deposit assets into an 88mph pool, they earn fixed-rate yield that is redeemable at maturity."
+                      ></i>
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
                       <h4 class="mb-1 glowing">
-                        ${{ interestEarnedUSD.toFormat(2) }}
-                      </h4>
-                      <h5 class="text-muted mb-0">
                         {{ interestEarnedToken.toFormat(2) }}
                         {{ selectedPool.stablecoinSymbol }}
+                      </h4>
+                      <h5 class="text-muted mb-0">
+                        ${{ interestEarnedUSD.toFormat(2) }}
                       </h5>
                     </td>
                   </tr>
                   <tr>
                     <td class="px-0 py-2 text-white border-0 small">
-                      MPH rewards
+                      MPH tokens
+                      <i
+                        class="fe fe-info ml-1 align-bottom"
+                        placement="top"
+                        ngbTooltip="MPH tokens are vested linearly over the deposit duration. You can claim your MPH whever you want over the vesting period. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
+                      ></i>
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
                       <h4 class="mb-1 glowing">
-                        +${{ mphRewardUSD.toFormat(2) }}
+                        +{{ mphReward.toFormat(2) }} MPH
                       </h4>
                       <h5 class="text-muted mb-0">
-                        {{ mphReward.toFormat(2) }} MPH
+                        +${{ mphRewardUSD.toFormat(2) }}
                       </h5>
                     </td>
                   </tr>
                   <tr>
                     <td class="px-0 py-2 text-white border-0 small">
-                      Total earned at maturity
+                      Total available at maturity
+                      <i
+                        class="fe fe-info ml-1 align-bottom"
+                        placement="top"
+                        ngbTooltip="Initial deposit + fixed-rate yield earned + MPH tokens"
+                      ></i>
                     </td>
                     <td
                       class="px-0 py-2 text-success text-right border-0 small"
@@ -191,30 +212,33 @@
             </div>
           </form>
         </div>
-        <div class="card-footer small">
+        <div class="card-footer small text-center">
           <button
-            class="btn btn-lg btn-bg-gradient btn-block mb-4"
+            class="btn btn-lg btn-bg-gradient btn-block mb-2"
             type="button"
             (click)="openDepositModal(selectedPool.name)"
           >
             Start Earning
           </button>
-          DeFi Banking trusted since
-          <a class="text-secondary" href=""
-            ><span class="text-secondary fe fe-box"></span> 12,420,690</a
+          Trusted by its users since
+          <a
+            class="text-secondary"
+            href="https://etherscan.io/tx/0x1077dd81f059bba91c9ce7033526e3d4e172f552a03ec62a990a414018f83a09"
+            target="_blank"
+            ><span class="text-secondary fe fe-box"></span> 11289991</a
           >
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="container pt-6 px-6 pb-4 mt-lg-n9 mb-7 bg-white rounded">
+<div class="container pt-7 px-6 pb-4 mt-lg-n9 mb-7 bg-white rounded">
   <div class="row justify-content-center mb-4">
     <div class="col-9">
-      <h2 class="display-2 text-center text-dark">Earn fixed-rate interest</h2>
+      <h2 class="display-2 text-center text-dark">Earn fixed-rate yield</h2>
       <p class="lead text-center text-muted">
         88mph has a variety of features that make it the best place to start
-        earning a fixed-interest rate on your capital. Our leading protection
+        earning a fixed-rate yield on your capital. Our leading protection
         measures give you the peace of mind you deserve.
       </p>
     </div>
@@ -232,10 +256,10 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Earn a fixed APY + MPH rewards</h3>
+          <h3 class="text-dark">Earn a fixed-rate APY + $MPH tokens</h3>
           <p class="text-muted">
-            Deposit DAI, USDC, 3CRV, wBTC, renBTC, etc. and earn fixed-interest
-            rates + MPH.
+            Deposit $DAI, $USDC, $3CRV, $wBTC, $renBTC, etc. and earn
+            fixed-interest rates + $MPH.
           </p>
         </div>
       </div>
@@ -291,11 +315,16 @@
         <div class="col">
           <h3 class="text-dark">Insurance</h3>
           <p class="text-muted">
-            Leading insurance protocols cover a full spectrum of smart contract
-            risks for 88mph. <a href="https://docs.88mph.app/">Learn more</a>.
+            Leading insurance protocols like InsurAce or Bridge Mutual cover a
+            full spectrum of smart contract risks for 88mph.
+            <a href="https://docs.88mph.app/">Learn more</a>.
           </p>
         </div>
       </div>
+
+      <button class="btn btn-lg btn-bg-gradient my-4" routerLink="earn">
+        Start earning
+      </button>
     </div>
     <div class="col-7">
       <img
@@ -549,6 +578,48 @@
 
   <div class="row justify-content-center mb-4">
     <div class="col-8">
+      <h2 class="display-2 text-center">Get started in minutes</h2>
+      <p class="lead text-center text-muted">
+        88mph supports a variety of the most popular digital currencies.
+      </p>
+    </div>
+  </div>
+  <div class="row justify-content-center text-center mb-4">
+    <div class="col col-lg-4">
+      <div class="avatar avatar-lg mb-3">
+        <span class="avatar-title rounded-circle text-white border-gradient">
+          1
+        </span>
+      </div>
+      <h3>Connect your wallet</h3>
+    </div>
+    <div class="col col-lg-4">
+      <div class="avatar avatar-lg mb-3">
+        <span class="avatar-title rounded-circle text-white border-gradient">
+          2
+        </span>
+      </div>
+      <h3>Deposit</h3>
+    </div>
+    <div class="col col-lg-4">
+      <div class="avatar avatar-lg mb-3">
+        <span class="avatar-title rounded-circle text-white border-gradient">
+          3
+        </span>
+      </div>
+      <h3>Earn a fixed interest rate & MPH rewards</h3>
+    </div>
+  </div>
+  <div class="row justify-content-center mb-7">
+    <div class="col-auto">
+      <button class="btn btn-lg btn-bg-gradient" routerLink="earn">
+        Get started
+      </button>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mb-4">
+    <div class="col-8">
       <h2 class="text-center">As featured in</h2>
     </div>
   </div>
@@ -608,47 +679,6 @@
       <a href="https://www.youtube.com/watch?v=R57F7zwoj0g" target="_blank"
         >Watch</a
       >
-    </div>
-  </div>
-  <div class="row justify-content-center mb-4">
-    <div class="col-8">
-      <h2 class="display-2 text-center">Get started in minutes</h2>
-      <p class="lead text-center text-muted">
-        88mph supports a variety of the most popular digital currencies.
-      </p>
-    </div>
-  </div>
-  <div class="row justify-content-center text-center mb-4">
-    <div class="col col-lg-4">
-      <div class="avatar avatar-lg mb-3">
-        <span class="avatar-title rounded-circle text-white border-gradient">
-          1
-        </span>
-      </div>
-      <h3>Connect your wallet</h3>
-    </div>
-    <div class="col col-lg-4">
-      <div class="avatar avatar-lg mb-3">
-        <span class="avatar-title rounded-circle text-white border-gradient">
-          2
-        </span>
-      </div>
-      <h3>Deposit</h3>
-    </div>
-    <div class="col col-lg-4">
-      <div class="avatar avatar-lg mb-3">
-        <span class="avatar-title rounded-circle text-white border-gradient">
-          3
-        </span>
-      </div>
-      <h3>Earn a fixed interest rate & MPH rewards</h3>
-    </div>
-  </div>
-  <div class="row justify-content-center mb-7">
-    <div class="col-auto">
-      <button class="btn btn-lg btn-bg-gradient" routerLink="earn">
-        Get started
-      </button>
     </div>
   </div>
 </div>

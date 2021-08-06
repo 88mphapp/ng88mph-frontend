@@ -32,10 +32,10 @@
                 <div class="col-6">
                   <h6 class="header-pretitle mb-2">Claimed Amount</h6>
                   <h4 class="mb-1 glowing">
-                    {{ withdrawnAmount.toFormat(4) }} MPH
+                    {{ withdrawnAmount.toFormat(8) }} MPH
                   </h4>
                   <div class="text-muted small d-block">
-                    ${{ withdrawnAmount.times(mphPriceUSD).toFormat(4) }}
+                    ${{ withdrawnAmount.times(mphPriceUSD).toFormat(2) }}
                   </div>
                 </div>
               </div>
@@ -43,11 +43,11 @@
                 <div class="col">
                   <h6 class="header-pretitle mb-2">Current Claimable Amount</h6>
                   <h4 class="mb-1 glowing display-4">
-                    {{ currentWithdrawableAmount.toFormat(4) }} MPH
+                    {{ currentWithdrawableAmount.toFormat(8) }} MPH
                   </h4>
                   <div class="text-muted small d-block">
                     ${{
-                      currentWithdrawableAmount.times(mphPriceUSD).toFormat(4)
+                      currentWithdrawableAmount.times(mphPriceUSD).toFormat(2)
                     }}
                   </div>
                 </div>
@@ -64,7 +64,7 @@
           </div>
           <div class="card mb-8">
             <div class="card-header">
-              <h4 class="card-header-title">Things you can do</h4>
+              <h4 class="card-header-title">Things you can do with $MPH</h4>
             </div>
             <div class="card-body p-0">
               <div class="list-group list-group-flush">

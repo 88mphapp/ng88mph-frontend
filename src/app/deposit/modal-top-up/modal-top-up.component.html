@@ -21,9 +21,9 @@
           <div class="card mb-8">
             <div class="card-body">
               <form>
-                <div class="form-group mb-2">
+                <div class="form-group mb-1">
                   <label>Top up amount ({{ poolInfo.stablecoinSymbol }})</label>
-                  <div class="input-group mb-2">
+                  <div class="input-group">
                     <input
                       type="text"
                       class="form-control form-control-lg"
@@ -34,38 +34,36 @@
                     />
                   </div>
                 </div>
-                <div class="mb-4 d-flex justify-content-between">
-                  <button
-                    class="btn btn-lg border-gradient"
-                    type="button"
-                    (click)="presetDepositAmount(25)"
-                  >
-                    25%
-                  </button>
-                  <button
-                    class="btn btn-lg border-gradient"
-                    type="button"
-                    (click)="presetDepositAmount(50)"
-                  >
-                    50%
-                  </button>
-                  <button
-                    class="btn btn-lg border-gradient"
-                    type="button"
-                    (click)="presetDepositAmount(75)"
-                  >
-                    75%
-                  </button>
-                  <button
-                    class="btn btn-lg border-gradient"
-                    type="button"
-                    (click)="presetDepositAmount(100)"
-                  >
-                    100%
-                  </button>
-                </div>
+                <button
+                  class="btn btn-sm btn-dark mr-2"
+                  type="button"
+                  (click)="presetDepositAmount(25)"
+                >
+                  25%
+                </button>
+                <button
+                  class="btn btn-sm btn-dark mr-2"
+                  type="button"
+                  (click)="presetDepositAmount(50)"
+                >
+                  50%
+                </button>
+                <button
+                  class="btn btn-sm btn-dark mr-2"
+                  type="button"
+                  (click)="presetDepositAmount(75)"
+                >
+                  75%
+                </button>
+                <button
+                  class="btn btn-sm btn-dark mr-2"
+                  type="button"
+                  (click)="presetDepositAmount(100)"
+                >
+                  100%
+                </button>
 
-                <div class="row mb-4">
+                <div class="row mb-3">
                   <div class="col">
                     <small class="form-text text-muted"
                       >{{ depositTokenBalance.toFormat(4) }}
@@ -73,16 +71,18 @@
                     >
                   </div>
                 </div>
-                <div class="table-responsive py-3 pr-3">
+                <div class="table-responsive pr-3">
                   <table class="table">
                     <tbody>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Fixed-interest rate
+                          Fixed-rate APY
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Top Up Amount
                         </td>
                         <td
@@ -92,7 +92,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Total Deposit
                         </td>
                         <td
@@ -113,11 +115,13 @@
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Interest earned
+                          Yield earned
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Top Up Amount
                         </td>
                         <td
@@ -133,7 +137,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Total Deposit
                         </td>
                         <td
@@ -162,7 +168,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Top Up Amount
                         </td>
                         <td
@@ -186,7 +194,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Total Deposit
                         </td>
                         <td
@@ -213,9 +223,9 @@
                           </span>
                         </td>
                       </tr>
-                      <tr>
+                      <tr *ngIf="poolInfo.depositFee">
                         <td class="px-0 pl-3 py-2 text-muted border-0 small">
-                          <small *ngIf="poolInfo.depositFee"
+                          <small
                             >Note: A {{ poolInfo.depositFee * 100 }}% fee is
                             taken by the underlying yield protocol ({{
                               poolInfo.protocol
@@ -229,7 +239,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Top Up Amount
                         </td>
                         <td
@@ -244,7 +256,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Total Deposit
                         </td>
                         <td
@@ -270,11 +284,13 @@
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH APR
+                          MPH rewards APY
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Top Up Amount
                         </td>
                         <td
@@ -286,7 +302,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 pl-3 py-1 text-white border-0 small">
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                        >
                           Total Deposit
                         </td>
                         <td
