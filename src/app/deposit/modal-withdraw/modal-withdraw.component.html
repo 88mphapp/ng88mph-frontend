@@ -36,9 +36,9 @@
               <ng-container *ngIf="!userDeposit.locked">
                 <p class="text-white">Withdraw your principal and interest.</p>
               </ng-container>
-              <div class="form-group mb-0">
+              <div class="form-group mb-1">
                 <label>Amount</label>
-                <div class="input-group mb-2">
+                <div class="input-group">
                   <input
                     type="text"
                     class="form-control form-control-lg"
@@ -49,37 +49,35 @@
                   />
                 </div>
               </div>
-              <div class="mb-4 d-flex justify-content-between">
-                <button
-                  class="btn btn-lg border-gradient"
-                  type="button"
-                  (click)="presetWithdrawAmount(25)"
-                >
-                  25%
-                </button>
-                <button
-                  class="btn btn-lg border-gradient"
-                  type="button"
-                  (click)="presetWithdrawAmount(50)"
-                >
-                  50%
-                </button>
-                <button
-                  class="btn btn-lg border-gradient"
-                  type="button"
-                  (click)="presetWithdrawAmount(75)"
-                >
-                  75%
-                </button>
-                <button
-                  class="btn btn-lg border-gradient"
-                  type="button"
-                  (click)="presetWithdrawAmount(100)"
-                >
-                  100%
-                </button>
-              </div>
-              <small class="form-text text-white mb-4"
+              <button
+                class="btn btn-sm btn-dark mr-2"
+                type="button"
+                (click)="presetWithdrawAmount(25)"
+              >
+                25%
+              </button>
+              <button
+                class="btn btn-sm btn-dark mr-2"
+                type="button"
+                (click)="presetWithdrawAmount(50)"
+              >
+                50%
+              </button>
+              <button
+                class="btn btn-sm btn-dark mr-2"
+                type="button"
+                (click)="presetWithdrawAmount(75)"
+              >
+                75%
+              </button>
+              <button
+                class="btn btn-sm btn-dark mr-2"
+                type="button"
+                (click)="presetWithdrawAmount(100)"
+              >
+                100%
+              </button>
+              <small class="form-text text-white mb-2"
                 >${{
                   maxWithdrawAmountToken.times(stablecoinPriceUSD).toFormat(4)
                 }}
@@ -96,85 +94,90 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-1 glowing">
-                          ${{
-                            applyWithdrawRatio(userDeposit.amountUSD).toFormat(
-                              4
-                            )
-                          }}
-                        </h4>
-                        <h5 class="text-muted">
+                        <span class="h4 text-muted">
                           {{
                             applyWithdrawRatio(
                               userDeposit.amountToken
                             ).toFormat(4)
                           }}
                           {{ poolInfo.stablecoinSymbol }}
-                        </h5>
+                        </span>
+                        <span class="h5 mb-1 glowing">
+                          ${{
+                            applyWithdrawRatio(userDeposit.amountUSD).toFormat(
+                              4
+                            )
+                          }}
+                        </span>
                       </td>
                     </tr>
                     <tr *ngIf="!userDeposit.locked">
                       <td class="px-0 py-2 text-white border-0 small">
-                        Interest to withdraw
+                        Yield to withdraw
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-1 glowing">
-                          ${{
-                            applyWithdrawRatio(
-                              userDeposit.interestEarnedUSD
-                            ).toFormat(4)
-                          }}
-                        </h4>
-                        <h5 class="text-muted">
+                        <span class="h4 text-muted">
                           {{
                             applyWithdrawRatio(
                               userDeposit.interestEarnedToken
                             ).toFormat(4)
                           }}
                           {{ poolInfo.stablecoinSymbol }}
-                        </h5>
+                        </span>
+                        <span class="h5 mb-1 glowing">
+                          ${{
+                            applyWithdrawRatio(
+                              userDeposit.interestEarnedUSD
+                            ).toFormat(2)
+                          }}
+                        </span>
                       </td>
                     </tr>
                     <tr *ngIf="userDeposit.locked">
                       <td class="px-0 py-2 text-white border-0 small">
-                        Early withdraw fee
+                        Early withdraw fee (0.5%)
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="Early withdraw fee applied on the amount you want to withdraw. 100% of the fee is redistributed to MPH stakers."
+                        ></i>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-1 glowing">
+                        <span class="h4 text-muted">
+                          {{ earlyWithdrawFee.toFormat(4) }}
+                          {{ poolInfo.stablecoinSymbol }}
+                        </span>
+                        <span class="h5 mb-1 glowing">
                           ${{
                             earlyWithdrawFee
                               .times(stablecoinPriceUSD)
                               .toFormat(4)
                           }}
-                        </h4>
-                        <h5 class="text-muted">
-                          {{ earlyWithdrawFee.toFormat(4) }}
-                          {{ poolInfo.stablecoinSymbol }}
-                        </h5>
+                        </span>
                       </td>
                     </tr>
-                    <tr>
+                    <tr style="border-top: 1px dotted white">
                       <td class="px-0 py-2 text-white border-0 small">
-                        Total withdraw amount
+                        Total amount to withdraw
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-1 glowing">
+                        <span class="text-muted">
+                          {{ totalWithdrawAmount.toFormat(4) }}
+                          {{ poolInfo.stablecoinSymbol }}
+                        </span>
+                        <span class="mb-1 glowing">
                           ${{
                             totalWithdrawAmount
                               .times(stablecoinPriceUSD)
                               .toFormat(4)
                           }}
-                        </h4>
-                        <h5 class="text-muted">
-                          {{ totalWithdrawAmount.toFormat(4) }}
-                          {{ poolInfo.stablecoinSymbol }}
-                        </h5>
+                        </span>
                       </td>
                     </tr>
                   </tbody>

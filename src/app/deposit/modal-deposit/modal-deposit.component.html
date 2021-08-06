@@ -57,9 +57,10 @@
                                 *ngFor="let pool of poolList"
                                 [selected]="pool.name === selectedPoolInfo.name"
                               >
-                                {{ pool.stablecoinSymbol }} ({{
+                                {{ pool.stablecoinSymbol }}-{{
                                   pool.protocol
-                                }})
+                                }}
+                                Pool
                               </option>
                             </select>
                           </div>
@@ -280,7 +281,8 @@
                                 Unlike custom maturity, preset maturity doesn't
                                 allow early withdrawal of the principal. But you
                                 can sell the principal at a discounted market
-                                price on xx before it has reached its maturity.
+                                price on SushiSwap before it has reached its
+                                maturity.
                               </small>
                             </div>
                           </div>
@@ -295,22 +297,32 @@
                     <tbody>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Fixed-interest rate
+                          Fixed-rate APY
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="When users/protocols deposit assets into an 88mph pool, they earn a fixed-rate yield during the duration of the deposit that is redeemable at maturity."
+                          ></i>
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">{{ apy.toFormat(4) }}%</h4>
+                          <h4 class="mb-1 glowing">{{ apy.toFormat(2) }}%</h4>
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Interest earned at maturity
+                          Yield earned at maturity
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="Fixed-rate yield available for withdraw at maturity."
+                          ></i>
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
+                          <span class="h4 mb-1 glowing">
                             {{
                               helpers
                                 .applyDepositFee(
@@ -320,27 +332,32 @@
                                 .toFormat(4)
                             }}
                             {{ selectedPoolInfo.stablecoinSymbol }}
-                          </h4>
-                          <h5 class="text-muted">
+                          </span>
+                          <span class="h5 text-muted">
                             ${{
                               helpers
                                 .applyDepositFee(
                                   interestAmountUSD,
                                   selectedPoolInfo
                                 )
-                                .toFormat(4)
+                                .toFormat(2)
                             }}
-                          </h5>
+                          </span>
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Withdrawable at maturity | {{ depositMaturation }}
+                          Total available at maturity | {{ depositMaturation }}
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="Initial deposit + fixed-rate yield earned."
+                          ></i>
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
+                          <span class="h4 mb-1 glowing">
                             {{
                               helpers
                                 .applyDepositFee(
@@ -356,8 +373,8 @@
                                 .toFormat(4)
                             }}
                             {{ selectedPoolInfo.stablecoinSymbol }}
-                          </h4>
-                          <h5 class="text-muted">
+                          </span>
+                          <span class="h5 text-muted">
                             ${{
                               helpers
                                 .applyDepositFee(
@@ -370,9 +387,9 @@
                                     selectedPoolInfo
                                   )
                                 )
-                                .toFormat(4)
+                                .toFormat(2)
                             }}
-                          </h5>
+                          </span>
                           <small *ngIf="selectedPoolInfo.depositFee"
                             >Note: A {{ selectedPoolInfo.depositFee * 100 }}%
                             fee is taken by the underlying yield protocol ({{
@@ -383,65 +400,69 @@
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH rewards (Vested linearly over the deposit
-                          duration)
+                          MPH tokens
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="MPH tokens are vested linearly over the deposit duration. You can claim your MPH whever you want over the vesting period. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
+                          ></i>
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
-                            {{ mphRewardAmount.toFormat(4) }} MPH
-                          </h4>
-                          <h5 class="text-muted">
+                          <span class="h4 mb-1 glowing">
+                            {{ mphRewardAmount.toFormat(2) }} MPH
+                          </span>
+                          <span class="h5 text-muted">
                             ${{
-                              mphRewardAmount.times(mphPriceUSD).toFormat(4)
+                              mphRewardAmount.times(mphPriceUSD).toFormat(2)
                             }}
-                          </h5>
+                          </span>
                         </td>
                       </tr>
                       <!--displayed if preset maturity selected-->
                       <tr *ngIf="presetMaturity">
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH APR (earned by <a href="">providing liquidity</a>)
+                          MPH APY
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="earned by providing liquidity and stake your SushiSwap SLP tokens on the 88mph Stake page."
+                          ></i>
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            +{{ mphAPY.toFormat(4) }}%
+                            +{{ mphAPY.toFormat(2) }}%
                           </h4>
                         </td>
                       </tr>
                       <tr *ngIf="!presetMaturity">
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH APR
-                          <span
-                            class="
-                              badge badge-dark
-                              border border-light
-                              py-0
-                              pl-0
-                              mt-n2
-                              ml-0
-                            "
-                            style="border-radius: 14px"
-                            placement="right"
-                            ngbTooltip="MPH APR varies based on the USD value of MPH and the underlying asset deposited. The amount of MPH received is fixed."
-                          >
-                            ( i )
-                          </span>
+                          MPH APY
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="MPH rewards APY varies based on the USD value of MPH and the underlying asset deposited. The amount of MPH received is fixed."
+                          ></i>
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            +{{ mphAPY.toFormat(4) }}%
+                            +{{ mphAPY.toFormat(2) }}%
                           </h4>
                         </td>
                       </tr>
-                      <tr>
+                      <tr style="border-top: 1px dotted white">
                         <td class="px-0 py-2 text-white border-0 small">
-                          Total earned at maturity
+                          Total available at maturity
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="Initial deposit + fixed-rate yield earned + MPH tokens"
+                          ></i>
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
