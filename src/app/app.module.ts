@@ -13,7 +13,6 @@ import { ModalWithdrawZCBComponent } from './deposit/modal-withdraw-zcb/modal-wi
 import { RewardsComponent } from './rewards/rewards.component';
 import { BondsComponent } from './bonds/bonds.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
-import { ModalBondDetailsComponent } from './bonds/modal-bond-details/modal-bond-details.component';
 import { StatsComponent } from './stats/stats.component';
 import { HeaderComponent } from './header/header.component';
 import { FarmingComponent } from './farming/farming.component';
@@ -49,7 +48,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ModalWithdrawZCBComponent,
     RewardsComponent,
     BondsComponent,
-    ModalBondDetailsComponent,
     StatsComponent,
     HeaderComponent,
     FarmingComponent,
