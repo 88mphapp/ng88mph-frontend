@@ -66,7 +66,7 @@
                     <tbody>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Fixed-interest rate
+                          Fixed-rate APY
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
@@ -78,42 +78,42 @@
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Interest earned
+                          Yield earned at maturity
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
+                          <span class="h4 mb-1 glowing">
                             {{ interestAmountToken.toFormat(4) }}
                             {{ poolInfo.stablecoinSymbol }}
-                          </h4>
-                          <h5 class="text-muted">
+                          </span>
+                          <span class="h5 text-muted">
                             ${{ interestAmountUSD.toFormat(4) }}
-                          </h5>
+                          </span>
                         </td>
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Withdrawable at maturity | {{ depositMaturation }}
+                          Total available at maturity | {{ depositMaturation }}
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
+                          <span class="h4 mb-1 glowing">
                             {{
                               depositAmountToken
                                 .plus(interestAmountToken)
                                 .toFormat(4)
                             }}
                             {{ poolInfo.stablecoinSymbol }}
-                          </h4>
-                          <h5 class="text-muted">
+                          </span>
+                          <span class="h5 text-muted">
                             ${{
                               depositAmountUSD
                                 .plus(interestAmountUSD)
                                 .toFormat(4)
                             }}
-                          </h5>
+                          </span>
                           <small *ngIf="poolInfo.depositFee"
                             >Note: A {{ poolInfo.depositFee * 100 }}% fee is
                             taken by the underlying yield protocol ({{
@@ -129,12 +129,12 @@
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <h4 class="mb-1 glowing">
+                          <span class="h6 mb-1 glowing">
                             {{ mphRewardAmountToken.toFormat(4) }} MPH
-                          </h4>
-                          <h5 class="text-muted">
+                          </span>
+                          <span class="h5 text-muted">
                             ${{ mphRewardAmountUSD.toFormat(4) }}
-                          </h5>
+                          </span>
                         </td>
                       </tr>
                       <tr>
@@ -149,9 +149,9 @@
                           </h4>
                         </td>
                       </tr>
-                      <tr>
+                      <tr style="border-top: 1px dotted white">
                         <td class="px-0 py-2 text-white border-0 small">
-                          Total earned at maturity
+                          Total available at maturity (incl. MPH)
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"

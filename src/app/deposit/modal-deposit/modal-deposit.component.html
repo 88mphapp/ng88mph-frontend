@@ -57,9 +57,7 @@
                                 *ngFor="let pool of poolList"
                                 [selected]="pool.name === selectedPoolInfo.name"
                               >
-                                {{ pool.stablecoinSymbol }}-{{
-                                  pool.protocol
-                                }}
+                                {{ pool.stablecoinSymbol }}-{{ pool.protocol }}
                                 Pool
                               </option>
                             </select>
@@ -400,11 +398,11 @@
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH tokens
+                          MPH rewards
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
-                            ngbTooltip="MPH tokens are vested linearly over the deposit duration. You can claim your MPH whever you want over the vesting period. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
+                            ngbTooltip="Participating in this 88mph pool gives rewards in MPH token. MPH rewards are vested linearly over the deposit duration. You can claim your MPH rewards whenever you want over the vesting period. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
                           ></i>
                         </td>
                         <td
@@ -423,11 +421,11 @@
                       <!--displayed if preset maturity selected-->
                       <tr *ngIf="presetMaturity">
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH APY
+                          MPH APR
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
-                            ngbTooltip="earned by providing liquidity and stake your SushiSwap SLP tokens on the 88mph Stake page."
+                            ngbTooltip="Earned by providing liquidity and stake your SushiSwap SLP tokens on the 88mph Stake page."
                           ></i>
                         </td>
                         <td
@@ -440,11 +438,11 @@
                       </tr>
                       <tr *ngIf="!presetMaturity">
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH APY
+                          MPH APR
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
-                            ngbTooltip="MPH rewards APY varies based on the USD value of MPH and the underlying asset deposited. The amount of MPH received is fixed."
+                            ngbTooltip="MPH APR varies based on the USD value of MPH. The APR is just a representation on how these MPH rewards would be during a 1-year period"
                           ></i>
                         </td>
                         <td
@@ -457,7 +455,7 @@
                       </tr>
                       <tr style="border-top: 1px dotted white">
                         <td class="px-0 py-2 text-white border-0 small">
-                          Total available at maturity
+                          Total available at maturity (incl. MPH)
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
