@@ -9,7 +9,7 @@
         their borrowing costs of a loan (e.g. Dai borrower on Compound would
         purchase cDAI YTs on 88mph). YTs are more than an instrument for
         speculating on yields. When someone buys YTs, the insolvency risk of the
-        fixed-rate yield pool is also decreased.
+        fixed-rate yield pools is also decreased.
         <a href="https://docs.88mph.app/" target="_blank"
           >Learn more <i class="fe fe-external-link"></i></a
         >.
@@ -236,7 +236,7 @@
                 value="{{ i }}"
                 *ngFor="let pool of allPoolList; index as i"
               >
-                {{ pool.stablecoinSymbol }} ({{ pool.protocol }})
+                {{ pool.stablecoinSymbol }}-{{ pool.protocol }} Pool
               </option>
             </select>
           </div>
@@ -246,12 +246,17 @@
           *ngIf="selectedPoolHasDebt() && !loadingCalculator"
         >
           <h4 class="mb-1">
-            Estimate your ROI:
-            <strong>{{ floatingRatePrediction.toFormat(1) }}%</strong>
+            Your average variable-rate APY prediction for this pool is
+            <strong class="glowing"
+              >{{ floatingRatePrediction.toFormat(1) }}%</strong
+            >.
+            <i
+              class="fe fe-info ml-1 align-bottom"
+              placement="top"
+              ngbTooltip="For instance, let's imagine that YTs related to a deposit of 100 DAI costs 2.5 DAI. The YTs entitle the holders to the variable-rate yield earned by the 100 DAI principal + YT's cost (2.5 DAI) over the deposit's term. If the average Compound variable-rate APY stays at 10% over the deposit duration, then the YT delivers 10.25 DAI to its holders.
+              Suppose you bought all 102.5 YTs. Your final balance will be 10.25 DAI. Thus, you earn a 7.75 DAI profit on your investment of 2.5 DAI, a 310.00% return on investment."
+            ></i>
           </h4>
-          <p class="text-secondary small">
-            Your average floating-interest rate prediction.
-          </p>
           <input
             type="range"
             class="custom-range"
@@ -269,9 +274,7 @@
               <small
                 >{{ selectedPool?.oracleInterestRate.toFormat(1) }}% <br />
                 (Current
-                <a
-                  href="https://docs.88mph.app/main-products/floating-rate-interest-bond"
-                  target="_blank"
+                <a href="https://docs.88mph.app/" target="_blank"
                   >30d EMA floating-rate APY</a
                 >)</small
               >
@@ -371,7 +374,7 @@
                             "
                             style="border-radius: 14px"
                             placement="top"
-                            ngbTooltip="When a user buys yield tokens, they will receive newly-minted MPH tokens as the underlying deposit earns interest. They can be staked to earn rewards (protocol fees, harvested tokens, etc)"
+                            ngbTooltip="When a user buys yield tokens, they will receive newly-minted MPH tokens as the underlying deposit earns interest. They can be staked to earn protocol revenues and voting rights."
                           >
                             <div class="avatar avatar-xxs">
                               <img
@@ -381,7 +384,7 @@
                                 class="avatar-img rounded-circle"
                               />
                             </div>
-                            +{{ deposit.mphRewardsAPR.toFormat(2) }}% APY
+                            +{{ deposit.mphRewardsAPR.toFormat(2) }}% APR
                           </span>
                         </h4>
                       </td>
