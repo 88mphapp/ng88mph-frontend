@@ -78,11 +78,11 @@
                 100%
               </button>
               <small class="form-text text-white mb-2"
-                >${{
-                  maxWithdrawAmountToken.times(stablecoinPriceUSD).toFormat(4)
-                }}
-                ({{ maxWithdrawAmountToken.toFormat(4) }}
-                {{ poolInfo.stablecoinSymbol }}) available</small
+                >{{ maxWithdrawAmountToken.toFormat(4) }}
+                {{ poolInfo.stablecoinSymbol }}
+                (${{
+                  maxWithdrawAmountToken.times(stablecoinPriceUSD).toFormat(2)
+                }}) available</small
               >
               <div class="table-responsive py-3 pr-3">
                 <table class="table">
@@ -105,7 +105,7 @@
                         <span class="h5 mb-1 glowing">
                           ${{
                             applyWithdrawRatio(userDeposit.amountUSD).toFormat(
-                              4
+                              2
                             )
                           }}
                         </span>
