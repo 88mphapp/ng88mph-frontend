@@ -22,36 +22,34 @@
             <div class="card-body">
               <form>
                 <div
-                  class="list-group list-group-flush list-group-activity mb-4"
+                  class="list-group list-group-flush list-group-activity mb-3"
                 >
                   <div class="list-group-item">
                     <div class="form-row">
                       <div class="col ml-n2">
                         <div class="form-group mb-2">
                           <label>Select a custom maturity</label>
-                          <div class="input-group">
-                            <input
-                              type="tel"
-                              class="form-control form-control-lg"
-                              placeholder="0.00"
-                              aria-label=""
-                              aria-describedby=""
-                              [value]="depositTimeInDays.toFixed()"
-                              id="lock-period"
-                              data-mask="#,##0"
-                              data-mask-reverse="true"
-                              (input)="setDepositTime($event.target.value)"
-                            />
-                            <input
-                              type="range"
-                              class="custom-range"
-                              min="1"
-                              max="365"
-                              step="1"
-                              [value]="depositTimeInDays"
-                              (input)="setDepositTime($event.target.value)"
-                            />
-                          </div>
+                          <input
+                            type="tel"
+                            class="form-control form-control-lg"
+                            placeholder="0.00"
+                            aria-label=""
+                            aria-describedby=""
+                            [value]="depositTimeInDays.toFixed()"
+                            id="lock-period"
+                            data-mask="#,##0"
+                            data-mask-reverse="true"
+                            (input)="setDepositTime($event.target.value)"
+                          />
+                          <input
+                            type="range"
+                            class="custom-range"
+                            min="1"
+                            max="365"
+                            step="1"
+                            [value]="depositTimeInDays"
+                            (input)="setDepositTime($event.target.value)"
+                          />
                           <small class="form-text text-muted my-2">
                             Max: {{ maxDepositPeriodInDays }} days
                           </small>
@@ -61,7 +59,7 @@
                     <!-- / .row -->
                   </div>
                 </div>
-                <div class="table-responsive py-3 pr-3">
+                <div class="table-responsive pr-3">
                   <table class="table">
                     <tbody>
                       <tr>
@@ -72,7 +70,7 @@
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            {{ interestRate.toFormat(4) }}%
+                            {{ interestRate.toFormat(2) }}%
                           </h4>
                         </td>
                       </tr>
@@ -88,7 +86,7 @@
                             {{ poolInfo.stablecoinSymbol }}
                           </span>
                           <span class="h5 text-muted">
-                            ${{ interestAmountUSD.toFormat(4) }}
+                            ${{ interestAmountUSD.toFormat(2) }}
                           </span>
                         </td>
                       </tr>
@@ -111,7 +109,7 @@
                             ${{
                               depositAmountUSD
                                 .plus(interestAmountUSD)
-                                .toFormat(4)
+                                .toFormat(2)
                             }}
                           </span>
                           <small *ngIf="poolInfo.depositFee"
@@ -129,11 +127,11 @@
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
-                          <span class="h6 mb-1 glowing">
+                          <span class="h4 mb-1 glowing">
                             {{ mphRewardAmountToken.toFormat(4) }} MPH
                           </span>
                           <span class="h5 text-muted">
-                            ${{ mphRewardAmountUSD.toFormat(4) }}
+                            ${{ mphRewardAmountUSD.toFormat(2) }}
                           </span>
                         </td>
                       </tr>
@@ -145,7 +143,7 @@
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <h4 class="mb-1 glowing">
-                            +{{ mphRewardAPR.toFormat(4) }}%
+                            +{{ mphRewardAPR.toFormat(2) }}%
                           </h4>
                         </td>
                       </tr>
@@ -161,7 +159,7 @@
                               depositAmountUSD
                                 .plus(interestAmountUSD)
                                 .plus(mphRewardAmountUSD)
-                                .toFormat(4)
+                                .toFormat(2)
                             }}
                           </h4>
                         </td>
