@@ -246,7 +246,11 @@
               </div>
 
               <div *ngIf="isLoading" class="load-holder my-3">
-                <div class="loader"></div>
+                <div
+                  class="spinner-grow spinner-grow-sm mr-2 text-warning"
+                  role="status"
+                  *ngIf="!txConfirmed"
+                ></div>
                 <span class=""> &nbsp; {{ loadingMessage }}</span>
               </div>
 
