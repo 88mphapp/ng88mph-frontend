@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -37,6 +36,7 @@ import { NetInterestMarginComponent } from './stats/components/net-interest-marg
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { ModalTransactionAlertsComponent } from './modal-transaction-alerts/modal-transaction-alerts.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ModalNftComponent } from './deposit/modal-nft/modal-nft.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +69,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NetInterestMarginComponent,
     TermsOfServiceComponent,
     ModalTransactionAlertsComponent,
+    ModalNftComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +80,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ChartsModule,
     ScrollingModule,
     BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

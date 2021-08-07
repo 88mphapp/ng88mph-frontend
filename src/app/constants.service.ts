@@ -10,6 +10,10 @@ export class ConstantsService {
     MAINNET: 1,
     RINKEBY: 4,
   };
+  CHAIN_ID_STRING = {
+    [this.CHAIN_ID.MAINNET]: 'mainnet',
+    [this.CHAIN_ID.RINKEBY]: 'rinkeby',
+  };
   NETWORK_METADATA = {
     [this.CHAIN_ID.MAINNET]: {
       chainId: '0x1',
@@ -79,6 +83,8 @@ export class ConstantsService {
   INFURA_KEY = '9e5f0d08ad19483193cc86092b7512f2';
   PORTIS_KEY = 'a838dbd2-c0b1-4465-8dbe-36b88f3d0d4e';
   FORTMATIC_KEY = 'pk_live_937F9430B2CB3407';
+  NFTSTORAGE_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGM1NWQxRjE1OEFDY2IwOTFCRTBGNTNkYTZkYTMzYzdmMDJhNzdlNTkiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYyNzg3MDUwNDI1NSwibmFtZSI6Ijg4bXBoIn0.wwMdT6BQp3cB0DJPWy5qm4uWZLhjY0BPYxsqGiYKHOk';
 
   // UTILITIES //
   PRECISION = 1e18;
