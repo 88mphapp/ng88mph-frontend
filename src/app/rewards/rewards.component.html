@@ -3,13 +3,9 @@
     <div class="col-12">
       <h1 class="title-bg-gradient display-2">Stake MPH for xMPH</h1>
       <p class="text-white font-weight-bold mb-5 lead">
-        By staking your MPH, you are eligible to collect protocol's revenues and
-        voting rights.
-        <a
-          class="text-purple"
-          href="https://docs.88mph.app/mph-staking"
-          target="_blank"
-        >
+        Staking your MPH for xMPH allows you to earn 100% of 88mph protocol
+        revenues (bi-weekly MPH buy-back mechanism) and voting rights.
+        <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
           Learn more <i class="fe fe-external-link"></i>
         </a>
       </p>
@@ -39,17 +35,15 @@
           <div class="card-body">
             <!-- Title -->
             <h5 class="text-uppercase">Value in MPH</h5>
-            <span
-              class="badge badge-dark border border-light py-0 pl-0 mt-n2 ml-0"
-              style="border-radius: 14px"
-              placement="right"
-              ngbTooltip="1 xMPH = {{ pricePerFullShare.toFormat(4) }} MPH"
-            >
-              <!-- Heading -->
-              <h2 class="mb-0 glowing">
-                {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }} MPH
-              </h2>
-            </span>
+            <!-- Heading -->
+            <h2 class="mb-0 glowing">
+              {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }} MPH
+              <i
+                class="fe fe-info ml-1 align-bottom"
+                placement="top"
+                ngbTooltip="1 xMPH = {{ pricePerFullShare.toFormat(4) }} MPH"
+              ></i>
+            </h2>
             <h5 class="mb-3 text-white">
               ${{ xMPHBalance.times(xMPHPriceUSD).toFormat(4) }}
             </h5>
@@ -120,49 +114,6 @@
                   >{{ unstakedMPHBalance.toFormat(4) }} MPH available</small
                 >
               </div>
-
-              <div class="table-responsive p-4">
-                <table class="table">
-                  <tbody>
-                    <tr>
-                      <td class="px-0 py-1 text-white border-0 small">
-                        Staked balance
-                      </td>
-                      <td
-                        class="px-0 py-1 text-white text-right border-0 small"
-                      >
-                        <h4 class="mb-0 glowing">
-                          {{ xMPHBalance.toFormat(4) }} xMPH
-                        </h4>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-1 text-white border-0 small">
-                        Staked balance value
-                      </td>
-                      <td
-                        class="px-0 py-1 text-white text-right border-0 small"
-                      >
-                        <h4 class="mb-0 glowing">
-                          ${{ xMPHBalance.times(xMPHPriceUSD).toFormat(4) }}
-                        </h4>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Variable APR </strong>
-                      </td>
-                      <td
-                        class="px-0 py-1 text-white text-right border-0 small"
-                      >
-                        <h4 class="mb-0 glowing">
-                          {{ yearlyROI.toFormat(4) }}%
-                        </h4>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
               <button
                 *ngIf="this.stakeAmount.lte(0)"
                 type="button"
@@ -206,7 +157,7 @@
                 (click)="stake()"
                 [disabled]="!canStake() || wallet.watching"
               >
-                <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake MPH
+                <i class="fe fe-arrow-up mr-2 align-bottom"></i>Stake MPH
               </button>
               <div class="row">
                 <div class="col-12 mb-3 mb-lg-0">
@@ -217,7 +168,8 @@
                     (click)="openUnstakeModal()"
                     [disabled]="!canUnstake() || wallet.watching"
                   >
-                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake xMPH
+                    <i class="fe fe-arrow-down mr-2 align-bottom"></i>Unstake
+                    xMPH
                   </button>
                 </div>
               </div>
@@ -227,78 +179,92 @@
         <div class="col-12 col-lg-4">
           <div class="card mb-6">
             <div class="card-header">
-              <h4 class="card-header-title">
-                Next protocol's revenues to distribute
-              </h4>
+              <h4 class="card-header-title">88mph revenues to distribute</h4>
+              <a class="d-inline-block ml-auto text-primary small" href="/stats"
+                >Stats</a
+              >
             </div>
             <div class="card-body">
-              <div class="table-responsive p-4">
+              <div class="table-responsive py-2 px-4">
                 <table class="table mb-0">
                   <tbody>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small">
-                        Protocol fees accumulated
+                        88mph fees accumulated
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="10% of the fixed-rate yield promised to depositors at deposit time and 0.5% on early withdrawals"
+                        ></i>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <h4 class="mb-0 glowing">
-                          ${{ protocolFeesUSD.toFormat(4) }}
+                          ${{ protocolFeesUSD.toFormat(2) }}
                         </h4>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small">
-                        stkAAVE accumulated
+                        $stkAAVE accumulated
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="88mph's participation in Aave markets gives rewards in stkAAVE token."
+                        ></i>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <h4 class="mb-1 glowing">
-                          {{ stkaaveRewardsToken.toFormat(4) }} stkAAVE
+                          {{ stkaaveRewardsToken.toFormat(4) }}
                         </h4>
-                        <h5 class="text-muted">
-                          ${{ stkaaveRewardsUSD.toFormat(4) }}
-                        </h5>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small">
-                        COMP accumulated
+                        $COMP accumulated
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="88mph's participation in Compound markets gives rewards in COMP token."
+                        ></i>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <h4 class="mb-1 glowing">
-                          {{ compRewardsToken.toFormat(4) }} COMP
+                          {{ compRewardsToken.toFormat(4) }}
                         </h4>
-                        <h5 class="text-muted">
-                          ${{ compRewardsUSD.toFormat(4) }}
-                        </h5>
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small">
-                        FARM accumulated
+                        $FARM accumulated
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="88mph's participation in Harvest markets gives rewards in FARM token."
+                        ></i>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <h4 class="mb-1 glowing">
-                          {{ farmRewardsToken.toFormat(4) }} FARM
+                          {{ farmRewardsToken.toFormat(4) }}
                         </h4>
-                        <h5 class="text-muted">
-                          ${{ farmRewardsUSD.toFormat(4) }}
-                        </h5>
                       </td>
                     </tr>
-                    <tr>
-                      <td class="px-0 py-2 text-white border-0 small">Total</td>
+                    <tr style="border-top: 1px dotted white">
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Total revenues
+                      </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <h4 class="mb-1 glowing">
-                          ${{ totalRewardsUSD.toFormat(4) }}
+                          ${{ totalRewardsUSD.toFormat(2) }}
                         </h4>
                       </td>
                     </tr>
@@ -307,12 +273,19 @@
               </div>
             </div>
             <div class="card-footer">
-              <h4 class="mb-0">Distribution on {{ distributionEndTime }}</h4>
+              <h4 class="mb-0">
+                Next distribution on {{ distributionEndTime }}
+                <i
+                  class="fe fe-info ml-1 align-bottom"
+                  placement="top"
+                  ngbTooltip="88mph Protocol revenues are distributed to MPH stakers on a bi-weekly basis via a buy-back mechansim. 88mph governance decides the percentage of revenues distributed, by default, it's 100%."
+                ></i>
+              </h4>
             </div>
           </div>
           <div class="card">
             <div class="card-header">
-              <h4 class="card-header-title">Things you can do</h4>
+              <h4 class="card-header-title">Things you can do on 88mph</h4>
             </div>
             <div class="card-body p-0">
               <div class="list-group list-group-flush">
@@ -321,26 +294,12 @@
                   class="list-group-item list-group-item-action px-4"
                 >
                   <h4 class="mb-1">
-                    Earn up to {{ maxAPY.toFixed(2) }}% fixed APY
+                    Earn up to {{ maxAPY.toFixed(2) }}% fixed-rate APY
                   </h4>
                   <small class="text-muted"
                     >Deposit your crypto or stablecoin to start earning
-                    fixed-interest rates. Boost your APY with MPH tokens. Exit
+                    fixed-rate yields. Boost your APY with MPH rewards. Exit
                     anytime.</small
-                  >
-                  <small class="text-primary ml-2">Learn more</small>
-                </a>
-                <a
-                  href="/earn"
-                  class="list-group-item list-group-item-action px-4"
-                >
-                  <h4 class="mb-1">Buy crypto at a discount</h4>
-                  <small class="text-muted"
-                    >Buy crypto and stablecoin at a discount by purchasing
-                    zero-coupon bonds, and earn high fixed-interest yields by
-                    redeeming the zeros one-to-one with their underlying asset
-                    when they have reached their maturity. Exit anytime without
-                    penalties.</small
                   >
                   <small class="text-primary ml-2">Learn more</small>
                 </a>
@@ -351,8 +310,7 @@
                   <h4 class="mb-1">Provide liquidity & boost your yield</h4>
                   <small class="text-muted"
                     >Provide liquidity on our trading pools, and get rewarded by
-                    doing so from trading fees and liquidity mining rewards paid
-                    in $MPH.</small
+                    doing so from trading fees and liquidity mining.</small
                   >
                   <small class="text-primary ml-2">Learn more</small>
                 </a>

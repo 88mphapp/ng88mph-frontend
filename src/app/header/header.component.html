@@ -25,11 +25,11 @@
       <li class="nav-item" ngbNavItem="/earn">
         <a class="nav-link text-white" routerLink="earn" ngbNavLink> Earn </a>
       </li>
-      <li class="nav-item" ngbNavItem="/yield">
-        <a class="nav-link text-white" routerLink="yield" ngbNavLink> Yield </a>
-      </li>
       <li class="nav-item" ngbNavItem="/stake">
         <a class="nav-link text-white" routerLink="stake" ngbNavLink> Stake </a>
+      </li>
+      <li class="nav-item" ngbNavItem="/yield">
+        <a class="nav-link text-white" routerLink="yield" ngbNavLink> Yield </a>
       </li>
       <li
         class="nav-item"
@@ -41,35 +41,27 @@
       <li class="nav-item" ngbNavItem="/stats">
         <a class="nav-link text-white" routerLink="stats" ngbNavLink> Stats </a>
       </li>
+
       <li class="nav-item dropdown">
         <a
-          class="nav-link"
+          class="nav-link text-white"
           href="#"
-          id="topnavPartners"
+          id="topnavGov"
           role="button"
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <i class="fe fe-more-horizontal"></i>
+          Gov
         </a>
-        <ul class="dropdown-menu" aria-labelledby="topnavPartners">
-          <li>
-            <a
-              class="dropdown-item"
-              href="https://docs.88mph.app/"
-              target="_blank"
-            >
-              Documentations
-            </a>
-          </li>
+        <ul class="dropdown-menu" aria-labelledby="topnavGov">
           <li>
             <a
               class="dropdown-item"
               href="https://forum.88mph.app/"
               target="_blank"
             >
-              Forum
+              Forum <i class="fe fe-external-link"></i>
             </a>
           </li>
           <li>
@@ -78,7 +70,31 @@
               href="https://snapshot.org/#/88mph.eth"
               target="_blank"
             >
-              Governance
+              Vote <i class="fe fe-external-link"></i>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link"
+          href="#"
+          id="topnavSecondaryLinks"
+          role="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <i class="fe fe-more-horizontal"></i>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="topnavSecondaryLinks">
+          <li>
+            <a
+              class="dropdown-item"
+              href="https://docs.88mph.app/"
+              target="_blank"
+            >
+              Documentations
             </a>
           </li>
           <li ngbNavItem="/funding">
@@ -749,7 +765,7 @@
       </div>
     </div>
 
-    <div class="dropdown">
+    <div class="dropdown d-none">
       <button
         class="
           btn btn-sm btn-dark

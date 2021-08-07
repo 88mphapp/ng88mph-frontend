@@ -5,7 +5,7 @@
     *ngIf="stepsCompleted < 3"
   >
     <h6 class="text-uppercase text-muted">
-      Get started (<span class="text-white">{{ stepsCompleted }} of 3</span>
+      Get started (<span class="text-white h5">{{ stepsCompleted }} of 3</span>
       complete)
     </h6>
     <p class="lead">
@@ -13,7 +13,7 @@
       the full potential of 88mph.
     </p>
     <div class="row">
-      <div class="col-12 col-lg-4 mb-4">
+      <div class="col-12 col-lg-4 mb-4 mb-lg-0">
         <div class="row">
           <div class="col-auto">
             <div class="avatar avatar-xs">
@@ -30,8 +30,8 @@
             </div>
           </div>
           <div class="col">
-            <p>
-              <strong>Deposit</strong> a crypto or stablecoin below to start
+            <p class="mb-0">
+              <strong>Deposit</strong> crypto or stablecoins below to start
               earning fixed-rate APY and MPH tokens.
             </p>
             <!-- Button -->
@@ -46,7 +46,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-lg-4 mb-4">
+      <div class="col-12 col-lg-4 mb-4 mb-lg-0">
         <div class="row">
           <div class="col-auto">
             <div class="avatar avatar-xs">
@@ -63,7 +63,7 @@
             </div>
           </div>
           <div class="col">
-            <p>
+            <p class="mb-0">
               <strong>Claim</strong> your first MPH rewards linked to each of
               your deposit.
             </p>
@@ -88,14 +88,14 @@
             </div>
           </div>
           <div class="col">
-            <p>
+            <p class="mb-0">
               <strong>Stake</strong> your MPH rewards to get your protocol
               earnings share.
             </p>
             <!-- Button -->
             <button
               type="button"
-              class="btn btn-sm btn-dark"
+              class="btn btn-sm btn-dark d-none"
               routerLink="/stake"
             >
               <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
@@ -141,27 +141,21 @@
     </div>
     <div class="card mb-4 mb-lg-0">
       <div class="card-body">
-        <div class="row align-items-center">
-          <div class="col">
-            <!-- Title -->
-            <h5 class="text-uppercase">Claimable MPH rewards</h5>
-            <!-- Heading -->
-            <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(6) }} MPH</h2>
-            <h5 class="mb-3 text-white">
-              ${{ totalMPHEarned.times(mphPriceUSD).toFormat(2) }}
-            </h5>
-          </div>
-          <div class="col-auto">
-            <!-- Button -->
-            <button
-              type="button"
-              class="btn btn-sm btn-bg-gradient"
-              (click)="claimAllRewards()"
-            >
-              <i class="fe fe-arrow-down mr-2 align-bottom"></i>Claim all
-            </button>
-          </div>
-        </div>
+        <!-- Title -->
+        <h5 class="text-uppercase">Claimable MPH rewards</h5>
+        <!-- Heading -->
+        <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(6) }} MPH</h2>
+        <h5 class="mb-3 text-white">
+          ${{ totalMPHEarned.times(mphPriceUSD).toFormat(2) }}
+        </h5>
+        <!-- Button -->
+        <button
+          type="button"
+          class="btn btn-sm btn-bg-gradient"
+          (click)="claimAllRewards()"
+        >
+          <i class="fe fe-arrow-down mr-2 align-bottom"></i>Claim all
+        </button>
       </div>
     </div>
   </div>
@@ -193,9 +187,7 @@
       <!-- Explore fixed rate opportunities -->
       <div class="card mb-6" id="fixedRateOpportunities">
         <div class="card-header">
-          <h4 class="card-header-title mr-auto">
-            Fixed-interest rate opportunities
-          </h4>
+          <h4 class="card-header-title mr-auto">Fixed-rate yield pools</h4>
           <button
             class="btn btn-sm btn-dark"
             type="button"
@@ -299,7 +291,7 @@
                       class="btn btn-sm btn-bg-gradient mr-3"
                       (click)="openDepositModal(pool.name)"
                     >
-                      <i class="fe fe-arrow-down mr-2 align-bottom"></i>Deposit
+                      <i class="fe fe-arrow-up mr-2 align-bottom"></i>Deposit
                     </button>
                     <button
                       class="btn btn-sm btn-dark btn-rounded-circle"

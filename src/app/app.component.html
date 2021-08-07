@@ -5,25 +5,107 @@
 <div class="main-content">
   <router-outlet></router-outlet>
   <div class="container">
-    <div class="row justify-content-center">
+    <div
+      class="row mb-6 pt-4"
+      style="
+        border-top: 1px solid;
+        border-image-source: linear-gradient(
+          to right,
+          #161522 88%,
+          #2d2bbc,
+          #d53a9d
+        ) !important;
+        border-image-slice: 1;
+      "
+    >
+      <div class="col-12 col-lg-1">
+        <!-- Brand -->
+        <div class="navbar-brand mr-lg-3">
+          <img
+            src="./assets/img/logo.svg"
+            alt="..."
+            class="navbar-brand-img mr-2"
+          />
+          <span class="h4 text-white d-lg-none">88mph</span>
+        </div>
+      </div>
+      <div class="col-12 col-lg-3">
+        <h5 class="pl-3 text-uppercase text-muted">Join the community</h5>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#" target="_blank">Twitter</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#" target="_blank">Telegram</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#" target="_blank">Discord</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#" target="_blank">GitHub</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-12 col-lg-3">
+        <h5 class="pl-3 text-uppercase text-muted">Governance</h5>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              href="https://forum.88mph.app/"
+              target="_blank"
+              >Forum</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              href="https://snapshot.org/#/88mph.eth"
+              target="_blank"
+              >Vote</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="col-12 col-lg-3">
+        <h5 class="pl-3 text-uppercase text-muted">Protocol</h5>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              href="https://docs.88mph.app/"
+              target="_blank"
+              >Documentations</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              href="https://docs.88mph.app/"
+              target="_blank"
+              >Developers</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              href="https://88mph.app/funding"
+              target="_blank"
+              >Grants</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="" target="_blank"
+              >Terms of services</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mb-6">
       <div class="col-12 col-lg-8 mb-3">
         <h5 class="text-uppercase">Current version audited & secured by</h5>
-        <a
-          href="https://github.com/peckshield/publications/blob/master/audit_reports/PeckShield-Audit-Report-88mphv3-v1.0.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            class="d-inline-block mr-4 mb-3"
-            style="
-              height: 24px;
-              image-rendering: pixelated;
-              filter: grayscale(1);
-            "
-            src="./assets/img/peckshield-logo.png"
-            alt="PeckShield"
-          />
-        </a>
         <a
           href="https://github.com/trailofbits/publications/tree/master/reviews"
           target="_blank"
@@ -38,6 +120,23 @@
             "
             src="./assets/img/Trail-of-Bits-logo.svg"
             alt="Trail of Bits"
+          />
+        </a>
+
+        <a
+          href="https://github.com/peckshield/publications/blob/master/audit_reports/PeckShield-Audit-Report-88mphv3-v1.0.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="d-inline-block mr-4 mb-3"
+            style="
+              height: 24px;
+              image-rendering: pixelated;
+              filter: grayscale(1);
+            "
+            src="./assets/img/peckshield-logo.png"
+            alt="PeckShield"
           />
         </a>
         <a

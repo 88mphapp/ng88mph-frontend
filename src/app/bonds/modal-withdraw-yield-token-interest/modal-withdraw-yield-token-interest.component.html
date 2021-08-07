@@ -20,82 +20,131 @@
         <div class="col-6 pt-0">
           <div class="card mb-6">
             <div class="card-body">
-              <div class="row justify-content-center mb-4">
-                <div class="col">
-                  <h6 class="header-pretitle mb-2">Accrued interest</h6>
-                  <h4 class="mb-1 glowing display-4">
-                    {{ fundedDeposit.funderAccruedInterest.toFormat(4) }}
-                    {{ poolInfo.stablecoinSymbol }}
-                  </h4>
-                  <div class="text-muted small d-block">
-                    ${{
-                      fundedDeposit.funderAccruedInterest
-                        .times(fundedDeposit.stablecoinPrice)
-                        .toFormat(4)
-                    }}
+              <div class="list-group list-group-flush list-group-activity mb-2">
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                        >
+                          1
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <h6 class="header-pretitle mb-2">Accrued interest</h6>
+                      <h4 class="mb-1 glowing display-4">
+                        {{ fundedDeposit.funderAccruedInterest.toFormat(8) }}
+                        {{ poolInfo.stablecoinSymbol }}
+                      </h4>
+                      <div class="text-muted small mb-3">
+                        ${{
+                          fundedDeposit.funderAccruedInterest
+                            .times(fundedDeposit.stablecoinPrice)
+                            .toFormat(2)
+                        }}
+                      </div>
+                      <button
+                        class="btn btn-lg btn-bg-gradient"
+                        type="button"
+                        (click)="handleAccruedInterest()"
+                        [disabled]="!canContinue()"
+                      >
+                        Make accrued interest claimable
+                      </button>
+                    </div>
                   </div>
+                  <!-- / .row -->
                 </div>
-                <div class="col">
-                  <h6 class="header-pretitle mb-2">Claimable interest</h6>
-                  <h4 class="mb-1 glowing display-4">
-                    {{ withdrawableInterestToken.toFormat(4) }}
-                    {{ poolInfo.stablecoinSymbol }}
-                  </h4>
-                  <div class="text-muted small d-block">
-                    ${{ withdrawableInterestUSD.toFormat(4) }}
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                        >
+                          2
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <h6 class="header-pretitle mb-2">Claimable interest</h6>
+                      <h4 class="mb-1 glowing display-4">
+                        {{ withdrawableInterestToken.toFormat(8) }}
+                        {{ poolInfo.stablecoinSymbol }}
+                      </h4>
+                      <div class="text-muted small mb-3">
+                        ${{ withdrawableInterestUSD.toFormat(2) }}
+                      </div>
+                      <button
+                        class="btn btn-lg btn-bg-gradient"
+                        type="button"
+                        (click)="withdrawInterest()"
+                        [disabled]="!canContinue()"
+                      >
+                        Claim Interest
+                      </button>
+                    </div>
                   </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item pb-0">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                        >
+                          3
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <h6 class="header-pretitle mb-2">
+                        Claimable MPH rewards
+                      </h6>
+                      <h4 class="mb-1 glowing display-4">
+                        {{ withdrawableMPHToken.toFormat(8) }}
+                        MPH
+                      </h4>
+                      <div class="text-muted small mb-3">
+                        ${{ withdrawableMPHUSD.toFormat(2) }}
+                      </div>
+                      <button
+                        class="btn btn-lg btn-bg-gradient"
+                        type="button"
+                        (click)="withdrawMPH()"
+                        [disabled]="!canContinue()"
+                      >
+                        Claim MPH
+                      </button>
+                    </div>
+                  </div>
+                  <!-- / .row -->
                 </div>
               </div>
-              <div class="row justify-content-center">
-                <div class="col">
-                  <button
-                    class="btn btn-lg btn-bg-gradient btn-block"
-                    type="button"
-                    (click)="handleAccruedInterest()"
-                    [disabled]="!canContinue()"
-                  >
-                    ① Make accrued interest claimable
-                  </button>
-                </div>
-                <div class="col">
-                  <button
-                    class="btn btn-lg btn-bg-gradient btn-block"
-                    type="button"
-                    (click)="withdrawInterest()"
-                    [disabled]="!canContinue()"
-                  >
-                    ② Claim Interest
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row justify-content-center">
-        <div class="col-6 pt-0">
-          <div class="card mb-6">
-            <div class="card-body">
-              <div class="row justify-content-center mb-4">
-                <div class="col">
-                  <h6 class="header-pretitle mb-2">Claimable MPH rewards</h6>
-                  <h4 class="mb-1 glowing display-4">
-                    {{ withdrawableMPHToken.toFormat(4) }}
-                    MPH
-                  </h4>
-                  <div class="text-muted small d-block">
-                    ${{ withdrawableMPHUSD.toFormat(4) }}
-                  </div>
-                </div>
-              </div>
-              <button
-                class="btn btn-lg btn-bg-gradient btn-block"
-                type="button"
-                (click)="withdrawMPH()"
-                [disabled]="!canContinue()"
-              >
-                ③ Claim MPH
-              </button>
             </div>
           </div>
         </div>

@@ -1,35 +1,69 @@
+<div class="modal-header border-0 align-items-center">
+  <h4 class="modal-title text-warning" *ngIf="!txConfirmed">
+    Transaction Pending ⛏
+  </h4>
+  <h4 class="modal-title text-success" *ngIf="txConfirmed">
+    Transaction Confirmed 🎉🌘
+  </h4>
+  <button
+    type="button"
+    class="close text-white"
+    data-dismiss="modal"
+    aria-label="Close"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 <div class="modal-body text-center p-0">
-  <div class="col-12 pt-0 pb-5">
-    <div class="row no-gutters align-items-center">
-      <div class="col-auto">
-        <a
-          class="btn btn-link border-0 text-white pl-0"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="activeModal.dismiss()"
-        >
-          <i class="fe fe-arrow-left h2 mb-0"></i>
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <h1 class="display-4 text-center m-0" *ngIf="!txConfirmed">
-        Transaction Pending
-      </h1>
-      <h1 class="display-4 text-center m-0" *ngIf="txConfirmed">
-        Transaction Confirmed
-      </h1>
+  <div class="embed-responsive embed-responsive-16by9">
+    <video controls class="embed-responsive-item" *ngIf="!txConfirmed">
+      <source src="./assets/img/tx-mining.webm" type="video/webm" />
+
+      Sorry, your browser doesn't support embedded videos.
+    </video>
+    <video controls class="embed-responsive-item" *ngIf="txConfirmed">
+      <source src="./assets/img/tx-confirmation.webm" type="video/webm" />
+
+      Sorry, your browser doesn't support embedded videos.
+    </video>
+  </div>
+
+  <div class="row d-none">
+    <div class="col-2">
       <div
         [ngClass]="
           txConfirmed ? 'circle-loader load-complete' : 'circle-loader'
         "
-        class="my-5"
+        class="my-3"
       >
         <div [ngClass]="txConfirmed ? 'draw' : 'checkmark'"></div>
       </div>
-      <h4 class="text-primary" style="pointer-events: auto">
-        <a href="{{ explorerLink }}" target="_blank"> View your transaction </a>
-      </h4>
     </div>
   </div>
+</div>
+<div
+  class="
+    modal-footer
+    border-0
+    justify-content-center justify-content-lg-between
+    py-3
+  "
+>
+  <a class="text-center" href="{{ explorerLink }}" target="_blank"
+    >View your transaction <i class="fe fe-external-link"></i
+  ></a>
+  <a
+    class="text-center small text-secondary"
+    href="https://opensea.io/assets/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/513716"
+    target="_blank"
+    *ngIf="!txConfirmed"
+    >Art by VisualDon for 88mph <i class="fe fe-external-link"></i
+  ></a>
+  <a
+    class="text-center small text-secondary"
+    href="https://opensea.io/assets/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/456458"
+    target="_blank"
+    *ngIf="txConfirmed"
+    >Art by VisualDon for 88mph <i class="fe fe-external-link"></i
+  ></a>
 </div>

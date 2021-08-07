@@ -51,9 +51,9 @@
             <!-- Title -->
             <h5 class="text-uppercase">MPH earned</h5>
             <!-- Heading -->
-            <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(4) }} MPH</h2>
+            <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(6) }} MPH</h2>
             <h5 class="mb-3 text-white">
-              ${{ totalMPHEarned.times(mphPriceUSD).toFormat(4) }}
+              ${{ totalMPHEarned.times(mphPriceUSD).toFormat(2) }}
             </h5>
           </div>
         </div>
@@ -224,7 +224,7 @@
       <!-- Yield tokens opportunities -->
       <div class="card mb-6">
         <div class="card-header">
-          <h2 class="mb-0 mr-auto">Yield tokens opportunities</h2>
+          <h2 class="mb-0 mr-auto">Yield token pools</h2>
           <div class="form-group mb-0">
             <select
               class="custom-select"
@@ -391,7 +391,7 @@
                       <td class="text-right">
                         <!-- cf modal-buy-yield-token -->
                         <button
-                          class="btn btn-lg btn-bg-gradient"
+                          class="btn btn-sm btn-bg-gradient"
                           (click)="buyYieldTokens(deposit)"
                         >
                           Buy
