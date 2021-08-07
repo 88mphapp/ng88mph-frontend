@@ -64,12 +64,16 @@
     <div class="col-12 col-lg-4 pr-lg-4">
       <div class="card bg-dark">
         <div class="card-header">
-          <h4 class="card-header-title">See how much you can earn</h4>
+          <h4 class="card-header-title title-bg-gradient">
+            See how much you can earn
+          </h4>
         </div>
         <div class="card-body py-3">
           <form action="">
             <div class="form-group mb-3">
-              <label>Initial balance</label>
+              <label
+                >Deposit amount ({{ selectedPool.stablecoinSymbol }})</label
+              >
               <div class="input-group input-group-lg mb-2">
                 <input
                   type="tel"
@@ -148,7 +152,7 @@
                       <i
                         class="fe fe-info ml-1 align-bottom"
                         placement="top"
-                        ngbTooltip="88mph offers a series of fixed-rate yield pools for various assets, such as DAI, USDC, WBTC, and ETH. When users/protocols deposit assets into an 88mph pool, they earn fixed-rate yield that is redeemable at maturity."
+                        ngbTooltip="88mph offers a series of fixed-rate yield pools for various assets, such as DAI, USDC, WBTC, and ETH. When users/protocols deposit assets into an 88mph pool, they earn fixed-rate yield that is redeemable at maturity. See How it works section below."
                       ></i>
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
@@ -234,10 +238,11 @@
 <div class="container pt-7 px-6 pb-4 mt-lg-n9 mb-7 bg-white rounded">
   <div class="row justify-content-center mb-4">
     <div class="col-9">
-      <h2 class="display-2 text-center text-dark">Earn fixed-rate yield</h2>
+      <h5 class="text-uppercase text-center text-secondary">For everyone</h5>
+      <h2 class="display-2 text-center text-dark">Earn fixed yield rate</h2>
       <p class="lead text-center text-muted">
         88mph has a variety of features that make it the best place to start
-        earning a fixed-rate yield on your capital. Our leading protection
+        earning a fixed yield rate on your capital. Our leading protection
         measures give you the peace of mind you deserve.
       </p>
     </div>
@@ -255,10 +260,12 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Earn a fixed-rate APY + $MPH tokens</h3>
+          <h3 class="text-dark">Earn a fixed yield rate + $MPH tokens</h3>
           <p class="text-muted">
-            Deposit $DAI, $USDC, $3CRV, $wBTC, $renBTC, etc. and earn
-            fixed-interest rates + $MPH.
+            Deposit your assets and earn fixed yield rate on your capital to
+            hedge against market rates volatility. Participating in 88mph pools
+            gives rewards in MPH tokens.
+            <a href="https://docs.88mph.app/" target="_blank">Learn more</a>
           </p>
         </div>
       </div>
@@ -294,9 +301,8 @@
         <div class="col">
           <h3 class="text-dark">Risk management</h3>
           <p class="text-muted">
-            Our yield tokens and active management of the solvency ratio for
-            each lending pool offer an efficient layered approach to manage
-            financial risk.
+            88mph relies on four lines of defense to mitigate the risk of
+            insolvency.
             <a href="https://docs.88mph.app/" target="_blank">Learn more</a>.
           </p>
         </div>
@@ -314,16 +320,12 @@
         <div class="col">
           <h3 class="text-dark">Insurance</h3>
           <p class="text-muted">
-            Leading insurance protocols like InsurAce or Bridge Mutual cover a
-            full spectrum of smart contract risks for 88mph.
+            Leading insurance protocols like InsurAce, Nsure or Bridge Mutual
+            cover a full spectrum of smart contract risks for 88mph.
             <a href="https://docs.88mph.app/">Learn more</a>.
           </p>
         </div>
       </div>
-
-      <button class="btn btn-lg btn-bg-gradient my-4" routerLink="earn">
-        Start earning
-      </button>
     </div>
     <div class="col-7">
       <img
@@ -336,28 +338,39 @@
 </div>
 <div class="container my-5">
   <div class="row align-items-center mb-7">
-    <div class="col-4">
+    <div class="col-12 col-lg-4">
       <h2 class="display-2">How it works</h2>
       <p class="lead text-muted">
-        Learn how 88mph generates fixed APY and stays solvent.
+        When users deposit, funds are pooled and lent to variable-rate yield
+        protocols.
       </p>
+      <p class="lead text-muted">
+        To learn more about how 88mph acts as an non-custodial intermediary to
+        convert a stream of variable-rate yield into fixed-rate yield, check out
+        our
+        <a class="text-primary" href="https://docs.88mph.app/" target="_blank"
+          >docs</a
+        >.
+      </p>
+      <button class="btn btn-lg btn-bg-gradient my-4" routerLink="earn">
+        Start earning
+      </button>
     </div>
 
-    <div class="col-8">
+    <div class="col-12 col-lg-7 offset-lg-1">
       <div class="row mb-4">
         <div class="col-12 col-lg-6">
           <div class="avatar avatar-lg mb-4">
             <span
               class="avatar-title rounded-circle text-white border-gradient"
             >
-              <i class="fe fe-percent"></i>
+              01
             </span>
           </div>
-          <h3 class="">Fixed APY</h3>
+          <h3 class="">Deposit</h3>
           <p class="text-muted">
-            88mph determines its fixed-interest rate according to the deposit's
-            duration by giving between 25% and 75% of a 30-day EMA pulled from
-            the variable APY of lending protocols.
+            Deposit any amount of assets into 88mph pools with a maturity
+            between 1 and 365 days.
           </p>
         </div>
         <div class="col-12 col-lg-6">
@@ -365,13 +378,13 @@
             <span
               class="avatar-title rounded-circle text-white border-gradient"
             >
-              <i class="fe fe-dollar-sign"></i>
+              02
             </span>
           </div>
-          <h3 class="">Yield generation</h3>
+          <h3 class="">Earn fixed-rate APY</h3>
           <p class="text-muted">
-            88mph pools deposits and lends them at a variable APY on protocols
-            like Aave, Yearn, and Compound.
+            Earn a fixed-rate yield redeemable at maturity when you withdraw
+            your deposit.
           </p>
         </div>
       </div>
@@ -382,15 +395,14 @@
             <span
               class="avatar-title rounded-circle text-white border-gradient"
             >
-              <i class="fe fe-layers"></i>
+              03
             </span>
           </div>
-          <h3 class="">Insolvency risk outsourcing</h3>
+          <h3 class="">Receive MPH rewards</h3>
           <p class="text-muted">
-            88mph's yield tokens allow investors, willing to speculate on the
-            future variable APY of Compound or Aave, to fund the fixed APY that
-            88mph owes to its users. In exchange, they earn the variable APY
-            generated by the users' deposits and the fixed APY funded.
+            MPH tokens are linearly vested over the deposit duration. Claim
+            rewards whenever it fits your schedule and stake them to earn
+            protocol revenues and voting rights.
           </p>
         </div>
         <div class="col-12 col-lg-6">
@@ -398,14 +410,12 @@
             <span
               class="avatar-title rounded-circle text-white border-gradient"
             >
-              <i class="fe fe-sliders"></i>
+              4
             </span>
           </div>
-          <h3 class="">Dynamic pools surplus rebalancing</h3>
+          <h3 class="">Withdraw</h3>
           <p class="text-muted">
-            The variable APY generated by your deposit can lead to a surplus of
-            yield compared to what 88mph owes you; by consequence, improving the
-            solvency for every pool via a dynamic pools surplus rebalancing.
+            Withdraw, top-up, roll over your deposits at any time.
           </p>
         </div>
       </div>
@@ -416,10 +426,18 @@
 <div class="container pt-6 px-6 pb-4 mb-7 bg-white rounded">
   <div class="row justify-content-center mb-4">
     <div class="col-9">
-      <h2 class="display-2 text-center text-dark">Yield tokens</h2>
+      <h5 class="text-uppercase text-center text-secondary">
+        For advanced users
+      </h5>
+      <h2 class="display-2 text-center text-dark">
+        Speculate on future yields
+      </h2>
       <p class="lead text-center text-muted">
-        Speculate on the future yield of Compound, Aave, and Yearn by buying
-        88mph's yield tokens.
+        Speculate on future variable-rate yields by buying yield tokens and
+        strengthen the solvency of 88mph protocol.
+        <a class="text-primary" href="https://docs.88mph.app/" target="_blank"
+          >Learn more</a
+        >.
       </p>
     </div>
   </div>
@@ -436,13 +454,12 @@
           </div>
         </div>
         <div class="col">
-          <h3>A new DeFi primitive</h3>
+          <h3 class="text-dark">A new DeFi primitive</h3>
           <p class="text-muted">
-            Speculate on the future yield of Compound, Aave, and Yearn with a
-            fraction of the capital required by a traditional lending position.
-            For example, you can purchase $5 of yield token and earn yield on
-            $105.
-            <a href="https://docs.88mph.app/" target="_blank">Learn more</a>.
+            Yield tokens, such as $cDAI-YT, allow speculators to profit from the
+            rise in the yield rate of variable-rate yield protocols or hedge
+            part of their borrowing costs of a loan. For e.g. Dai borrower on
+            Compound would purchase cDAI-YTs on 88mph.
           </p>
         </div>
       </div>
@@ -454,16 +471,18 @@
             <span
               class="avatar-title rounded-circle text-white border-gradient"
             >
-              <i class="fe fe-zap"></i>
+              <i class="fe fe-dollar-sign"></i>
             </span>
           </div>
         </div>
         <div class="col">
-          <h3>Competitive profit margin</h3>
+          <h3 class="text-dark">Earn variable-rate yields</h3>
           <p class="text-muted">
-            88mph offers a >50% extra profit margin for our yield tokens. This
-            means that even if interest rates stay the same, your ROI would
-            still be >50%.
+            YTs can be purchased by users when a deposit is made in an 88mph
+            fixed-rate yield pool, and each YT is tied to a deposit. YTs give
+            holders the right to earn all the future variable-rate yields
+            generated by the corresponding deposit + the purchase cost of the
+            YTs.
           </p>
         </div>
       </div>
@@ -477,15 +496,17 @@
             <span
               class="avatar-title rounded-circle text-white border-gradient"
             >
-              <i class="fe fe-dollar-sign"></i>
+              <i class="fe fe-zap"></i>
             </span>
           </div>
         </div>
         <div class="col">
-          <h3>Trade your yield tokens</h3>
+          <h3 class="text-dark">Strengthen 88mph protocol</h3>
           <p class="text-muted">
-            Yield tokens are ERC-20 tokens fully tradeable on existing
-            exchanges.
+            YTs are more than an instrument for speculating on yields. When
+            someone buys YTs, the insolvency risk of the fixed-rate yield pool
+            is decreased, via decreasing the amount of promised fixed-rate yield
+            that is not backed by real assets.
           </p>
         </div>
       </div>
@@ -502,13 +523,20 @@
           </div>
         </div>
         <div class="col">
-          <h3>Earn MPH rewards</h3>
+          <h3 class="text-dark">Earn MPH rewards</h3>
           <p class="text-muted">
-            Deposit yield tokens in the 88mph's liquidity pools to earn LP
-            rewards (trading fees and incentives).
+            When a user buys yield tokens, they receive newly-minted MPH tokens
+            as the underlying deposit earns interest.
           </p>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <button class="btn btn-lg btn-bg-gradient mb-3" routerLink="yield">
+        Get yield tokens
+      </button>
     </div>
   </div>
 </div>
@@ -516,7 +544,7 @@
   <div class="row justify-content-center mb-4">
     <div class="col-8">
       <h2 class="display-2 text-center">
-        The leading on-chain fixed interest rate protocol
+        The leading non-custodial fixed yield rate protocol
       </h2>
       <p class="lead text-center text-muted">
         Here are a few other reasons why you should choose 88mph
@@ -540,6 +568,14 @@
         Boost your yield by staking your MPH for xMPH, provide liquidity on our
         trading pools, and get rewarded with various incentives.
       </p>
+      <a href="https://docs.88mph.app/" class="" target="_blank">Learn more</a>
+      |
+      <a
+        href="https://www.coingecko.com/en/coins/88mph"
+        target="_blank"
+        rel="noopener noreferrer"
+        >CoinGecko</a
+      >
     </div>
     <div class="col col-lg-4">
       <div class="avatar avatar-lg mb-4">
@@ -562,9 +598,9 @@
       </div>
       <h3>Industry best security practices</h3>
       <p class="lead text-muted">
-        88mph has been audited several times by PeckShield, Quantstamp, Code
-        423n4, and Certik. We don't ship unaudited code and are constantly
-        running security bounty on Immunefi.
+        88mph has been audited several times by Trail of Bits, PeckShield, and
+        Code 423n4. We don't ship unaudited code and are constantly running a
+        $100k security bounty on Immunefi.
       </p>
       <a
         href="https://docs.88mph.app/main-products/security-and-audits"
@@ -606,7 +642,7 @@
           3
         </span>
       </div>
-      <h3>Earn a fixed interest rate & MPH rewards</h3>
+      <h3>Earn fixed-rate APY & MPH rewards</h3>
     </div>
   </div>
   <div class="row justify-content-center mb-7">

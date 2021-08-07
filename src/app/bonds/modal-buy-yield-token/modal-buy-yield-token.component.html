@@ -28,13 +28,15 @@
                     {{ deposit.yieldTokensAvailable.toFormat(4) }}
                     {{ deposit.pool.name }} YT
                   </h4>
-                  <div class="text-muted small d-block">
-                    ${{ deposit.yieldTokensAvailableUSD.toFormat(4) }}
+                  <div class="text-muted small">
+                    Total value: ${{
+                      deposit.yieldTokensAvailableUSD.toFormat(4)
+                    }}
                   </div>
                 </div>
               </div>
               <div class="form-group mb-4">
-                <label>Amount to buy</label>
+                <label>Amount of yield tokens to buy</label>
                 <div class="input-group">
                   <input
                     type="text"
@@ -63,8 +65,10 @@
                     </button>
                   </div>
                 </div>
-                <small class="form-text text-muted"
-                  >{{ stablecoinBalance.toFormat(4) }}
+                <small class="form-text text-muted">
+                  Cost: {{ youPay.toFormat(4) }}
+                  {{ deposit.pool.stablecoinSymbol }} /
+                  {{ stablecoinBalance.toFormat(4) }}
                   {{ deposit.pool.stablecoinSymbol }} available in your
                   balance</small
                 >
@@ -80,13 +84,13 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-1 glowing">
-                          $ {{ youPay.times(stablecoinPriceUSD).toFormat(4) }}
-                        </h4>
-                        <h5 class="text-muted">
+                        <span class="h4 mb-1 glowing">
                           {{ youPay.toFormat(4) }}
                           {{ deposit.pool.stablecoinSymbol }}
-                        </h5>
+                        </span>
+                        <span class="h5 text-muted">
+                          ${{ youPay.times(stablecoinPriceUSD).toFormat(2) }}
+                        </span>
                       </td>
                     </tr>
                     <tr>
@@ -96,15 +100,15 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-1 glowing">
-                          ${{
-                            earnYieldOn.times(stablecoinPriceUSD).toFormat(4)
-                          }}
-                        </h4>
-                        <h5 class="text-muted">
+                        <span class="h4 mb-1 glowing">
                           {{ earnYieldOn.toFormat(4) }}
                           {{ deposit.pool.stablecoinSymbol }}
-                        </h5>
+                        </span>
+                        <span class="h5 text-muted">
+                          ${{
+                            earnYieldOn.times(stablecoinPriceUSD).toFormat(2)
+                          }}
+                        </span>
                       </td>
                     </tr>
                   </tbody>
