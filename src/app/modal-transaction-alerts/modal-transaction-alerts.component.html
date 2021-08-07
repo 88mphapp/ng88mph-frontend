@@ -1,7 +1,24 @@
 <div class="modal-header border-0 align-items-center">
+  <div
+    class="spinner-grow spinner-grow-sm mr-2 text-warning"
+    role="status"
+    *ngIf="!txConfirmed"
+  ></div>
   <h4 class="modal-title text-warning" *ngIf="!txConfirmed">
     Transaction Pending ⛏
   </h4>
+  <svg
+    class="bd-placeholder-img rounded mr-2"
+    width="20"
+    height="20"
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="xMidYMid slice"
+    focusable="false"
+    role="img"
+    *ngIf="txConfirmed"
+  >
+    <rect fill="#00d97e" width="100%" height="100%"></rect>
+  </svg>
   <h4 class="modal-title text-success" *ngIf="txConfirmed">
     Transaction Confirmed 🎉🌘
   </h4>
@@ -10,60 +27,13 @@
     class="close text-white"
     data-dismiss="modal"
     aria-label="Close"
+    (click)="activeModal.dismiss()"
   >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="modal-body text-center p-0">
-  <div class="embed-responsive embed-responsive-16by9">
-    <video controls class="embed-responsive-item" *ngIf="!txConfirmed">
-      <source src="./assets/img/tx-mining.webm" type="video/webm" />
-
-      Sorry, your browser doesn't support embedded videos.
-    </video>
-    <video controls class="embed-responsive-item" *ngIf="txConfirmed">
-      <source src="./assets/img/tx-confirmation.webm" type="video/webm" />
-
-      Sorry, your browser doesn't support embedded videos.
-    </video>
-  </div>
-
-  <div class="row d-none">
-    <div class="col-2">
-      <div
-        [ngClass]="
-          txConfirmed ? 'circle-loader load-complete' : 'circle-loader'
-        "
-        class="my-3"
-      >
-        <div [ngClass]="txConfirmed ? 'draw' : 'checkmark'"></div>
-      </div>
-    </div>
-  </div>
-</div>
-<div
-  class="
-    modal-footer
-    border-0
-    justify-content-center justify-content-lg-between
-    py-3
-  "
->
+<div class="modal-body pt-0">
   <a class="text-center" href="{{ explorerLink }}" target="_blank"
     >View your transaction <i class="fe fe-external-link"></i
-  ></a>
-  <a
-    class="text-center small text-secondary"
-    href="https://opensea.io/assets/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/513716"
-    target="_blank"
-    *ngIf="!txConfirmed"
-    >Art by VisualDon for 88mph <i class="fe fe-external-link"></i
-  ></a>
-  <a
-    class="text-center small text-secondary"
-    href="https://opensea.io/assets/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/456458"
-    target="_blank"
-    *ngIf="txConfirmed"
-    >Art by VisualDon for 88mph <i class="fe fe-external-link"></i
   ></a>
 </div>
