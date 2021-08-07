@@ -19,6 +19,7 @@ import { Timer } from '../timer';
 import { ConstantsService } from '../constants.service';
 import { DataService } from '../data.service';
 import { ModalWithdrawZCBComponent } from './modal-withdraw-zcb/modal-withdraw-zcb.component';
+import { ModalNftComponent } from './modal-nft/modal-nft.component';
 
 @Component({
   selector: 'app-deposit',
@@ -552,6 +553,14 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
       ? dpool.mphDepositorRewardMintMultiplier
       : new BigNumber(0);
+  }
+
+  openNFTModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
+    const modalRef = this.modalService.open(ModalNftComponent, {
+      windowClass: 'fullscreen',
+    });
+    modalRef.componentInstance.userDeposit = userDeposit;
+    modalRef.componentInstance.poolInfo = poolInfo;
   }
 
   userHasDeposit(poolName: string): boolean {
