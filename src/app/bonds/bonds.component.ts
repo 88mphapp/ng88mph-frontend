@@ -270,6 +270,16 @@ export class BondsComponent implements OnInit {
             const funderPool: FunderPool = {
               poolInfo: poolInfo,
               fundings: [],
+              userTotalYieldTokenBalance: new BigNumber(0),
+              userTotalYieldTokenBalanceUSD: new BigNumber(0),
+              userTotalEarnYieldOn: new BigNumber(0),
+              userTotalEarnYieldOnUSD: new BigNumber(0),
+              userTotalYieldEarned: new BigNumber(0),
+              userTotalYieldEarnedUSD: new BigNumber(0),
+              userTotalRefundedAmount: new BigNumber(0),
+              userTotalRefundedAmountUSD: new BigNumber(0),
+              userTotalMPHRewardsEarned: new BigNumber(0),
+              userTotalMPHRewardsEarnedUSD: new BigNumber(0),
             };
             funderPools.push(funderPool);
             pool = funderPool;
@@ -299,6 +309,34 @@ export class BondsComponent implements OnInit {
           pool.fundings.sort((a, b) => {
             return a.maturationTimestamp - b.maturationTimestamp;
           });
+
+          // update user pool totals
+          pool.userTotalYieldTokenBalance =
+            pool.userTotalYieldTokenBalance.plus(yieldTokenBalance);
+          pool.userTotalYieldTokenBalanceUSD =
+            pool.userTotalYieldTokenBalanceUSD.plus(yieldTokenBalanceUSD);
+          pool.userTotalEarnYieldOn =
+            pool.userTotalEarnYieldOn.plus(earnYieldOn);
+          pool.userTotalEarnYieldOnUSD = pool.userTotalEarnYieldOnUSD.plus(
+            earnYieldOn.times(stablecoinPrice)
+          );
+          pool.userTotalYieldEarned =
+            pool.userTotalYieldEarned.plus(yieldEarned);
+          pool.userTotalYieldEarnedUSD = pool.userTotalYieldEarnedUSD.plus(
+            yieldEarned.times(stablecoinPrice)
+          );
+          pool.userTotalRefundedAmount =
+            pool.userTotalRefundedAmount.plus(refundedAmount);
+          pool.userTotalRefundedAmountUSD =
+            pool.userTotalRefundedAmountUSD.plus(
+              refundedAmount.times(stablecoinPrice)
+            );
+          pool.userTotalMPHRewardsEarned =
+            pool.userTotalMPHRewardsEarned.plus(mphEarned);
+          pool.userTotalMPHRewardsEarnedUSD =
+            pool.userTotalMPHRewardsEarnedUSD.plus(
+              mphEarned.times(this.mphPriceUSD)
+            );
 
           // update user totals
           totalYieldTokenBalanceUSD =
