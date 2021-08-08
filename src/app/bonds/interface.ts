@@ -7,37 +7,12 @@ export interface FunderPool {
   fundings: FundedDeposit[];
 }
 
-export interface Fundingv3 {
+export interface Funding {
   id: number;
   active: boolean;
   totalSupply: number;
   fundedDeficitAmount: number;
   principalPerToken: number;
-}
-
-// @dev deprecated
-export interface Funding {
-  id: number;
-  pool: {
-    address: string;
-    oracleInterestRate: BigNumber;
-    moneyMarketIncomeIndex: BigNumber;
-    poolFunderRewardMultiplier: BigNumber;
-  };
-  fromDepositID: number;
-  toDepositID: number;
-  nftID: number;
-  deficitToken: BigNumber;
-  deficitUSD: BigNumber;
-  currentDepositToken: BigNumber;
-  currentDepositUSD: BigNumber;
-  interestEarnedToken: BigNumber;
-  interestEarnedUSD: BigNumber;
-  mphRewardEarned: BigNumber;
-  refundAmountToken: BigNumber;
-  refundAmountUSD: BigNumber;
-  recordedMoneyMarketIncomeIndex: BigNumber;
-  creationTimestamp: number;
 }
 
 export interface FundedDeposit {
@@ -46,7 +21,6 @@ export interface FundedDeposit {
   stablecoinPrice: number;
   funderAccruedInterest: BigNumber;
   maturationTimestamp: number;
-  countdownTimer: Timer;
   yieldTokenBalance: BigNumber;
   yieldTokenBalanceUSD: BigNumber;
   earnYieldOn: BigNumber;
@@ -64,22 +38,12 @@ export interface FundableDeposit {
   pool: DPool;
   maturationTimestamp: number;
   countdownTimer: Timer;
-  //funding: Fundingv3;
   unfundedDepositAmount: BigNumber;
   unfundedDepositAmountUSD: BigNumber;
   yieldTokensAvailable: BigNumber;
   yieldTokensAvailableUSD: BigNumber;
   estimatedAPR: BigNumber;
   mphRewardsAPR: BigNumber;
-}
-
-export interface Deposit {
-  nftID: number;
-  amount: BigNumber;
-  active: boolean;
-  maturationTimestamp: number;
-  interestEarned: BigNumber;
-  surplus: BigNumber;
 }
 
 export interface DPool {
