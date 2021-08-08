@@ -9,9 +9,9 @@ import { WalletService } from '../wallet.service';
 import { ModalBuyYieldTokenComponent } from './modal-buy-yield-token/modal-buy-yield-token.component';
 import {
   FunderPool,
+  Funding,
   FundedDeposit,
   FundableDeposit,
-  Fundingv3,
   DPool,
 } from './interface';
 import { Timer } from '../timer';
@@ -77,12 +77,7 @@ export class BondsComponent implements OnInit {
   }
 
   loadData(loadUser: boolean, loadGlobal: boolean): void {
-    // ***********
-    // V3 CODE
-    // ***********
-
     let funderID = this.wallet.actualAddress.toLowerCase();
-
     const queryString = gql`
       {
         ${
@@ -287,10 +282,6 @@ export class BondsComponent implements OnInit {
             stablecoinPrice: stablecoinPrice,
             funderAccruedInterest: funderAccruedInterest,
             maturationTimestamp: funding.deposit.maturationTimestamp,
-            countdownTimer: new Timer(
-              funding.deposit.maturationTimestamp,
-              'down'
-            ),
             yieldTokenBalance: yieldTokenBalance,
             yieldTokenBalanceUSD: yieldTokenBalanceUSD,
             earnYieldOn: earnYieldOn,
@@ -302,7 +293,6 @@ export class BondsComponent implements OnInit {
             mphRewardsEarned: mphEarned,
             mphRewardsEarnedUSD: mphEarned.times(this.mphPriceUSD),
           };
-          fundingObj.countdownTimer.start();
           pool.fundings.push(fundingObj);
 
           // sort active positions by maturation timestamp
@@ -446,9 +436,6 @@ export class BondsComponent implements OnInit {
       );
 
       for (const deposit of data.dpool.deposits) {
-        //const poolContract = this.contract.getPool(this.selectedPool.name);
-        // NEW STUFF
-
         const virtualTokenTotalSupply = new BigNumber(
           deposit.virtualTokenTotalSupply
         );
@@ -664,7 +651,7 @@ interface FundableDepositsQuery {
       interestRate: BigNumber;
       feeRate: BigNumber;
       maturationTimestamp: number;
-      funding: Fundingv3;
+      funding: Funding;
     }[];
   };
 }
