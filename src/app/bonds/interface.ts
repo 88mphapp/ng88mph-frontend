@@ -47,7 +47,6 @@ export interface FundableDeposit {
   id: string;
   pool: DPool;
   maturationTimestamp: number;
-  countdownTimer: Timer;
   unfundedDepositAmount: BigNumber;
   unfundedDepositAmountUSD: BigNumber;
   yieldTokensAvailable: BigNumber;

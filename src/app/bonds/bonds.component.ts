@@ -14,7 +14,6 @@ import {
   FundableDeposit,
   DPool,
 } from './interface';
-import { Timer } from '../timer';
 import { ModalWithdrawYieldTokenInterestComponent } from './modal-withdraw-yield-token-interest/modal-withdraw-yield-token-interest.component';
 
 @Component({
@@ -513,7 +512,6 @@ export class BondsComponent implements OnInit {
             id: deposit.id,
             pool: this.selectedPool,
             maturationTimestamp: deposit.maturationTimestamp,
-            countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
             unfundedDepositAmount: depositAmount,
             unfundedDepositAmountUSD: depositAmount.times(stablecoinPrice),
             yieldTokensAvailable: totalPrincipal,
@@ -523,7 +521,6 @@ export class BondsComponent implements OnInit {
             estimatedAPR: new BigNumber(0),
             mphRewardsAPR: new BigNumber(0),
           };
-          parsedDeposit.countdownTimer.start();
           fundableDeposits.push(parsedDeposit);
         }
 
@@ -542,7 +539,6 @@ export class BondsComponent implements OnInit {
             id: deposit.id,
             pool: this.selectedPool,
             maturationTimestamp: deposit.maturationTimestamp,
-            countdownTimer: new Timer(deposit.maturationTimestamp, 'down'),
             unfundedDepositAmount: unfundedDepositAmount,
             unfundedDepositAmountUSD:
               unfundedDepositAmount.times(stablecoinPrice),
@@ -553,7 +549,6 @@ export class BondsComponent implements OnInit {
             estimatedAPR: new BigNumber(0),
             mphRewardsAPR: new BigNumber(0),
           };
-          parsedDeposit.countdownTimer.start();
           fundableDeposits.push(parsedDeposit);
         }
 
