@@ -5,6 +5,16 @@ import { Timer } from '../timer';
 export interface FunderPool {
   poolInfo: PoolInfo;
   fundings: FundedDeposit[];
+  userTotalYieldTokenBalance: BigNumber;
+  userTotalYieldTokenBalanceUSD: BigNumber;
+  userTotalEarnYieldOn: BigNumber;
+  userTotalEarnYieldOnUSD: BigNumber;
+  userTotalYieldEarned: BigNumber;
+  userTotalYieldEarnedUSD: BigNumber;
+  userTotalRefundedAmount: BigNumber;
+  userTotalRefundedAmountUSD: BigNumber;
+  userTotalMPHRewardsEarned: BigNumber;
+  userTotalMPHRewardsEarnedUSD: BigNumber;
 }
 
 export interface Funding {

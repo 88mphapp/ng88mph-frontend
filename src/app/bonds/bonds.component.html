@@ -108,11 +108,52 @@
                       </div>
                     </div>
                   </td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td>
+                    <h4 class="mb-1 font-weight-normal glowing">
+                      {{ funderPool.userTotalYieldTokenBalance.toFormat(4) }}
+                      {{ funderPool.poolInfo.name }} YT
+                    </h4>
+                    <span class="text-white">
+                      ${{
+                        funderPool.userTotalYieldTokenBalanceUSD.toFormat(4)
+                      }}
+                    </span>
+                  </td>
+                  <td>
+                    <h4 class="mb-1 font-weight-normal glowing">
+                      {{ funderPool.userTotalEarnYieldOn.toFormat(4) }}
+                      {{ funderPool.poolInfo.stablecoinSymbol }}
+                    </h4>
+                    <span class="text-white">
+                      ${{ funderPool.userTotalEarnYieldOnUSD.toFormat(4) }}
+                    </span>
+                  </td>
+                  <td>
+                    <h4 class="mb-1 font-weight-normal glowing">
+                      {{ funderPool.userTotalYieldEarned.toFormat(4) }}
+                      {{ funderPool.poolInfo.stablecoinSymbol }}
+                    </h4>
+                    <span class="text-white">
+                      ${{ funderPool.userTotalYieldEarnedUSD.toFormat(4) }}
+                    </span>
+                  </td>
+                  <td>
+                    <h4 class="mb-1 font-weight-normal glowing">
+                      {{ funderPool.userTotalRefundedAmount.toFormat(4) }}
+                      {{ funderPool.poolInfo.stablecoinSymbol }}
+                    </h4>
+                    <span class="text-white">
+                      ${{ funderPool.userTotalRefundedAmountUSD.toFormat(4) }}
+                    </span>
+                  </td>
+                  <td>
+                    <h4 class="mb-1 font-weight-normal glowing">
+                      {{ funderPool.userTotalMPHRewardsEarned.toFormat(4) }} MPH
+                    </h4>
+                    <span class="text-white">
+                      ${{ funderPool.userTotalMPHRewardsEarnedUSD.toFormat(4) }}
+                    </span>
+                  </td>
                   <td class="text-right">
                     <button
                       class="btn btn-sm btn-dark btn-rounded-circle"
@@ -126,9 +167,6 @@
                     </button>
                   </td>
                 </tr>
-
-                <!-- <cdk-virtual-scroll-viewport [itemSize]="8" style="height: 500px; width: auto;"> -->
-                <!-- <ng-container *cdkVirtualFor="let funding of funderPool.fundings"> -->
                 <ng-container *ngFor="let funding of funderPool.fundings">
                   <tr
                     class="multi-collapse collapse show"
@@ -143,23 +181,13 @@
                       <small class="text-muted d-block">
                         {{ timestampToDateString(funding.maturationTimestamp) }}
                       </small>
-
-                      <!-- badge -->
-                      <!-- <span class="badge mb-1 badge-soft-danger"> Locked </span> -->
-
-                      <!-- <small class="text-muted d-block">
-                        {{ funding.countdownTimer.days }}d
-                        {{ funding.countdownTimer.hours }}h
-                        {{ funding.countdownTimer.minutes }}m
-                        {{ funding.countdownTimer.seconds }}s
-                      </small> -->
                     </td>
                     <td>
                       <h4 class="mb-1 font-weight-normal glowing">
                         {{ funding.yieldTokenBalance.toFormat(4) }}
                         {{ funderPool.poolInfo.name }} YT
                       </h4>
-                      <span class="text-white">
+                      <span class="text-muted">
                         ${{ funding.yieldTokenBalanceUSD.toFormat(4) }}
                       </span>
                     </td>
@@ -168,7 +196,7 @@
                         {{ funding.earnYieldOn.toFormat(4) }}
                         {{ funderPool.poolInfo.stablecoinSymbol }}
                       </h4>
-                      <span class="text-white">
+                      <span class="text-muted">
                         ${{ funding.earnYieldOnUSD.toFormat(4) }}
                       </span>
                     </td>
@@ -177,7 +205,7 @@
                         {{ funding.yieldEarned.toFormat(4) }}
                         {{ funderPool.poolInfo.stablecoinSymbol }}
                       </h4>
-                      <span class="text-white"
+                      <span class="text-muted"
                         >${{ funding.yieldEarnedUSD.toFormat(4) }}</span
                       >
                     </td>
@@ -186,7 +214,7 @@
                         {{ funding.refundedAmount.toFormat(4) }}
                         {{ funderPool.poolInfo.stablecoinSymbol }}
                       </h4>
-                      <span class="text-white"
+                      <span class="text-muted"
                         >${{ funding.refundedAmountUSD.toFormat(4) }}</span
                       >
                     </td>
@@ -194,7 +222,7 @@
                       <h4 class="mb-1 font-weight-normal glowing">
                         {{ funding.mphRewardsEarned.toFormat(4) }} MPH
                       </h4>
-                      <span class="text-white"
+                      <span class="text-muted"
                         >${{ funding.mphRewardsEarnedUSD.toFormat(4) }}</span
                       >
                     </td>
