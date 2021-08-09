@@ -253,8 +253,32 @@
                 ></div>
                 <span class=""> &nbsp; {{ loadingMessage }}</span>
               </div>
-
               <button
+                *ngIf="!name"
+                class="btn btn-lg btn-bg-gradient btn-block mb-4"
+                type="button"
+                [disabled]="true"
+              >
+                Add a name
+              </button>
+              <button
+                *ngIf="name && !imageFile"
+                class="btn btn-lg btn-bg-gradient btn-block mb-4"
+                type="button"
+                [disabled]="true"
+              >
+                Add an image file
+              </button>
+              <button
+                *ngIf="name && imageFile && !description"
+                class="btn btn-lg btn-bg-gradient btn-block mb-4"
+                type="button"
+                [disabled]="true"
+              >
+                Add a description
+              </button>
+              <button
+                *ngIf="name && imageFile && description"
                 (click)="clickUpdateMetadata()"
                 class="btn btn-lg btn-bg-gradient btn-block mb-4"
                 type="button"
