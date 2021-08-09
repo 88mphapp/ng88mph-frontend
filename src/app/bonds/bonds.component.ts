@@ -551,12 +551,12 @@ export class BondsComponent implements OnInit {
           };
           fundableDeposits.push(parsedDeposit);
         }
-
-        // sort deposits by maturation timestamp
-        fundableDeposits.sort((a, b) => {
-          return a.maturationTimestamp - b.maturationTimestamp;
-        });
       }
+      // sort deposits by maturation timestamp
+      fundableDeposits.sort((a, b) => {
+        return a.maturationTimestamp - b.maturationTimestamp;
+      });
+
       this.fundableDeposits = fundableDeposits;
       this.floatingRatePrediction = this.selectedPool.oracleInterestRate;
       this.updateEstimatedROI();
