@@ -236,6 +236,7 @@
                             funding
                           )
                         "
+                        [disabled]="!canContinue() || wallet.watching"
                       >
                         <i class="fe fe-dollar-sign mr-2 align-bottom"></i>
                         Claim
@@ -416,6 +417,7 @@
                         <button
                           class="btn btn-sm btn-bg-gradient"
                           (click)="buyYieldTokens(deposit)"
+                          [disabled]="!canContinue() || wallet.watching"
                         >
                           Buy
                         </button>
