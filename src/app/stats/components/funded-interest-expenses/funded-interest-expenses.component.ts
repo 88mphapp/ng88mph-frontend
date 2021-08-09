@@ -103,6 +103,18 @@ export class FundedInterestExpensesComponent implements OnInit {
       hover: {
         mode: 'dataset',
       },
+      elements: {
+        point: {
+          radius: 0,
+          hoverRadius: 2,
+          hitRadius: 4,
+        },
+        line: {
+          tension: 0,
+          borderWidth: 2,
+          hoverBorderWidth: 2,
+        },
+      },
     };
     this.lineChartLabels = this.readable;
     this.lineChartType = 'line';
@@ -181,16 +193,10 @@ export class FundedInterestExpensesComponent implements OnInit {
         data: [],
         interestExpenses: [],
         fundedExpenses: [],
-        borderWidth: 3,
-        hoverBorderWidth: 3,
         borderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         hoverBorderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
-        pointBorderColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
-        pointBackgroundColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         pointHoverBorderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
         pointHoverBackgroundColor:
@@ -277,12 +283,8 @@ interface DataObject {
   data: number[];
   interestExpenses: number[];
   fundedExpenses: number[];
-  borderWidth: number;
-  hoverBorderWidth: number;
   borderColor: string;
   hoverBorderColor: string;
-  pointBorderColor: string;
-  pointBackgroundColor: string;
   pointHoverBorderColor: string;
   pointHoverBackgroundColor: string;
   fill: boolean;

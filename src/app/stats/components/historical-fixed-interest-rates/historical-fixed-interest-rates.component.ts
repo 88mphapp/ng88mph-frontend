@@ -17,7 +17,7 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
   // constants
   FIRST_INDEX = {
     [this.constants.CHAIN_ID.MAINNET]: 1620259200,
-    [this.constants.CHAIN_ID.RINKEBY]: 1626048000,
+    [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   COLORS: string[] = [
@@ -106,6 +106,18 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
       hover: {
         mode: 'dataset',
       },
+      elements: {
+        point: {
+          radius: 0,
+          hoverRadius: 2,
+          hitRadius: 4,
+        },
+        line: {
+          tension: 0,
+          borderWidth: 2,
+          hoverBorderWidth: 2,
+        },
+      },
     };
     this.lineChartLabels = this.readable;
     this.lineChartType = 'line';
@@ -175,16 +187,10 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
       dataobj = {
         label: dpools[i].address,
         data: [],
-        borderWidth: 3,
-        hoverBorderWidth: 3,
         borderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         hoverBorderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
-        pointBorderColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
-        pointBackgroundColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         pointHoverBorderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
         pointHoverBackgroundColor:
@@ -235,12 +241,8 @@ interface QueryResult {
 interface DataObject {
   label: string;
   data: Array<number>;
-  borderWidth: number;
-  hoverBorderWidth: number;
   borderColor: string;
   hoverBorderColor: string;
-  pointBorderColor: string;
-  pointBackgroundColor: string;
   pointHoverBorderColor: string;
   pointHoverBackgroundColor: string;
   fill: boolean;
