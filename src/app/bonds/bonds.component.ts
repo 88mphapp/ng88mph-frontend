@@ -510,7 +510,11 @@ export class BondsComponent implements OnInit {
 
         // deposit hasn't been funded yet
         // @dev yield tokens available will equal the total principal of the deposit
-        if (deposit.funding === null && surplus.lt(0)) {
+        if (
+          deposit.funding === null &&
+          surplus.lt(0) &&
+          surplus.negated().gt(this.constants.DUST_THRESHOLD)
+        ) {
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
             pool: this.selectedPool,
@@ -528,7 +532,10 @@ export class BondsComponent implements OnInit {
         }
 
         // deposit has been partially funded and has a negative surplus
-        else if (surplus.lt(0)) {
+        else if (
+          surplus.lt(0) &&
+          surplus.negated().gt(this.constants.DUST_THRESHOLD)
+        ) {
           const supply = deposit.funding.totalSupply;
           const principalPerToken = deposit.funding.principalPerToken;
           const unfundedPrincipalAmount = totalPrincipal.minus(
