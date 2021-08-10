@@ -49,7 +49,8 @@ export class ConstantsService {
   MPH_TOKEN_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/mph-token',
-    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.RINKEBY]:
+      'https://api.thegraph.com/subgraphs/name/0xszeth/mph-token-rinkeby',
   };
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
@@ -182,7 +183,7 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: '',
   };
   BANCOR_LP = {
-    [this.CHAIN_ID.MAINNET]: '0xabf26410b1cff45641af087ee939e52e328cee46',
+    [this.CHAIN_ID.MAINNET]: '0xdf3fdfbce72da4fd42e7cfde7249e15357c7d808',
     [this.CHAIN_ID.RINKEBY]: '',
   };
 
