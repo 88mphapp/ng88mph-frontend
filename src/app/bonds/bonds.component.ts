@@ -287,10 +287,10 @@ export class BondsComponent implements OnInit {
           // add the funding to the funderPool
           const fundingObj: FundedDeposit = {
             yieldToken: yieldToken,
-            fundingID: funding.nftID,
+            fundingID: +funding.nftID,
             stablecoinPrice: stablecoinPrice,
             funderAccruedInterest: funderAccruedInterest,
-            maturationTimestamp: funding.deposit.maturationTimestamp,
+            maturationTimestamp: +funding.deposit.maturationTimestamp,
             yieldTokenBalance: yieldTokenBalance,
             yieldTokenBalanceUSD: yieldTokenBalanceUSD,
             earnYieldOn: earnYieldOn,
@@ -435,6 +435,7 @@ export class BondsComponent implements OnInit {
         dpool(id: "${poolID}") {
           id
           poolFunderRewardMultiplier
+          moneyMarketIncomeIndex
           deposits(
             where: {
               amount_gt: "${this.constants.DUST_THRESHOLD}",
@@ -455,6 +456,7 @@ export class BondsComponent implements OnInit {
               totalSupply
               principalPerToken
             }
+            averageRecordedIncomeIndex
           }
         }
       }
@@ -485,25 +487,26 @@ export class BondsComponent implements OnInit {
 
         const depositAmount = new BigNumber(deposit.amount);
 
-        let surplus;
-        const stablecoinPrecision = Math.pow(
-          10,
-          this.selectedPool.stablecoinDecimals
-        );
-        await lens.methods
-          .surplusOfDeposit(this.selectedPool.address, deposit.nftID)
-          .call()
-          .then((result) => {
-            if (result.isNegative === true) {
-              surplus = new BigNumber(result.surplusAmount)
-                .div(stablecoinPrecision)
-                .negated();
-            } else {
-              surplus = new BigNumber(result.surplusAmount).div(
-                stablecoinPrecision
-              );
-            }
-          });
+        // compute fundable deposit surplus
+        let surplus: BigNumber;
+        const currentDepositValue = depositAmount
+          .times(data.dpool.moneyMarketIncomeIndex)
+          .div(deposit.averageRecordedIncomeIndex);
+        const rawSurplus = currentDepositValue.minus(totalPrincipal);
+        if (deposit.funding) {
+          // only consider the surplus of the unfunded portion
+          const supply = deposit.funding.totalSupply;
+          const principalPerToken = deposit.funding.principalPerToken;
+          const unfundedPrincipalAmount = totalPrincipal.minus(
+            supply * principalPerToken
+          );
+          surplus = rawSurplus
+            .times(unfundedPrincipalAmount)
+            .div(totalPrincipal);
+        } else {
+          // surplus equals raw surplus
+          surplus = rawSurplus;
+        }
 
         // deposit hasn't been funded yet
         // @dev yield tokens available will equal the total principal of the deposit
@@ -511,7 +514,7 @@ export class BondsComponent implements OnInit {
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
             pool: this.selectedPool,
-            maturationTimestamp: deposit.maturationTimestamp,
+            maturationTimestamp: +deposit.maturationTimestamp,
             unfundedDepositAmount: depositAmount,
             unfundedDepositAmountUSD: depositAmount.times(stablecoinPrice),
             yieldTokensAvailable: totalPrincipal,
@@ -538,7 +541,7 @@ export class BondsComponent implements OnInit {
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
             pool: this.selectedPool,
-            maturationTimestamp: deposit.maturationTimestamp,
+            maturationTimestamp: +deposit.maturationTimestamp,
             unfundedDepositAmount: unfundedDepositAmount,
             unfundedDepositAmountUSD:
               unfundedDepositAmount.times(stablecoinPrice),
@@ -644,44 +647,46 @@ interface QueryResult {
   funder: {
     address: string;
     fundings: {
-      nftID: number;
-      totalSupply: number;
-      principalPerToken: number;
-      totalRefundEarned: number;
+      nftID: string;
+      totalSupply: string;
+      principalPerToken: string;
+      totalRefundEarned: string;
       pool: {
         address: string;
-        poolFunderRewardMultiplier: BigNumber;
+        poolFunderRewardMultiplier: string;
       };
       deposit: {
-        maturationTimestamp: number;
-        interestRate: BigNumber;
-        feeRate: BigNumber;
+        maturationTimestamp: string;
+        interestRate: string;
+        feeRate: string;
       };
     }[];
   };
   dpools: {
     id: string;
     address: string;
-    surplus: number;
-    oneYearInterestRate: number;
-    oracleInterestRate: number;
-    poolFunderRewardMultiplier: BigNumber;
+    surplus: string;
+    oneYearInterestRate: string;
+    oracleInterestRate: string;
+    poolFunderRewardMultiplier: string;
   }[];
 }
 
 interface FundableDepositsQuery {
   dpool: {
     id: string;
-    poolFunderRewardMultiplier: BigNumber;
+    poolFunderRewardMultiplier: string;
+    moneyMarketIncomeIndex: string;
     deposits: {
       id: string;
       nftID: string;
-      amount: BigNumber;
-      virtualTokenTotalSupply: BigNumber;
-      interestRate: BigNumber;
-      feeRate: BigNumber;
-      maturationTimestamp: number;
+      amount: string;
+      virtualTokenTotalSupply: string;
+      interestRate: string;
+      feeRate: string;
+      maturationTimestamp: string;
       funding: Funding;
+      averageRecordedIncomeIndex: string;
     }[];
   };
 }
