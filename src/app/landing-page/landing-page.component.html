@@ -220,6 +220,7 @@
             class="btn btn-lg btn-bg-gradient btn-block mb-2"
             type="button"
             (click)="openDepositModal(selectedPool.name)"
+            [disabled]="wallet.watching"
           >
             Start Earning
           </button>

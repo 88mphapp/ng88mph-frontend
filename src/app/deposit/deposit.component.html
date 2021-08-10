@@ -146,9 +146,11 @@
         </h5>
         <!-- Button -->
         <button
+          *ngIf="totalMPHEarned.gt(0)"
           type="button"
           class="btn btn-sm btn-bg-gradient"
           (click)="claimAllRewards()"
+          [disabled]="wallet.watching"
         >
           <i class="fe fe-dollar-sign mr-2 align-bottom"></i>Claim all
         </button>
@@ -286,6 +288,7 @@
                       type="button"
                       class="btn btn-sm btn-bg-gradient mr-3"
                       (click)="openDepositModal(pool.name)"
+                      [disabled]="wallet.watching"
                     >
                       <i class="fe fe-arrow-up mr-2 align-bottom"></i>Deposit
                     </button>
@@ -397,6 +400,7 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-3"
                             (click)="openNFTModal(deposit, userPool.poolInfo)"
+                            [disabled]="wallet.watching"
                           >
                             <i class="fe fe-settings mr-2 align-bottom"></i>NFT
                           </button>
@@ -404,6 +408,7 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-3"
                             (click)="openRewardsModal(deposit)"
+                            [disabled]="wallet.watching"
                           >
                             <i class="fe fe-dollar-sign mr-2 align-bottom"></i
                             >Claim
@@ -413,6 +418,7 @@
                             class="btn btn-sm btn-dark mr-3"
                             (click)="openTopUpModal(deposit, userPool.poolInfo)"
                             *ngIf="deposit.locked"
+                            [disabled]="wallet.watching"
                           >
                             <i class="fe fe-plus mr-2 align-bottom"></i>Top up
                           </button>
@@ -423,6 +429,7 @@
                               openRollOverModal(deposit, userPool.poolInfo)
                             "
                             *ngIf="!deposit.locked"
+                            [disabled]="wallet.watching"
                           >
                             <i class="fe fe-rotate-cw mr-2 align-bottom"></i
                             >Roll over
@@ -433,6 +440,7 @@
                             (click)="
                               openWithdrawModal(deposit, userPool.poolInfo)
                             "
+                            [disabled]="wallet.watching"
                           >
                             <i class="fe fe-arrow-down mr-2 align-bottom"></i>
                             <ng-container *ngIf="deposit.locked">
