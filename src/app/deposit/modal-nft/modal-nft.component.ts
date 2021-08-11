@@ -54,6 +54,7 @@ export class ModalNftComponent implements OnInit {
       .then((nftAddress) => {
         this.nftAddress = nftAddress;
         this.loadedNFTAddress = true;
+        this.loadNFTData(nftAddress);
       });
 
     this.imageURL = '../../assets/img/placeholder.svg';
@@ -67,10 +68,33 @@ export class ModalNftComponent implements OnInit {
     autosize(document.querySelector('textarea'));
   }
 
-  addAttribute() {
+  async loadNFTData(nftAddress: string) {
+    const nftContract = this.contract.getContract(nftAddress, 'NFT');
+    const tokenURI = await nftContract.methods
+      .tokenURI(this.userDeposit.nftID)
+      .call();
+    if (!tokenURI) return;
+
+    const hash = tokenURI.split('//');
+    const request = await fetch(`https://ipfs.io/ipfs/${hash[1]}`);
+    const json = await request.json();
+
+    this.name = json.name;
+    this.imageURL = `https://ipfs.io/ipfs/${json.image.split('//')[1]}`;
+    this.description = json.description;
+    for (let i = 0; i < json.attributes.length; i++) {
+      this.addAttribute(
+        json.attributes[i].trait_type,
+        json.attributes[i].value
+      );
+    }
+    this.externalURL = json.externalURL;
+  }
+
+  addAttribute(trait_type?: string, value?: string) {
     const newAttribute = this.fb.group({
-      trait_type: ['', Validators.required],
-      value: ['', Validators.required],
+      trait_type: [trait_type ? trait_type : '', Validators.required],
+      value: [value ? value : '', Validators.required],
     });
     this.attributes.push(newAttribute);
   }
