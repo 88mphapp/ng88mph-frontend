@@ -77,10 +77,8 @@ export class LossProvisionComponent implements OnInit {
 
   async drawChart(networkID: number) {
     // wait for data to load
-    await this.loadData();
-    if (networkID !== this.wallet.networkID) {
-      return;
-    }
+    const loaded = await this.loadData(networkID);
+    if (!loaded) return;
 
     // then draw the chart
     this.barChartOptions = {
@@ -112,7 +110,7 @@ export class LossProvisionComponent implements OnInit {
     this.barChartData = this.data;
   }
 
-  async loadData() {
+  async loadData(networkID: number): Promise<boolean> {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
       this.FIRST_INDEX[this.wallet.networkID],
@@ -134,6 +132,11 @@ export class LossProvisionComponent implements OnInit {
       );
     }
     this.readable = readable;
+
+    // bail if a chain change has occured
+    if (networkID !== this.wallet.networkID) {
+      return false;
+    }
 
     let queryString = `query InterestExpense {`;
     queryString += `dpools {
@@ -172,6 +175,8 @@ export class LossProvisionComponent implements OnInit {
     request(this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID], query).then(
       (data: QueryResult) => this.handleData(data)
     );
+
+    return true;
   }
 
   async handleData(data: QueryResult) {

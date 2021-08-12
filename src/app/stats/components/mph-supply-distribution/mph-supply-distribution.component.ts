@@ -82,10 +82,8 @@ export class MphSupplyDistributionComponent implements OnInit {
 
   async drawChart(networkID: number) {
     // wait for data to load
-    await this.loadData();
-    if (networkID !== this.wallet.networkID) {
-      return;
-    }
+    const loaded = await this.loadData(networkID);
+    if (!loaded) return;
 
     // then draw the chart
     this.barChartOptions = {
@@ -181,7 +179,7 @@ export class MphSupplyDistributionComponent implements OnInit {
     ];
   }
 
-  async loadData() {
+  async loadData(networkID: number): Promise<boolean> {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
       this.FIRST_INDEX[this.wallet.networkID],
@@ -203,6 +201,11 @@ export class MphSupplyDistributionComponent implements OnInit {
       );
     }
     this.readable = readable;
+
+    // bail if a chain change has occured
+    if (networkID !== this.wallet.networkID) {
+      return false;
+    }
 
     // generate the query for total MPH supply
     let supplyQueryString = `query TotalSupply {`;
@@ -262,6 +265,8 @@ export class MphSupplyDistributionComponent implements OnInit {
       this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
       addressQuery
     ).then((data: QueryResult) => this.handleAddressData(data));
+
+    return true;
   }
 
   handleSupplyData(data: QueryResult) {

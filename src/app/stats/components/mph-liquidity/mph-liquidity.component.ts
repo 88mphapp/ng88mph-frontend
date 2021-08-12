@@ -68,10 +68,8 @@ export class MphLiquidityComponent implements OnInit {
 
   async drawChart(networkID: number) {
     // wait for data to load
-    await this.loadData();
-    if (networkID !== this.wallet.networkID) {
-      return;
-    }
+    const loaded = await this.loadData(networkID);
+    if (!loaded) return;
 
     // then draw the chart
     this.barChartOptions = {
@@ -132,7 +130,7 @@ export class MphLiquidityComponent implements OnInit {
     ];
   }
 
-  async loadData() {
+  async loadData(networkID: number): Promise<boolean> {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
       this.FIRST_INDEX[this.wallet.networkID],
@@ -155,11 +153,18 @@ export class MphLiquidityComponent implements OnInit {
     }
     this.readable = readable;
 
+    // bail if a chain change has occured
+    if (networkID !== this.wallet.networkID) {
+      return false;
+    }
+
     // load data
     this.loadUniswapV2();
     this.loadUniswapV3();
     this.loadSushiswap();
     this.loadBancor();
+
+    return true;
   }
 
   async loadUniswapV2() {
