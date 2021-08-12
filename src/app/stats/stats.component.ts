@@ -50,6 +50,9 @@ export class StatsComponent implements OnInit {
           stablecoin
           totalDeposit
         }
+        globalStats(id: "0") {
+          xMPHRewardDistributed
+        }
       }
     `;
     request(
@@ -118,6 +121,14 @@ export class StatsComponent implements OnInit {
 
   async handleData(data: QueryResult) {
     const dpools = data.dpools;
+    const rewards = data.globalStats;
+
+    if (rewards) {
+      this.mphTotalHistoricalReward = new BigNumber(
+        rewards.xMPHRewardDistributed
+      );
+    }
+
     if (dpools) {
       let totalDepositUSD = new BigNumber(0);
       let stablecoinPriceCache = {};
@@ -159,4 +170,7 @@ interface QueryResult {
     stablecoin: string;
     totalDeposit: number;
   }[];
+  globalStats: {
+    xMPHRewardDistributed: string;
+  };
 }
