@@ -37,6 +37,7 @@ import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.com
 import { ModalTransactionAlertsComponent } from './modal-transaction-alerts/modal-transaction-alerts.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalNftComponent } from './deposit/modal-nft/modal-nft.component';
+import { LossProvisionComponent } from './stats/components/loss-provision/loss-provision.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { ModalNftComponent } from './deposit/modal-nft/modal-nft.component';
     TermsOfServiceComponent,
     ModalTransactionAlertsComponent,
     ModalNftComponent,
+    LossProvisionComponent,
   ],
   imports: [
     BrowserModule,
