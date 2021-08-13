@@ -1,6 +1,13 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">MPH Supply Distribution</h5>
+    <h5 class="text-uppercase text-center">
+      MPH Supply Distribution
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        ngbTooltip="The amount of MPH held by specific address (e.g. 88mph's Governance Treasury)."
+      ></i>
+    </h5>
     <canvas
       baseChart
       [datasets]="barChartData"

@@ -1,6 +1,13 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">Funded Interest Expenses (%)</h5>
+    <h5 class="text-uppercase text-center">
+      Funded Interest Expense
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        ngbTooltip="The percentage (%) of fixed-interest deposits whose debt (interest + fee) has been funded by yield token holders."
+      ></i>
+    </h5>
     <canvas
       baseChart
       [datasets]="lineChartData"
