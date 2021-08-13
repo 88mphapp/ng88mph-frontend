@@ -1,6 +1,13 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">Historical Asset TVL (USD)</h5>
+    <h5 class="text-uppercase text-center">
+      Asset TVL
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        ngbTooltip="The amount (USD) of deposited assets in fixed-interest rate bond pools."
+      ></i>
+    </h5>
     <canvas
       baseChart
       [datasets]="barChartData"

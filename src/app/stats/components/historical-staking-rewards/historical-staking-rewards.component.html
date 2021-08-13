@@ -1,6 +1,13 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">Historical Staking Rewards (MPH)</h5>
+    <h5 class="text-uppercase text-center">
+      Staking Rewards
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        ngbTooltip="The cumulative amount of MPH distributed to xMPH holders."
+      ></i>
+    </h5>
     <canvas
       baseChart
       [datasets]="barChartData"

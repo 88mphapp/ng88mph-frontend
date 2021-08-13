@@ -1,6 +1,13 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">MPH Liquidity (USD)</h5>
+    <h5 class="text-uppercase text-center">
+      MPH Liquidity
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        ngbTooltip="The amount (USD) of liquidity for MPH trading pairs (e.g. MPH/ETH)."
+      ></i>
+    </h5>
     <canvas
       baseChart
       [datasets]="barChartData"
