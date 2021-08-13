@@ -155,7 +155,6 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
     let queryString = `query HistoricalFixedInterestRates {`;
     queryString += `dpools {
       address
-      stablecoin
       oneYearInterestRate
     }`;
     for (let i = 0; i < this.blocks.length; i++) {
@@ -165,7 +164,6 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
         }
       ) {
         address
-        stablecoin
         oneYearInterestRate
       }`;
     }
@@ -175,10 +173,10 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
     `;
 
     // then run the query
-    request(this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID], query).then(
-      (data: QueryResult) => this.handleData(data)
-    );
-
+    request(
+      this.constants.BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      query
+    ).then((data: QueryResult) => this.handleData(data));
     return true;
   }
 
@@ -208,9 +206,9 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
     for (let i in result) {
       if (i !== 'dpools') {
         // initialize the data array
-        for (let i in this.data) {
-          if (this.data[i].label) {
-            this.data[i].data.push(0);
+        for (let d in this.data) {
+          if (this.data[d].label) {
+            this.data[d].data[parseInt(i.substring(1))] = 0;
           }
         }
 
@@ -238,7 +236,6 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
 interface QueryResult {
   dpools: {
     address: string;
-    stablecoin: string;
     oneYearInterestRate: number;
   }[];
 }

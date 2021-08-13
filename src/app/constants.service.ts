@@ -52,6 +52,12 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/mph-token-rinkeby',
   };
+  BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT = {
+    // used for more accurate historical data
+    [this.CHAIN_ID.MAINNET]: '',
+    [this.CHAIN_ID.RINKEBY]:
+      'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-rinkeby',
+  };
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
