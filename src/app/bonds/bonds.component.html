@@ -297,23 +297,27 @@
           />
           <div class="row justify-content-between text-white px-1 mb-0">
             <div class="col">
-              <small>0%</small>
+              <small class="d-block">0%</small>
+              <small class="text-danger">I'm feeling 🐻</small>
             </div>
             <div class="col text-center">
-              <small
-                >{{ selectedPool?.oracleInterestRate.toFormat(1) }}% <br />
-                (Current
-                <a href="https://docs.88mph.app/" target="_blank"
-                  >30d EMA floating-rate APY</a
-                >)</small
-              >
+              <small>
+                {{ selectedPool?.oracleInterestRate.toFormat(1) }}% <br />
+                Current supply APY
+                <i
+                  class="fe fe-info ml-1 align-bottom"
+                  placement="top"
+                  ngbTooltip="Current variable yield rate for supplying the pool's asset (for eg. DAI) on the underlying lending protocol used by 88mph, such as Compound or Aave."
+                ></i>
+              </small>
             </div>
             <div class="col text-right">
-              <small
+              <small class="d-block"
                 >{{
                   selectedPool?.oracleInterestRate.times(2).toFormat(1)
                 }}%</small
               >
+              <small class="text-success">I'm feeling 🐂</small>
             </div>
           </div>
         </div>
@@ -338,7 +342,7 @@
                     <th>Maturity</th>
                     <th>Yield tokens available</th>
                     <th>You earn yield on</th>
-                    <th>Est. APR / MPH rewards APR</th>
+                    <th>Est. ROI / MPH rewards APR</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -386,7 +390,7 @@
                       </td>
                       <td>
                         <h4 class="mb-1 font-weight-bold glowing">
-                          {{ deposit.estimatedAPR.toFormat(2) }}% APR
+                          {{ deposit.estimatedAPR.toFormat(2) }}% ROI
                           <span
                             class="
                               badge badge-dark

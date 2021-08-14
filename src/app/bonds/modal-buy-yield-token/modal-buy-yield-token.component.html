@@ -74,7 +74,7 @@
                 >
               </div>
 
-              <div class="table-responsive p-3">
+              <div class="table-responsive pl-0 pr-3">
                 <table class="table">
                   <tbody>
                     <tr>
@@ -95,7 +95,12 @@
                     </tr>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small">
-                        You earn yield on
+                        You earn floating-rate yield on
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="The yield payment to yield token holders is automatically triggered whenever part or all of the corresponding deposit is withdrawn, and it is also possible to manually trigger it by hitting the 'Make accrued interest claimable' button in the Claim Modal (Modal accessible from the main Yield page after YT purchase)."
+                        ></i>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
@@ -109,6 +114,52 @@
                             earnYieldOn.times(stablecoinPriceUSD).toFormat(2)
                           }}
                         </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        MPH rewards
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="When a user buys yield tokens, they will receive newly-minted MPH tokens as the underlying deposit earns interest; similar to vesting. You can claim your MPH rewards whenever you want from the Claim Modal accessible via the main Yield page. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
+                        ></i>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <span class="h4 mb-1 glowing"> 0.00 MPH </span>
+                        <span class="h5 text-muted"> $0.00 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        MPH APR
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="MPH APR varies based on the USD value of MPH. The APY is just a representation on how these MPH rewards would be during a 1-year period"
+                        ></i>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-1 glowing">+0.00%</h4>
+                      </td>
+                    </tr>
+                    <tr style="border-top: 1px dotted white">
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Total earned at maturity (incl. MPH)
+                        <i
+                          class="fe fe-info ml-1 align-bottom"
+                          placement="top"
+                          ngbTooltip="Estimated floating-rate yield earned + MPH tokens"
+                        ></i>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-1 glowing">$0.00</h4>
                       </td>
                     </tr>
                   </tbody>
