@@ -28,7 +28,7 @@
           <div class="col">
             <p class="mb-0">
               <strong>Deposit</strong> crypto or stablecoins below to start
-              earning fixed-rate APY and MPH tokens.
+              earning fixed-rate APR and MPH tokens.
             </p>
             <!-- Button -->
             <button
@@ -204,7 +204,7 @@
               <tr>
                 <th>Pool</th>
                 <th>Your deposits balance</th>
-                <th>Fixed-rate APY / MPH rewards APR</th>
+                <th>Fixed-rate APR / MPH rewards APY</th>
                 <th></th>
               </tr>
             </thead>
@@ -278,7 +278,7 @@
                           class="avatar-img rounded-circle"
                         />
                       </div>
-                      +{{ pool.mphAPY.toFormat(DECIMALS) }}% APR
+                      +{{ pool.mphAPY.toFormat(DECIMALS) }}%
                     </span>
                   </td>
                   <td class="text-right">
@@ -355,7 +355,7 @@
                         </td>
                         <td>
                           <span class="h4 mb-1 glowing">
-                            {{ deposit.apy.toFormat(DECIMALS) }}% APY
+                            {{ deposit.apy.toFormat(DECIMALS) }}%
                           </span>
                           <span
                             class="
@@ -377,7 +377,7 @@
                                 class="avatar-img rounded-circle"
                               />
                             </div>
-                            +{{ deposit.mphAPY.toFormat(DECIMALS) }}% APY
+                            +{{ deposit.mphAPY.toFormat(DECIMALS) }}%
                           </span>
                           <span class="text-muted d-block"
                             >{{
