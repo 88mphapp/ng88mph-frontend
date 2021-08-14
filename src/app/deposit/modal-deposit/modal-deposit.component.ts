@@ -325,7 +325,7 @@ export class ModalDepositComponent implements OnInit {
       .div(stablecoinPrecision)
       .times(stablecoinPrice);
 
-    // get APY
+    // get APR
     this.apy = this.interestAmountToken
       .div(this.depositAmount)
       .div(depositTime)

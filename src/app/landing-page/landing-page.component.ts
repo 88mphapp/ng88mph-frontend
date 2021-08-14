@@ -274,7 +274,7 @@ export class LandingPageComponent implements OnInit {
       .div(stablecoinPrecision)
       .times(stablecoinPrice);
 
-    // get APY
+    // get APR
     this.apy = interestAmountToken
       .div(depositAmount)
       .div(depositTime)

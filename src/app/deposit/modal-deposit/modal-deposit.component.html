@@ -295,11 +295,11 @@
                     <tbody>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Fixed-rate APY
+                          Fixed-rate APR
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
-                            ngbTooltip="When users/protocols deposit assets into an 88mph pool, they earn a fixed-rate yield during the duration of the deposit that is redeemable at maturity. A longer deposit's maturity will earn a lower rate because we can't predicte the variable yield rate on the underlying protocols used by 88mph (Aave, Compound, Yearn, etc.)."
+                            ngbTooltip="When users/protocols deposit assets into an 88mph pool, they earn a fixed-rate yield during the duration of the deposit that is redeemable at maturity. A longer deposit's maturity will earn a lower rate because we can't predicte the variable yield rate on the underlying protocols used by 88mph (Aave, Compound, etc.)."
                           ></i>
                         </td>
                         <td
@@ -421,7 +421,7 @@
                       <!--displayed if preset maturity selected-->
                       <tr *ngIf="presetMaturity">
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH APR
+                          MPH APY
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
@@ -438,11 +438,11 @@
                       </tr>
                       <tr *ngIf="!presetMaturity">
                         <td class="px-0 py-2 text-white border-0 small">
-                          MPH APR
+                          MPH APY
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
-                            ngbTooltip="MPH APR varies based on the USD value of MPH. The APR is just a representation on how these MPH rewards would be during a 1-year period"
+                            ngbTooltip="MPH APR varies based on the USD value of MPH. The APY is just a representation on how these MPH rewards would be during a 1-year period"
                           ></i>
                         </td>
                         <td

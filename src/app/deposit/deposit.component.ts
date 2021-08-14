@@ -227,7 +227,7 @@ export class DepositComponent implements OnInit {
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
           }
 
-          // get MPH APY
+          // get MPH APR
           const mphDepositorRewardMintMultiplier = new BigNumber(
             pool.poolDepositorRewardMintMultiplier
           );
@@ -304,7 +304,7 @@ export class DepositComponent implements OnInit {
             const interestEarnedUSD =
               interestEarnedToken.times(stablecoinPrice);
 
-            // compute MPH APY
+            // compute MPH APR
             let realMPHReward = new BigNumber(0);
             if (deposit.vest) {
               if (deposit.vest.owner !== user.address) {

@@ -135,7 +135,7 @@ export class ModalTopUpComponent implements OnInit {
       .div(stablecoinPrecision)
       .times(stablecoinPrice);
 
-    // get APY
+    // get APR
     this.interestRate = interestAmountToken
       .div(depositAmountToken)
       .div(depositTime)

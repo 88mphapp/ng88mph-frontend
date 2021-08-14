@@ -469,7 +469,7 @@ export class BondsComponent implements OnInit {
       const pool = this.contract.getPool(this.selectedPool.name);
       const lens = this.contract.getNamedContract('DInterestLens');
 
-      // get MPH APY
+      // get MPH APR
       const mphFunderRewardMultiplier = new BigNumber(
         data.dpool.poolFunderRewardMultiplier
       );

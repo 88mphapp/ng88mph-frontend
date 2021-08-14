@@ -149,7 +149,7 @@ export class ModalRollOverComponent implements OnInit {
       .div(stablecoinPrecision)
       .times(this.stablecoinPriceUSD);
 
-    // get APY
+    // get APR
     this.interestRate = interestAmountToken
       .div(depositAmountToken)
       .div(depositTime)
