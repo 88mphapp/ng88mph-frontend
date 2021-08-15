@@ -158,7 +158,7 @@ export class NetInterestMarginComponent implements OnInit {
     }
 
     // then generate the query
-    let queryString = `query InterestExpense {`;
+    let queryString = `query Expenses {`;
     queryString += `dpools {
         id
         address
@@ -174,7 +174,6 @@ export class NetInterestMarginComponent implements OnInit {
         totalDeposit
         totalInterestOwed
         totalFeeOwed
-        oracleInterestRate
       }`;
     }
     queryString += `}`;
@@ -188,6 +187,32 @@ export class NetInterestMarginComponent implements OnInit {
     );
 
     return true;
+  }
+
+  loadEarningsData() {
+    // generate the query
+    let queryString = `query Earnings {`;
+    for (let i = 0; i < this.blocks.length; i++) {
+      queryString += `t${i}: dpools(
+        block: {
+          number: ${this.blocks[i]}
+        }
+      ) {
+        id
+        address
+        oracleInterestRate
+      }`;
+    }
+    queryString += `}`;
+    const query = gql`
+      ${queryString}
+    `;
+
+    // run the query
+    request(
+      this.constants.BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      query
+    ).then((data: QueryResult) => this.handleEarningsData(data));
   }
 
   async handleData(data: QueryResult) {
@@ -220,7 +245,6 @@ export class NetInterestMarginComponent implements OnInit {
       if (i !== 'dpools') {
         for (let d in this.data) {
           if (this.data[d].label) {
-            this.data[d].interestEarned[parseInt(i.substring(1))] = 0;
             this.data[d].interestExpenses[parseInt(i.substring(1))] = 0;
             this.data[d].totalDeposits[parseInt(i.substring(1))] = 0;
           }
@@ -235,17 +259,36 @@ export class NetInterestMarginComponent implements OnInit {
           );
           entry.interestExpenses[parseInt(i.substring(1))] =
             parseFloat(pool.totalInterestOwed) + parseFloat(pool.totalFeeOwed);
-
-          const interestRate = new BigNumber(pool.oracleInterestRate).times(
-            this.constants.YEAR_IN_SEC
-          );
-          const interestEarned = interestRate.times(pool.totalDeposit);
-          entry.interestEarned[parseInt(i.substring(1))] =
-            interestEarned.toNumber();
         }
       }
     }
 
+    this.loadEarningsData();
+  }
+
+  async handleEarningsData(data: QueryResult) {
+    let result = data;
+    for (let i in result) {
+      for (let d in this.data) {
+        if (this.data[d].label) {
+          this.data[d].interestEarned[parseInt(i.substring(1))] = 0;
+        }
+      }
+
+      for (let p in result[i]) {
+        const pool = result[i][p];
+        const entry = this.data.find((x) => x.label === pool.address);
+        const deposits = entry.totalDeposits[parseInt(i.substring(1))];
+        const interestRate = new BigNumber(pool.oracleInterestRate).times(
+          this.constants.YEAR_IN_SEC
+        );
+        const interestEarned = interestRate.times(deposits);
+        entry.interestEarned[parseInt(i.substring(1))] =
+          interestEarned.toNumber();
+      }
+    }
+
+    // calculate the data to be displayed (NIM)
     for (let i in this.data) {
       if (this.data[i].label) {
         for (let t = 0; t < this.blocks.length; t++) {
