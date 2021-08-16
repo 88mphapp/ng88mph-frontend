@@ -20,6 +20,10 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   stablecoinPriceUSD: BigNumber;
   youPay: BigNumber;
   earnYieldOn: BigNumber;
+  mphRewards: BigNumber;
+  mphRewardsAPR: BigNumber;
+  totalEarned: BigNumber;
+  mphPriceUSD: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -37,7 +41,6 @@ export class ModalBuyYieldTokenComponent implements OnInit {
 
   async loadData() {
     this.fundAmount = this.deposit.yieldTokensAvailable;
-    this.updateDetails();
 
     const stablecoin = this.contract.getPoolStablecoin(this.deposit.pool.name);
     this.stablecoinPriceUSD = new BigNumber(
@@ -51,6 +54,12 @@ export class ModalBuyYieldTokenComponent implements OnInit {
           this.constants.PRECISION
         );
       });
+
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
+
+    this.updateDetails();
   }
 
   resetData(): void {
@@ -59,6 +68,10 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     this.stablecoinPriceUSD = new BigNumber(0);
     this.youPay = new BigNumber(0);
     this.earnYieldOn = new BigNumber(0);
+    this.mphRewards = new BigNumber(0);
+    this.mphRewardsAPR = new BigNumber(0);
+    this.totalEarned = new BigNumber(0);
+    this.mphPriceUSD = new BigNumber(0);
   }
 
   setFundAmount(amount: number | string) {
@@ -70,6 +83,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   }
 
   async updateDetails() {
+    console.log(this.deposit);
     const lens = this.contract.getNamedContract('DInterestLens');
     const depositID = this.deposit.id.split('---')[1];
 
@@ -93,7 +107,27 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     }
 
     this.youPay = fundAmount;
-    this.earnYieldOn = fundPercent.times(this.deposit.unfundedDepositAmount);
+    this.earnYieldOn = fundPercent
+      .times(this.deposit.unfundedDepositAmount)
+      .plus(fundAmount);
+
+    const depositLength = this.deposit.maturationTimestamp - Date.now() / 1e3;
+    const estimatedInterestEarned = this.earnYieldOn
+      .times(this.deposit.pool.oracleInterestRate)
+      .div(100)
+      .div(this.constants.YEAR_IN_SEC)
+      .times(depositLength);
+    this.mphRewards = estimatedInterestEarned
+      .times(Math.pow(10, this.deposit.pool.stablecoinDecimals))
+      .times(this.deposit.pool.poolFunderRewardMultiplier)
+      .div(this.constants.PRECISION);
+    this.mphRewardsAPR = this.mphRewards
+      .times(this.mphPriceUSD)
+      .div(fundAmount.times(this.stablecoinPriceUSD))
+      .times(100);
+    this.totalEarned = estimatedInterestEarned
+      .times(this.stablecoinPriceUSD)
+      .plus(this.mphRewards.times(this.mphPriceUSD));
   }
 
   async buyYieldTokens() {
