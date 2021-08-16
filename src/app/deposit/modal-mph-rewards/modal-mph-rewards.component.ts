@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
@@ -25,7 +26,8 @@ export class ModalMphRewardsComponent implements OnInit {
     public wallet: WalletService,
     public contract: ContractService,
     public helpers: HelpersService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    private router: Router
   ) {
     this.resetData();
   }
@@ -98,7 +100,9 @@ export class ModalMphRewardsComponent implements OnInit {
         this.activeModal.dismiss();
       },
       () => {},
-      () => {},
+      () => {
+        this.router.navigateByUrl('/stake');
+      },
       (error) => {
         this.wallet.displayGenericError(error);
       }
