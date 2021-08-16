@@ -128,8 +128,12 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <span class="h4 mb-1 glowing"> 0.00 MPH </span>
-                        <span class="h5 text-muted"> $0.00 </span>
+                        <span class="h4 mb-1 glowing">
+                          {{ mphRewards.toFormat(4) }} MPH
+                        </span>
+                        <span class="h5 text-muted">
+                          ${{ mphRewards.times(mphPriceUSD).toFormat(2) }}
+                        </span>
                       </td>
                     </tr>
                     <tr>
@@ -144,7 +148,9 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-1 glowing">+0.00%</h4>
+                        <h4 class="mb-1 glowing">
+                          +{{ mphRewardsAPR.toFormat(2) }}%
+                        </h4>
                       </td>
                     </tr>
                     <tr style="border-top: 1px dotted white">
@@ -159,7 +165,9 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-1 glowing">$0.00</h4>
+                        <h4 class="mb-1 glowing">
+                          ${{ totalEarned.toFormat(2) }}
+                        </h4>
                       </td>
                     </tr>
                   </tbody>
