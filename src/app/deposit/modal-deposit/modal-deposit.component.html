@@ -528,6 +528,7 @@
                   type="button"
                   (click)="deposit()"
                   [disabled]="!canContinue() || this.wallet.watching"
+                  routerLink="/earn"
                 >
                   Deposit
                 </button>
