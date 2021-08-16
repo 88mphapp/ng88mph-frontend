@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
@@ -50,7 +51,8 @@ export class DepositComponent implements OnInit {
     public contract: ContractService,
     public helpers: HelpersService,
     public constants: ConstantsService,
-    public datas: DataService
+    public datas: DataService,
+    private router: Router
   ) {
     this.resetData(true, true);
   }
@@ -592,7 +594,9 @@ export class DepositComponent implements OnInit {
       func,
       () => {},
       () => {},
-      () => {},
+      () => {
+        this.router.navigateByUrl('/stake');
+      },
       (error) => {
         this.wallet.displayGenericError(error);
       }
