@@ -22,6 +22,7 @@ export class ModalNftComponent implements OnInit {
   loadedNFTAddress: boolean;
 
   nftStorageClient: NFTStorage;
+  openseaURL: string;
 
   name: string;
   description: string;
@@ -69,6 +70,10 @@ export class ModalNftComponent implements OnInit {
   }
 
   async loadNFTData(nftAddress: string) {
+    this.openseaURL = `https://${
+      this.wallet.networkID == this.constants.CHAIN_ID.MAINNET ? '' : 'testnets'
+    }.opensea.io/assets/${nftAddress}/${this.userDeposit.nftID}`;
+
     const nftContract = this.contract.getContract(nftAddress, 'NFT');
     const tokenURI = await nftContract.methods
       .tokenURI(this.userDeposit.nftID)
