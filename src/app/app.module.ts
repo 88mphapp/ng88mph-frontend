@@ -39,6 +39,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalNftComponent } from './deposit/modal-nft/modal-nft.component';
 import { LossProvisionComponent } from './stats/components/loss-provision/loss-provision.component';
 import { HistoricalStakingRewardsComponent } from './stats/components/historical-staking-rewards/historical-staking-rewards.component';
+import { PriceEarningsRatioComponent } from './stats/components/price-earnings-ratio/price-earnings-ratio.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { HistoricalStakingRewardsComponent } from './stats/components/historical
     ModalNftComponent,
     LossProvisionComponent,
     HistoricalStakingRewardsComponent,
+    PriceEarningsRatioComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,21 @@
+<div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
+  <div class="card-body">
+    <h5 class="text-uppercase text-center">
+      P/E Ratio
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        ngbTooltip="A measurement of current market capitalization / annualized protocol earnings."
+      ></i>
+    </h5>
+    <canvas
+      baseChart
+      [datasets]="lineChartData"
+      [labels]="lineChartLabels"
+      [options]="lineChartOptions"
+      [legend]="lineChartLegend"
+      [chartType]="lineChartType"
+    >
+    </canvas>
+  </div>
+</div>
