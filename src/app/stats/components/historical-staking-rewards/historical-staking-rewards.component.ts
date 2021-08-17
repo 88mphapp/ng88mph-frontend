@@ -88,6 +88,9 @@ export class HistoricalStakingRewardsComponent implements OnInit {
               display: true,
               color: '#242526',
             },
+            ticks: {
+              suggestedMin: 0,
+            },
           },
         ],
       },
