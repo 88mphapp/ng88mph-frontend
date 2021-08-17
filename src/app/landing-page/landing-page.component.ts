@@ -220,7 +220,7 @@ export class LandingPageComponent implements OnInit {
       this.allPoolList = allPoolList;
       this.selectedPool = allPoolList[0];
       this.initialDeposit = new BigNumber(10000);
-      this.termInDays = new BigNumber(7);
+      this.termInDays = new BigNumber(30);
       this.apy = new BigNumber(0);
       this.interestEarnedToken = new BigNumber(0);
       this.interestEarnedUSD = new BigNumber(0);
