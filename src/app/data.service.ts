@@ -90,7 +90,7 @@ export class DataService {
 
     // get interest amount
     const deposit = new BigNumber(10000);
-    const depositLength = new BigNumber(7);
+    const depositLength = new BigNumber(30);
     const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
     const depositAmount = this.helpers.processWeb3Number(
       deposit.times(stablecoinPrecision)
