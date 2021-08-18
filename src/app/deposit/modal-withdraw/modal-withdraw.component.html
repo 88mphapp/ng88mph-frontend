@@ -29,12 +29,14 @@
             <div class="card-body">
               <ng-container *ngIf="userDeposit.locked">
                 <div class="alert border-gradient mb-4">
-                  Warning: by withdrawing your principal before the maturation
-                  date, you will forfeit your interest earned so far.
+                  Warning: by withdrawing your deposit before the maturation
+                  date, you will forfeit your fixed-rate yield earned so far.
                 </div>
               </ng-container>
               <ng-container *ngIf="!userDeposit.locked">
-                <p class="text-white">Withdraw your principal and interest.</p>
+                <p class="text-white">
+                  Withdraw your deposit and fixed-rate yield.
+                </p>
               </ng-container>
               <div class="form-group mb-1">
                 <label>Amount</label>
@@ -89,7 +91,7 @@
                   <tbody>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small">
-                        Principal to withdraw
+                        Amount to withdraw
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
@@ -113,7 +115,7 @@
                     </tr>
                     <tr *ngIf="!userDeposit.locked">
                       <td class="px-0 py-2 text-white border-0 small">
-                        Yield to withdraw
+                        Fixed-rate yield to withdraw
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
