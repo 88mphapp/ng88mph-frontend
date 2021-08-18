@@ -1,0 +1,21 @@
+<div *ngIf="pieChartData" class="card mb-4 mb-lg-0">
+  <div class="card-body">
+    <h5 class="text-uppercase text-center">
+      xMPH Holders
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        ngbTooltip="The distribution of xMPH by address."
+      ></i>
+    </h5>
+    <canvas
+      baseChart
+      [datasets]="pieChartData"
+      [labels]="pieChartLabels"
+      [legend]="pieChartLegend"
+      [chartType]="pieChartType"
+      [options]="pieChartOptions"
+    >
+    </canvas>
+  </div>
+</div>

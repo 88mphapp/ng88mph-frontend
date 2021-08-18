@@ -40,6 +40,7 @@ import { ModalNftComponent } from './deposit/modal-nft/modal-nft.component';
 import { LossProvisionComponent } from './stats/components/loss-provision/loss-provision.component';
 import { HistoricalStakingRewardsComponent } from './stats/components/historical-staking-rewards/historical-staking-rewards.component';
 import { PriceEarningsRatioComponent } from './stats/components/price-earnings-ratio/price-earnings-ratio.component';
+import { XmphSupplyDistributionComponent } from './stats/components/xmph-supply-distribution/xmph-supply-distribution.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { PriceEarningsRatioComponent } from './stats/components/price-earnings-r
     LossProvisionComponent,
     HistoricalStakingRewardsComponent,
     PriceEarningsRatioComponent,
+    XmphSupplyDistributionComponent,
   ],
   imports: [
     BrowserModule,
