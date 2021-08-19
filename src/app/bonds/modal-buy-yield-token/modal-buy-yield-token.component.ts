@@ -24,6 +24,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   mphRewardsAPR: BigNumber;
   totalEarned: BigNumber;
   mphPriceUSD: BigNumber;
+  surplus: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -72,6 +73,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     this.mphRewardsAPR = new BigNumber(0);
     this.totalEarned = new BigNumber(0);
     this.mphPriceUSD = new BigNumber(0);
+    this.surplus = new BigNumber(0);
   }
 
   setFundAmount(amount: number | string) {
@@ -83,7 +85,6 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   }
 
   async updateDetails() {
-    console.log(this.deposit);
     const lens = this.contract.getNamedContract('DInterestLens');
     const depositID = this.deposit.id.split('---')[1];
 
@@ -96,6 +97,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
           this.constants.PRECISION
         );
       });
+    this.surplus = surplusMagnitude;
 
     const fundPercent = this.fundAmount.div(this.deposit.yieldTokensAvailable);
 
