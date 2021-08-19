@@ -80,7 +80,7 @@
                   type="tel"
                   class="form-control bg-light text-white"
                   aria-label="Text input with dropdown button"
-                  [value]="initialDeposit"
+                  [value]="initialDeposit.toFormat(4)"
                   (input)="setDepositAmount($event.target.value)"
                 />
                 <div class="input-group-prepend">
@@ -101,7 +101,7 @@
                     *ngFor="let pool of allPoolList"
                     [selected]="pool.name === selectedPool.name"
                   >
-                    {{ pool.stablecoinSymbol }}-{{ pool.protocol }} Pool
+                    {{ pool.stablecoinSymbol }} via {{ pool.protocol }} Protocol
                   </option>
                 </select>
               </div>
@@ -158,7 +158,7 @@
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
                       <h4 class="mb-1 glowing">
-                        {{ interestEarnedToken.toFormat(2) }}
+                        {{ interestEarnedToken.toFormat(4) }}
                         {{ selectedPool.stablecoinSymbol }}
                       </h4>
                       <h5 class="text-muted mb-0">
