@@ -522,9 +522,7 @@ export class BondsComponent implements OnInit {
             unfundedDepositAmount: depositAmount,
             unfundedDepositAmountUSD: depositAmount.times(stablecoinPrice),
             yieldTokensAvailable: totalPrincipal,
-            yieldTokensAvailableUSD: totalPrincipal
-              .minus(depositAmount)
-              .times(stablecoinPrice),
+            yieldTokensAvailableUSD: surplus.negated().times(stablecoinPrice),
             estimatedAPR: new BigNumber(0),
             mphRewardsAPR: new BigNumber(0),
           };
@@ -553,9 +551,7 @@ export class BondsComponent implements OnInit {
             unfundedDepositAmountUSD:
               unfundedDepositAmount.times(stablecoinPrice),
             yieldTokensAvailable: yieldTokensAvailable,
-            yieldTokensAvailableUSD: yieldTokensAvailable
-              .minus(unfundedDepositAmount)
-              .times(stablecoinPrice),
+            yieldTokensAvailableUSD: surplus.negated().times(stablecoinPrice),
             estimatedAPR: new BigNumber(0),
             mphRewardsAPR: new BigNumber(0),
           };
