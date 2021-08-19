@@ -129,7 +129,7 @@
     <div class="card mb-5 mb-lg-0">
       <div class="card-body">
         <!-- Title -->
-        <h5 class="text-uppercase">Yield earned at maturity</h5>
+        <h5 class="text-uppercase">Fixed-rate yield earned at maturity</h5>
 
         <!-- Heading -->
         <h2 class="mb-0 glowing">${{ totalInterestUSD.toFormat(DECIMALS) }}</h2>
@@ -185,7 +185,7 @@
       <!-- Explore fixed rate opportunities -->
       <div class="card mb-6" id="fixedRateOpportunities">
         <div class="card-header">
-          <h4 class="card-header-title mr-auto">Fixed APR pools</h4>
+          <h4 class="card-header-title mr-auto">Fixed APR assets</h4>
           <button
             class="btn btn-sm btn-dark"
             type="button"
@@ -202,14 +202,14 @@
           <table class="table table-hover table-sm table-nowrap card-table">
             <thead>
               <tr>
-                <th>Pool</th>
+                <th>Assets</th>
                 <th>Your deposits balance</th>
                 <th>Fixed APR / MPH rewards APR</th>
                 <th></th>
               </tr>
             </thead>
             <tbody class="list">
-              <!-- Pool rows -->
+              <!-- Assets rows -->
               <ng-container *ngFor="let pool of allPoolList">
                 <tr>
                   <td>

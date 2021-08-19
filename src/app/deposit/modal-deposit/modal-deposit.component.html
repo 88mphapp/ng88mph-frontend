@@ -46,7 +46,7 @@
                       </div>
                       <div class="col ml-n2">
                         <div class="form-group mb-0">
-                          <label>Select a lending pool</label>
+                          <label>Select fixed APR asset</label>
                           <div class="input-group input-group-lg">
                             <select
                               class="custom-select"
@@ -299,7 +299,7 @@
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
-                            ngbTooltip="When users/protocols deposit assets into an 88mph pool, they earn a fixed-rate yield during the duration of the deposit that is redeemable at maturity. A longer deposit's maturity will earn a lower rate because we can't predicte the variable yield rate on the underlying protocols used by 88mph (Aave, Compound, etc.)."
+                            ngbTooltip="When users/protocols deposit assets into 88mph, they earn a fixed-rate yield during the duration of the deposit that is redeemable at maturity. A longer deposit's maturity will earn a lower rate because we can't predicte the variable yield rate on the underlying protocols used to generate the yield (Aave, Compound, etc.)."
                           ></i>
                         </td>
                         <td
@@ -402,7 +402,7 @@
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
-                            ngbTooltip="Participating in this 88mph pool gives rewards in MPH token. MPH rewards are vested linearly over the deposit duration. You can claim your MPH rewards whenever you want over the vesting period. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
+                            ngbTooltip="Using 88mph gives rewards in MPH token. MPH rewards are vested linearly over the deposit duration. You can claim your MPH rewards whenever you want over the vesting period. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
                           ></i>
                         </td>
                         <td
@@ -588,18 +588,21 @@
                 <p class="small">
                   88mph is a non-custodial, fully on-chain protocol acting as an
                   intermediary between you and third-party variable yield rate
-                  lending protocols to offer the best fixed yield rate on your
-                  capital.
+                  protocols to offer the best fixed yield rate on your assets.
                 </p>
                 <p class="small">
                   After confirming your deposit, it will generate a yield at a
-                  variable rate on third-party lending protocols until it
-                  reaches its maturity. Your deposit amount, duration, and
-                  expected fixed APR will be represented by an NFT on 88mph.
-                  It's a unique key giving you full control over your deposit
-                  and its terms. Use this key to withdraw, top-up, roll over
-                  your deposit + fixed-rate yield at any time. Your key, your
-                  money. Don't lose it.
+                  variable rate on third-party protocols until it reaches its
+                  maturity. Depositors receive an NFT (ERC-721) representing
+                  their custom-maturity deposit or ERC-20 tokens if it's a
+                  preset maturity. It gives you full control over your deposits.
+                  Withdraw, top-up, roll over your deposit + fixed-rate yield at
+                  any time.<a
+                    href="https://docs.88mph.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Learn more.</a
+                  >
                 </p>
               </form>
             </div>
