@@ -354,11 +354,31 @@ export class DepositComponent implements OnInit {
               };
             }
 
-            let claimableMPH = new BigNumber(
-              await vestingContract.methods
-                .getVestWithdrawableAmount(deposit.vest.nftID)
-                .call()
-            ).div(this.constants.PRECISION);
+            // manually calculate claimableMPH
+            let claimableMPH;
+            const currentTimestamp = Math.min(
+              Math.floor(Date.now() / 1e3),
+              parseFloat(deposit.maturationTimestamp)
+            );
+            if (currentTimestamp < vest.lastUpdateTimestamp) {
+              claimableMPH = vest.accumulatedAmount.minus(vest.withdrawnAmount);
+            } else {
+              claimableMPH = vest.accumulatedAmount
+                .plus(
+                  depositAmount
+                    .times(currentTimestamp - vest.lastUpdateTimestamp)
+                    .times(vest.vestAmountPerStablecoinPerSecond)
+                )
+                .minus(vest.withdrawnAmount);
+            }
+
+            // use contract call to fetch claimableMPH
+            // let claimableMPH = new BigNumber(
+            //   await vestingContract.methods
+            //     .getVestWithdrawableAmount(deposit.vest.nftID)
+            //     .call({from: this.wallet.actualAddress.toLowerCase()})
+            // ).div(this.constants.PRECISION);
+
             totalClaimableMPH = totalClaimableMPH.plus(claimableMPH);
 
             const userPoolDeposit: UserDeposit = {
