@@ -45,7 +45,7 @@
                     aria-label=""
                     aria-describedby=""
                     [value]="
-                      fundAmount.dp(deposit.pool.stablecoinDecimals).toFormat()
+                      fundAmount.dp(deposit.pool.stablecoinDecimals).toFixed()
                     "
                     (input)="setFundAmount($event.target.value)"
                   />
