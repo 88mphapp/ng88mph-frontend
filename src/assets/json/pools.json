@@ -200,6 +200,16 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/dai.svg",
       "moneyMarket": "0xB4Ffd2868E8aDa5293BBC1Bceb467AB3e53760Ac"
+    },
+    "cUSDC": {
+      "name": "cUSDC",
+      "address": "0x3d59EcA28fC3CA2338951A7C8E0C435a1691550b",
+      "stablecoin": "0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b",
+      "stablecoinSymbol": "USDC",
+      "stablecoinDecimals": 6,
+      "protocol": "Compound",
+      "iconPath": "assets/img/token-icons/usdc.svg",
+      "moneyMarket": "0x91E5f67660573424504c5B461Eb6D4a886211d32"
     }
   }
 }
