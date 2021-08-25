@@ -77,9 +77,9 @@ export class LandingPageComponent implements OnInit {
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const userAddress: string = this.wallet.actualAddress.toLowerCase();
 
-    if (loadUser) {
-      const userAddress: string = this.wallet.actualAddress;
+    if (loadUser && userAddress) {
       const stablecoin = this.contract.getPoolStablecoin(
         this.selectedPool.name
       );
@@ -340,7 +340,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   selectPool(poolName: string) {
-    this.selectedPool = this.allPoolList.find((pool) => (pool.name = poolName));
+    this.selectedPool = this.allPoolList.find((pool) => pool.name === poolName);
     this.updateAPY();
   }
 
