@@ -237,7 +237,10 @@
                   <td>
                     <ng-container *ngFor="let userPool of userPools">
                       <ng-container
-                        *ngIf="userPool.poolInfo.name === pool.name"
+                        *ngIf="
+                          userPool.poolInfo.name === pool.name;
+                          else elseBlock
+                        "
                       >
                         <h4 class="mb-1 glowing">
                           {{
@@ -251,6 +254,12 @@
                           }}
                         </span>
                       </ng-container>
+                      <ng-template #elseBlock>
+                        <h4 class="mb-1 glowing">
+                          0.00 {{ pool.stablecoinSymbol }}
+                        </h4>
+                        <span class="text-white"> $0.00 </span>
+                      </ng-template>
                     </ng-container>
                   </td>
                   <td>
@@ -299,7 +308,7 @@
                       [attr.data-target]="'#' + pool.name"
                       aria-expanded="false"
                       [attr.aria-controls]="pool.name"
-                      *ngIf="userHasDeposit(pool.name)"
+                      [disabled]="!userHasDeposit(pool.name)"
                     >
                       <i class="fe fe-chevron-down"></i>
                     </button>
@@ -311,7 +320,7 @@
                   <ng-container *ngIf="userPool.poolInfo.name === pool.name">
                     <ng-container *ngFor="let deposit of userPool.deposits">
                       <tr
-                        class="multi-collapse collapse show"
+                        class="multi-collapse collapse hide"
                         id="{{ userPool.poolInfo.name }}"
                       >
                         <td>

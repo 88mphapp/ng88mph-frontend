@@ -164,7 +164,7 @@ export class ConstantsService {
   };
   USDC = {
     [this.CHAIN_ID.MAINNET]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.RINKEBY]: '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b',
   };
   SUSD = {
     [this.CHAIN_ID.MAINNET]: '0x57ab1ec28d129707052df4df418d58a2d46d5f51',
