@@ -97,7 +97,7 @@
                   (change)="selectPool($event.target.value)"
                 >
                   <option
-                    value="{{ pool.stablecoinSymbol }}"
+                    value="{{ pool.name }}"
                     *ngFor="let pool of allPoolList"
                     [selected]="pool.name === selectedPool.name"
                   >
