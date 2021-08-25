@@ -67,6 +67,16 @@
       <div class="card mb-6" *ngIf="funderPools.length">
         <div class="card-header">
           <h2 class="mb-0">Active positions</h2>
+          <button
+            class="btn btn-sm btn-dark"
+            type="button"
+            data-toggle="collapse"
+            data-target=".multi-collapse"
+            aria-expanded="false"
+            *ngIf="funderPools.length > 0"
+          >
+            Toggle all
+          </button>
         </div>
         <div class="table-responsive mb-0">
           <table class="table table-sm table-nowrap card-table">
@@ -169,7 +179,7 @@
                 </tr>
                 <ng-container *ngFor="let funding of funderPool.fundings">
                   <tr
-                    class="multi-collapse collapse show"
+                    class="multi-collapse collapse hide"
                     id="{{ funderPool.poolInfo.name }}"
                   >
                     <td>
@@ -350,10 +360,7 @@
                   <ng-container
                     *cdkVirtualFor="let deposit of fundableDeposits"
                   >
-                    <tr
-                      class="multi-collapse collapse show"
-                      id="multiCollapseaDAI"
-                    >
+                    <tr class="multi-collapse collapse show">
                       <td>
                         <div class="d-flex align-items-center">
                           <div>

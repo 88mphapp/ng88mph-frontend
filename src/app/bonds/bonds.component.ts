@@ -396,6 +396,17 @@ export class BondsComponent implements OnInit {
           allPoolList.push(dpoolObj);
         })
       ).then(() => {
+        allPoolList.sort((a, b) => {
+          const aName = a.name;
+          const bName = b.name;
+          if (aName > bName) {
+            return 1;
+          }
+          if (aName < bName) {
+            return -1;
+          }
+          return 0;
+        });
         this.allPoolList = allPoolList;
         this.selectPool(0);
       });
@@ -423,7 +434,7 @@ export class BondsComponent implements OnInit {
   async selectPool(poolIdx: number) {
     this.selectedPool = this.allPoolList[poolIdx];
 
-    const poolID = this.selectedPool.address.toLowerCase();
+    const poolID = this.selectedPool.address;
     const now = Math.floor(Date.now() / 1e3);
 
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
@@ -432,7 +443,11 @@ export class BondsComponent implements OnInit {
 
     const queryString = gql`
       {
-        dpool(id: "${poolID}") {
+        dpools(
+          where: {
+            id_in: ["${poolID}", "${poolID.toLowerCase()}"]
+          }
+        ) {
           id
           poolFunderRewardMultiplier
           moneyMarketIncomeIndex
@@ -471,10 +486,10 @@ export class BondsComponent implements OnInit {
 
       // get MPH APR
       const mphFunderRewardMultiplier = new BigNumber(
-        data.dpool.poolFunderRewardMultiplier
+        data.dpools[0].poolFunderRewardMultiplier
       );
 
-      for (const deposit of data.dpool.deposits) {
+      for (const deposit of data.dpools[0].deposits) {
         const virtualTokenTotalSupply = new BigNumber(
           deposit.virtualTokenTotalSupply
         );
@@ -490,7 +505,7 @@ export class BondsComponent implements OnInit {
         // compute fundable deposit surplus
         let surplus: BigNumber;
         const currentDepositValue = depositAmount
-          .times(data.dpool.moneyMarketIncomeIndex)
+          .times(data.dpools[0].moneyMarketIncomeIndex)
           .div(deposit.averageRecordedIncomeIndex);
         const rawSurplus = currentDepositValue.minus(totalPrincipal);
         if (deposit.funding) {
@@ -676,7 +691,7 @@ interface QueryResult {
 }
 
 interface FundableDepositsQuery {
-  dpool: {
+  dpools: {
     id: string;
     poolFunderRewardMultiplier: string;
     moneyMarketIncomeIndex: string;
