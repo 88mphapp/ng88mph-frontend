@@ -124,9 +124,12 @@ export class ModalDepositComponent implements OnInit {
   async selectPool(poolName: string) {
     this.selectedPoolInfo = this.contract.getPoolInfo(poolName);
     // only display ZCB pools that aren't mature
-    this.selectedZCBPools = this.contract
-      .getZeroCouponBondPool(poolName)
-      .filter((zcbInfo) => zcbInfo.maturationTimestamp > Date.now() / 1e3);
+    const selectedZCBPools = this.contract.getZeroCouponBondPool(poolName);
+    this.selectedZCBPools = selectedZCBPools
+      ? selectedZCBPools.filter(
+          (zcbInfo) => zcbInfo.maturationTimestamp > Date.now() / 1e3
+        )
+      : [];
     this.shouldDisplayZap = !!this.selectedPoolInfo.zapDepositTokens;
     this.selectedDepositToken = this.selectedPoolInfo.stablecoinSymbol;
     this.zapDepositTokens = [this.selectedPoolInfo.stablecoinSymbol].concat(
@@ -135,7 +138,13 @@ export class ModalDepositComponent implements OnInit {
 
     const queryString = gql`
       {
-        dpool(id: "${this.selectedPoolInfo.address.toLowerCase()}") {
+        dpools (
+          where: {
+            id_in: ["${
+              this.selectedPoolInfo.address
+            }", "${this.selectedPoolInfo.address.toLowerCase()}"]
+          }
+        ) {
           id
           MinDepositAmount
           MaxDepositPeriod
@@ -147,7 +156,7 @@ export class ModalDepositComponent implements OnInit {
       this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
       queryString
     ).then((data: QueryResult) => {
-      const pool = data.dpool;
+      const pool = data.dpools[0];
       this.minDepositAmount = new BigNumber(pool.MinDepositAmount);
       this.maxDepositPeriodInDays = Math.floor(
         pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
@@ -760,10 +769,10 @@ export class ModalDepositComponent implements OnInit {
 }
 
 interface QueryResult {
-  dpool: {
+  dpools: {
     id: string;
     MinDepositAmount: number;
     MaxDepositPeriod: number;
     poolDepositorRewardMintMultiplier: number;
-  };
+  }[];
 }
