@@ -9,7 +9,7 @@
         their borrowing costs of a loan (e.g. Dai borrower on Compound would
         purchase cDAI YTs on 88mph). YTs are more than an instrument for
         speculating on yields. When someone buys YTs, the insolvency risk of the
-        fixed-rate yield pools is also decreased.
+        fixed yield rate assets is also decreased.
         <a href="https://docs.88mph.app/" target="_blank"
           >Learn more <i class="fe fe-external-link"></i></a
         >.
@@ -285,7 +285,7 @@
           *ngIf="selectedPoolHasDebt() && !loadingCalculator"
         >
           <h4 class="mb-1">
-            Your average variable-rate APY prediction for this pool is
+            Your average variable-rate APY prediction for this asset is
             <strong class="glowing"
               >{{ floatingRatePrediction.toFormat(1) }}%</strong
             >.
@@ -317,7 +317,7 @@
                 <i
                   class="fe fe-info ml-1 align-bottom"
                   placement="top"
-                  ngbTooltip="Current variable yield rate for supplying the pool's asset (for eg. DAI) on the underlying lending protocol used by 88mph, such as Compound or Aave."
+                  ngbTooltip="Current variable yield rate for supplying this asset (for eg. DAI) on the underlying lending protocol used by 88mph, such as Compound or Aave."
                 ></i>
               </small>
             </div>
@@ -339,7 +339,7 @@
             class="glowing text-center py-4 mb-0"
             *ngIf="!selectedPoolHasDebt() && !loadingCalculator"
           >
-            No debt available. Select another pool.
+            No debt available. Select another asset.
           </h2>
           <div
             class="table-responsive mb-0"
