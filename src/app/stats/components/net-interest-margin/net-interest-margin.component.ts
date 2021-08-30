@@ -252,7 +252,9 @@ export class NetInterestMarginComponent implements OnInit {
 
         for (let p in result[i]) {
           const pool = result[i][p];
-          const entry = this.data.find((x) => x.label === pool.address);
+          const entry = this.data.find(
+            (x) => x.label === pool.address.toLowerCase()
+          );
 
           entry.totalDeposits[parseInt(i.substring(1))] = parseFloat(
             pool.totalDeposit
@@ -277,7 +279,9 @@ export class NetInterestMarginComponent implements OnInit {
 
       for (let p in result[i]) {
         const pool = result[i][p];
-        const entry = this.data.find((x) => x.label === pool.address);
+        const entry = this.data.find(
+          (x) => x.label === pool.address.toLowerCase()
+        );
         const deposits = entry.totalDeposits[parseInt(i.substring(1))];
         const interestRate = new BigNumber(pool.oracleInterestRate).times(
           this.constants.YEAR_IN_SEC
