@@ -300,7 +300,7 @@
             type="range"
             class="custom-range"
             min="0"
-            max="{{ selectedPool?.oracleInterestRate.times(2).toFixed(1) }}"
+            max="{{ estimatedCurrentFloatingInterestRate.times(2).toFixed(1) }}"
             step="0.1"
             [value]="floatingRatePrediction.toFixed(1)"
             (input)="updateFloatingRatePrediction($event.target.value)"
@@ -312,7 +312,7 @@
             </div>
             <div class="col text-center">
               <small>
-                {{ selectedPool?.oracleInterestRate.toFormat(1) }}% <br />
+                {{ estimatedCurrentFloatingInterestRate.toFormat(1) }}% <br />
                 Current supply APY
                 <i
                   class="fe fe-info ml-1 align-bottom"
@@ -324,7 +324,7 @@
             <div class="col text-right">
               <small class="d-block"
                 >{{
-                  selectedPool?.oracleInterestRate.times(2).toFormat(1)
+                  estimatedCurrentFloatingInterestRate.times(2).toFormat(1)
                 }}%</small
               >
               <small class="text-success">I'm feeling 🐂</small>

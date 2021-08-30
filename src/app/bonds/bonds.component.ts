@@ -384,9 +384,7 @@ export class BondsComponent implements OnInit {
             oneYearInterestRate: new BigNumber(pool.oneYearInterestRate).times(
               100
             ),
-            oracleInterestRate: new BigNumber(pool.oracleInterestRate)
-              .times(this.constants.YEAR_IN_SEC)
-              .times(100),
+            oracleInterestRate: new BigNumber(pool.oracleInterestRate),
             poolFunderRewardMultiplier: new BigNumber(
               pool.poolFunderRewardMultiplier
             ),
@@ -590,7 +588,12 @@ export class BondsComponent implements OnInit {
       });
 
       this.fundableDeposits = fundableDeposits;
-      this.floatingRatePrediction = this.selectedPool.oracleInterestRate;
+      this.floatingRatePrediction = this.helpers
+        .parseInterestRate(
+          this.selectedPool.oracleInterestRate,
+          this.constants.YEAR_IN_SEC
+        )
+        .times(100);
       this.updateEstimatedROI();
     });
   }
@@ -662,6 +665,16 @@ export class BondsComponent implements OnInit {
 
   canContinue() {
     return this.wallet.connected;
+  }
+
+  get estimatedCurrentFloatingInterestRate(): BigNumber {
+    if (!this.selectedPool) {
+      return new BigNumber(0);
+    }
+    return this.helpers.parseInterestRate(
+      this.selectedPool.oracleInterestRate,
+      this.constants.YEAR_IN_SEC
+    );
   }
 }
 

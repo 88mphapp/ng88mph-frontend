@@ -122,11 +122,12 @@ export class ModalBuyYieldTokenComponent implements OnInit {
       .plus(fundAmount);
 
     const depositLength = this.deposit.maturationTimestamp - Date.now() / 1e3;
-    const estimatedInterestEarned = this.earnYieldOn
-      .times(this.deposit.pool.oracleInterestRate)
-      .div(100)
-      .div(this.constants.YEAR_IN_SEC)
-      .times(depositLength);
+    const estimatedInterestEarned = this.earnYieldOn.times(
+      this.helpers.parseInterestRate(
+        this.deposit.pool.oracleInterestRate,
+        depositLength
+      )
+    );
     this.mphRewards = estimatedInterestEarned.times(
       this.deposit.pool.poolFunderRewardMultiplier
     );
