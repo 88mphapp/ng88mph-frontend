@@ -152,18 +152,7 @@ export class LossProvisionComponent implements OnInit {
       ) {
         id
         address
-        stablecoin
-        totalInterestOwed
-        totalFeeOwed
-        deposits (
-          where: {
-            amount_gt: ${this.constants.DUST_THRESHOLD}
-          }
-        ) {
-          funding {
-            fundedDeficitAmount
-          }
-        }
+        surplus
       }`;
     }
     queryString += `}`;
@@ -172,9 +161,10 @@ export class LossProvisionComponent implements OnInit {
     `;
 
     // then run the query
-    request(this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID], query).then(
-      (data: QueryResult) => this.handleData(data)
-    );
+    request(
+      this.constants.BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      query
+    ).then((data: QueryResult) => this.handleData(data));
 
     return true;
   }
@@ -214,23 +204,10 @@ export class LossProvisionComponent implements OnInit {
           let pool = data[i][p];
           let entry = this.data.find((x) => x.label === pool.id);
 
-          // add the total amount owed (interest + fee)
-          let totalOwed =
-            parseFloat(pool.totalInterestOwed) + parseFloat(pool.totalFeeOwed);
-          entry.dataLossProvision[parseInt(i.substring(1))] += totalOwed;
-
-          // subtract the total deficit funded
-          // @dev need to build in logic for >1000 deposits
-          let fundedDeficitAmount: number = 0;
-          for (let d in pool.deposits) {
-            if (pool.deposits[d].funding !== null) {
-              fundedDeficitAmount += parseFloat(
-                pool.deposits[d].funding.fundedDeficitAmount
-              );
-            }
+          let surplus = parseFloat(pool.surplus);
+          if (surplus < 0) {
+            entry.dataLossProvision[parseInt(i.substring(1))] -= surplus;
           }
-          entry.dataLossProvision[parseInt(i.substring(1))] -=
-            fundedDeficitAmount;
         }
       }
     }
@@ -309,13 +286,7 @@ interface QueryResult {
     id: string;
     address: string;
     stablecoin: string;
-    totalInterestOwed: string;
-    totalFeeOwed: string;
-    deposits: {
-      funding: {
-        fundedDeficitAmount: string;
-      };
-    }[];
+    surplus: string;
   }[];
 }
 
