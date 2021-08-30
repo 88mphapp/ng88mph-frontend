@@ -19,7 +19,6 @@ export class DataService {
 
   // @notice max apy is based on 7-day deposit length
   async getMaxAPY(): Promise<BigNumber> {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
     let maxAPY = new BigNumber(0);
     let dpools = new Array<DPool>(0);
 
@@ -48,7 +47,6 @@ export class DataService {
   }
 
   async getMaxMPHAPY(): Promise<BigNumber> {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
     let maxMPHAPY = new BigNumber(0);
     let dpools = new Array<DPool>(0);
 
@@ -83,10 +81,10 @@ export class DataService {
   async getPoolMaxAPY(address: string): Promise<BigNumber> {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const poolInfo = this.contract.getPoolInfoFromAddress(address);
+    if (!poolInfo) {
+      return new BigNumber(0);
+    }
     const pool = this.contract.getPool(poolInfo.name, readonlyWeb3);
-    const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-      poolInfo.stablecoin
-    );
 
     // get interest amount
     const deposit = new BigNumber(10000);
