@@ -245,6 +245,21 @@ export class LandingPageComponent implements OnInit {
       poolInfo.stablecoin
     );
 
+    // load user token balance
+    const userAddress: string = this.wallet.actualAddress.toLowerCase();
+    if (userAddress) {
+      const stablecoin = this.contract.getPoolStablecoin(
+        this.selectedPool.name
+      );
+      const stablecoinPrecision = Math.pow(
+        10,
+        this.selectedPool.stablecoinDecimals
+      );
+      this.depositTokenBalance = new BigNumber(
+        await stablecoin.methods.balanceOf(userAddress).call()
+      ).div(stablecoinPrecision);
+    }
+
     // get deposit amount USD
     this.initialDepositUSD = new BigNumber(this.initialDeposit).times(
       stablecoinPrice
