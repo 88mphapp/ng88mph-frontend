@@ -111,7 +111,6 @@ export class BondsComponent implements OnInit {
             ? `dpools {
           id
           address
-          surplus
           oneYearInterestRate
           oracleInterestRate
           poolFunderRewardMultiplier
@@ -382,7 +381,6 @@ export class BondsComponent implements OnInit {
             stablecoinSymbol: poolInfo.stablecoinSymbol,
             stablecoinDecimals: poolInfo.stablecoinDecimals,
             iconPath: poolInfo.iconPath,
-            surplus: new BigNumber(pool.surplus),
             oneYearInterestRate: new BigNumber(pool.oneYearInterestRate).times(
               100
             ),
@@ -482,12 +480,6 @@ export class BondsComponent implements OnInit {
     ).then(async (data: FundableDepositsQuery) => {
       const fundableDeposits = [];
       const pool = this.contract.getPool(this.selectedPool.name);
-      const lens = this.contract.getNamedContract('DInterestLens');
-
-      // get MPH APR
-      const mphFunderRewardMultiplier = new BigNumber(
-        data.dpools[0].poolFunderRewardMultiplier
-      );
 
       for (const deposit of data.dpools[0].deposits) {
         const virtualTokenTotalSupply = new BigNumber(
@@ -502,33 +494,57 @@ export class BondsComponent implements OnInit {
 
         const depositAmount = new BigNumber(deposit.amount);
 
-        // compute fundable deposit surplus
-        let surplus: BigNumber;
-        const currentDepositValue = depositAmount
-          .times(data.dpools[0].moneyMarketIncomeIndex)
-          .div(deposit.averageRecordedIncomeIndex);
-        const rawSurplus = currentDepositValue.minus(totalPrincipal);
+        // compute fundable deposit fund amount upper bound
+        let bound: BigNumber;
+        let unfundedDepositAmount: BigNumber;
+        const stablecoinPrecision = Math.pow(
+          10,
+          this.selectedPool.stablecoinDecimals
+        );
         if (deposit.funding) {
-          // only consider the surplus of the unfunded portion
           const supply = deposit.funding.totalSupply;
           const principalPerToken = deposit.funding.principalPerToken;
           const unfundedPrincipalAmount = totalPrincipal.minus(
             supply * principalPerToken
           );
-          surplus = rawSurplus
-            .times(unfundedPrincipalAmount)
-            .div(totalPrincipal);
+          unfundedDepositAmount = unfundedPrincipalAmount
+            .div(totalPrincipal)
+            .times(deposit.amount);
+          if (unfundedDepositAmount.lt(this.constants.DUST_THRESHOLD)) {
+            unfundedDepositAmount = new BigNumber(0);
+          }
+          bound = new BigNumber(
+            await pool.methods
+              .calculateInterestAmount(
+                this.helpers.processWeb3Number(
+                  unfundedDepositAmount.times(stablecoinPrecision)
+                ),
+                this.helpers.processWeb3Number(
+                  +deposit.maturationTimestamp - now
+                )
+              )
+              .call()
+          ).div(stablecoinPrecision);
         } else {
-          // surplus equals raw surplus
-          surplus = rawSurplus;
+          bound = new BigNumber(
+            await pool.methods
+              .calculateInterestAmount(
+                this.helpers.processWeb3Number(
+                  new BigNumber(deposit.amount).times(stablecoinPrecision)
+                ),
+                this.helpers.processWeb3Number(
+                  +deposit.maturationTimestamp - now
+                )
+              )
+              .call()
+          ).div(stablecoinPrecision);
         }
 
         // deposit hasn't been funded yet
         // @dev yield tokens available will equal the total principal of the deposit
         if (
           deposit.funding === null &&
-          surplus.lt(0) &&
-          surplus.negated().gt(this.constants.DUST_THRESHOLD)
+          bound.gt(this.constants.DUST_THRESHOLD)
         ) {
           const parsedDeposit: FundableDeposit = {
             id: deposit.id,
@@ -537,24 +553,19 @@ export class BondsComponent implements OnInit {
             unfundedDepositAmount: depositAmount,
             unfundedDepositAmountUSD: depositAmount.times(stablecoinPrice),
             yieldTokensAvailable: totalPrincipal,
-            yieldTokensAvailableUSD: surplus.negated().times(stablecoinPrice),
+            yieldTokensAvailableUSD: bound.times(stablecoinPrice),
             estimatedAPR: new BigNumber(0),
             mphRewardsAPR: new BigNumber(0),
           };
           fundableDeposits.push(parsedDeposit);
         }
-
-        // deposit has been partially funded and has a negative surplus
-        else if (
-          surplus.lt(0) &&
-          surplus.negated().gt(this.constants.DUST_THRESHOLD)
-        ) {
+        // deposit has been partially funded
+        else if (bound.gt(this.constants.DUST_THRESHOLD)) {
           const supply = deposit.funding.totalSupply;
           const principalPerToken = deposit.funding.principalPerToken;
           const unfundedPrincipalAmount = totalPrincipal.minus(
             supply * principalPerToken
           );
-          const unfundedDepositAmount = unfundedPrincipalAmount.plus(surplus);
           const yieldTokensAvailable =
             unfundedPrincipalAmount.div(principalPerToken);
 
@@ -566,7 +577,7 @@ export class BondsComponent implements OnInit {
             unfundedDepositAmountUSD:
               unfundedDepositAmount.times(stablecoinPrice),
             yieldTokensAvailable: yieldTokensAvailable,
-            yieldTokensAvailableUSD: surplus.negated().times(stablecoinPrice),
+            yieldTokensAvailableUSD: bound.times(stablecoinPrice),
             estimatedAPR: new BigNumber(0),
             mphRewardsAPR: new BigNumber(0),
           };
@@ -582,13 +593,6 @@ export class BondsComponent implements OnInit {
       this.floatingRatePrediction = this.selectedPool.oracleInterestRate;
       this.updateEstimatedROI();
     });
-  }
-
-  selectedPoolHasDebt(): boolean {
-    if (!this.selectedPool) {
-      return false;
-    }
-    return this.selectedPool.surplus.lt(0);
   }
 
   updateFloatingRatePrediction(newPrediction: number) {
@@ -683,7 +687,6 @@ interface QueryResult {
   dpools: {
     id: string;
     address: string;
-    surplus: string;
     oneYearInterestRate: string;
     oracleInterestRate: string;
     poolFunderRewardMultiplier: string;

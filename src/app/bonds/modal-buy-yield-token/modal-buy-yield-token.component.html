@@ -30,7 +30,7 @@
                   </h4>
                   <div class="text-muted small">
                     Total value: ${{
-                      surplus.times(stablecoinPriceUSD).toFormat(4)
+                      bound.times(stablecoinPriceUSD).toFormat(4)
                     }}
                   </div>
                 </div>
@@ -45,16 +45,18 @@
                     aria-label=""
                     aria-describedby=""
                     [value]="
-                      fundAmount.dp(deposit.pool.stablecoinDecimals).toFixed()
+                      buyYieldTokenAmount
+                        .dp(deposit.pool.stablecoinDecimals)
+                        .toFixed()
                     "
-                    (input)="setFundAmount($event.target.value)"
+                    (input)="setBuyYieldTokenAmount($event.target.value)"
                   />
                   <div class="input-group-append">
                     <button
                       class="btn btn-lg border-gradient"
                       type="button"
                       (click)="
-                        setFundAmount(
+                        setBuyYieldTokenAmount(
                           deposit.yieldTokensAvailable.toFixed(
                             deposit.pool.stablecoinDecimals
                           )
