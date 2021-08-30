@@ -80,20 +80,32 @@ export class ModalNftComponent implements OnInit {
       .call();
     if (!tokenURI) return;
 
-    const hash = tokenURI.split('//');
-    const request = await fetch(`https://ipfs.io/ipfs/${hash[1]}`);
-    const json = await request.json();
+    // use custom metadata
+    if (tokenURI.includes('ipfs://')) {
+      const hash = tokenURI.split('//');
+      const request = await fetch(`https://ipfs.io/ipfs/${hash[1]}`);
+      const json = await request.json();
 
-    this.name = json.name;
-    this.imageURL = `https://ipfs.io/ipfs/${json.image.split('//')[1]}`;
-    this.description = json.description;
-    for (let i = 0; i < json.attributes.length; i++) {
-      this.addAttribute(
-        json.attributes[i].trait_type,
-        json.attributes[i].value
-      );
+      this.name = json.name;
+      this.imageURL = `https://ipfs.io/ipfs/${json.image.split('//')[1]}`;
+      this.description = json.description;
+      for (let i = 0; i < json.attributes.length; i++) {
+        this.addAttribute(
+          json.attributes[i].trait_type,
+          json.attributes[i].value
+        );
+      }
+      this.externalURL = json.externalURL;
+
+      // use default metadata
+    } else {
+      const request = await fetch(`${tokenURI}`);
+      const json = await request.json();
+
+      this.name = json.name;
+      this.imageURL = this.sanitizer.bypassSecurityTrustUrl(json.image);
+      this.description = json.description;
     }
-    this.externalURL = json.externalURL;
   }
 
   addAttribute(trait_type?: string, value?: string) {
