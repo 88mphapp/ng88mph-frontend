@@ -128,7 +128,6 @@ export class LandingPageComponent implements OnInit {
     if (dpools) {
       let totalDepositUSD = new BigNumber(0);
       let allPoolList = new Array<DPool>(0);
-      let maxAPY = new BigNumber(0);
 
       Promise.all(
         dpools.map(async (pool) => {

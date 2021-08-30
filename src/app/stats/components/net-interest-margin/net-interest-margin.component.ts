@@ -283,7 +283,8 @@ export class NetInterestMarginComponent implements OnInit {
           (x) => x.label === pool.address.toLowerCase()
         );
         const deposits = entry.totalDeposits[parseInt(i.substring(1))];
-        const interestRate = new BigNumber(pool.oracleInterestRate).times(
+        const interestRate = this.helpers.parseInterestRate(
+          pool.oracleInterestRate,
           this.constants.YEAR_IN_SEC
         );
         const interestEarned = interestRate.times(deposits);
