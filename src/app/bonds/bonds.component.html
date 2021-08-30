@@ -282,7 +282,7 @@
         </div>
         <div
           class="d-block px-4 pt-4 pb-4 border-bottom border-light"
-          *ngIf="selectedPoolHasDebt() && !loadingCalculator"
+          *ngIf="!loadingCalculator"
         >
           <h4 class="mb-1">
             Your average variable-rate APY prediction for this asset is
@@ -335,16 +335,10 @@
           <h2 class="glowing text-center py-4 mb-0" *ngIf="loadingCalculator">
             Loading...
           </h2>
-          <h2
-            class="glowing text-center py-4 mb-0"
-            *ngIf="!selectedPoolHasDebt() && !loadingCalculator"
-          >
+          <h2 class="glowing text-center py-4 mb-0" *ngIf="!loadingCalculator">
             No debt available. Select another asset.
           </h2>
-          <div
-            class="table-responsive mb-0"
-            *ngIf="selectedPoolHasDebt() && !loadingCalculator"
-          >
+          <div class="table-responsive mb-0" *ngIf="!loadingCalculator">
             <cdk-virtual-scroll-viewport [itemSize]="8" style="height: 500px">
               <table class="table table-sm table-nowrap card-table">
                 <thead>

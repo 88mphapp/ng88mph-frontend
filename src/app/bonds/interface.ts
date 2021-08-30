@@ -63,7 +63,6 @@ export interface DPool {
   stablecoinSymbol: string;
   stablecoinDecimals: number;
   iconPath: string;
-  surplus: BigNumber;
   oneYearInterestRate: BigNumber;
   oracleInterestRate: BigNumber;
   poolFunderRewardMultiplier: BigNumber;
