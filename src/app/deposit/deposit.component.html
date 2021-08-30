@@ -299,7 +299,7 @@
                       [attr.data-target]="'#' + pool.name"
                       aria-expanded="false"
                       [attr.aria-controls]="pool.name"
-                      [disabled]="!userHasDeposit(pool.name)"
+                      *ngIf="userHasDeposit(pool.name)"
                     >
                       <i class="fe fe-chevron-down"></i>
                     </button>
