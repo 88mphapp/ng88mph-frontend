@@ -42,9 +42,9 @@ export class ConstantsService {
   // GRAPHQL ENDPOINTS //
   GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
-      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph', // v2
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3',
     [this.CHAIN_ID.RINKEBY]:
-      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby', // v3
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby',
   };
   MPH_TOKEN_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
@@ -104,7 +104,7 @@ export class ConstantsService {
   DUST_THRESHOLD = new BigNumber(1e-10).toFixed(10); // The minimum amount below which deposits/fundings won't be displayed
 
   // 88MPH CONTRACTS //
-  DUMPER = '0x5B3C81C86d17786255904c316bFCB38A46146ef8';
+  DUMPER = '0x8Cc9ADF88fe0b5C739bD936E9edaAd30578f4265';
 
   GOV_TREASURY = {
     [this.CHAIN_ID.MAINNET]: '0x56f34826Cc63151f74FA8f701E4f73C5EAae52AD',
@@ -123,7 +123,7 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
   };
   XMPH_ADDRESS = {
-    [this.CHAIN_ID.MAINNET]: '',
+    [this.CHAIN_ID.MAINNET]: '0x1702F18c1173b791900F81EbaE59B908Da8F689b',
     [this.CHAIN_ID.RINKEBY]: '0x59EE65726f0b886Ec924271B51A3c1e78F52d1FB',
   };
 
