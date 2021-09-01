@@ -671,10 +671,16 @@ export class BondsComponent implements OnInit {
     if (!this.selectedPool) {
       return new BigNumber(0);
     }
-    return this.helpers.parseInterestRate(
-      this.selectedPool.oracleInterestRate,
-      this.constants.YEAR_IN_SEC
-    );
+    return this.helpers
+      .parseInterestRate(
+        this.selectedPool.oracleInterestRate,
+        this.constants.YEAR_IN_SEC
+      )
+      .times(100);
+  }
+
+  get hasDebt(): boolean {
+    return this.fundableDeposits.length > 0;
   }
 }
 

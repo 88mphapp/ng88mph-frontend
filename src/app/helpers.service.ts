@@ -306,9 +306,9 @@ export class HelpersService {
     return new BigNumber(rawDepositAmount).times(1 - poolInfo.depositFee);
   }
 
-  parseInterestRate(oracleInterestRate: any, time: any): BigNumber {
-    return new BigNumber(2)
-      .pow(new BigNumber(oracleInterestRate).times(time))
-      .minus(1);
+  parseInterestRate(oracleInterestRate: BigNumber, time: number): BigNumber {
+    return new BigNumber(
+      Math.pow(2, oracleInterestRate.times(time).toNumber()) - 1
+    );
   }
 }

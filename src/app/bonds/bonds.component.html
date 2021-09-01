@@ -335,10 +335,16 @@
           <h2 class="glowing text-center py-4 mb-0" *ngIf="loadingCalculator">
             Loading...
           </h2>
-          <h2 class="glowing text-center py-4 mb-0" *ngIf="!loadingCalculator">
+          <h2
+            class="glowing text-center py-4 mb-0"
+            *ngIf="!hasDebt && !loadingCalculator"
+          >
             No debt available. Select another asset.
           </h2>
-          <div class="table-responsive mb-0" *ngIf="!loadingCalculator">
+          <div
+            class="table-responsive mb-0"
+            *ngIf="hasDebt && !loadingCalculator"
+          >
             <cdk-virtual-scroll-viewport [itemSize]="8" style="height: 500px">
               <table class="table table-sm table-nowrap card-table">
                 <thead>
