@@ -1,5 +1,43 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "x",
+        "type": "uint256"
+      }
+    ],
+    "name": "PRBMathUD60x18__Exp2InputTooBig",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "prod1",
+        "type": "uint256"
+      }
+    ],
+    "name": "PRBMath__MulDivFixedPointOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "prod1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "denominator",
+        "type": "uint256"
+      }
+    ],
+    "name": "PRBMath__MulDivOverflow",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -308,25 +346,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "accountNonce",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "depositAmount",
         "type": "uint256"
@@ -349,6 +368,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "claimOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint64",
@@ -363,6 +389,45 @@
     ],
     "name": "decreaseFeeForDeposit",
     "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "depositAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint64",
+        "name": "maturationTimestamp",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumInterestAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "uri",
+        "type": "string"
+      }
+    ],
+    "name": "deposit",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "depositID",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "interestAmount",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -445,6 +510,11 @@
         "internalType": "uint256",
         "name": "fundAmount",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minPrincipalFunded",
+        "type": "uint256"
       }
     ],
     "name": "fund",
@@ -453,6 +523,60 @@
         "internalType": "uint64",
         "name": "fundingID",
         "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fundingMultitokensMinted",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "actualFundAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principalFunded",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint64",
+        "name": "depositID",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fundAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "fund",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "fundingID",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fundingMultitokensMinted",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "actualFundAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principalFunded",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -587,16 +711,6 @@
         "internalType": "uint256",
         "name": "_MinDepositAmount",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_moneyMarket",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_stablecoin",
-        "type": "address"
       },
       {
         "internalType": "address",
@@ -738,34 +852,16 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "depositID",
-        "type": "uint64"
-      }
-    ],
-    "name": "rawSurplusOfDeposit",
+    "inputs": [],
+    "name": "pendingOwner",
     "outputs": [
       {
-        "internalType": "bool",
-        "name": "isNegative",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "surplusAmount",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -783,6 +879,45 @@
     ],
     "name": "rescue",
     "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint64",
+        "name": "depositID",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "maturationTimestamp",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumInterestAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "uri",
+        "type": "string"
+      }
+    ],
+    "name": "rolloverDeposit",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "newDepositID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "interestAmount",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -959,472 +1094,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "depositAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint64",
-        "name": "maturationTimestamp",
-        "type": "uint64"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsorFeeToken",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "sponsorFeeAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "nonce",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "deadline",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "v",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct Sponsorable.Sponsorship",
-        "name": "sponsorship",
-        "type": "tuple"
-      }
-    ],
-    "name": "sponsoredDeposit",
-    "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "depositID",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint256",
-        "name": "interestAmount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "depositID",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint256",
-        "name": "fundAmount",
-        "type": "uint256"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsorFeeToken",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "sponsorFeeAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "nonce",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "deadline",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "v",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct Sponsorable.Sponsorship",
-        "name": "sponsorship",
-        "type": "tuple"
-      }
-    ],
-    "name": "sponsoredFund",
-    "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "fundingID",
-        "type": "uint64"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "fundingID",
-        "type": "uint64"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsorFeeToken",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "sponsorFeeAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "nonce",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "deadline",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "v",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct Sponsorable.Sponsorship",
-        "name": "sponsorship",
-        "type": "tuple"
-      }
-    ],
-    "name": "sponsoredPayInterestToFunders",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "interestAmount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "depositID",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint64",
-        "name": "maturationTimestamp",
-        "type": "uint64"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsorFeeToken",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "sponsorFeeAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "nonce",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "deadline",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "v",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct Sponsorable.Sponsorship",
-        "name": "sponsorship",
-        "type": "tuple"
-      }
-    ],
-    "name": "sponsoredRolloverDeposit",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "newDepositID",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "interestAmount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "depositID",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint256",
-        "name": "depositAmount",
-        "type": "uint256"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsorFeeToken",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "sponsorFeeAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "nonce",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "deadline",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "v",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct Sponsorable.Sponsorship",
-        "name": "sponsorship",
-        "type": "tuple"
-      }
-    ],
-    "name": "sponsoredTopupDeposit",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "interestAmount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "depositID",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint256",
-        "name": "virtualTokenAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "early",
-        "type": "bool"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "sender",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsorFeeToken",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "sponsorFeeAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "nonce",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "deadline",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "v",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct Sponsorable.Sponsorship",
-        "name": "sponsorship",
-        "type": "tuple"
-      }
-    ],
-    "name": "sponsoredWithdraw",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "withdrawnStablecoinAmount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "stablecoin",
     "outputs": [
@@ -1478,6 +1147,35 @@
       {
         "internalType": "uint256",
         "name": "depositAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "topupDeposit",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "interestAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint64",
+        "name": "depositID",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "depositAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumInterestAmount",
         "type": "uint256"
       }
     ],
@@ -1550,6 +1248,16 @@
         "internalType": "address",
         "name": "newOwner",
         "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "direct",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "renounce",
+        "type": "bool"
       }
     ],
     "name": "transferOwnership",
