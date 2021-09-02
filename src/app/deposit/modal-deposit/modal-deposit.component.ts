@@ -10,6 +10,10 @@ import {
   PoolInfo,
   ZeroCouponBondInfo,
 } from '../../contract.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { FormBuilder, Validators } from '@angular/forms';
+import { NFTStorage, File } from 'nft.storage';
+import autosize from 'autosize';
 
 @Component({
   selector: 'app-modal-deposit',
@@ -45,12 +49,26 @@ export class ModalDepositComponent implements OnInit {
   presetMaturity: ZeroCouponBondInfo;
   selectedZCBPools: ZeroCouponBondInfo[];
 
+  // nft metadata
+  nftStorageClient: NFTStorage;
+  name: string;
+  description: string;
+  imageURL: SafeUrl;
+  imageFile: any;
+  notUpload: boolean;
+  externalURL: string;
+  isLoading: boolean;
+  loadingMessage: string;
+  attributes = this.fb.array([]);
+
   constructor(
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
     public helpers: HelpersService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    private sanitizer: DomSanitizer,
+    private fb: FormBuilder
   ) {
     this.resetData();
   }
@@ -68,6 +86,15 @@ export class ModalDepositComponent implements OnInit {
       this.resetData();
       this.loadData();
     });
+
+    // nft
+    this.imageURL = '../../../assets/img/placeholder.svg';
+    this.nftStorageClient = new NFTStorage({
+      token: this.constants.NFTSTORAGE_KEY,
+    });
+    // this.isLoading = false;
+    // this.loadedNFTAddress = false;
+    autosize(document.querySelector('textarea'));
   }
 
   loadData(): void {
@@ -403,7 +430,7 @@ export class ModalDepositComponent implements OnInit {
     }
   }
 
-  normalDeposit() {
+  async normalDeposit() {
     const stablecoin = this.contract.getPoolStablecoin(
       this.selectedPoolInfo.name
     );
@@ -424,7 +451,14 @@ export class ModalDepositComponent implements OnInit {
 
     if (!zcb) {
       const pool = this.contract.getPool(this.selectedPoolInfo.name);
-      const func = pool.methods.deposit(depositAmount, maturationTimestamp);
+      console.log(pool);
+      let func;
+      if (this.name && this.imageURL && this.description) {
+        const uri = await this.uploadMetadata();
+        func = pool.methods.deposit(depositAmount, maturationTimestamp, 0, uri);
+      } else {
+        func = pool.methods.deposit(depositAmount, maturationTimestamp);
+      }
 
       this.wallet.sendTxWithToken(
         func,
@@ -465,6 +499,7 @@ export class ModalDepositComponent implements OnInit {
 
   // @dev only works on mainnet since zapper only exists on mainnet
   // TODO: switch to v3 version of CurveZapIn
+  // TODO: add ability to use custom NFT metadata
   async zapCurveDeposit() {
     const slippage = 0.01;
     const tokenAddress = this.contract.getZapDepositTokenAddress(
@@ -765,6 +800,54 @@ export class ModalDepositComponent implements OnInit {
       this.depositTokenBalance.gte(this.depositAmount) &&
       this.tokenAllowance.gte(this.depositAmount)
     );
+  }
+
+  async updateImageFile(files) {
+    this.imageFile = files.item(0);
+    this.imageURL = this.sanitizer.bypassSecurityTrustUrl(
+      URL.createObjectURL(this.imageFile)
+    );
+  }
+
+  addAttribute(trait_type?: string, value?: string) {
+    const newAttribute = this.fb.group({
+      trait_type: [trait_type ? trait_type : '', Validators.required],
+      value: [value ? value : '', Validators.required],
+    });
+    this.attributes.push(newAttribute);
+  }
+
+  deleteAttribute(i) {
+    this.attributes.removeAt(i);
+  }
+
+  private async uploadMetadata(): Promise<string> {
+    this.isLoading = true;
+    this.loadingMessage = 'Uploading metadata to IPFS...';
+
+    // Parse through attributes
+    let attributesList = [];
+    for (let i = 0; i < this.attributes.length; i++) {
+      let item = (this.attributes.at(i) as any).controls;
+      let a = {};
+      a['trait_type'] = item.trait_type.value;
+      a['value'] = item.value.value;
+      attributesList.push(a);
+    }
+    const metadata = {
+      name: this.name,
+      image: new File([this.imageFile], this.imageFile.name, {
+        type: this.imageFile.type,
+      }),
+      description: this.description,
+      external_url: this.externalURL,
+      attributes: attributesList,
+    };
+    const uploadResult = await this.nftStorageClient.store(metadata);
+
+    this.isLoading = false;
+
+    return uploadResult.url;
   }
 }
 
