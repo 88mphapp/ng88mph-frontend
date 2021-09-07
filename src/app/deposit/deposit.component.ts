@@ -36,6 +36,7 @@ export class DepositComponent implements OnInit {
   allPoolList: DPool[];
   allZCBPoolList: ZeroCouponBondInfo[];
   userPools: UserPool[];
+  userVests: Vest[];
   userZCBPools: UserZCBPool[];
   mphPriceUSD: BigNumber;
 
@@ -183,6 +184,19 @@ export class DepositComponent implements OnInit {
               }
             }
           }
+          deposits {
+            maturationTimestamp
+            virtualTokenTotalSupply
+            interestRate
+            vest {
+              nftID
+              withdrawnAmount
+              accumulatedAmount
+              totalExpectedMPHAmount
+              lastUpdateTimestamp
+              vestAmountPerStablecoinPerSecond
+            }
+          }
           totalDepositByPool {
             pool {
               address
@@ -273,7 +287,6 @@ export class DepositComponent implements OnInit {
 
     if (user) {
       let totalMPHEarned = new BigNumber(0);
-      let totalClaimableMPH = new BigNumber(0);
       const vestingContract = this.contract.getNamedContract('Vesting02');
 
       // process user deposit list
@@ -379,8 +392,6 @@ export class DepositComponent implements OnInit {
             //     .call({from: this.wallet.actualAddress.toLowerCase()})
             // ).div(this.constants.PRECISION);
 
-            totalClaimableMPH = totalClaimableMPH.plus(claimableMPH);
-
             const userPoolDeposit: UserDeposit = {
               nftID: +deposit.nftID,
               locked: +deposit.maturationTimestamp >= Date.now() / 1e3,
@@ -434,6 +445,59 @@ export class DepositComponent implements OnInit {
         })
       ).then(() => {
         this.userPools = userPools;
+      });
+
+      // compute total claimable MPH rewards
+      let totalClaimableMPH = new BigNumber(0);
+      let userVests: Vest[] = [];
+      Promise.all(
+        user.deposits.map((deposit) => {
+          const vest = deposit.vest;
+
+          // add the vest to list of user vests
+          const vestObj: Vest = {
+            nftID: parseInt(vest.nftID),
+            lastUpdateTimestamp: parseFloat(vest.lastUpdateTimestamp),
+            accumulatedAmount: new BigNumber(vest.accumulatedAmount),
+            withdrawnAmount: new BigNumber(vest.withdrawnAmount),
+            vestAmountPerStablecoinPerSecond: new BigNumber(
+              vest.vestAmountPerStablecoinPerSecond
+            ),
+            totalExpectedMPHAmount: new BigNumber(vest.totalExpectedMPHAmount),
+          };
+          userVests.push(vestObj);
+
+          // calculate the claimable amount of MPH
+          const depositAmount = new BigNumber(
+            deposit.virtualTokenTotalSupply
+          ).div(new BigNumber(deposit.interestRate).plus(1));
+          const currentTimestamp = Math.min(
+            Math.floor(Date.now() / 1e3),
+            parseFloat(deposit.maturationTimestamp)
+          );
+
+          let claimableMPH;
+
+          if (currentTimestamp < parseFloat(vest.lastUpdateTimestamp)) {
+            claimableMPH = new BigNumber(vest.accumulatedAmount).minus(
+              vest.withdrawnAmount
+            );
+          } else {
+            claimableMPH = new BigNumber(vest.accumulatedAmount)
+              .plus(
+                depositAmount
+                  .times(
+                    currentTimestamp - parseFloat(vest.lastUpdateTimestamp)
+                  )
+                  .times(vest.vestAmountPerStablecoinPerSecond)
+              )
+              .minus(vest.withdrawnAmount);
+          }
+
+          totalClaimableMPH = totalClaimableMPH.plus(claimableMPH);
+        })
+      ).then(() => {
+        this.userVests = userVests;
         this.totalMPHEarned = totalClaimableMPH;
       });
 
@@ -481,6 +545,7 @@ export class DepositComponent implements OnInit {
       this.totalInterestUSD = new BigNumber(0);
       this.totalMPHEarned = new BigNumber(0);
       this.userPools = [];
+      this.userVests = [];
       this.userZCBPools = [];
       this.stepsCompleted = 0;
       this.hasDeposit = false;
@@ -593,19 +658,13 @@ export class DepositComponent implements OnInit {
   }
 
   claimAllRewards() {
-    const userPools = this.userPools;
+    const userVests = this.userVests;
     const vestContract = this.contract.getNamedContract('Vesting02');
     let vestIdList = new Array<number>(0);
 
-    for (let pool in userPools) {
-      // for each pool
-      const userDeposits = userPools[pool].deposits;
-      for (let deposit in userDeposits) {
-        // for each deposit
-        const vest = userDeposits[deposit].vest;
-        const vestID = vest.nftID;
-        vestIdList.push(vestID);
-      }
+    for (let vest in userVests) {
+      const vestID = userVests[vest].nftID;
+      vestIdList.push(vestID);
     }
 
     const func = vestContract.methods.multiWithdraw(vestIdList);
@@ -648,6 +707,19 @@ interface QueryResult {
           totalExpectedMPHAmount: string;
         };
       }[];
+    }[];
+    deposits: {
+      maturationTimestamp: string;
+      virtualTokenTotalSupply: string;
+      interestRate: string;
+      vest: {
+        nftID: string;
+        withdrawnAmount: string;
+        accumulatedAmount: string;
+        totalExpectedMPHAmount: string;
+        lastUpdateTimestamp: string;
+        vestAmountPerStablecoinPerSecond: string;
+      };
     }[];
     totalDepositByPool: {
       pool: {
