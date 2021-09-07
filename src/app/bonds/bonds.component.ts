@@ -228,6 +228,17 @@ export class BondsComponent implements OnInit {
               yieldEarned = yieldEarned.plus(funderDistributedInterest);
             });
 
+          // fetch amount of interest that can be withdrawn
+          let funderWithdrawableInterest;
+          await yieldToken.methods
+            .dividendOf(funding.nftID, stablecoin, funder.address)
+            .call()
+            .then((result) => {
+              funderWithdrawableInterest = new BigNumber(result).div(
+                stablecoinPrecision
+              );
+            });
+
           // calculate the amount that has been refunded
           // @dev this is an extremely rough implementation. update the subgraph to track refunds for specific users to get a more accurate estimation
           let refundedAmount = new BigNumber(0);
@@ -251,6 +262,21 @@ export class BondsComponent implements OnInit {
                 this.constants.PRECISION
               );
               mphEarned = mphEarned.plus(funderDistributedMPH);
+            });
+
+          // fetch amount of mph that can be withdrawn
+          let funderWithdrawableMPH;
+          await yieldToken.methods
+            .dividendOf(
+              funding.nftID,
+              this.constants.MPH_ADDRESS[this.wallet.networkID],
+              funder.address
+            )
+            .call()
+            .then((result) => {
+              funderWithdrawableMPH = new BigNumber(result).div(
+                this.constants.PRECISION
+              );
             });
 
           let pool: FunderPool = funderPools.find(
@@ -280,7 +306,9 @@ export class BondsComponent implements OnInit {
           }
 
           if (
-            mphEarned.eq(0) &&
+            funderAccruedInterest.eq(0) &&
+            funderWithdrawableInterest.eq(0) &&
+            funderWithdrawableMPH.eq(0) &&
             (!funding.active ||
               new BigNumber(funding.principalPerToken).lte(
                 this.constants.DUST_THRESHOLD
