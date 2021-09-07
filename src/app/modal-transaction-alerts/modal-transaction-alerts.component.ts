@@ -32,8 +32,8 @@ export class ModalTransactionAlertsComponent implements OnInit {
         ? ''
         : this.constants.NETWORK_METADATA[
             this.networkID
-          ].chainName.toLowerCase()
-    }.etherscan.io`;
+          ].chainName.toLowerCase() + '.'
+    }etherscan.io`;
     const suffix = `/tx/${this.hash}`;
     return prefix + suffix;
   }
