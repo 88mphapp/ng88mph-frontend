@@ -37,7 +37,7 @@
       "stablecoinSymbol": "DAI",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
-      "iconPath": "assets/img/token-icons/dai.svg",
+      "iconPath": "assets/img/token-icons/aDAI.svg",
       "moneyMarket": "0x011735dc889446b9582b6e7a9b792e2a0d11f56d"
     },
     "aUSDC": {
@@ -47,7 +47,7 @@
       "stablecoinSymbol": "USDC",
       "stablecoinDecimals": 6,
       "protocol": "Aave",
-      "iconPath": "assets/img/token-icons/ausdc.png",
+      "iconPath": "assets/img/token-icons/aUSDC.svg",
       "moneyMarket": "0x9Aa09d36be9BCEeE36B3Dc81C0A5137eCF7Ea13B"
     },
     "aUSDT": {
@@ -57,7 +57,7 @@
       "stablecoinSymbol": "USDT",
       "stablecoinDecimals": 6,
       "protocol": "Aave",
-      "iconPath": "assets/img/token-icons/dai.svg",
+      "iconPath": "assets/img/token-icons/aUSDT.svg",
       "moneyMarket": "0x1E98FC27B8e3109D8A426B7A1340C74A4d403fA8"
     },
     "harvestCRVRENWBTC": {
