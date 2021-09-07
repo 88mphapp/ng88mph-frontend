@@ -83,13 +83,9 @@ export class BondsComponent implements OnInit {
           loadUser
             ? `funder(id: "${funderID}") {
           address
-          fundings (
-            where: {
-              active: true
-              principalPerToken_gt: "${this.constants.DUST_THRESHOLD}"
-             }
-          ) {
+          fundings {
             nftID
+            active
             totalSupply
             principalPerToken
             totalRefundEarned
@@ -281,6 +277,16 @@ export class BondsComponent implements OnInit {
             };
             funderPools.push(funderPool);
             pool = funderPool;
+          }
+
+          if (
+            mphEarned.eq(0) &&
+            (!funding.active ||
+              new BigNumber(funding.principalPerToken).lte(
+                this.constants.DUST_THRESHOLD
+              ))
+          ) {
+            return;
           }
 
           // add the funding to the funderPool
@@ -689,6 +695,7 @@ interface QueryResult {
     address: string;
     fundings: {
       nftID: string;
+      active: boolean;
       totalSupply: string;
       principalPerToken: string;
       totalRefundEarned: string;
