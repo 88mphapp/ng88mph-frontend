@@ -95,7 +95,7 @@
                 <th class="text-dark">
                   Interest earned
                 </th>
-                <th class="text-dark">
+                <th class="d-none text-dark">
                   MPH perm. rewards
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="Depositors get rewarded with upfront MPH tokens that can be staked to earn fee-sharing and yield farming rewards. Most of the MPH tokens will need to be paid back when the deposit is withdrawn at maturation. This column is the token you keep after deposit's maturation.">
@@ -103,13 +103,13 @@
                   </button>
                 </th>
                 <th class="text-dark">
-                  MPH temp. rewards
+                  MPH rewards
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="This column display the total upfront MPH rewards you received when you deposited.">
+                    ngbTooltip="Depositors get rewarded with upfront MPH tokens that can be staked to earn fee-sharing and yield farming rewards. Most of the MPH tokens will need to be paid back when the deposit is withdrawn at maturation. This column is the token you keep after deposit's maturation.">
                     [i]
                   </button>
                 </th>
-                <th class="text-dark">
+                <th class="d-none text-dark">
                   MPH to repay
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="A certain % of the upfront MPH rewards will need to be paid back when the mature deposit is mature.">
@@ -187,7 +187,7 @@
                       <h4 class="mb-1 font-weight-normal glowing">${{deposit.amountUSD.toFormat(DECIMALS)}}</h4>
                       <div class="text-white d-block">{{deposit.amountToken.toFormat(DECIMALS)}}
                         {{userPool.poolInfo.stablecoinSymbol}}</div>
-                      <div class="text-white mb-3">@ {{deposit.apy.toFormat(DECIMALS)}}% fixed APY</div>
+                      <div class="text-white mb-3">@ {{deposit.apy.toFormat(DECIMALS)}}% fixed APR</div>
 
                       <!-- Button -->
                       <button type="button" class="card-link small small px-1"
@@ -206,7 +206,7 @@
                       <span class="text-white">{{deposit.interestEarnedToken.toFormat(DECIMALS)}}
                         {{userPool.poolInfo.stablecoinSymbol}}</span>
                     </td>
-                    <td>
+                    <td class="d-none">
                       <h4 class="mb-1 font-weight-normal glowing">
                         ${{deposit.realMPHReward.times(mphPriceUSD).toFormat(DECIMALS)}}</h4>
                       <span class="text-white d-block">{{deposit.realMPHReward.toFormat(DECIMALS)}} MPH</span>
@@ -219,7 +219,7 @@
                       <span class="text-white d-block">{{deposit.mintMPHAmount.toFormat(DECIMALS)}} MPH</span>
                       <div class="text-white">@ {{deposit.tempMPHAPY.toFormat(DECIMALS)}}% APY</div>
                     </td>
-                    <td>
+                    <td class="d-none">
                       <h4 class="mb-1 font-weight-normal glowing">
                         ${{deposit.mintMPHAmount.minus(deposit.realMPHReward).times(mphPriceUSD).toFormat(DECIMALS)}}
                       </h4>
@@ -251,19 +251,19 @@
                   Total deposits
                 </th>
                 <th class="text-dark">
-                  Fixed APY
+                  Fixed APR
                 </th>
-                <th class="text-dark">
-                  MPH APY
+                <th class="d-none text-dark">
+                  MPH APR
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
                     ngbTooltip="Annualized MPH reward rate">
                     [i]
                   </button>
                 </th>
                 <th class="text-dark">
-                  MPH APY (temporary)
+                  MPH APR
                   <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                    ngbTooltip="Annualized temporary MPH reward rate. Depositors need to pay back most of the temporary MPH reward received when they withdraw.">
+                    ngbTooltip="Annualized MPH reward rate">
                     [i]
                   </button>
                 </th>
@@ -303,7 +303,7 @@
                 <td class="glowing">
                   {{pool.oneYearInterestRate.toFormat(DECIMALS)}}%
                 </td>
-                <td class="glowing">
+                <td class="d-none glowing">
                   +{{pool.mphAPY.toFormat(DECIMALS)}}%
                 </td>
                 <td class="glowing">

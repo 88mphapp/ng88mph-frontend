@@ -128,9 +128,9 @@
                         </tr>
                         <tr>
                           <td class="px-0 border-0 text-white">
-                            <strong>Fixed APY</strong>
+                            <strong>Fixed APR</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
-                              ngbTooltip="Fixed APY according to lending duration">
+                              ngbTooltip="Fixed APR according to lending duration">
                               [i]
                             </button>
                           </td>
@@ -138,7 +138,7 @@
                             {{apy.toFormat(4)}}%
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="d-none">
                           <td class="px-0 text-white border-0">
                             <strong>MPH rewards (Vested over {{selectedPoolInfo.vestPeriod}})</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
@@ -152,7 +152,7 @@
                             <span class="text-white">{{mphRewardAmount.toFormat(4)}} MPH</span>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="d-none">
                           <td class="px-0 text-white border-0">
                             <strong>MPH to repay upon withdraw</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
@@ -166,7 +166,7 @@
                             <span class="text-white">{{mphTakeBackAmount.toFormat(4)}} MPH</span>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="d-none">
                           <td class="px-0 text-white border-0">
                             <strong>MPH APY</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
@@ -178,7 +178,7 @@
                             +{{mphAPY.toFormat(4)}}%
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="d-none">
                           <td class="px-0 text-white border-0">
                             <strong>MPH APY (temporary)</strong>
                             <button type="button" class="btn btn-sm btn-link p-0 text-white" placement="top"
