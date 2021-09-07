@@ -68,7 +68,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Harvest",
       "iconPath": "assets/img/token-icons/btc.svg",
-      "moneyMarket": "0x4942f85bb088F50094f231f43Cd11803846ffC29"
+      "moneyMarket": "0x4942f85bb088F50094f231f43Cd11803846ffC29",
+      "stakingPool": "0xA3Cf8D1CEe996253FAD1F8e3d68BDCba7B3A3Db5"
     }
   },
   "4": {
