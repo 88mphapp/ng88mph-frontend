@@ -80,7 +80,7 @@
                   type="tel"
                   class="form-control bg-light text-white"
                   aria-label="Text input with dropdown button"
-                  [value]="initialDeposit.toFormat(4)"
+                  [value]="initialDeposit.toFixed()"
                   (input)="setDepositAmount($event.target.value)"
                 />
                 <div class="input-group-prepend">
