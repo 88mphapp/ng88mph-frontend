@@ -149,15 +149,12 @@ export class ConstantsService {
   };
 
   // TOKENS //
-  COMP = '0xc00e94cb662c3520282e6f5717214004a7f26888';
-  FARM = '0xa0246c9032bC3A600820415aE600c6388619A14D';
-  AAVE = '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9';
-  STKAAVE = '0x4da27a545c0c5b758a6ba100e3a049001de870f5';
-  SUSHI = '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2';
-  BNT = '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c';
-  WETH_ADDR = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
   ZERO_ADDR = '0x0000000000000000000000000000000000000000';
 
+  WETH = {
+    [this.CHAIN_ID.MAINNET]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
   DAI = {
     [this.CHAIN_ID.MAINNET]: '0x6b175474e89094c44da98b954eedeac495271d0f',
     [this.CHAIN_ID.RINKEBY]: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
@@ -176,6 +173,30 @@ export class ConstantsService {
   };
   UNI = {
     [this.CHAIN_ID.MAINNET]: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  SUSHI = {
+    [this.CHAIN_ID.MAINNET]: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  AAVE = {
+    [this.CHAIN_ID.MAINNET]: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  STKAAVE = {
+    [this.CHAIN_ID.MAINNET]: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  COMP = {
+    [this.CHAIN_ID.MAINNET]: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  FARM = {
+    [this.CHAIN_ID.MAINNET]: '0xa0246c9032bC3A600820415aE600c6388619A14D',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  BNT = {
+    [this.CHAIN_ID.MAINNET]: '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c',
     [this.CHAIN_ID.RINKEBY]: '',
   };
   CRVRENWBTC = {

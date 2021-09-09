@@ -213,7 +213,7 @@ export class FarmingComponent implements OnInit {
       ).div(this.constants.PRECISION);
       this.sushiPriceUSD = new BigNumber(
         await this.helpers.getTokenPriceUSD(
-          this.constants.SUSHI,
+          this.constants.SUSHI[this.wallet.networkID],
           this.wallet.networkID
         )
       );
@@ -244,7 +244,7 @@ export class FarmingComponent implements OnInit {
       // bancor
       this.bntPriceUSD = new BigNumber(
         await this.helpers.getTokenPriceUSD(
-          this.constants.BNT,
+          this.constants.BNT[this.wallet.networkID],
           this.wallet.networkID
         )
       );
@@ -260,7 +260,7 @@ export class FarmingComponent implements OnInit {
         await bancorLiquidityProtectionStats.methods
           .totalReserveAmount(
             this.constants.BANCOR_MPHBNT_POOL,
-            this.constants.BNT
+            this.constants.BNT[this.wallet.networkID]
           )
           .call()
       ).div(this.constants.PRECISION);
@@ -389,7 +389,10 @@ export class FarmingComponent implements OnInit {
         this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET],
         readonlyWeb3
       );
-      let bnt = this.contract.getERC20(this.constants.BNT, readonlyWeb3);
+      let bnt = this.contract.getERC20(
+        this.constants.BNT[this.wallet.networkID],
+        readonlyWeb3
+      );
       this.bancorUnstakedMPHBalance = new BigNumber(
         await mph.methods.balanceOf(address).call()
       ).div(this.constants.PRECISION);
@@ -410,7 +413,7 @@ export class FarmingComponent implements OnInit {
           .totalProviderAmount(
             address,
             this.constants.BANCOR_MPHBNT_POOL,
-            this.constants.BNT
+            this.constants.BNT[this.wallet.networkID]
           )
           .call()
       ).div(this.constants.PRECISION);
@@ -457,7 +460,8 @@ export class FarmingComponent implements OnInit {
           ) {
             this.bancorMPHDeposits.push(parseInt(this.bancorDepositIDs[id]));
           } else if (
-            deposit[2].toLowerCase() === this.constants.BNT.toLowerCase()
+            deposit[2].toLowerCase() ===
+            this.constants.BNT[this.wallet.networkID].toLowerCase()
           ) {
             this.bancorBNTDeposits.push(parseInt(this.bancorDepositIDs[id]));
           }
@@ -633,7 +637,7 @@ export class FarmingComponent implements OnInit {
         lpToken = this.contract.getNamedContract('BNTToken');
         func = rewards.methods.addLiquidity(
           this.constants.BANCOR_MPHBNT_POOL,
-          this.constants.BNT,
+          this.constants.BNT[this.wallet.networkID],
           stakeAmount
         );
       }

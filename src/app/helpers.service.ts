@@ -20,8 +20,8 @@ export class HelpersService {
   ): Promise<number> {
     const address = tokenAddress.toLowerCase();
 
-    if (address === this.constants.DAI[chainID].toLowerCase()) {
-      return await this.getChainlinkPriceUSD('DAI', chainID);
+    if (address === this.constants.WETH[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('ETH', chainID);
     } else if (address === this.constants.DAI[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('DAI', chainID);
     } else if (address === this.constants.USDC[chainID].toLowerCase()) {
@@ -32,9 +32,23 @@ export class HelpersService {
       return await this.getChainlinkPriceUSD('LINK', chainID);
     } else if (address === this.constants.UNI[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('UNI', chainID);
+    } else if (address === this.constants.SUSHI[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('SUSHI', chainID);
+    } else if (address === this.constants.BNT[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('BNT', chainID);
+    } else if (address === this.constants.AAVE[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('AAVE', chainID);
+    } else if (address === this.constants.COMP[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('COMP', chainID);
+    } else if (address === this.constants.FARM[chainID].toLowerCase()) {
+      const farmPriceETH = await this.getChainlinkPriceETH('FARM', chainID);
+      const ethPriceUSD = await this.getChainlinkPriceUSD('ETH', chainID);
+      return farmPriceETH * ethPriceUSD;
     } else if (address === this.constants.CRVRENWBTC[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('BTC', chainID);
     }
+
+    console.log(address);
 
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
@@ -190,7 +204,7 @@ export class HelpersService {
       this.constants.PRECISION
     );
     const ethPriceInUSD = await this.getTokenPriceUSD(
-      this.constants.WETH_ADDR,
+      this.constants.WETH[this.wallet.networkID],
       this.wallet.networkID
     );
     const lpTotalSupply = new BigNumber(

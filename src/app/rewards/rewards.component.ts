@@ -253,7 +253,7 @@ export class RewardsComponent implements OnInit {
       readonlyWeb3
     );
     const stkaaveToken = this.contract.getERC20(
-      this.constants.STKAAVE,
+      this.constants.STKAAVE[this.wallet.networkID],
       readonlyWeb3
     );
 
@@ -286,7 +286,7 @@ export class RewardsComponent implements OnInit {
 
       this.stkaaveRewardsToken = stkaaveRewardsToken;
       const stkaavePriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.AAVE,
+        this.constants.AAVE[this.wallet.networkID],
         this.wallet.networkID
       );
       this.stkaaveRewardsUSD = stkaaveRewardsToken.times(stkaavePriceUSD);
@@ -304,7 +304,10 @@ export class RewardsComponent implements OnInit {
       'CompoundLens',
       readonlyWeb3
     );
-    const compToken = this.contract.getERC20(this.constants.COMP, readonlyWeb3);
+    const compToken = this.contract.getERC20(
+      this.constants.COMP[this.wallet.networkID],
+      readonlyWeb3
+    );
     let compRewardsToken = new BigNumber(0);
     Promise.all(
       compoundPools.map(async (poolInfo) => {
@@ -312,7 +315,7 @@ export class RewardsComponent implements OnInit {
           (
             await compoundLens.methods
               .getCompBalanceMetadataExt(
-                this.constants.COMP,
+                this.constants.COMP[this.wallet.networkID],
                 this.constants.COMPOUND_COMPTROLLER,
                 poolInfo.moneyMarket
               )
@@ -334,7 +337,7 @@ export class RewardsComponent implements OnInit {
 
       this.compRewardsToken = compRewardsToken;
       const compPriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.COMP,
+        this.constants.COMP[this.wallet.networkID],
         this.wallet.networkID
       );
       this.compRewardsUSD = compRewardsToken.times(compPriceUSD);
@@ -347,7 +350,10 @@ export class RewardsComponent implements OnInit {
     const harvestPools = allPools.filter(
       (poolInfo) => poolInfo.protocol === 'Harvest'
     );
-    const farmToken = this.contract.getERC20(this.constants.FARM, readonlyWeb3);
+    const farmToken = this.contract.getERC20(
+      this.constants.FARM[this.wallet.networkID],
+      readonlyWeb3
+    );
     let farmRewardsToken = new BigNumber(0);
     Promise.all(
       harvestPools.map(async (poolInfo) => {
@@ -368,7 +374,7 @@ export class RewardsComponent implements OnInit {
 
       this.farmRewardsToken = farmRewardsToken;
       const farmPriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.FARM,
+        this.constants.FARM[this.wallet.networkID],
         this.wallet.networkID
       );
       this.farmRewardsUSD = farmRewardsToken.times(farmPriceUSD);
