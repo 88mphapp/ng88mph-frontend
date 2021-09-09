@@ -44,5 +44,15 @@
       "USD": "0xcc70f09a6cc17553b2e31954cd36e4a2d89501f7",
       "ETH": "0xe572cef69f43c2e488b33924af04bdace19079cf"
     }
+  },
+  "4": {
+    "DAI": {
+      "USD": "0x2ba49aaa16e6afd2a993473cfb70fa8559b523cf",
+      "ETH": "0x74825dbc8bf76cc4e9494d0ecb210f676efa001d"
+    },
+    "USDC": {
+      "USD": "0xa24de01df22b63d23ebc1882a5e3d4ec0d907bfb",
+      "ETH": "0xdca36f27cbc4e38ae16c4e9f99d39b42337f6dcf"
+    }
   }
 }
