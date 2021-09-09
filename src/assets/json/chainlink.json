@@ -43,6 +43,10 @@
     "SUSHI": {
       "USD": "0xcc70f09a6cc17553b2e31954cd36e4a2d89501f7",
       "ETH": "0xe572cef69f43c2e488b33924af04bdace19079cf"
+    },
+    "BNT": {
+      "USD": "0x1e6cf0d433de4fe882a437abc654f58e1e78548c",
+      "ETH": "0xcf61d1841b178fe82c8895fe60c2edda08314416"
     }
   },
   "4": {
