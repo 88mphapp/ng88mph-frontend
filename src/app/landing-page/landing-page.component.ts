@@ -76,12 +76,6 @@ export class LandingPageComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    let test = await this.helpers.getChainlinkPriceUSD(
-      'DAI',
-      this.wallet.networkID
-    );
-    console.log(test);
-
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const userAddress: string = this.wallet.actualAddress.toLowerCase();
 
