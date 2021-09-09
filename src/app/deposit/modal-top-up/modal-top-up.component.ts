@@ -94,7 +94,8 @@ export class ModalTopUpComponent implements OnInit {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const pool = this.contract.getPool(this.poolInfo.name, readonlyWeb3);
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-      this.poolInfo.stablecoin
+      this.poolInfo.stablecoin,
+      this.wallet.networkID
     );
 
     // get deposit amount

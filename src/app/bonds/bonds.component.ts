@@ -158,7 +158,10 @@ export class BondsComponent implements OnInit {
           const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
           if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(
+              stablecoin,
+              this.wallet.networkID
+            );
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
           }
 
@@ -403,7 +406,10 @@ export class BondsComponent implements OnInit {
           const stablecoin = poolInfo.stablecoin.toLowerCase();
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
           if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(
+              stablecoin,
+              this.wallet.networkID
+            );
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
           }
 
@@ -468,7 +474,8 @@ export class BondsComponent implements OnInit {
     const now = Math.floor(Date.now() / 1e3);
 
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-      this.selectedPool.stablecoin
+      this.selectedPool.stablecoin,
+      this.wallet.networkID
     );
 
     const queryString = gql`

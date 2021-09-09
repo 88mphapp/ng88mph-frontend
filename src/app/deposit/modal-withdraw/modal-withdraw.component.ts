@@ -41,7 +41,10 @@ export class ModalWithdrawComponent implements OnInit {
       );
     } else {
       this.stablecoinPriceUSD = new BigNumber(
-        await this.helpers.getTokenPriceUSD(this.poolInfo.stablecoin)
+        await this.helpers.getTokenPriceUSD(
+          this.poolInfo.stablecoin,
+          this.wallet.networkID
+        )
       );
     }
   }

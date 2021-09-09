@@ -239,7 +239,10 @@ export class DepositComponent implements OnInit {
           const stablecoin = poolInfo.stablecoin.toLowerCase();
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
           if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(
+              stablecoin,
+              this.wallet.networkID
+            );
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
           }
 
@@ -304,7 +307,10 @@ export class DepositComponent implements OnInit {
           let totalUserDepositsToken = new BigNumber(0);
           let totalUserDepositsUSD = new BigNumber(0);
           if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(
+              stablecoin,
+              this.wallet.networkID
+            );
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
           }
           const userPoolDeposits: Array<UserDeposit> = [];
@@ -510,7 +516,8 @@ export class DepositComponent implements OnInit {
             stablecoinPriceCache[totalDepositEntity.pool.stablecoin];
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(
-              totalDepositEntity.pool.stablecoin
+              totalDepositEntity.pool.stablecoin,
+              this.wallet.networkID
             );
             stablecoinPriceCache[totalDepositEntity.pool.stablecoin] =
               stablecoinPrice;
@@ -582,7 +589,12 @@ export class DepositComponent implements OnInit {
     bond: ZeroCouponBondInfo,
     pool: PoolInfo
   ): Promise<BigNumber> {
-    return new BigNumber(await this.helpers.getTokenPriceUSD(pool.stablecoin));
+    return new BigNumber(
+      await this.helpers.getTokenPriceUSD(
+        pool.stablecoin,
+        this.wallet.networkID
+      )
+    );
   }
 
   openDepositModal(poolName?: string) {

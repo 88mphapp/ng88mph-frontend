@@ -45,7 +45,10 @@ export class ModalBuyYieldTokenComponent implements OnInit {
 
     const stablecoin = this.contract.getPoolStablecoin(this.deposit.pool.name);
     this.stablecoinPriceUSD = new BigNumber(
-      await this.helpers.getTokenPriceUSD(this.deposit.pool.stablecoin)
+      await this.helpers.getTokenPriceUSD(
+        this.deposit.pool.stablecoin,
+        this.wallet.networkID
+      )
     );
     const stablecoinPrecision = Math.pow(
       10,

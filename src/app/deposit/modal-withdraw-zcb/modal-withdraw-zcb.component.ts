@@ -40,7 +40,8 @@ export class ModalWithdrawZCBComponent implements OnInit {
     } else {
       this.stablecoinPriceUSD = new BigNumber(
         await this.helpers.getTokenPriceUSD(
-          this.userZCBPool.poolInfo.stablecoin
+          this.userZCBPool.poolInfo.stablecoin,
+          this.wallet.networkID
         )
       );
     }

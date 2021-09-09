@@ -126,7 +126,8 @@ export class DataService {
   ): Promise<BigNumber> {
     const poolInfo = this.contract.getPoolInfoFromAddress(address);
     const stablecoinPriceUSD = await this.helpers.getTokenPriceUSD(
-      poolInfo.stablecoin
+      poolInfo.stablecoin,
+      this.wallet.networkID
     );
     const mphPriceUSD = await this.helpers.getMPHPriceUSD();
 

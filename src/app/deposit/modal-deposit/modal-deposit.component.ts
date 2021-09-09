@@ -328,7 +328,8 @@ export class ModalDepositComponent implements OnInit {
     );
 
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-      this.selectedPoolInfo.stablecoin
+      this.selectedPoolInfo.stablecoin,
+      this.wallet.networkID
     );
 
     // get deposit amount

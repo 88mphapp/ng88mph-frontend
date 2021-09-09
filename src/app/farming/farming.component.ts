@@ -212,7 +212,10 @@ export class FarmingComponent implements OnInit {
         await sushiMPHRewarder.methods.rewardPerSecond().call()
       ).div(this.constants.PRECISION);
       this.sushiPriceUSD = new BigNumber(
-        await this.helpers.getTokenPriceUSD(this.constants.SUSHI)
+        await this.helpers.getTokenPriceUSD(
+          this.constants.SUSHI,
+          this.wallet.networkID
+        )
       );
       this.sushiLPPriceUSD = await this.helpers.getLPPriceUSD(
         this.constants.SUSHI_LP
@@ -240,7 +243,10 @@ export class FarmingComponent implements OnInit {
 
       // bancor
       this.bntPriceUSD = new BigNumber(
-        await this.helpers.getTokenPriceUSD(this.constants.BNT)
+        await this.helpers.getTokenPriceUSD(
+          this.constants.BNT,
+          this.wallet.networkID
+        )
       );
       this.bancorTotalStakedMPH = new BigNumber(
         await bancorLiquidityProtectionStats.methods
