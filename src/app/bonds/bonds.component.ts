@@ -282,6 +282,18 @@ export class BondsComponent implements OnInit {
               );
             });
 
+          if (
+            funderAccruedInterest.eq(0) &&
+            funderWithdrawableInterest.eq(0) &&
+            funderWithdrawableMPH.eq(0) &&
+            (!funding.active ||
+              new BigNumber(funding.principalPerToken).lte(
+                this.constants.DUST_THRESHOLD
+              ))
+          ) {
+            return;
+          }
+
           let pool: FunderPool = funderPools.find(
             (pool) =>
               pool.poolInfo.address.toLowerCase() ===
@@ -306,18 +318,6 @@ export class BondsComponent implements OnInit {
             };
             funderPools.push(funderPool);
             pool = funderPool;
-          }
-
-          if (
-            funderAccruedInterest.eq(0) &&
-            funderWithdrawableInterest.eq(0) &&
-            funderWithdrawableMPH.eq(0) &&
-            (!funding.active ||
-              new BigNumber(funding.principalPerToken).lte(
-                this.constants.DUST_THRESHOLD
-              ))
-          ) {
-            return;
           }
 
           // add the funding to the funderPool
