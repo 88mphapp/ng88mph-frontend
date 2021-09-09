@@ -28,6 +28,7 @@ export class RewardsComponent implements OnInit {
   yearlyROI: BigNumber;
 
   distributionEndTime: string;
+  daysToNextDistribution: number;
   protocolFeesUSD: BigNumber;
   compRewardsToken: BigNumber;
   compRewardsUSD: BigNumber;
@@ -155,6 +156,13 @@ export class RewardsComponent implements OnInit {
             hour: 'numeric',
             minute: 'numeric',
           });
+          const daysToNextDistribution: number =
+            distributionEndTime - Date.now() / 1e3;
+          if (daysToNextDistribution > 0) {
+            this.daysToNextDistribution = daysToNextDistribution;
+          } else {
+            this.daysToNextDistribution = 0;
+          }
         });
 
       // load xMPH rewards data
@@ -203,6 +211,7 @@ export class RewardsComponent implements OnInit {
       this.stkaaveRewardsUSD = new BigNumber(0);
       this.totalRewardsUSD = new BigNumber(0);
       this.maxAPY = new BigNumber(0);
+      this.daysToNextDistribution = 0;
     }
   }
 
