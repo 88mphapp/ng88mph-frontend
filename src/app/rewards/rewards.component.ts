@@ -227,7 +227,8 @@ export class RewardsComponent implements OnInit {
           await poolStablecoin.methods.balanceOf(this.constants.DUMPER).call()
         ).div(Math.pow(10, poolInfo.stablecoinDecimals));
         const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-          poolInfo.stablecoin
+          poolInfo.stablecoin,
+          this.wallet.networkID
         );
         protocolFeesUSD = protocolFeesUSD.plus(
           poolFeesToken.times(stablecoinPrice)
@@ -285,7 +286,8 @@ export class RewardsComponent implements OnInit {
 
       this.stkaaveRewardsToken = stkaaveRewardsToken;
       const stkaavePriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.AAVE
+        this.constants.AAVE,
+        this.wallet.networkID
       );
       this.stkaaveRewardsUSD = stkaaveRewardsToken.times(stkaavePriceUSD);
       this.totalRewardsUSD = this.totalRewardsUSD.plus(
@@ -332,7 +334,8 @@ export class RewardsComponent implements OnInit {
 
       this.compRewardsToken = compRewardsToken;
       const compPriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.COMP
+        this.constants.COMP,
+        this.wallet.networkID
       );
       this.compRewardsUSD = compRewardsToken.times(compPriceUSD);
       this.totalRewardsUSD = this.totalRewardsUSD.plus(
@@ -365,7 +368,8 @@ export class RewardsComponent implements OnInit {
 
       this.farmRewardsToken = farmRewardsToken;
       const farmPriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.FARM
+        this.constants.FARM,
+        this.wallet.networkID
       );
       this.farmRewardsUSD = farmRewardsToken.times(farmPriceUSD);
       this.totalRewardsUSD = this.totalRewardsUSD.plus(

@@ -76,6 +76,12 @@ export class LandingPageComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
+    let test = await this.helpers.getChainlinkPriceUSD(
+      'DAI',
+      this.wallet.networkID
+    );
+    console.log(test);
+
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const userAddress: string = this.wallet.actualAddress.toLowerCase();
 
@@ -136,7 +142,10 @@ export class LandingPageComponent implements OnInit {
           const stablecoin = poolInfo.stablecoin.toLowerCase();
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
           if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(stablecoin);
+            stablecoinPrice = await this.helpers.getTokenPriceUSD(
+              stablecoin,
+              this.wallet.networkID
+            );
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
           }
 
@@ -241,7 +250,8 @@ export class LandingPageComponent implements OnInit {
     const poolInfo = this.contract.getPoolInfo(this.selectedPool.name);
 
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-      poolInfo.stablecoin
+      poolInfo.stablecoin,
+      this.wallet.networkID
     );
 
     // load user token balance

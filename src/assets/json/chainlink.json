@@ -1,0 +1,48 @@
+{
+  "1": {
+    "ETH": {
+      "USD": "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419",
+      "ETH": ""
+    },
+    "BTC": {
+      "USD": "0xf4030086522a5beea4988f8ca5b36dbc97bee88c",
+      "ETH": "0xdeb288f737066589598e9214e782fa5a8ed689e8"
+    },
+    "DAI": {
+      "USD": "0xaed0c38402a5d19df6e4c03f4e2dced6e29c1ee9",
+      "ETH": "0x773616e4d11a78f511299002da57a0a94577f1f4"
+    },
+    "USDC": {
+      "USD": "0x8fffffd4afb6115b954bd326cbe7b4ba576818f6",
+      "ETH": "0x986b5e1e1755e3c2440e960477f25201b0a8bbd4"
+    },
+    "USDT": {
+      "USD": "0x3e7d1eab13ad0104d2750b8863b489d65364e32d",
+      "ETH": "0xee9f2375b4bdf6387aa8265dd4fb8f16512a1d46"
+    },
+    "AAVE": {
+      "USD": "0x547a514d5e3769680ce22b2361c10ea13619e8a9",
+      "ETH": "0x6df09e975c830ecae5bd4ed9d90f3a95a4f88012"
+    },
+    "COMP": {
+      "USD": "0xdbd020caef83efd542f4de03e3cf0c28a4428bd5",
+      "ETH": "0x1b39ee86ec5979ba5c322b826b3ecb8c79991699"
+    },
+    "FARM": {
+      "USD": "",
+      "ETH": "0x611e0d2709416e002a3f38085e4e1cf77c015921"
+    },
+    "LINK": {
+      "USD": "0x2c1d072e956affc0d435cb7ac38ef18d24d9127c",
+      "ETH": "0xdc530d9457755926550b59e8eccdae7624181557"
+    },
+    "UNI": {
+      "USD": "0x553303d460ee0afb37edff9be42922d8ff63220e",
+      "ETH": "0xd6aa3d25116d8da79ea0246c4826eb951872e02e"
+    },
+    "SUSHI": {
+      "USD": "0xcc70f09a6cc17553b2e31954cd36e4a2d89501f7",
+      "ETH": "0xe572cef69f43c2e488b33924af04bdace19079cf"
+    }
+  }
+}

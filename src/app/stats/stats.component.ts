@@ -137,7 +137,8 @@ export class StatsComponent implements OnInit {
           let stablecoinPrice = stablecoinPriceCache[pool.stablecoin];
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(
-              pool.stablecoin
+              pool.stablecoin,
+              this.wallet.networkID
             );
             stablecoinPriceCache[pool.stablecoin] = stablecoinPrice;
           }

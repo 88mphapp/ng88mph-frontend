@@ -166,12 +166,20 @@ export class ConstantsService {
     [this.CHAIN_ID.MAINNET]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     [this.CHAIN_ID.RINKEBY]: '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b',
   };
-  SUSD = {
-    [this.CHAIN_ID.MAINNET]: '0x57ab1ec28d129707052df4df418d58a2d46d5f51',
+  USDT = {
+    [this.CHAIN_ID.MAINNET]: '0xdac17f958d2ee523a2206206994597c13d831ec7',
     [this.CHAIN_ID.RINKEBY]: '',
+  };
+  LINK = {
+    [this.CHAIN_ID.MAINNET]: '0x514910771af9ca656af840dff83e8264ecf986ca',
+    [this.CHAIN_ID.RINKEBY]: '0x01be23585060835e02b77ef475b0cc51aa1e0709',
   };
   UNI = {
     [this.CHAIN_ID.MAINNET]: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  CRVRENWBTC = {
+    [this.CHAIN_ID.MAINNET]: '0x49849c98ae39fff122806c06791fa73784fb3675',
     [this.CHAIN_ID.RINKEBY]: '',
   };
 

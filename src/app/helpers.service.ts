@@ -14,72 +14,28 @@ export class HelpersService {
     public constants: ConstantsService
   ) {}
 
-  async getTokenPriceUSD(address: string): Promise<number> {
-    if (
-      address.toLowerCase() ===
-      '0x5B5CFE992AdAC0C9D48E05854B2d91C73a003858'.toLowerCase()
-    ) {
-      // crvHUSD
-      return 1;
-    } else if (
-      address.toLowerCase() ===
-      '0xb19059ebb43466C323583928285a49f558E572Fd'.toLowerCase()
-    ) {
-      // crvHBTC
-      address = '0x0316EB71485b0Ab14103307bf65a021042c6d380';
-    } else if (
-      address.toLowerCase() ===
-      '0x2fE94ea3d5d4a175184081439753DE15AeF9d614'.toLowerCase()
-    ) {
-      // crvOBTC
-      address = '0x8064d9Ae6cDf087b1bcd5BDf3531bD5d8C537a68';
-    } else if (
-      address.toLowerCase() ===
-      '0x06325440D014e39736583c165C2963BA99fAf14E'.toLowerCase()
-    ) {
-      // CRV:STETH
-      address = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
-    } else if (
-      address.toLowerCase() ===
-      '0x49849C98ae39Fff122806C06791Fa73784FB3675'.toLowerCase()
-    ) {
-      // CRV:RENWBTC
-      address = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
-    } else if (
-      address.toLowerCase() ===
-      '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3'.toLowerCase()
-    ) {
-      // CRV:RENWSBTC
-      address = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
-    } else if (
-      // DAI
-      address.toLowerCase() ===
-      this.constants.DAI[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
-    ) {
-      address =
-        this.constants.DAI[this.constants.CHAIN_ID.MAINNET].toLowerCase();
-    } else if (
-      // USDC
-      address.toLowerCase() ===
-      this.constants.USDC[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
-    ) {
-      address =
-        this.constants.USDC[this.constants.CHAIN_ID.MAINNET].toLowerCase();
-    } else if (
-      // SUSD
-      address.toLowerCase() ===
-      this.constants.SUSD[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
-    ) {
-      address =
-        this.constants.SUSD[this.constants.CHAIN_ID.MAINNET].toLowerCase();
-    } else if (
-      // UNI
-      address.toLowerCase() ===
-      this.constants.UNI[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
-    ) {
-      address =
-        this.constants.UNI[this.constants.CHAIN_ID.MAINNET].toLowerCase();
+  async getTokenPriceUSD(
+    tokenAddress: string,
+    chainID: number
+  ): Promise<number> {
+    const address = tokenAddress.toLowerCase();
+
+    if (address === this.constants.DAI[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('DAI', chainID);
+    } else if (address === this.constants.DAI[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('DAI', chainID);
+    } else if (address === this.constants.USDC[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('USDC', chainID);
+    } else if (address === this.constants.USDT[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('USDT', chainID);
+    } else if (address === this.constants.LINK[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('LINK', chainID);
+    } else if (address === this.constants.UNI[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('UNI', chainID);
+    } else if (address === this.constants.CRVRENWBTC[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('BTC', chainID);
     }
+
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
     if (!rawResult.prices) {
@@ -137,20 +93,6 @@ export class HelpersService {
       address =
         this.constants.USDC[this.constants.CHAIN_ID.MAINNET].toLowerCase();
     } else if (
-      // SUSD
-      address.toLowerCase() ===
-      this.constants.SUSD[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
-    ) {
-      address =
-        this.constants.SUSD[this.constants.CHAIN_ID.MAINNET].toLowerCase();
-    } else if (
-      // UNI
-      address.toLowerCase() ===
-      this.constants.UNI[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
-    ) {
-      address =
-        this.constants.UNI[this.constants.CHAIN_ID.MAINNET].toLowerCase();
-    } else if (
       address.toLowerCase() ===
       this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.RINKEBY].toLowerCase()
     ) {
@@ -186,9 +128,52 @@ export class HelpersService {
   async getMPHPriceUSD(): Promise<BigNumber> {
     return new BigNumber(
       await this.getTokenPriceUSD(
-        this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
+        this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET],
+        this.wallet.networkID
       )
     );
+  }
+
+  async getChainlinkPriceUSD(symbol: string, chainID: number): Promise<number> {
+    const readonlyWeb3 = this.wallet.readonlyWeb3(chainID);
+    const chainlinkAddress = require(`src/assets/json/chainlink.json`)[chainID][
+      symbol
+    ]['USD'];
+
+    if (chainlinkAddress !== '') {
+      const oracleContract = this.contract.getContract(
+        chainlinkAddress,
+        'ChainlinkOracle',
+        readonlyWeb3
+      );
+      const tokenPriceUSD =
+        (await oracleContract.methods.latestAnswer().call()) / 1e8;
+      return tokenPriceUSD;
+    } else {
+      console.log(symbol + '/USD price feed does not exist.');
+      return 0;
+    }
+  }
+
+  async getChainlinkPriceETH(symbol: string, chainID: number): Promise<number> {
+    const readonlyWeb3 = this.wallet.readonlyWeb3(chainID);
+    const chainlinkAddress = require(`src/assets/json/chainlink.json`)[chainID][
+      symbol
+    ]['ETH'];
+
+    if (chainlinkAddress !== '') {
+      const oracleContract = this.contract.getContract(
+        chainlinkAddress,
+        'ChainlinkOracle',
+        readonlyWeb3
+      );
+      const tokenPriceETH =
+        (await oracleContract.methods.latestAnswer().call()) / 1e18;
+      return tokenPriceETH;
+    } else {
+      console.log(symbol + '/ETH price feed does not exist.');
+      return 0;
+    }
   }
 
   async getMPHLPPriceUSD(): Promise<BigNumber> {
@@ -204,7 +189,10 @@ export class HelpersService {
     const ethReserve = new BigNumber(reservesObj._reserve1).div(
       this.constants.PRECISION
     );
-    const ethPriceInUSD = await this.getTokenPriceUSD(this.constants.WETH_ADDR);
+    const ethPriceInUSD = await this.getTokenPriceUSD(
+      this.constants.WETH_ADDR,
+      this.wallet.networkID
+    );
     const lpTotalSupply = new BigNumber(
       await uniswapPair.methods.totalSupply().call()
     ).div(this.constants.PRECISION);
@@ -229,8 +217,14 @@ export class HelpersService {
     const reserve1 = new BigNumber(reservesObj._reserve1).div(
       this.constants.PRECISION
     );
-    const token0PriceInUSD = await this.getTokenPriceUSD(token0);
-    const token1PriceInUSD = await this.getTokenPriceUSD(token1);
+    const token0PriceInUSD = await this.getTokenPriceUSD(
+      token0,
+      this.wallet.networkID
+    );
+    const token1PriceInUSD = await this.getTokenPriceUSD(
+      token1,
+      this.wallet.networkID
+    );
     const lpTotalSupply = new BigNumber(
       await uniswapPair.methods.totalSupply().call()
     ).div(this.constants.PRECISION);
@@ -267,7 +261,10 @@ export class HelpersService {
         this.constants.PRECISION
       );
     }
-    const baseTokenPriceInUSD = await this.getTokenPriceUSD(baseTokenAddress);
+    const baseTokenPriceInUSD = await this.getTokenPriceUSD(
+      baseTokenAddress,
+      this.wallet.networkID
+    );
     const totalValueLocked = baseTokenReserve
       .times(baseTokenPriceInUSD)
       .times(2);

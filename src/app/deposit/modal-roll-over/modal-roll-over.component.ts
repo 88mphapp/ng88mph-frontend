@@ -87,10 +87,12 @@ export class ModalRollOverComponent implements OnInit {
       this.mphPriceUSD = price;
     });
 
-    this.helpers.getTokenPriceUSD(this.poolInfo.stablecoin).then((price) => {
-      this.stablecoinPriceUSD = new BigNumber(price);
-      this.updateAPY();
-    });
+    this.helpers
+      .getTokenPriceUSD(this.poolInfo.stablecoin, this.wallet.networkID)
+      .then((price) => {
+        this.stablecoinPriceUSD = new BigNumber(price);
+        this.updateAPY();
+      });
   }
 
   resetData() {
