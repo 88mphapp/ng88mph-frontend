@@ -160,9 +160,9 @@ export class LandingPageComponent implements OnInit {
             ),
           };
 
-          totalDepositUSD = totalDepositUSD
-            .plus(dpoolObj.totalDepositUSD)
-            .div(1e6);
+          totalDepositUSD = totalDepositUSD.plus(
+            dpoolObj.totalDepositUSD.div(1e6)
+          );
           allPoolList.push(dpoolObj);
         })
       ).then(() => {
