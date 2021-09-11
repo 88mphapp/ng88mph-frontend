@@ -87,14 +87,19 @@ export class LandingPageComponent implements OnInit {
         10,
         this.selectedPool.stablecoinDecimals
       );
-      this.depositTokenBalance = new BigNumber(
-        await stablecoin.methods.balanceOf(userAddress).call()
-      ).div(stablecoinPrecision);
+      stablecoin.methods
+        .balanceOf(userAddress)
+        .call()
+        .then((balance) => {
+          this.depositTokenBalance = new BigNumber(balance).div(
+            stablecoinPrecision
+          );
+        });
     }
 
     if (loadGlobal) {
-      this.maxAPY = await this.datas.getMaxAPY();
-      this.maxMPHAPY = await this.datas.getMaxMPHAPY();
+      this.datas.getMaxAPY().then((x) => (this.maxAPY = x));
+      this.datas.getMaxMPHAPY().then((x) => (this.maxMPHAPY = x));
 
       const queryString = gql`
         {
