@@ -156,8 +156,9 @@ export class RewardsComponent implements OnInit {
             hour: 'numeric',
             minute: 'numeric',
           });
-          const daysToNextDistribution: number =
-            distributionEndTime - Date.now() / 1e3;
+          const daysToNextDistribution: number = Math.ceil(
+            (distributionEndTime - Date.now() / 1e3) / this.constants.DAY_IN_SEC
+          );
           if (daysToNextDistribution > 0) {
             this.daysToNextDistribution = daysToNextDistribution;
           } else {
