@@ -14,8 +14,6 @@ import { ModalUnstakeComponent } from './modal-unstake/modal-unstake.component';
   styleUrls: ['./rewards.component.css'],
 })
 export class RewardsComponent implements OnInit {
-  PERIOD = 7; // 7 days
-
   stakeAmount: BigNumber;
   xMPHBalance: BigNumber;
   unstakedMPHBalance: BigNumber;
