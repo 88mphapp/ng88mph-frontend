@@ -191,7 +191,9 @@ export class LandingPageComponent implements OnInit {
     const mphPriceUSD = await this.helpers.getMPHPriceUSD();
     this.totalEarningsUSD = new BigNumber(
       data.globalStats.xMPHRewardDistributed
-    ).times(mphPriceUSD);
+    )
+      .times(mphPriceUSD)
+      .div(1e6);
     if (this.totalEarningsUSD.isNaN()) {
       this.totalEarningsUSD = new BigNumber(0);
     }
