@@ -16,7 +16,7 @@ import { Chart } from 'chart.js';
 export class FundedInterestExpensesComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1624406400,
+    [this.constants.CHAIN_ID.MAINNET]: 1630972800,
     [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
@@ -98,6 +98,9 @@ export class FundedInterestExpensesComponent implements OnInit {
               display: true,
               color: '#242526',
             },
+            ticks: {
+              max: 100,
+            },
           },
         ],
       },
@@ -139,6 +142,7 @@ export class FundedInterestExpensesComponent implements OnInit {
     for (let i in this.timestamps) {
       readable.push(
         new Date(this.timestamps[i] * 1000).toLocaleString('en-US', {
+          timeZone: 'UTC',
           month: 'short',
           day: 'numeric',
         })

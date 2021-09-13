@@ -145,6 +145,7 @@ export class NetInterestMarginComponent implements OnInit {
     for (let i in this.timestamps) {
       readable.push(
         new Date(this.timestamps[i] * 1000).toLocaleString('en-US', {
+          timeZone: 'UTC',
           month: 'short',
           day: 'numeric',
         })
