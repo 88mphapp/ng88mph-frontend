@@ -16,7 +16,7 @@ import { Chart } from 'chart.js';
 export class HistoricalAssetTvlComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1624406400,
+    [this.constants.CHAIN_ID.MAINNET]: 1630972800,
     [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
@@ -126,6 +126,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
     for (let i in this.timestamps) {
       readable.push(
         new Date(this.timestamps[i] * 1000).toLocaleString('en-US', {
+          timeZone: 'UTC',
           month: 'short',
           day: 'numeric',
         })
@@ -191,16 +192,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
     }
 
     for (let t in result) {
-      // for each timestamp result
       if (t !== 'dpools') {
-        // initialize the dataTVL array
-        for (let pool in this.data) {
-          if (this.data[pool].label) {
-            //this.data[pool].dataTVL.push(0);
-          }
-        }
-
-        // populate the dataTVL array
         for (let pool in result[t]) {
           let dpool = result[t][pool];
           let entry = this.data.find((pool) => pool.label === dpool.address);
@@ -214,7 +206,6 @@ export class HistoricalAssetTvlComponent implements OnInit {
       }
     }
 
-    // populate the dataUSD array
     // @dev if days < 100 then coingecko api returns inaccurate timestamps
     let days =
       (this.timeseries.getLatestUTCDate() -
@@ -225,11 +216,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
       days = 100;
     }
     for (let pool in this.data) {
-      if (
-        this.data[pool].label &&
-        this.data[pool].label !== '0xb1abaac351e06d40441cf2cd97f6f0098e6473f2'
-      ) {
-        // fetch historical token prices from coingecko API
+      if (this.data[pool].label) {
         let apiResult: number[][] = [];
         apiResult = await this.helpers.getHistoricalTokenPriceUSD(
           this.data[pool].stablecoin,
@@ -237,44 +224,27 @@ export class HistoricalAssetTvlComponent implements OnInit {
         );
 
         for (let t in this.timestamps) {
-          // find the historical price in the api result
-          let found = apiResult.find(
+          const found = apiResult.find(
             (price) => price[0] === this.timestamps[t] * 1000
           );
-          if (found) {
-            // if a historical price is found
-            this.data[pool].dataUSD.push(found[1]);
-          } else {
-            this.data[pool].dataUSD.push(0);
-          }
-        }
-      } else if (
-        this.data[pool].label === '0xb1abaac351e06d40441cf2cd97f6f0098e6473f2'
-      ) {
-        for (let t in this.timestamps) {
-          this.data[pool].dataUSD.push(1);
+          found
+            ? this.data[pool].dataUSD.push(found[1])
+            : this.data[pool].dataUSD.push(0);
         }
       }
     }
 
-    // populate the data array to be charted
     for (let pool in this.data) {
       if (this.data[pool].label) {
-        let dpool = this.data[pool];
+        const dpool = this.data[pool];
+        const poolInfo = this.contract.getPoolInfoFromAddress(
+          this.data[pool].label
+        );
+        const name = poolInfo.name;
+        this.data[pool].label = name;
         for (let t in this.timestamps) {
           dpool.data.push(dpool.dataTVL[t] * dpool.dataUSD[t]);
         }
-      }
-    }
-
-    // get human readable labels
-    for (let pool in this.data) {
-      if (this.data[pool].label) {
-        let poolInfo = this.contract.getPoolInfoFromAddress(
-          this.data[pool].label
-        );
-        let name = poolInfo.name;
-        this.data[pool].label = name;
       }
     }
   }
