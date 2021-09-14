@@ -55,6 +55,8 @@ export class ModalDepositComponent implements OnInit {
   description: string;
   imageURL: SafeUrl;
   imageFile: any;
+  mediaURL: SafeUrl;
+  mediaFile: any;
   notUpload: boolean;
   externalURL: string;
   isLoading: boolean;
@@ -810,6 +812,13 @@ export class ModalDepositComponent implements OnInit {
     );
   }
 
+  async updateMediaFile(files) {
+    this.mediaFile = files.item(0);
+    this.mediaURL = this.sanitizer.bypassSecurityTrustUrl(
+      URL.createObjectURL(this.mediaFile)
+    );
+  }
+
   addAttribute(trait_type?: string, value?: string) {
     const newAttribute = this.fb.group({
       trait_type: [trait_type ? trait_type : '', Validators.required],
@@ -835,15 +844,38 @@ export class ModalDepositComponent implements OnInit {
       a['value'] = item.value.value;
       attributesList.push(a);
     }
-    const metadata = {
-      name: this.name,
-      image: new File([this.imageFile], this.imageFile.name, {
-        type: this.imageFile.type,
-      }),
-      description: this.description,
-      external_url: this.externalURL,
-      attributes: attributesList,
-    };
+
+    let metadata;
+    if (this.mediaFile) {
+      metadata = {
+        name: this.name,
+        image: new File([this.imageFile], this.imageFile.name, {
+          type: this.imageFile.type,
+        }),
+        properties: {
+          video: new File([this.mediaFile], this.mediaFile.name, {
+            type: this.mediaFile.type,
+          }),
+        },
+        // animation_url: new File([this.mediaFile], this.mediaFile.name, {
+        //   type: this.mediaFile.type,
+        // }),
+        description: this.description,
+        external_url: this.externalURL,
+        attributes: attributesList,
+      };
+    } else {
+      metadata = {
+        name: this.name,
+        image: new File([this.imageFile], this.imageFile.name, {
+          type: this.imageFile.type,
+        }),
+        description: this.description,
+        external_url: this.externalURL,
+        attributes: attributesList,
+      };
+    }
+
     const uploadResult = await this.nftStorageClient.store(metadata);
 
     this.isLoading = false;

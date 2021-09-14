@@ -97,7 +97,7 @@
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group">
-                        <label for="Media">Upload media</label>
+                        <label for="Media">Upload Image</label>
                         <input
                           type="file"
                           accept="image/*"
@@ -112,7 +112,51 @@
                       <img
                         class="img-fluid img-thumbnail rounded"
                         [src]="imageURL"
+                        width="90%"
                       />
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                        >
+                          3
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group">
+                        <label for="Media">Upload Media (optional)</label>
+                        <input
+                          type="file"
+                          accept="video/*"
+                          (change)="updateMediaFile($event.target.files)"
+                          class="form-control form-control-lg"
+                          aria-describedby="mediaHelp"
+                        />
+                        <small id="mediaHelp" class="form-text text-muted"
+                          >Attach a MP4, M4V, OGG, etc to your NFT.</small
+                        >
+                      </div>
+                      <video
+                        *ngIf="mediaURL"
+                        [src]="mediaURL"
+                        width="90%"
+                        autoplay
+                      ></video>
                     </div>
                   </div>
                   <!-- / .row -->
@@ -132,7 +176,7 @@
                             border-gradient
                           "
                         >
-                          3
+                          4
                         </div>
                       </div>
                     </div>
@@ -168,7 +212,7 @@
                             border-gradient
                           "
                         >
-                          4
+                          5
                         </div>
                       </div>
                     </div>
@@ -224,7 +268,7 @@
                             border-gradient
                           "
                         >
-                          5
+                          6
                         </div>
                       </div>
                     </div>
@@ -258,7 +302,7 @@
                             border-gradient
                           "
                         >
-                          6
+                          7
                         </div>
                       </div>
                     </div>
