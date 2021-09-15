@@ -476,6 +476,14 @@
                     </tbody>
                   </table>
                 </div>
+                <div *ngIf="isLoading" class="load-holder my-3">
+                  <div
+                    class="spinner-grow spinner-grow-sm mr-2 text-warning"
+                    role="status"
+                    *ngIf="!txConfirmed"
+                  ></div>
+                  <span class=""> &nbsp; {{ loadingMessage }}</span>
+                </div>
                 <button
                   *ngIf="depositAmount.lte(0)"
                   type="button"
@@ -532,7 +540,9 @@
                   class="btn btn-lg btn-bg-gradient btn-block mb-4"
                   type="button"
                   (click)="deposit()"
-                  [disabled]="!canContinue() || this.wallet.watching"
+                  [disabled]="
+                    !canContinue() || this.wallet.watching || isLoading
+                  "
                   routerLink="/earn"
                 >
                   Deposit
