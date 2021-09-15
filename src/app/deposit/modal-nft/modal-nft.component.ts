@@ -92,11 +92,11 @@ export class ModalNftComponent implements OnInit {
 
       this.name = json.name;
       this.imageURL = `https://ipfs.io/ipfs/${json.image.split('//')[1]}`;
-      if (json.properties) {
-        this.mediaURL = `https://ipfs.io/ipfs/${
-          json.properties.video.split('//')[1]
-        }`;
-      }
+      json.animation_url
+        ? (this.mediaURL = `https://ipfs.io/ipfs/${
+            json.animation_url.split('//')[1]
+          }`)
+        : (this.mediaURL = '');
       this.description = json.description;
       for (let i = 0; i < json.attributes.length; i++) {
         this.addAttribute(
@@ -169,14 +169,9 @@ export class ModalNftComponent implements OnInit {
         image: new File([this.imageFile], this.imageFile.name, {
           type: this.imageFile.type,
         }),
-        properties: {
-          video: new File([this.mediaFile], this.mediaFile.name, {
-            type: this.mediaFile.type,
-          }),
-        },
-        // animation_url: new File([this.mediaFile], this.mediaFile.name, {
-        //   type: this.mediaFile.type,
-        // }),
+        animation_url: new File([this.mediaFile], this.mediaFile.name, {
+          type: this.mediaFile.type,
+        }),
         description: this.description,
         external_url: this.externalURL,
         attributes: attributesList,
