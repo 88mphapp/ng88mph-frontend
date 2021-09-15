@@ -454,7 +454,6 @@ export class ModalDepositComponent implements OnInit {
 
     if (!zcb) {
       const pool = this.contract.getPool(this.selectedPoolInfo.name);
-      console.log(pool);
       let func;
       if (this.name && this.imageURL && this.description) {
         const uri = await this.uploadMetadata();
