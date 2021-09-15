@@ -16,7 +16,8 @@ import { Chart } from 'chart.js';
 export class NetInterestMarginComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1620259200,
+    // [this.constants.CHAIN_ID.MAINNET]: 1630972800,
+    [this.constants.CHAIN_ID.MAINNET]: 1630454400,
     [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
@@ -285,7 +286,7 @@ export class NetInterestMarginComponent implements OnInit {
         );
         const deposits = entry.totalDeposits[parseInt(i.substring(1))];
         const interestRate = this.helpers.parseInterestRate(
-          pool.oracleInterestRate,
+          new BigNumber(pool.oracleInterestRate),
           this.constants.YEAR_IN_SEC
         );
         const interestEarned = interestRate.times(deposits);
@@ -297,28 +298,22 @@ export class NetInterestMarginComponent implements OnInit {
     // calculate the data to be displayed (NIM)
     for (let i in this.data) {
       if (this.data[i].label) {
-        for (let t = 0; t < this.blocks.length; t++) {
-          const earnings = this.data[i].interestEarned[t];
-          const expenses = this.data[i].interestExpenses[t];
-          const deposits = this.data[i].totalDeposits[t];
-          const data = (earnings - expenses) / deposits;
-          if (isNaN(data)) {
-            this.data[i].data[t] = 0;
-          } else {
-            this.data[i].data[t] = data * 100;
-          }
-        }
-      }
-    }
-
-    // get human readable labels
-    for (let i in this.data) {
-      if (this.data[i].label) {
         const poolInfo = this.contract.getPoolInfoFromAddress(
           this.data[i].label
         );
         const name = poolInfo.name;
         this.data[i].label = name;
+
+        for (let t = 0; t < this.blocks.length; t++) {
+          const earnings = this.data[i].interestEarned[t];
+          const expenses = this.data[i].interestExpenses[t];
+          const deposits = this.data[i].totalDeposits[t];
+          const data = (earnings - expenses) / deposits;
+
+          isNaN(data)
+            ? (this.data[i].data[t] = 0)
+            : (this.data[i].data[t] = data * 100);
+        }
       }
     }
   }
