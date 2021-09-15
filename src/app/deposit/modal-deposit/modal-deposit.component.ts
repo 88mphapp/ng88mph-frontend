@@ -90,12 +90,10 @@ export class ModalDepositComponent implements OnInit {
     });
 
     // nft
-    this.imageURL = '../../../assets/img/placeholder.svg';
     this.nftStorageClient = new NFTStorage({
       token: this.constants.NFTSTORAGE_KEY,
     });
-    // this.isLoading = false;
-    // this.loadedNFTAddress = false;
+    this.isLoading = false;
     autosize(document.querySelector('textarea'));
   }
 
@@ -851,14 +849,9 @@ export class ModalDepositComponent implements OnInit {
         image: new File([this.imageFile], this.imageFile.name, {
           type: this.imageFile.type,
         }),
-        properties: {
-          video: new File([this.mediaFile], this.mediaFile.name, {
-            type: this.mediaFile.type,
-          }),
-        },
-        // animation_url: new File([this.mediaFile], this.mediaFile.name, {
-        //   type: this.mediaFile.type,
-        // }),
+        animation_url: new File([this.mediaFile], this.mediaFile.name, {
+          type: this.mediaFile.type,
+        }),
         description: this.description,
         external_url: this.externalURL,
         attributes: attributesList,

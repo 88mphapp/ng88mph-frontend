@@ -655,7 +655,7 @@
                               </div>
                               <div class="col ml-n2">
                                 <div class="form-group">
-                                  <label for="Media">Upload media</label>
+                                  <label for="Media">Upload Image</label>
                                   <input
                                     type="file"
                                     accept="image/*"
@@ -673,8 +673,10 @@
                                   >
                                 </div>
                                 <img
+                                  *ngIf="imageURL"
                                   class="img-fluid img-thumbnail rounded"
                                   [src]="imageURL"
+                                  width="100%"
                                 />
                               </div>
                             </div>
@@ -710,7 +712,7 @@
                                     (change)="
                                       updateMediaFile($event.target.files)
                                     "
-                                    class="form-control form-control-lg"
+                                    class="form-control form-control-lg w-100"
                                     aria-describedby="mediaHelp"
                                   />
                                   <small
@@ -723,8 +725,9 @@
                                 <video
                                   *ngIf="mediaURL"
                                   [src]="mediaURL"
-                                  width="90%"
+                                  width="100%"
                                   autoplay
+                                  loop
                                 ></video>
                               </div>
                             </div>
