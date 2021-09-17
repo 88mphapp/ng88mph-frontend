@@ -16,7 +16,7 @@ import { Chart } from 'chart.js';
 export class PriceEarningsRatioComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1620259200,
+    [this.constants.CHAIN_ID.MAINNET]: 1630454400,
     [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
