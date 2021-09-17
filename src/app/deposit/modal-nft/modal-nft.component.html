@@ -142,22 +142,37 @@
                         <label for="Media">Upload Media (optional)</label>
                         <input
                           type="file"
-                          accept="video/*"
+                          accept="audio/*, video/*"
                           (change)="updateMediaFile($event.target.files)"
                           class="form-control form-control-lg"
                           aria-describedby="mediaHelp"
                         />
                         <small id="mediaHelp" class="form-text text-muted"
-                          >Attach a MP4, M4V, OGG, etc to your NFT.</small
+                          >Attach a MP3, MP4, etc to your NFT.</small
                         >
                       </div>
                       <video
-                        *ngIf="mediaURL"
+                        *ngIf="
+                          mediaURL && !mediaURL.toString().endsWith('.mp3')
+                        "
                         [src]="mediaURL"
                         width="90%"
                         autoplay
                         loop
                       ></video>
+                      <audio
+                        *ngIf="mediaURL && mediaURL.toString().endsWith('.mp3')"
+                        [src]="mediaURL"
+                        width="90%"
+                        autoplay
+                        loop
+                      ></audio>
+                      <img
+                        *ngIf="mediaURL && mediaURL.toString().endsWith('.mp3')"
+                        class="img-fluid img-thumbnail rounded"
+                        [src]="audioURL"
+                        width="90%"
+                      />
                     </div>
                   </div>
                   <!-- / .row -->

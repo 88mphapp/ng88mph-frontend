@@ -708,7 +708,7 @@
                                   >
                                   <input
                                     type="file"
-                                    accept="video/*"
+                                    accept="audio/*, video/*"
                                     (change)="
                                       updateMediaFile($event.target.files)
                                     "
@@ -718,17 +718,35 @@
                                   <small
                                     id="mediaHelp"
                                     class="form-text text-muted"
-                                    >Attach a MP4, M4V, OGG, etc to your
-                                    NFT.</small
+                                    >Attach a MP3, MP4, etc to your NFT.</small
                                   >
                                 </div>
                                 <video
-                                  *ngIf="mediaURL"
+                                  *ngIf="
+                                    mediaURL && !mediaFile.name.endsWith('.mp3')
+                                  "
                                   [src]="mediaURL"
                                   width="100%"
                                   autoplay
                                   loop
                                 ></video>
+                                <audio
+                                  *ngIf="
+                                    mediaURL && mediaFile.name.endsWith('.mp3')
+                                  "
+                                  [src]="mediaURL"
+                                  width="90%"
+                                  autoplay
+                                  loop
+                                ></audio>
+                                <img
+                                  *ngIf="
+                                    mediaURL && mediaFile.name.endsWith('.mp3')
+                                  "
+                                  class="img-fluid img-thumbnail rounded"
+                                  [src]="audioURL"
+                                  width="90%"
+                                />
                               </div>
                             </div>
                             <!-- / .row -->
