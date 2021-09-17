@@ -29,6 +29,7 @@ export class ModalNftComponent implements OnInit {
   imageURL: SafeUrl;
   imageFile: any;
   mediaURL: SafeUrl;
+  audioURL: SafeUrl;
   mediaFile: any;
   notUpload: boolean;
   externalURL: string;
@@ -61,6 +62,7 @@ export class ModalNftComponent implements OnInit {
       });
 
     this.imageURL = '../../assets/img/placeholder.svg';
+    this.audioURL = '../../assets/img/cassette_tape.gif';
     this.nftStorageClient = new NFTStorage({
       token: this.constants.NFTSTORAGE_KEY,
     });

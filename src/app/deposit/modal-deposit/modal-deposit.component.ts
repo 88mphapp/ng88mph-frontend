@@ -57,6 +57,7 @@ export class ModalDepositComponent implements OnInit {
   imageFile: any;
   mediaURL: SafeUrl;
   mediaFile: any;
+  audioURL: SafeUrl;
   notUpload: boolean;
   externalURL: string;
   isLoading: boolean;
@@ -814,6 +815,8 @@ export class ModalDepositComponent implements OnInit {
     this.mediaURL = this.sanitizer.bypassSecurityTrustUrl(
       URL.createObjectURL(this.mediaFile)
     );
+    console.log(this.mediaFile);
+    this.audioURL = '../../assets/img/cassette_tape.gif';
   }
 
   addAttribute(trait_type?: string, value?: string) {
