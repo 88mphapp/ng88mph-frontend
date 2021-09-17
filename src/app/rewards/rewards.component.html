@@ -53,18 +53,18 @@
               ></i>
             </h5>
             <!-- Heading -->
-            <h2 class="mb-0 glowing">
+            <span class="h2 mb-0 glowing">
               {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }}
-              <span class="text-success"
-                >(+{{
-                  xMPHBalance
-                    .times(pricePerFullShare)
-                    .minus(stakedMPHBalance)
-                    .toFormat(4)
-                }})</span
-              >
               MPH
-            </h2>
+            </span>
+            <span class="badge badge-xl badge-soft-success mt-n2">
+              +{{
+                xMPHBalance
+                  .times(pricePerFullShare)
+                  .minus(stakedMPHBalance)
+                  .toFormat(4)
+              }}
+            </span>
             <h5 class="mb-3 text-white">
               ${{ xMPHBalance.times(xMPHPriceUSD).toFormat(4) }}
             </h5>
