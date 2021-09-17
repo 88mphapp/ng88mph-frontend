@@ -7,6 +7,7 @@ import { ConstantsService } from '../constants.service';
 import { HelpersService } from '../helpers.service';
 import { DataService } from '../data.service';
 import { ModalUnstakeComponent } from './modal-unstake/modal-unstake.component';
+import { request, gql } from 'graphql-request';
 
 @Component({
   selector: 'app-rewards',
@@ -16,6 +17,7 @@ import { ModalUnstakeComponent } from './modal-unstake/modal-unstake.component';
 export class RewardsComponent implements OnInit {
   stakeAmount: BigNumber;
   xMPHBalance: BigNumber;
+  stakedMPHBalance: BigNumber;
   unstakedMPHBalance: BigNumber;
   tokenAllowance: BigNumber;
 
@@ -77,33 +79,37 @@ export class RewardsComponent implements OnInit {
     const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
     const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
 
-    let address = this.wallet.actualAddress;
+    let address = this.wallet.actualAddress.toLowerCase();
 
     if (loadUser && address) {
-      mph.methods
-        .balanceOf(address)
-        .call()
-        .then((unstakedMPHBalance) => {
-          this.unstakedMPHBalance = new BigNumber(unstakedMPHBalance).div(
-            this.constants.PRECISION
-          );
-          this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
-        });
+      const queryString = gql`
+        {
+          mphholder (
+            id: "${address}"
+          ) {
+            id
+            mphBalance
+            xmphBalance
+            mphStaked
+          }
+        }
+      `;
+      request(
+        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+        queryString
+      ).then((data: QueryResult) => {
+        this.stakedMPHBalance = new BigNumber(data.mphholder.mphStaked);
+        this.unstakedMPHBalance = new BigNumber(data.mphholder.mphBalance);
+        this.xMPHBalance = new BigNumber(data.mphholder.xmphBalance);
+
+        this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
+      });
 
       mph.methods
         .allowance(address, xmph.options.address)
         .call()
         .then((allowance) => {
           this.tokenAllowance = new BigNumber(allowance).div(
-            this.constants.PRECISION
-          );
-        });
-
-      xmph.methods
-        .balanceOf(address)
-        .call()
-        .then((xMPHBalance) => {
-          this.xMPHBalance = new BigNumber(xMPHBalance).div(
             this.constants.PRECISION
           );
         });
@@ -190,6 +196,7 @@ export class RewardsComponent implements OnInit {
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
       this.stakeAmount = new BigNumber(0);
+      this.stakedMPHBalance = new BigNumber(0);
       this.unstakedMPHBalance = new BigNumber(0);
       this.xMPHBalance = new BigNumber(0);
       this.tokenAllowance = new BigNumber(0);
@@ -468,4 +475,13 @@ export class RewardsComponent implements OnInit {
   canUnstake(): boolean {
     return this.wallet.connected && this.xMPHBalance.gt(0);
   }
+}
+
+interface QueryResult {
+  mphholder: {
+    id: string;
+    mphBalance: string;
+    xmphBalance: string;
+    mphStaked: string;
+  };
 }
