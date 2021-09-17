@@ -44,15 +44,26 @@
         <div class="card mb-5 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase">Value in MPH</h5>
-            <!-- Heading -->
-            <h2 class="mb-0 glowing">
-              {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }} MPH
+            <h5 class="text-uppercase">
+              Value in MPH
               <i
                 class="fe fe-info ml-1 align-bottom"
                 placement="top"
                 ngbTooltip="1 xMPH = {{ pricePerFullShare.toFormat(4) }} MPH"
               ></i>
+            </h5>
+            <!-- Heading -->
+            <h2 class="mb-0 glowing">
+              {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }}
+              <span class="text-success"
+                >(+{{
+                  xMPHBalance
+                    .times(pricePerFullShare)
+                    .minus(stakedMPHBalance)
+                    .toFormat(4)
+                }})</span
+              >
+              MPH
             </h2>
             <h5 class="mb-3 text-white">
               ${{ xMPHBalance.times(xMPHPriceUSD).toFormat(4) }}
