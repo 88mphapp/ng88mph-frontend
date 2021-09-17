@@ -94,6 +94,8 @@ export class XmphSupplyDistributionComponent implements OnInit {
       where: {
         xmphBalance_gt: "0"
       }
+      orderBy: xmphBalance
+      orderDirection: asc
     ) {
       address
       xmphBalance
@@ -129,15 +131,6 @@ export class XmphSupplyDistributionComponent implements OnInit {
       this.hoverBackgroundColors[holder] =
         'rgba(' + this.COLORS[parseInt(holder) % this.COLORS.length] + ', 1)';
     }
-    this.datas.sort((a, b) => {
-      if (a > b) {
-        return 1;
-      }
-      if (a < b) {
-        return -1;
-      }
-      return 0;
-    });
   }
 }
 
