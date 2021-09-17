@@ -1,5 +1,9 @@
 <div class="container mt-5">
-  <div class="alert alert-dark alert-dismissible fade show p-4" role="alert">
+  <div
+    class="alert alert-dark alert-dismissible fade show p-4"
+    role="alert"
+    *ngIf="wallet.displayEarnGetStarted"
+  >
     <h6 class="text-uppercase text-muted">
       Get started (<span class="text-white h5">{{ stepsCompleted }} of 3</span>
       complete)
@@ -110,7 +114,13 @@
       </div>
     </div>
 
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+      (click)="wallet.displayEarnGetStarted = false"
+    >
       <span aria-hidden="true"><i class="fe fe-x text-muted"></i></span>
     </button>
   </div>
