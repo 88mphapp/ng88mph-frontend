@@ -12,7 +12,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class WalletService extends Web3Enabled {
   watch: Watch;
-  displayEarnGetStarted: boolean = true;
 
   constructor(
     @Inject(WEB3) public web3: Web3,

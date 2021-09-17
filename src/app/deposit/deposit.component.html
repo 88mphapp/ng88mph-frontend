@@ -2,7 +2,7 @@
   <div
     class="alert alert-dark alert-dismissible fade show p-4"
     role="alert"
-    *ngIf="wallet.displayEarnGetStarted"
+    *ngIf="displayGetStarted"
   >
     <h6 class="text-uppercase text-muted">
       Get started (<span class="text-white h5">{{ stepsCompleted }} of 3</span>
@@ -119,7 +119,7 @@
       class="close"
       data-dismiss="alert"
       aria-label="Close"
-      (click)="wallet.displayEarnGetStarted = false"
+      (click)="updateCache()"
     >
       <span aria-hidden="true"><i class="fe fe-x text-muted"></i></span>
     </button>

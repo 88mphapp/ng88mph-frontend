@@ -45,6 +45,7 @@ export class DepositComponent implements OnInit {
   hasDeposit: boolean;
   claimedMPH: boolean;
   stakedMPH: boolean;
+  displayGetStarted: boolean;
 
   constructor(
     private modalService: NgbModal,
@@ -85,6 +86,9 @@ export class DepositComponent implements OnInit {
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
+
+    this.displayGetStarted =
+      window.localStorage.getItem('displayEarnGetStarted') != 'false';
 
     let userID = this.wallet.actualAddress.toLowerCase();
 
@@ -667,6 +671,10 @@ export class DepositComponent implements OnInit {
       (userPool) => userPool.poolInfo.name === poolName
     );
     return userPool ? true : false;
+  }
+
+  updateCache() {
+    window.localStorage.setItem('displayEarnGetStarted', 'false');
   }
 
   claimAllRewards() {
