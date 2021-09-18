@@ -18,7 +18,6 @@ export class MphSupplyDistributionComponent implements OnInit {
     [this.constants.CHAIN_ID.MAINNET]: 1605744000,
     [this.constants.CHAIN_ID.RINKEBY]: 1623196800,
   };
-  // @dev setting this to DAY_IN_SEC throws a CORS error on the subgraph
   PERIOD: number = this.constants.WEEK_IN_SEC;
 
   // data variables
@@ -136,7 +135,7 @@ export class MphSupplyDistributionComponent implements OnInit {
       },
       {
         data: this.rewards,
-        label: 'xMPH',
+        label: 'Staked MPH',
         backgroundColor: 'rgba(246, 195, 67, 0.3)',
         borderColor: 'rgba(246, 195, 67, 1)',
         hoverBackgroundColor: 'rgba(246, 195, 67, 1)',
@@ -241,57 +240,63 @@ export class MphSupplyDistributionComponent implements OnInit {
     }
     ids += `]`;
 
-    // generate query for address specific balances
-    let addressQueryString = `query AddressDistribution {`;
-    for (let i = 0; i < this.blocks.length; i++) {
-      addressQueryString += `t${i}: mphholders(
-        where: {
-          id_in: ${ids}
-        }
-        block: {
-          number: ${this.blocks[i]}
-        }
-      ) {
-        address
-        mphBalance
-      }`;
-    }
-    addressQueryString += `}`;
-    const addressQuery = gql`
-      ${addressQueryString}
-    `;
+    let count: number = 0;
+    while (count < this.timestamps.length) {
+      let limit = this.timestamps.length - count;
+      if (limit > 150) {
+        limit = 150;
+      }
+      // generate query for address specific balances
+      let addressQueryString = `query AddressDistribution {`;
+      for (let i = count; i < count + limit; i++) {
+        addressQueryString += `t${i}: mphholders(
+          where: {
+            id_in: ${ids}
+          }
+          block: {
+            number: ${this.blocks[i]}
+          }
+        ) {
+          address
+          mphBalance
+        }`;
+      }
+      addressQueryString += `}`;
+      const addressQuery = gql`
+        ${addressQueryString}
+      `;
 
-    // then run the query
-    request(
-      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
-      addressQuery
-    ).then((data: QueryResult) => this.handleAddressData(data));
+      // then run the query
+      let result = await request(
+        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+        addressQuery
+      ).then((data: QueryResult) => {
+        return data;
+      });
+      this.handleAddressData(result, limit);
+      count += limit;
+    }
 
     return true;
   }
 
   handleSupplyData(data: QueryResult) {
-    // initialize the data array
-    for (let i = 0; i < this.blocks.length; i++) {
-      this.other.push(0);
-    }
-
-    // populate the data array
     for (let t in data) {
       let mph = data[t];
       if (mph !== null) {
-        this.other[parseInt(t.substring(1))] = parseFloat(mph.totalSupply);
+        if (this.other[parseInt(t.substring(1))] === undefined) {
+          this.other[parseInt(t.substring(1))] = 0;
+        }
+        this.other[parseInt(t.substring(1))] += parseFloat(mph.totalSupply);
       }
     }
   }
 
-  handleAddressData(data: QueryResult) {
-    // initialize the data arrays
-    for (let i = 0; i < this.blocks.length; i++) {
+  handleAddressData(data: QueryResult, limit: number) {
+    for (let i = 0; i < limit; i++) {
       this.govTreasury.push(0);
       this.devWallet.push(0);
       this.merkleDistributor.push(0);
-      this.rewards.push(0);
       this.uniswapv2.push(0);
       this.uniswapv3.push(0);
       this.sushiswap.push(0);
@@ -330,9 +335,16 @@ export class MphSupplyDistributionComponent implements OnInit {
             );
           } else if (
             address ===
-            this.constants.XMPH_ADDRESS[this.wallet.networkID].toLowerCase()
+              this.constants.XMPH_ADDRESS[
+                this.wallet.networkID
+              ].toLowerCase() ||
+            address ===
+              this.constants.V2_REWARDS[this.wallet.networkID].toLowerCase()
           ) {
-            this.rewards[parseInt(t.substring(1))] = parseFloat(
+            if (this.rewards[parseInt(t.substring(1))] === undefined) {
+              this.rewards[parseInt(t.substring(1))] = 0;
+            }
+            this.rewards[parseInt(t.substring(1))] += parseFloat(
               holder.mphBalance
             );
           } else if (
@@ -365,6 +377,9 @@ export class MphSupplyDistributionComponent implements OnInit {
             );
           }
 
+          if (this.other[parseInt(t.substring(1))] === undefined) {
+            this.other[parseInt(t.substring(1))] = 0;
+          }
           this.other[parseInt(t.substring(1))] -= parseFloat(holder.mphBalance);
         }
       }
@@ -384,6 +399,9 @@ export class MphSupplyDistributionComponent implements OnInit {
     );
     addresses.push(
       this.constants.XMPH_ADDRESS[this.wallet.networkID].toLowerCase()
+    );
+    addresses.push(
+      this.constants.V2_REWARDS[this.wallet.networkID].toLowerCase()
     );
     addresses.push(
       this.constants.UNISWAP_V2_LP[this.wallet.networkID].toLowerCase()
