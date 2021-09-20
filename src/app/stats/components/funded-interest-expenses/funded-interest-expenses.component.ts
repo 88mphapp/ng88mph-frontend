@@ -20,6 +20,7 @@ export class FundedInterestExpensesComponent implements OnInit {
     [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
+  PERIOD_NAME: string = 'daily';
   COLORS: string[] = [
     '44, 123, 229',
     '255, 103, 155',
@@ -275,6 +276,30 @@ export class FundedInterestExpensesComponent implements OnInit {
         this.data[i].label = name;
       }
     }
+  }
+
+  changePeriod() {
+    if (this.PERIOD_NAME === 'daily') {
+      this.PERIOD = this.constants.DAY_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1630972800,
+        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+      };
+    } else if (this.PERIOD_NAME === 'weekly') {
+      this.PERIOD = this.constants.WEEK_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1630800000,
+        [this.constants.CHAIN_ID.RINKEBY]: 1624147200,
+      };
+    } else if (this.PERIOD_NAME === 'monthly') {
+      this.PERIOD = this.constants.MONTH_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1630454400,
+        [this.constants.CHAIN_ID.RINKEBY]: 1622505600,
+      };
+    }
+    this.resetChart();
+    this.drawChart(this.wallet.networkID);
   }
 }
 

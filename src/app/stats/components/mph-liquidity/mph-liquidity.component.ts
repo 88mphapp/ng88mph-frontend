@@ -18,6 +18,7 @@ export class MphLiquidityComponent implements OnInit {
     [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
+  PERIOD_NAME: string = 'daily';
 
   // data variables
   timeseriesdata: number[][];
@@ -295,7 +296,6 @@ export class MphLiquidityComponent implements OnInit {
       this.constants.MPH_ADDRESS[this.wallet.networkID],
       `${days}`
     );
-
     for (let time in this.timestamps) {
       const entry = data.find(
         (key) => key.timestamp === this.timestamps[time] * 1e3
@@ -311,6 +311,31 @@ export class MphLiquidityComponent implements OnInit {
         this.bancor[parseInt(time) + 1] = 0;
       }
     }
+  }
+
+  changePeriod() {
+    if (this.PERIOD_NAME === 'daily') {
+      this.PERIOD = this.constants.DAY_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1605744000,
+        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+      };
+    } else if (this.PERIOD_NAME === 'weekly') {
+      this.PERIOD = this.constants.WEEK_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1605398400,
+        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+      };
+    } else if (this.PERIOD_NAME === 'monthly') {
+      this.PERIOD = this.constants.MONTH_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1604188800,
+        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+      };
+    }
+
+    this.resetChart();
+    this.drawChart(this.wallet.networkID);
   }
 }
 

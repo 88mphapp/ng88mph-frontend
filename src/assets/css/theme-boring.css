@@ -15787,3 +15787,19 @@ select option {
 .mt-lg-n9 {
   margin-top: -155px !important;
 }
+
+.chart-select {
+  width: 15%;
+  margin-top: -0.33em;
+  margin-bottom: -0.33em;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-right: 3px;
+  padding-left: 3px;
+  color: #bfbfbf;
+}
+
+.chart-select:focus {
+  outline: 0;
+  box-shadow: transparent;
+}
