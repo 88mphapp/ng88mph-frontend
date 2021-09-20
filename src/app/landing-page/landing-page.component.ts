@@ -111,6 +111,7 @@ export class LandingPageComponent implements OnInit {
             totalDeposit
             oneYearInterestRate
             poolDepositorRewardMintMultiplier
+            historicalInterestPaid
           }
           globalStats (id: "0") {
             xMPHRewardDistributed
@@ -132,6 +133,7 @@ export class LandingPageComponent implements OnInit {
 
     if (dpools) {
       let totalDepositUSD = new BigNumber(0);
+      let totalInterestUSD = new BigNumber(0);
       let allPoolList = new Array<DPool>(0);
 
       Promise.all(
@@ -168,6 +170,11 @@ export class LandingPageComponent implements OnInit {
           totalDepositUSD = totalDepositUSD.plus(
             dpoolObj.totalDepositUSD.div(1e6)
           );
+          totalInterestUSD = totalInterestUSD
+            .plus(
+              new BigNumber(pool.historicalInterestPaid).times(stablecoinPrice)
+            )
+            .div(1e6);
           allPoolList.push(dpoolObj);
         })
       ).then(() => {
@@ -183,6 +190,7 @@ export class LandingPageComponent implements OnInit {
           return 0;
         });
         this.totalDepositUSD = totalDepositUSD;
+        this.totalInterestUSD = totalInterestUSD;
         this.allPoolList = allPoolList;
         this.selectedPool = this.allPoolList[0];
         this.updateAPY();
@@ -386,6 +394,7 @@ interface QueryResult {
     totalDeposit: number;
     oneYearInterestRate: number;
     poolDepositorRewardMintMultiplier: number;
+    historicalInterestPaid: number;
   }[];
   globalStats: {
     xMPHRewardDistributed: number;

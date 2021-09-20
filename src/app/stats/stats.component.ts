@@ -49,6 +49,7 @@ export class StatsComponent implements OnInit {
           address
           stablecoin
           totalDeposit
+          historicalInterestPaid
         }
         globalStats(id: "0") {
           xMPHRewardDistributed
@@ -131,6 +132,7 @@ export class StatsComponent implements OnInit {
 
     if (dpools) {
       let totalDepositUSD = new BigNumber(0);
+      let totalInterestUSD = new BigNumber(0);
       let stablecoinPriceCache = {};
       Promise.all(
         dpools.map(async (pool) => {
@@ -145,10 +147,15 @@ export class StatsComponent implements OnInit {
           const poolDepositUSD = new BigNumber(pool.totalDeposit).times(
             stablecoinPrice
           );
+          const poolInterestUSD = new BigNumber(
+            pool.historicalInterestPaid
+          ).times(stablecoinPrice);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
+          totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
         })
       ).then(() => {
         this.totalDepositUSD = totalDepositUSD;
+        this.totalInterestUSD = totalInterestUSD;
       });
     }
   }
@@ -170,6 +177,7 @@ interface QueryResult {
     address: string;
     stablecoin: string;
     totalDeposit: number;
+    historicalInterestPaid: number;
   }[];
   globalStats: {
     xMPHRewardDistributed: string;
