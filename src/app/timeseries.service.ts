@@ -30,12 +30,68 @@ export class TimeSeriesService {
 
     let startTime: number = customStart;
     let endTime: number = this.getLatestUTCDate();
-    let period: number = customPeriod;
-    let numPeriods: number = this.calcNumPeriods(startTime, endTime, period);
 
-    // generate array of timestamps
-    for (let p = 0; p < numPeriods; p++) {
-      timeStamps.push(startTime + p * period);
+    if (customPeriod === this.constants.MONTH_IN_SEC) {
+      let current: number = customStart;
+      let end: number = endTime;
+      while (end >= current) {
+        timeStamps.push(current);
+
+        let seconds = 0;
+        let date = new Date(current * 1000);
+        let month = date.getUTCMonth();
+
+        if (month == 0) {
+          // january
+          seconds = this.constants.DAY_IN_SEC * 31;
+        } else if (month == 1) {
+          // february
+          let year = date.getUTCFullYear();
+          if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+            seconds = this.constants.DAY_IN_SEC * 29; // leap year
+          } else {
+            seconds = this.constants.DAY_IN_SEC * 28; // normal year
+          }
+        } else if (month == 2) {
+          // march
+          seconds = this.constants.DAY_IN_SEC * 31;
+        } else if (month == 3) {
+          // april
+          seconds = this.constants.DAY_IN_SEC * 30;
+        } else if (month == 4) {
+          // may
+          seconds = this.constants.DAY_IN_SEC * 31;
+        } else if (month == 5) {
+          // june
+          seconds = this.constants.DAY_IN_SEC * 30;
+        } else if (month == 6) {
+          // july
+          seconds = this.constants.DAY_IN_SEC * 31;
+        } else if (month == 7) {
+          // august
+          seconds = this.constants.DAY_IN_SEC * 31;
+        } else if (month == 8) {
+          // september
+          seconds = this.constants.DAY_IN_SEC * 30;
+        } else if (month == 9) {
+          // october
+          seconds = this.constants.DAY_IN_SEC * 31;
+        } else if (month == 10) {
+          // november
+          seconds = this.constants.DAY_IN_SEC * 30;
+        } else if (month == 11) {
+          // december
+          seconds = this.constants.DAY_IN_SEC * 31;
+        }
+
+        current += seconds;
+      }
+    } else {
+      let period: number = customPeriod;
+      let numPeriods: number = this.calcNumPeriods(startTime, endTime, period);
+      for (let p = 0; p < numPeriods; p++) {
+        timeStamps.push(startTime + p * period);
+      }
     }
 
     // generate a query string
