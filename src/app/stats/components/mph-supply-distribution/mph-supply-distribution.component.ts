@@ -15,10 +15,11 @@ import { Chart } from 'chart.js';
 export class MphSupplyDistributionComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1605744000,
+    [this.constants.CHAIN_ID.MAINNET]: 1605398400,
     [this.constants.CHAIN_ID.RINKEBY]: 1623196800,
   };
   PERIOD: number = this.constants.WEEK_IN_SEC;
+  PERIOD_NAME: string = 'weekly';
 
   // data variables
   addresses: string[];
@@ -416,6 +417,31 @@ export class MphSupplyDistributionComponent implements OnInit {
       this.constants.BANCOR_LP[this.wallet.networkID].toLowerCase()
     );
     return addresses;
+  }
+
+  changePeriod() {
+    if (this.PERIOD_NAME === 'daily') {
+      this.PERIOD = this.constants.DAY_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1605744000,
+        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+      };
+    } else if (this.PERIOD_NAME === 'weekly') {
+      this.PERIOD = this.constants.WEEK_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1605398400,
+        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+      };
+    } else if (this.PERIOD_NAME === 'monthly') {
+      this.PERIOD = this.constants.MONTH_IN_SEC;
+      this.FIRST_INDEX = {
+        [this.constants.CHAIN_ID.MAINNET]: 1604188800,
+        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+      };
+    }
+
+    this.resetChart();
+    this.drawChart(this.wallet.networkID);
   }
 }
 

@@ -1,12 +1,29 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">
-      Loan Loss Provision ($USD)
-      <i
-        class="fe fe-info ml-1 align-bottom"
-        placement="top"
-        ngbTooltip="An estimation of potential losses that 88mph might experience due to non-performing loans, underlying protocol risks (eg. Aave or Compound), and high market rates volatility that incur lower-than-previously-estimated payments on the assets supplied on those money markets. This provision could be used to cover a portion or the totality of the remaining interest expenses not already funded by yield token holders."
-      ></i>
+    <h5 class="text-uppercase text-center d-flex justify-content-between">
+      <select class="invisible chart-select border-gradient">
+        <option value="daily">Daily</option>
+        <option value="weekly" selected>Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+      <span>
+        Loan Loss Provision ($USD)
+        <i
+          class="fe fe-info ml-1 align-bottom"
+          placement="top"
+          ngbTooltip="An estimation of potential losses that 88mph might experience due to non-performing loans, underlying protocol risks (eg. Aave or Compound), and high market rates volatility that incur lower-than-previously-estimated payments on the assets supplied on those money markets. This provision could be used to cover a portion or the totality of the remaining interest expenses not already funded by yield token holders."
+        ></i>
+      </span>
+      <select
+        [(ngModel)]="PERIOD_NAME"
+        name="period"
+        (change)="changePeriod()"
+        class="chart-select border-gradient"
+      >
+        <option value="daily">Daily</option>
+        <option value="weekly" selected>Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
     </h5>
     <canvas
       baseChart

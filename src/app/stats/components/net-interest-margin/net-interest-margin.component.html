@@ -1,12 +1,29 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">
-      Estimated Net Interest Margin
-      <i
-        class="fe fe-info ml-1 align-bottom"
-        placement="top"
-        ngbTooltip="Expressed as a percentage (%), NIM is a measure of the profitability of underlying deposits after interest expenses have been paid."
-      ></i>
+    <h5 class="text-uppercase text-center d-flex justify-content-between">
+      <select class="invisible chart-select border-gradient">
+        <option value="daily">Daily</option>
+        <option value="weekly" selected>Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+      <span>
+        Estimated Net Interest Margin
+        <i
+          class="fe fe-info ml-1 align-bottom"
+          placement="top"
+          ngbTooltip="Expressed as a percentage (%), NIM is a measure of the profitability of underlying deposits after interest expenses have been paid."
+        ></i>
+      </span>
+      <select
+        [(ngModel)]="PERIOD_NAME"
+        name="period"
+        (change)="changePeriod()"
+        class="chart-select border-gradient"
+      >
+        <option value="daily">Daily</option>
+        <option value="weekly" selected>Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
     </h5>
     <canvas
       baseChart
