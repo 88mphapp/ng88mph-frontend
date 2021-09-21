@@ -1,6 +1,12 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
     <h5 class="text-uppercase text-center d-flex justify-content-between">
+      <select class="invisible chart-select border-gradient ml-auto mr-2">
+        <option value="all" selected>All</option>
+        <option *ngFor="let pool of allData" [ngValue]="pool.label">
+          {{ pool.label }}
+        </option>
+      </select>
       <select class="invisible chart-select border-gradient">
         <option value="daily">Daily</option>
         <option value="weekly" selected>Weekly</option>
@@ -14,6 +20,17 @@
           ngbTooltip="The percentage (%) of fixed-rate yield deposits whose interest expense (interest + fee) has been funded by yield token holders."
         ></i>
       </span>
+      <select
+        [(ngModel)]="SELECTED_ASSET"
+        name="selected"
+        (change)="focusAsset()"
+        class="chart-select border-gradient ml-auto mr-2"
+      >
+        <option value="all" selected>All</option>
+        <option *ngFor="let pool of allData" [ngValue]="pool.label">
+          {{ pool.label }}
+        </option>
+      </select>
       <select
         [(ngModel)]="PERIOD_NAME"
         name="period"
