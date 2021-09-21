@@ -1,19 +1,36 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
     <h5 class="text-uppercase text-center d-flex justify-content-between">
+      <select class="invisible chart-select border-gradient ml-auto mr-2">
+        <option value="all" selected>All</option>
+        <option *ngFor="let pool of allData" [ngValue]="pool.label">
+          {{ pool.label }}
+        </option>
+      </select>
       <select class="invisible chart-select border-gradient">
         <option value="daily">Daily</option>
         <option value="weekly" selected>Weekly</option>
         <option value="monthly">Monthly</option>
       </select>
       <span>
-        Estimated Net Interest Margin
+        Net Interest Margin
         <i
           class="fe fe-info ml-1 align-bottom"
           placement="top"
           ngbTooltip="Expressed as a percentage (%), NIM is a measure of the profitability of underlying deposits after interest expenses have been paid."
         ></i>
       </span>
+      <select
+        [(ngModel)]="SELECTED_ASSET"
+        name="selected"
+        (change)="focusAsset()"
+        class="chart-select border-gradient ml-auto mr-2"
+      >
+        <option value="all" selected>All</option>
+        <option *ngFor="let pool of allData" [ngValue]="pool.label">
+          {{ pool.label }}
+        </option>
+      </select>
       <select
         [(ngModel)]="PERIOD_NAME"
         name="period"

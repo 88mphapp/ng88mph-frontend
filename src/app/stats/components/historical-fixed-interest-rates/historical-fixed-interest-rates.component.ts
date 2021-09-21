@@ -21,6 +21,7 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   PERIOD_NAME: string = 'daily';
+  SELECTED_ASSET: string = 'all';
   COLORS: string[] = [
     '44, 123, 229',
     '255, 103, 155',
@@ -40,6 +41,7 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
   readable: string[];
   blocks: number[];
   data: DataObject[];
+  allData: DataObject[];
 
   // chart variables
   public lineChartOptions;
@@ -76,10 +78,12 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
     this.data = [];
   }
 
-  async drawChart(networkID: number) {
+  async drawChart(networkID: number, loadData: boolean = true) {
     // wait for data to load
-    const loaded = await this.loadData(networkID);
-    if (!loaded) return;
+    if (loadData) {
+      const loaded = await this.loadData(networkID);
+      if (!loaded) return;
+    }
 
     // then draw the chart
     this.lineChartOptions = {
@@ -211,6 +215,8 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
         for (let d in this.data) {
           if (this.data[d].label) {
             this.data[d].data[parseInt(i.substring(1))] = 0;
+          } else {
+            this.data.shift();
           }
         }
 
@@ -232,6 +238,10 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
         this.data[i].label = name;
       }
     }
+
+    this.allData = [];
+    this.allData = this.data;
+    this.focusAsset();
   }
 
   changePeriod() {
@@ -256,6 +266,19 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
     }
     this.resetChart();
     this.drawChart(this.wallet.networkID);
+  }
+
+  focusAsset() {
+    this.data = [];
+    if (this.SELECTED_ASSET === 'all') {
+      this.data = this.allData;
+    } else {
+      const selectedObj = this.allData.find(
+        (pool) => pool.label === this.SELECTED_ASSET
+      );
+      this.data.push(selectedObj);
+    }
+    this.drawChart(this.wallet.networkID, false);
   }
 }
 
