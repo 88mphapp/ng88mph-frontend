@@ -224,7 +224,40 @@ export class RewardsComponent implements OnInit {
   async loadRewardAccumulationStats() {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
-    // compute protocol fees
+    // compute protocol fees for v2
+    const allPoolsV2 = this.contract.getPoolInfoList(true);
+    let protocolFeesUSDV2 = new BigNumber(0);
+    let countedStablecoinMapV2 = {};
+    Promise.all(
+      allPoolsV2.map(async (poolInfo) => {
+        if (countedStablecoinMapV2[poolInfo.stablecoinSymbol]) {
+          return;
+        }
+        countedStablecoinMapV2[poolInfo.stablecoinSymbol] = true;
+        const poolStablecoin = this.contract.getContract(
+          poolInfo.stablecoin,
+          'ERC20',
+          readonlyWeb3
+        );
+        const poolFeesToken = new BigNumber(
+          await poolStablecoin.methods
+            .balanceOf(this.constants.DUMPER_V2)
+            .call()
+        ).div(Math.pow(10, poolInfo.stablecoinDecimals));
+        const stablecoinPrice = await this.helpers.getTokenPriceUSD(
+          poolInfo.stablecoin,
+          this.wallet.networkID
+        );
+        protocolFeesUSDV2 = protocolFeesUSDV2.plus(
+          poolFeesToken.times(stablecoinPrice)
+        );
+      })
+    ).then(() => {
+      this.protocolFeesUSD = this.protocolFeesUSD.plus(protocolFeesUSDV2);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(protocolFeesUSDV2);
+    });
+
+    // compute protocol fees for v3
     const allPools = this.contract.getPoolInfoList();
     let protocolFeesUSD = new BigNumber(0);
     let countedStablecoinMap = {};
@@ -234,12 +267,15 @@ export class RewardsComponent implements OnInit {
           return;
         }
         countedStablecoinMap[poolInfo.stablecoinSymbol] = true;
-        const poolStablecoin = this.contract.getPoolStablecoin(
-          poolInfo.name,
+        const poolStablecoin = this.contract.getContract(
+          poolInfo.stablecoin,
+          'ERC20',
           readonlyWeb3
         );
         const poolFeesToken = new BigNumber(
-          await poolStablecoin.methods.balanceOf(this.constants.DUMPER).call()
+          await poolStablecoin.methods
+            .balanceOf(this.constants.DUMPER_V3)
+            .call()
         ).div(Math.pow(10, poolInfo.stablecoinDecimals));
         const stablecoinPrice = await this.helpers.getTokenPriceUSD(
           poolInfo.stablecoin,
@@ -250,7 +286,7 @@ export class RewardsComponent implements OnInit {
         );
       })
     ).then(() => {
-      this.protocolFeesUSD = protocolFeesUSD;
+      this.protocolFeesUSD = this.protocolFeesUSD.plus(protocolFeesUSD);
       this.totalRewardsUSD = this.totalRewardsUSD.plus(protocolFeesUSD);
     });
 
@@ -283,7 +319,7 @@ export class RewardsComponent implements OnInit {
       aavePools.map(async (poolInfo) => {
         const rewardUnclaimed = new BigNumber(
           await stkaaveController.methods
-            .getRewardsBalance(aTokens, poolInfo.address)
+            .getRewardsBalance(aTokens, poolInfo.moneyMarket)
             .call()
         ).div(this.constants.PRECISION);
         const rewardClaimed = new BigNumber(
@@ -295,7 +331,7 @@ export class RewardsComponent implements OnInit {
       })
     ).then(async () => {
       const rewardInDumper = new BigNumber(
-        await stkaaveToken.methods.balanceOf(this.constants.DUMPER).call()
+        await stkaaveToken.methods.balanceOf(this.constants.DUMPER_V3).call()
       ).div(this.constants.PRECISION);
       stkaaveRewardsToken = stkaaveRewardsToken.plus(rewardInDumper);
 
@@ -310,8 +346,7 @@ export class RewardsComponent implements OnInit {
       );
     });
 
-    // compute COMP rewards
-
+    // compute COMP rewards for v3
     const compoundPools = allPools.filter(
       (poolInfo) => poolInfo.protocol === 'Compound'
     );
@@ -346,11 +381,11 @@ export class RewardsComponent implements OnInit {
       })
     ).then(async () => {
       const rewardInDumper = new BigNumber(
-        await compToken.methods.balanceOf(this.constants.DUMPER).call()
+        await compToken.methods.balanceOf(this.constants.DUMPER_V3).call()
       ).div(this.constants.PRECISION);
       compRewardsToken = compRewardsToken.plus(rewardInDumper);
 
-      this.compRewardsToken = compRewardsToken;
+      this.compRewardsToken = this.compRewardsToken.plus(compRewardsToken);
       const compPriceUSD = await this.helpers.getTokenPriceUSD(
         this.constants.COMP[this.wallet.networkID],
         this.wallet.networkID
@@ -361,7 +396,49 @@ export class RewardsComponent implements OnInit {
       );
     });
 
-    // compute FARM rewards
+    // compute COMP rewards for v2
+    const compoundPoolsV2 = allPoolsV2.filter(
+      (poolInfo) => poolInfo.protocol === 'Compound'
+    );
+    let compRewardsTokenV2 = new BigNumber(0);
+    Promise.all(
+      compoundPoolsV2.map(async (poolInfo) => {
+        const rewardUnclaimed = new BigNumber(
+          (
+            await compoundLens.methods
+              .getCompBalanceMetadataExt(
+                this.constants.COMP[this.wallet.networkID],
+                this.constants.COMPOUND_COMPTROLLER,
+                poolInfo.moneyMarket
+              )
+              .call()
+          ).allocated
+        ).div(this.constants.PRECISION);
+        const rewardClaimed = new BigNumber(
+          await compToken.methods.balanceOf(poolInfo.moneyMarket).call()
+        ).div(this.constants.PRECISION);
+        compRewardsTokenV2 = compRewardsTokenV2
+          .plus(rewardUnclaimed)
+          .plus(rewardClaimed);
+      })
+    ).then(async () => {
+      const rewardInDumper = new BigNumber(
+        await compToken.methods.balanceOf(this.constants.DUMPER_V2).call()
+      ).div(this.constants.PRECISION);
+      compRewardsTokenV2 = compRewardsTokenV2.plus(rewardInDumper);
+
+      this.compRewardsToken = this.compRewardsToken.plus(compRewardsTokenV2);
+      const compPriceUSD = await this.helpers.getTokenPriceUSD(
+        this.constants.COMP[this.wallet.networkID],
+        this.wallet.networkID
+      );
+      this.compRewardsUSD = compRewardsTokenV2.times(compPriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(
+        compRewardsTokenV2.times(compPriceUSD)
+      );
+    });
+
+    // compute FARM rewards for v3
     const harvestPools = allPools.filter(
       (poolInfo) => poolInfo.protocol === 'Harvest'
     );
@@ -383,11 +460,11 @@ export class RewardsComponent implements OnInit {
       })
     ).then(async () => {
       const rewardInDumper = new BigNumber(
-        await farmToken.methods.balanceOf(this.constants.DUMPER).call()
+        await farmToken.methods.balanceOf(this.constants.DUMPER_V3).call()
       ).div(this.constants.PRECISION);
       farmRewardsToken = farmRewardsToken.plus(rewardInDumper);
 
-      this.farmRewardsToken = farmRewardsToken;
+      this.farmRewardsToken = this.farmRewardsToken.plus(farmRewardsToken);
       const farmPriceUSD = await this.helpers.getTokenPriceUSD(
         this.constants.FARM[this.wallet.networkID],
         this.wallet.networkID
@@ -395,6 +472,39 @@ export class RewardsComponent implements OnInit {
       this.farmRewardsUSD = farmRewardsToken.times(farmPriceUSD);
       this.totalRewardsUSD = this.totalRewardsUSD.plus(
         farmRewardsToken.times(farmPriceUSD)
+      );
+    });
+
+    // compute FARM rewards for v2
+    const harvestPoolsV2 = allPoolsV2.filter(
+      (poolInfo) => poolInfo.protocol === 'Harvest'
+    );
+    let farmRewardsTokenV2 = new BigNumber(0);
+    Promise.all(
+      harvestPoolsV2.map(async (poolInfo) => {
+        const stakingPool = this.contract.getRewards(
+          poolInfo.stakingPool,
+          readonlyWeb3
+        );
+        const rewardUnclaimed = new BigNumber(
+          await stakingPool.methods.earned(poolInfo.moneyMarket).call()
+        ).div(this.constants.PRECISION);
+        farmRewardsTokenV2 = farmRewardsTokenV2.plus(rewardUnclaimed);
+      })
+    ).then(async () => {
+      const rewardInDumper = new BigNumber(
+        await farmToken.methods.balanceOf(this.constants.DUMPER_V2).call()
+      ).div(this.constants.PRECISION);
+      farmRewardsTokenV2 = farmRewardsTokenV2.plus(rewardInDumper);
+
+      this.farmRewardsToken = this.farmRewardsToken.plus(farmRewardsTokenV2);
+      const farmPriceUSD = await this.helpers.getTokenPriceUSD(
+        this.constants.FARM[this.wallet.networkID],
+        this.wallet.networkID
+      );
+      this.farmRewardsUSD = farmRewardsTokenV2.times(farmPriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(
+        farmRewardsTokenV2.times(farmPriceUSD)
       );
     });
   }

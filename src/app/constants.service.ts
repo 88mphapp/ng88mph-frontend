@@ -46,6 +46,11 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby',
   };
+  GRAPHQL_ENDPOINT_V2 = {
+    [this.CHAIN_ID.MAINNET]:
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
   MPH_TOKEN_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/mph-token',
@@ -104,7 +109,8 @@ export class ConstantsService {
   DUST_THRESHOLD = new BigNumber(1e-10).toFixed(10); // The minimum amount below which deposits/fundings won't be displayed
 
   // 88MPH CONTRACTS //
-  DUMPER = '0x8Cc9ADF88fe0b5C739bD936E9edaAd30578f4265';
+  DUMPER_V2 = '0x5B3C81C86d17786255904c316bFCB38A46146ef8';
+  DUMPER_V3 = '0x8Cc9ADF88fe0b5C739bD936E9edaAd30578f4265';
 
   GOV_TREASURY = {
     [this.CHAIN_ID.MAINNET]: '0x56f34826Cc63151f74FA8f701E4f73C5EAae52AD',
@@ -205,6 +211,44 @@ export class ConstantsService {
   };
   CRVRENWBTC = {
     [this.CHAIN_ID.MAINNET]: '0x49849c98ae39fff122806c06791fa73784fb3675',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+
+  // v2 tokens
+  STECRV = {
+    [this.CHAIN_ID.MAINNET]: '0x06325440d014e39736583c165c2963ba99faf14e',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  ALINK = {
+    [this.CHAIN_ID.MAINNET]: '0xa64bd6c70cb9051f6a9ba1f163fdc07e0dfb5f84',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  CRVOBTC = {
+    [this.CHAIN_ID.MAINNET]: '0x2fe94ea3d5d4a175184081439753de15aef9d614',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  CRVHBTC = {
+    [this.CHAIN_ID.MAINNET]: '0xb19059ebb43466c323583928285a49f558e572fd',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  SUSD = {
+    [this.CHAIN_ID.MAINNET]: '0x57ab1ec28d129707052df4df418d58a2d46d5f51',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  THREECRV = {
+    [this.CHAIN_ID.MAINNET]: '0x6c3f90f043a72fa612cbac8115ee7e52bde6e490',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  CRVHUSD = {
+    [this.CHAIN_ID.MAINNET]: '0x5b5cfe992adac0c9d48e05854b2d91c73a003858',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  CRVRENWSBTC = {
+    [this.CHAIN_ID.MAINNET]: '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  YCRV = {
+    [this.CHAIN_ID.MAINNET]: '0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8',
     [this.CHAIN_ID.RINKEBY]: '',
   };
 
