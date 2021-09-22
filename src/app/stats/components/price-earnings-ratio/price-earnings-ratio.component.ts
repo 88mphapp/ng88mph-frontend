@@ -111,6 +111,12 @@ export class PriceEarningsRatioComponent implements OnInit {
       },
       hover: {
         mode: 'dataset',
+        intersect: false,
+      },
+      tooltips: {
+        mode: 'nearest',
+        intersect: false,
+        displayColors: true,
       },
       elements: {
         point: {
@@ -132,7 +138,9 @@ export class PriceEarningsRatioComponent implements OnInit {
       {
         data: this.data,
         borderColor: 'rgba(44, 123, 229, 0.5)',
-        hoverBorderColor: 'rgba(44, 123, 229, 0.5)',
+        hoverBorderColor: 'rgba(44, 123, 229, 1)',
+        pointBorderColor: 'rgba(44, 123, 229, 0.5)',
+        pointBackgroundColor: 'rgba(44, 123, 229, 0.5)',
         pointHoverBorderColor: 'rgba(44, 123, 229, 1)',
         pointHoverBackgroundColor: 'rgba(44, 123, 229, 1)',
         fill: false,
