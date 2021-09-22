@@ -20,6 +20,10 @@
       "USD": "0x3e7d1eab13ad0104d2750b8863b489d65364e32d",
       "ETH": "0xee9f2375b4bdf6387aa8265dd4fb8f16512a1d46"
     },
+    "SUSD": {
+      "USD": "0xad35bd71b9afe6e4bdc266b345c198eadef9ad94",
+      "ETH": "0x8e0b7e6062272b5ef4524250bfff8e5bd3497757"
+    },
     "AAVE": {
       "USD": "0x547a514d5e3769680ce22b2361c10ea13619e8a9",
       "ETH": "0x6df09e975c830ecae5bd4ed9d90f3a95a4f88012"

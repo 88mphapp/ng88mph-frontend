@@ -20,7 +20,10 @@ export class HelpersService {
   ): Promise<number> {
     const address = tokenAddress.toLowerCase();
 
-    if (address === this.constants.WETH[chainID].toLowerCase()) {
+    if (
+      address === this.constants.WETH[chainID].toLowerCase() ||
+      address === this.constants.STECRV[chainID].toLowerCase()
+    ) {
       return await this.getChainlinkPriceUSD('ETH', chainID);
     } else if (address === this.constants.DAI[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('DAI', chainID);
@@ -28,6 +31,8 @@ export class HelpersService {
       return await this.getChainlinkPriceUSD('USDC', chainID);
     } else if (address === this.constants.USDT[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('USDT', chainID);
+    } else if (address === this.constants.SUSD[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('SUSD', chainID);
     } else if (address === this.constants.LINK[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('LINK', chainID);
     } else if (address === this.constants.UNI[chainID].toLowerCase()) {
@@ -44,10 +49,18 @@ export class HelpersService {
       const farmPriceETH = await this.getChainlinkPriceETH('FARM', chainID);
       const ethPriceUSD = await this.getChainlinkPriceUSD('ETH', chainID);
       return farmPriceETH * ethPriceUSD;
-    } else if (address === this.constants.CRVRENWBTC[chainID].toLowerCase()) {
+    } else if (
+      address === this.constants.CRVHBTC[chainID].toLowerCase() ||
+      address === this.constants.CRVOBTC[chainID].toLowerCase() ||
+      address === this.constants.CRVRENWBTC[chainID].toLowerCase() ||
+      address === this.constants.CRVRENWSBTC[chainID].toLowerCase()
+    ) {
       return await this.getChainlinkPriceUSD('BTC', chainID);
+    } else if (address === this.constants.CRVHUSD[chainID].toLowerCase()) {
+      return 1;
     }
 
+    console.log('no chainlink price feed for: ' + address);
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
     if (!rawResult.prices) {
