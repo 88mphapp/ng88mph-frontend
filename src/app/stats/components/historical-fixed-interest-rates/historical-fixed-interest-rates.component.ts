@@ -108,6 +108,12 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
       },
       hover: {
         mode: 'dataset',
+        intersect: false,
+      },
+      tooltips: {
+        mode: 'nearest',
+        intersect: false,
+        displayColors: true,
       },
       elements: {
         point: {
@@ -200,6 +206,10 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         hoverBorderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
+        pointBorderColor:
+          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
+        pointBackgroundColor:
+          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         pointHoverBorderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
         pointHoverBackgroundColor:
@@ -294,6 +304,8 @@ interface DataObject {
   data: Array<number>;
   borderColor: string;
   hoverBorderColor: string;
+  pointBorderColor: string;
+  pointBackgroundColor: string;
   pointHoverBorderColor: string;
   pointHoverBackgroundColor: string;
   fill: boolean;
