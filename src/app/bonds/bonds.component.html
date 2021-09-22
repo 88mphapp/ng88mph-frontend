@@ -322,11 +322,11 @@
             <div class="col text-center">
               <small>
                 {{ estimatedCurrentFloatingInterestRate.toFormat(1) }}% <br />
-                Current supply APY
+                Current 30-day EMA supply APY
                 <i
                   class="fe fe-info ml-1 align-bottom"
                   placement="top"
-                  ngbTooltip="Current variable yield rate for supplying this asset (for eg. DAI) on the underlying lending protocol used by 88mph, such as Compound or Aave."
+                  ngbTooltip="Current 30-day exponential moving average (EMA) of the variable yield rate for supplying this asset (for eg. DAI) on the underlying lending protocol used by 88mph, such as Compound or Aave."
                 ></i>
               </small>
             </div>
