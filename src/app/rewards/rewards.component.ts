@@ -77,8 +77,6 @@ export class RewardsComponent implements OnInit {
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
-    const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
-
     let address = this.wallet.actualAddress.toLowerCase();
 
     if (loadUser && address) {
@@ -106,7 +104,7 @@ export class RewardsComponent implements OnInit {
       });
 
       mph.methods
-        .allowance(address, xmph.options.address)
+        .allowance(address, this.constants.XMPH_ADDRESS[this.wallet.networkID])
         .call()
         .then((allowance) => {
           this.tokenAllowance = new BigNumber(allowance).div(
@@ -116,80 +114,66 @@ export class RewardsComponent implements OnInit {
     }
 
     if (loadGlobal) {
-      this.maxAPY = await this.datas.getMaxAPY();
+      this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
 
-      // load reward accumulation stats
-      // only available on mainnet
+      const queryString = gql`
+        {
+          xMPH(id: "0") {
+            totalSupply
+            pricePerFullShare
+            currentUnlockEndTimestamp
+            lastRewardTimestamp
+            lastRewardAmount
+          }
+        }
+      `;
+      request(
+        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+        queryString
+      ).then((data: QueryResult) => {
+        this.pricePerFullShare = new BigNumber(data.xMPH.pricePerFullShare);
+        this.xMPHPriceUSD = this.pricePerFullShare.times(this.mphPriceUSD);
+        this.xMPHTotalSupply = new BigNumber(data.xMPH.totalSupply);
+        this.distributionEndTime = new Date(
+          parseInt(data.xMPH.currentUnlockEndTimestamp) * 1e3
+        ).toLocaleString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+        });
+        const daysToNextDistribution: number = Math.ceil(
+          (parseInt(data.xMPH.currentUnlockEndTimestamp) - Date.now() / 1e3) /
+            this.constants.DAY_IN_SEC
+        );
+        daysToNextDistribution > 0
+          ? (this.daysToNextDistribution = daysToNextDistribution)
+          : (this.daysToNextDistribution = 0);
+
+        const rewardsEndDate = new BigNumber(
+          data.xMPH.currentUnlockEndTimestamp
+        );
+        const rewardsStartDate = new BigNumber(data.xMPH.lastRewardTimestamp);
+        const rewardsAmount = new BigNumber(data.xMPH.lastRewardAmount);
+        const rewardPerSecond = rewardsAmount
+          .div(rewardsEndDate.minus(rewardsStartDate))
+          .times(this.mphPriceUSD);
+        let secondROI = rewardPerSecond
+          .div(this.xMPHTotalSupply.times(this.xMPHPriceUSD))
+          .times(100);
+        if (secondROI.isNaN()) {
+          secondROI = new BigNumber(0);
+        }
+        this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+      });
+
+      // load reward accumulation stats -- only available on mainnet
       if (this.wallet.networkID == this.constants.CHAIN_ID.MAINNET) {
         this.loadRewardAccumulationStats();
       }
 
-      // load MPH and xMPH data
-      this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
-
-      xmph.methods
-        .getPricePerFullShare()
-        .call()
-        .then((pricePerFullShare) => {
-          this.pricePerFullShare = new BigNumber(pricePerFullShare).div(
-            this.constants.PRECISION
-          );
-          this.xMPHPriceUSD = this.pricePerFullShare.times(this.mphPriceUSD);
-        });
-
-      xmph.methods
-        .totalSupply()
-        .call()
-        .then((xMPHTotalSupply) => {
-          this.xMPHTotalSupply = new BigNumber(xMPHTotalSupply).div(
-            this.constants.PRECISION
-          );
-        });
-
-      // load distribution end date
-      xmph.methods
-        .currentUnlockEndTimestamp()
-        .call()
-        .then((distributionEndTime) => {
-          this.distributionEndTime = new Date(
-            distributionEndTime * 1e3
-          ).toLocaleString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-          });
-          const daysToNextDistribution: number = Math.ceil(
-            (distributionEndTime - Date.now() / 1e3) / this.constants.DAY_IN_SEC
-          );
-          if (daysToNextDistribution > 0) {
-            this.daysToNextDistribution = daysToNextDistribution;
-          } else {
-            this.daysToNextDistribution = 0;
-          }
-        });
-
-      // load xMPH rewards data
-      const rewardsEndDate = new BigNumber(
-        await xmph.methods.currentUnlockEndTimestamp().call()
-      );
-      const rewardsStartDate = new BigNumber(
-        await xmph.methods.lastRewardTimestamp().call()
-      );
-      const rewardsAmount = new BigNumber(
-        await xmph.methods.lastRewardAmount().call()
-      ).div(this.constants.PRECISION);
-      const rewardPerSecond = rewardsAmount
-        .div(rewardsEndDate.minus(rewardsStartDate))
-        .times(this.mphPriceUSD);
-      let secondROI = rewardPerSecond
-        .div(this.xMPHTotalSupply.times(this.xMPHPriceUSD))
-        .times(100);
-      if (secondROI.isNaN()) {
-        secondROI = new BigNumber(0);
-      }
-      this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+      this.maxAPY = await this.datas.getMaxAPY();
     }
   }
 
@@ -593,5 +577,12 @@ interface QueryResult {
     mphBalance: string;
     xmphBalance: string;
     mphStaked: string;
+  };
+  xMPH: {
+    totalSupply: string;
+    pricePerFullShare: string;
+    currentUnlockEndTimestamp: string;
+    lastRewardTimestamp: string;
+    lastRewardAmount: string;
   };
 }
