@@ -378,7 +378,7 @@
         {{ xMPHBalance.toFormat(2) }} xMPH
       </button>
 
-      <div class="dropdown">
+      <div class="dropdown d-none">
         <button
           class="
             btn btn-block btn-dark
@@ -417,6 +417,52 @@
           <button class="dropdown-item d-flex align-items-center" type="button">
             Chinese
           </button>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button
+          class="
+            btn btn-block btn-dark
+            dropdown-toggle
+            mr-3
+            d-flex
+            align-items-center
+            justify-content-center
+          "
+          type="button"
+          id="dropdownNetwork"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <img
+            class="img-fluid"
+            src="./assets/img/dark_mode_white_24dp.svg"
+            alt="Mode icon"
+            width="23px"
+          />
+        </button>
+        <div
+          class="dropdown-menu dropdown-menu-right"
+          aria-labelledby="dropdownNetwork"
+        >
+          <h6 class="dropdown-header">Select Mode</h6>
+          <ng-container *ngFor="let themeName of app.themes">
+            <button
+              class="dropdown-item d-flex align-items-center"
+              (click)="app.setTheme(themeName)"
+            >
+              <input
+                class="mr-2"
+                type="radio"
+                name="colorScheme"
+                value="{{ themeName }}"
+                [checked]="app.themeName === themeName"
+              />
+              {{ themeName }}
+            </button>
+          </ng-container>
         </div>
       </div>
     </div>
