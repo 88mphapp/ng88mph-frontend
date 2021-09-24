@@ -7,6 +7,7 @@ import { ContractService, PoolInfo } from 'src/app/contract.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 import { NFTStorage, File } from 'nft.storage';
+import { Web3Storage } from 'web3.storage/dist/bundle.esm.min.js';
 import autosize from 'autosize';
 import { UserDeposit } from '../types';
 
@@ -22,6 +23,7 @@ export class ModalNftComponent implements OnInit {
   loadedNFTAddress: boolean;
 
   nftStorageClient: NFTStorage;
+  web3StorageClient: Web3Storage;
   openseaURL: string;
 
   name: string;
@@ -65,6 +67,9 @@ export class ModalNftComponent implements OnInit {
     this.audioURL = '../../assets/img/cassette_tape.gif';
     this.nftStorageClient = new NFTStorage({
       token: this.constants.NFTSTORAGE_KEY,
+    });
+    this.web3StorageClient = new Web3Storage({
+      token: this.constants.WEB3STORAGE_KEY,
     });
     this.isLoading = false;
     this.loadedNFTAddress = false;
@@ -164,6 +169,25 @@ export class ModalNftComponent implements OnInit {
       attributesList.push(a);
     }
 
+    let largeMediaFile = [];
+    let largeMediaFileURL;
+    if (this.mediaFile && this.mediaFile.size > 1000000 * 100) {
+      // > 100MB
+      largeMediaFile.push(
+        new File([this.mediaFile], this.mediaFile.name, {
+          type: this.mediaFile.type,
+        })
+      );
+      const largeMediaFileCID = await this.web3StorageClient.put(
+        largeMediaFile,
+        {
+          name: this.mediaFile.name,
+          maxRetries: 3,
+        }
+      );
+      largeMediaFileURL = `ipfs://${largeMediaFileCID}/${this.mediaFile.name}`;
+    }
+
     let metadata;
     if (this.mediaFile) {
       metadata = {
@@ -171,9 +195,11 @@ export class ModalNftComponent implements OnInit {
         image: new File([this.imageFile], this.imageFile.name, {
           type: this.imageFile.type,
         }),
-        animation_url: new File([this.mediaFile], this.mediaFile.name, {
-          type: this.mediaFile.type,
-        }),
+        animation_url: largeMediaFileURL
+          ? largeMediaFileURL
+          : new File([this.mediaFile], this.mediaFile.name, {
+              type: this.mediaFile.type,
+            }),
         description: this.description,
         external_url: this.externalURL,
         attributes: attributesList,
