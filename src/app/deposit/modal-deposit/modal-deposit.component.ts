@@ -13,6 +13,7 @@ import {
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NFTStorage, File } from 'nft.storage';
+import { Web3Storage } from 'web3.storage/dist/bundle.esm.min.js';
 import autosize from 'autosize';
 
 @Component({
@@ -51,6 +52,7 @@ export class ModalDepositComponent implements OnInit {
 
   // nft metadata
   nftStorageClient: NFTStorage;
+  web3StorageClient: Web3Storage;
   name: string;
   description: string;
   imageURL: SafeUrl;
@@ -93,6 +95,9 @@ export class ModalDepositComponent implements OnInit {
     // nft
     this.nftStorageClient = new NFTStorage({
       token: this.constants.NFTSTORAGE_KEY,
+    });
+    this.web3StorageClient = new Web3Storage({
+      token: this.constants.WEB3STORAGE_KEY,
     });
     this.isLoading = false;
     autosize(document.querySelector('textarea'));
@@ -815,7 +820,6 @@ export class ModalDepositComponent implements OnInit {
     this.mediaURL = this.sanitizer.bypassSecurityTrustUrl(
       URL.createObjectURL(this.mediaFile)
     );
-    console.log(this.mediaFile);
     this.audioURL = '../../assets/img/cassette_tape.gif';
   }
 
@@ -845,6 +849,25 @@ export class ModalDepositComponent implements OnInit {
       attributesList.push(a);
     }
 
+    let largeMediaFile = [];
+    let largeMediaFileURL;
+    if (this.mediaFile && this.mediaFile.size > 1000000 * 100) {
+      // > 100MB
+      largeMediaFile.push(
+        new File([this.mediaFile], this.mediaFile.name, {
+          type: this.mediaFile.type,
+        })
+      );
+      const largeMediaFileCID = await this.web3StorageClient.put(
+        largeMediaFile,
+        {
+          name: this.mediaFile.name,
+          maxRetries: 3,
+        }
+      );
+      largeMediaFileURL = `ipfs://${largeMediaFileCID}/${this.mediaFile.name}`;
+    }
+
     let metadata;
     if (this.mediaFile) {
       metadata = {
@@ -852,9 +875,11 @@ export class ModalDepositComponent implements OnInit {
         image: new File([this.imageFile], this.imageFile.name, {
           type: this.imageFile.type,
         }),
-        animation_url: new File([this.mediaFile], this.mediaFile.name, {
-          type: this.mediaFile.type,
-        }),
+        animation_url: largeMediaFileURL
+          ? largeMediaFileURL
+          : new File([this.mediaFile], this.mediaFile.name, {
+              type: this.mediaFile.type,
+            }),
         description: this.description,
         external_url: this.externalURL,
         attributes: attributesList,
