@@ -197,6 +197,16 @@
       <h5 class="mb-3 text-muted">
         ${{ totalMPHEarned.times(mphPriceUSD).toFormat(DECIMALS) }}
       </h5>
+      <!-- Button -->
+      <button
+        *ngIf="totalMPHEarned.gt(0)"
+        type="button"
+        class="btn btn-sm btn-bg-gradient"
+        (click)="claimAllRewards()"
+        [disabled]="wallet.watching"
+      >
+        <i class="fe fe-dollar-sign mr-2 align-bottom"></i>Claim all
+      </button>
     </div>
   </div>
   <div class="row">
