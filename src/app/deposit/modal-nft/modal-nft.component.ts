@@ -181,25 +181,35 @@ export class ModalNftComponent implements OnInit {
       const largeMediaFileCID = await this.web3StorageClient.put(
         largeMediaFile,
         {
-          name: this.mediaFile.name,
+          name: encodeURIComponent(this.mediaFile.name),
           maxRetries: 3,
         }
       );
-      largeMediaFileURL = `ipfs://${largeMediaFileCID}/${this.mediaFile.name}`;
+      largeMediaFileURL = `ipfs://${largeMediaFileCID}/${encodeURIComponent(
+        this.mediaFile.name
+      )}`;
     }
 
     let metadata;
     if (this.mediaFile) {
       metadata = {
         name: this.name,
-        image: new File([this.imageFile], this.imageFile.name, {
-          type: this.imageFile.type,
-        }),
+        image: new File(
+          [this.imageFile],
+          encodeURIComponent(this.imageFile.name),
+          {
+            type: this.imageFile.type,
+          }
+        ),
         animation_url: largeMediaFileURL
           ? largeMediaFileURL
-          : new File([this.mediaFile], this.mediaFile.name, {
-              type: this.mediaFile.type,
-            }),
+          : new File(
+              [this.mediaFile],
+              encodeURIComponent(this.mediaFile.name),
+              {
+                type: this.mediaFile.type,
+              }
+            ),
         description: this.description,
         external_url: this.externalURL,
         attributes: attributesList,
@@ -207,9 +217,13 @@ export class ModalNftComponent implements OnInit {
     } else {
       metadata = {
         name: this.name,
-        image: new File([this.imageFile], this.imageFile.name, {
-          type: this.imageFile.type,
-        }),
+        image: new File(
+          [this.imageFile],
+          encodeURIComponent(this.imageFile.name),
+          {
+            type: this.imageFile.type,
+          }
+        ),
         description: this.description,
         external_url: this.externalURL,
         attributes: attributesList,
