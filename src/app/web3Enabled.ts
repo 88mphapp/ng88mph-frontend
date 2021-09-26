@@ -234,14 +234,31 @@ export class Web3Enabled {
   }
 
   async changeChain(chainId: number) {
-    this.web3.currentProvider['send'](
-      {
-        jsonrpc: '2.0',
-        method: 'wallet_addEthereumChain',
-        params: [this.constants.NETWORK_METADATA[chainId]],
-      },
-      (err, result) => {}
-    );
+    this.web3.currentProvider['request']({
+      method: 'wallet_switchEthereumChain',
+      params: [
+        {
+          chainId: this.constants.NETWORK_METADATA[chainId].chainId,
+        },
+      ],
+    }).catch((error) => {
+      if (error.code === 4902) {
+        this.web3.currentProvider['request']({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: this.constants.NETWORK_METADATA[chainId].chainId,
+              chainName: this.constants.NETWORK_METADATA[chainId].chainName,
+              nativeCurrency:
+                this.constants.NETWORK_METADATA[chainId].nativeCurrency,
+              rpcUrls: this.constants.NETWORK_METADATA[chainId].rpcUrls,
+              blockExplorerUrls:
+                this.constants.NETWORK_METADATA[chainId].blockExplorerUrls,
+            },
+          ],
+        });
+      }
+    });
   }
 
   readonlyWeb3(chainId?: number) {
