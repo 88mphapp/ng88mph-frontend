@@ -241,7 +241,7 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b',
   };
   USDP = {
-    [this.CHAIN_ID.MAINNET]: '0x1456688345527be1f37e9e627da0837d6f08c925',
+    [this.CHAIN_ID.MAINNET]: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
     [this.CHAIN_ID.RINKEBY]: '',
   };
   USDT = {
