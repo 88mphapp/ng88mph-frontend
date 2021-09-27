@@ -1,11 +1,14 @@
 <div class="container my-5">
   <div class="row d-flex align-items-center mb-6">
     <div class="col-12 mb-4 mb-lg-0 col-lg-8">
-      <h1 class="title-bg-gradient display-2">
+      <h1 class="title-bg-gradient display-2" i18n="@@homeHeaderTitle">
         Earn up to {{ maxAPY.toFormat(2) }}% fixed APR +
         {{ maxMPHAPY.toFormat(2) }}% $MPH APR on your crypto
       </h1>
-      <p class="text-white font-weight-bold mb-5 lead">
+      <p
+        class="text-white font-weight-bold mb-5 lead"
+        i18n="@@homeHeaderSubtitle"
+      >
         Deposit crypto or stablecoins to earn a fixed yield rate & get MPH
         tokens.
       </p>
@@ -13,12 +16,13 @@
       <div class="row mt-5 mb-7">
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">
+          <h6 class="text-uppercase text-muted" i18n="@@homeStatsTVL">
             TVL
             <i
               class="fe fe-info ml-1 align-bottom"
               placement="top"
               ngbTooltip="Total value locked"
+              i18n-ngbTooltip="@@TotalValueLocked"
             ></i>
           </h6>
 
@@ -29,12 +33,16 @@
         </div>
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">
+          <h6
+            class="text-uppercase text-muted"
+            i18n="@@homeStatsTotalYieldDistributed"
+          >
             Total fixed-rate yield distributed
             <i
               class="fe fe-info ml-1 align-bottom"
               placement="top"
               ngbTooltip="Amount of interest earned by 88mph's users since v3 launch."
+              i18n-ngbTooltip="@@homeStatsTotalDistributedText"
             ></i>
           </h6>
 
@@ -45,11 +53,15 @@
         </div>
         <div class="col-6 col-lg-auto">
           <!-- Title -->
-          <h6 class="text-uppercase text-muted">
+          <h6
+            class="text-uppercase text-muted"
+            i18n="@@homeStatsProtocolRevenue"
+          >
             Total protocol revenue
             <i
               class="fe fe-info ml-1 align-bottom"
               placement="top"
+              i18n-ngbTooltip="@@homeStatsRevenueText"
               ngbTooltip="The protocol revenues originates from 88mph protocol fees (10% of the fixed-rate interest promised to depositors at deposit time and 0.5% on early withdrawals).
             Yield-farmed tokens earned from the protocols 88mph is connected to (COMP, FARM, stkAAVE, etc.).
             100% of the protocol revenues are distributed to MPH stakers."
@@ -65,14 +77,17 @@
     <div class="col-12 col-lg-4 pr-lg-4">
       <div class="card bg-dark">
         <div class="card-header">
-          <h4 class="card-header-title title-bg-gradient">
+          <h4
+            class="card-header-title title-bg-gradient"
+            i18n="@@homeFormTitle"
+          >
             See how much you can receive
           </h4>
         </div>
         <div class="card-body py-3">
           <form action="">
             <div class="form-group mb-3">
-              <label
+              <label i18n="@@homeFormDeposit"
                 >Deposit amount ({{ selectedPool.stablecoinSymbol }})</label
               >
               <div class="input-group input-group-lg mb-2">
@@ -88,6 +103,7 @@
                     class="btn btn-dark"
                     type="button"
                     (click)="setDepositAmount(depositTokenBalance.toFixed(18))"
+                    i18n="@@depositAmount"
                   >
                     Max
                   </button>
@@ -97,6 +113,7 @@
                   (change)="selectPool($event.target.value)"
                 >
                   <option
+                    i18n="@@homeFormPoolList"
                     value="{{ pool.name }}"
                     *ngFor="let pool of allPoolList"
                     [selected]="pool.name === selectedPool.name"
@@ -108,13 +125,14 @@
               <small class="form-text text-muted mb-0">
                 {{ depositTokenBalance.toFormat(4) }}
                 {{ selectedPool.stablecoinSymbol }}
-                available
+                <ng-container i18n="@@balanceAvailable">available</ng-container
+                >&nbsp;
               </small>
             </div>
             <div class="form-row">
               <div class="col">
                 <div class="form-group mb-2">
-                  <label>Term in days</label>
+                  <label i18n="@@homeFormTerm">Term in days</label>
                   <input
                     type="number"
                     min="1"
@@ -135,7 +153,10 @@
               </div>
               <div class="col-auto">
                 <div class="form-group mb-2">
-                  <h4 class="mb-3 font-weight-normal mt-1">
+                  <h4
+                    class="mb-3 font-weight-normal mt-1"
+                    i18n="@@homeFormFixedAPR"
+                  >
                     Fixed APR / MPH APR
                   </h4>
                   <h2 class="mb-0 glowing">
@@ -148,11 +169,15 @@
               <table class="table mb-0">
                 <tbody>
                   <tr>
-                    <td class="px-0 py-2 text-white border-0 small">
+                    <td
+                      class="px-0 py-2 text-white border-0 small"
+                      i18n="@@homeFormYieldMaturity"
+                    >
                       Fixed-rate yield at maturity
                       <i
                         class="fe fe-info ml-1 align-bottom"
                         placement="top"
+                        i18n-ngbTooltip="@@yieldMaturityText"
                         ngbTooltip="88mph offers a fixed yield rate with a custom or preset maturity for various supplied assets, such as DAI, USDC, WBTC, ETH, etc. When users/protocols deposit assets, they earn a fixed-rate yield that is redeemable at maturity. See How it works section below."
                       ></i>
                     </td>
@@ -167,11 +192,15 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="px-0 py-2 text-white border-0 small">
+                    <td
+                      class="px-0 py-2 text-white border-0 small"
+                      i18n="@@homeFormMPHRewards"
+                    >
                       MPH rewards
                       <i
                         class="fe fe-info ml-1 align-bottom"
                         placement="top"
+                        i18n-ngbTooltip="@@MPHRewardsText"
                         ngbTooltip="Participating in this 88mph pool gives rewards in MPH token. MPH tokens are vested linearly over the deposit duration. You can claim your MPH whever you want over the vesting period. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
                       ></i>
                     </td>
@@ -185,12 +214,16 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="px-0 py-2 text-white border-0 small">
+                    <td
+                      class="px-0 py-2 text-white border-0 small"
+                      i18n="@@homeFormTotalAvailable"
+                    >
                       Total available at maturity
                       <i
                         class="fe fe-info ml-1 align-bottom"
                         placement="top"
                         ngbTooltip="Initial deposit + fixed-rate yield earned + MPH tokens"
+                        i18n-ngbTooltip="@@TotalAvailableText"
                       ></i>
                     </td>
                     <td
@@ -202,7 +235,10 @@
                     </td>
                   </tr>
                   <tr class="d-none">
-                    <td class="px-0 py-2 text-white border-0 small">
+                    <td
+                      class="px-0 py-2 text-white border-0 small"
+                      i18n="@@homeFormTotalCompounded"
+                    >
                       Total compounded on 10y
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
@@ -222,10 +258,13 @@
             type="button"
             (click)="openDepositModal(selectedPool.name)"
             [disabled]="wallet.watching"
+            i18n="@@homeFormButtonStart"
           >
             Start Earning
           </button>
-          Trusted by its users since
+          <ng-container i18n="@@homeFormTrustFooter"
+            >Trusted by its users since</ng-container
+          >&nbsp;
           <a
             class="text-secondary"
             href="https://etherscan.io/tx/0x1077dd81f059bba91c9ce7033526e3d4e172f552a03ec62a990a414018f83a09"
@@ -240,9 +279,16 @@
 <div class="container pt-7 px-6 pb-4 mt-lg-n9 mb-7 bg-white rounded">
   <div class="row justify-content-center mb-4">
     <div class="col-9">
-      <h5 class="text-uppercase text-center text-secondary">For everyone</h5>
-      <h2 class="display-2 text-center text-dark">Earn fixed yield rate</h2>
-      <p class="lead text-center text-muted">
+      <h5
+        class="text-uppercase text-center text-secondary"
+        i18n="@@homeEarnPretitle"
+      >
+        For everyone
+      </h5>
+      <h2 class="display-2 text-center text-dark" i18n="@@homeEarnTitle">
+        Earn fixed yield rate
+      </h2>
+      <p class="lead text-center text-muted" i18n="@@homeEarnSubtitle">
         88mph has a variety of features that make it the best place to start
         earning a fixed yield rate on your assets. Our leading non-custodial
         fully on-chain protection measures give you the peace of mind you
@@ -263,12 +309,19 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Earn a fixed yield rate & get $MPH tokens</h3>
+          <h3 class="text-dark" i18n="@@homeEarnFixedYieldTitle">
+            Earn a fixed yield rate & get $MPH tokens
+          </h3>
           <p class="text-muted">
-            Deposit your assets and earn a fixed yield rate on your capital to
-            hedge against market rates volatility. You will also get MPH tokens
-            by using 88mph.
-            <a href="https://docs.88mph.app/" target="_blank">Learn more</a>
+            <ng-container i18n="@@homeEarnFixedYieldText"
+              >Deposit your assets and earn a fixed yield rate on your capital
+              to hedge against market rates volatility. You will also get MPH
+              tokens by using 88mph.</ng-container
+            >&nbsp;
+
+            <a href="https://docs.88mph.app/" target="_blank" i18n="@@learnMore"
+              >Learn more</a
+            >
           </p>
         </div>
       </div>
@@ -284,10 +337,17 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Stay flexible</h3>
+          <h3 class="text-dark" i18n="@@homeStayFlexibleTitle">
+            Stay flexible
+          </h3>
           <p class="text-muted">
-            Top up, withdraw or extend the terms of your deposits at any time.
-            <a href="https://docs.88mph.app/" target="_blank">Learn more</a>.
+            <ng-container i18n="@@homeStayFlexibleText"
+              >Top up, withdraw or extend the terms of your deposits at any
+              time</ng-container
+            >&nbsp;.
+            <a href="https://docs.88mph.app/" target="_blank" i18n="@@learnMore"
+              >Learn more</a
+            >.
           </p>
         </div>
       </div>
@@ -302,11 +362,18 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Risk management</h3>
+          <h3 class="text-dark" i18n="@@homeRiskManagementTitle">
+            Risk management
+          </h3>
           <p class="text-muted">
-            88mph relies on four lines of defense to mitigate the risk of
-            insolvency.
-            <a href="https://docs.88mph.app/" target="_blank">Learn more</a>.
+            <ng-container i18n="@@homeRiskManagementText"
+              >88mph relies on four lines of defense to mitigate the risk of
+              insolvency.</ng-container
+            >&nbsp;
+
+            <a href="https://docs.88mph.app/" target="_blank" i18n="@@learnMore"
+              >Learn more</a
+            >.
           </p>
         </div>
       </div>
@@ -321,11 +388,14 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Insurance</h3>
+          <h3 class="text-dark" i18n="@@homeInsuranceTitle">Insurance</h3>
           <p class="text-muted">
-            Leading insurance protocols like InsurAce, Nsure or Bridge Mutual
-            cover a full spectrum of smart contract risks for 88mph.
-            <a href="https://docs.88mph.app/">Learn more</a>.
+            <ng-container i18n="@@homeInsuranceText"
+              >Leading insurance protocols like InsurAce, Nsure or Bridge Mutual
+              cover a full spectrum of smart contract risks for
+              88mph.</ng-container
+            >&nbsp;
+            <a href="https://docs.88mph.app/" i18n="@@learnMore">Learn more</a>.
           </p>
         </div>
       </div>
@@ -335,6 +405,7 @@
         class="img-fluid"
         src="./assets/img/88mph-mockups.jpg"
         alt="88mph mockup"
+        i18n-alt="@@88mphMockup"
       />
     </div>
   </div>
@@ -342,20 +413,30 @@
 <div class="container my-5">
   <div class="row align-items-center mb-7">
     <div class="col-12 col-lg-4">
-      <h2 class="display-2">How it works</h2>
-      <p class="lead text-muted">
+      <h2 class="display-2" i18n="@@homeHowItWorksTitle">How it works</h2>
+      <p class="lead text-muted" i18n="@@homeHowItWorksSubtitle">
         Non-custodial, fully on-chain protocol acting as an intermediary between
         you and third-party variable yield rate protocols to offer the best
         fixed yield rate on your capital.
       </p>
       <p class="lead text-muted">
-        To learn more about how 88mph converts algorithmically a stream of
-        variable-rate yield into fixed-rate yield, check out our
-        <a class="text-primary" href="https://docs.88mph.app/" target="_blank"
+        <ng-container i18n="@@homeHowItWorksText"
+          >To learn more about how 88mph converts algorithmically a stream of
+          variable-rate yield into fixed-rate yield, check out our</ng-container
+        >&nbsp;
+        <a
+          class="text-primary"
+          href="https://docs.88mph.app/"
+          target="_blank"
+          i18n="@@docs"
           >docs</a
         >.
       </p>
-      <button class="btn btn-lg btn-bg-gradient my-4" routerLink="earn">
+      <button
+        class="btn btn-lg btn-bg-gradient my-4"
+        routerLink="earn"
+        i18n="@@homeFormButtonStart"
+      >
         Start earning
       </button>
     </div>
@@ -370,8 +451,8 @@
               01
             </span>
           </div>
-          <h3 class="">Deposit assets</h3>
-          <p class="text-muted">
+          <h3 class="" i18n="@@homeHowItWorksTitle1">Deposit assets</h3>
+          <p class="text-muted" i18n="@@homeHowItWorksText1">
             Deposit any amount of assets with a maturity between 1 and 365 days
             to get the displayed fixed yield rate at maturity.
           </p>
@@ -384,8 +465,10 @@
               02
             </span>
           </div>
-          <h3 class="">Deposit generates variable APY</h3>
-          <p class="text-muted">
+          <h3 class="" i18n="@@homeHowItWorksTitle2">
+            Deposit generates variable APY
+          </h3>
+          <p class="text-muted" i18n="@@homeHowItWorksText2">
             Your deposit generates a yield at a variable rate on third-party
             protocols until it reaches its maturity.
           </p>
@@ -401,8 +484,8 @@
               03
             </span>
           </div>
-          <h3 class="">Get deposit tokens</h3>
-          <p class="text-muted">
+          <h3 class="" i18n="@@homeHowItWorksTitle3">Get deposit tokens</h3>
+          <p class="text-muted" i18n="@@homeHowItWorksText3">
             Depositors receive an NFT (ERC-721) representing their
             custom-maturity deposit or ERC-20 tokens if it's a preset maturity.
             It gives you full control over your deposits.
@@ -416,8 +499,8 @@
               04
             </span>
           </div>
-          <h3 class="">Get MPH rewards</h3>
-          <p class="text-muted">
+          <h3 class="" i18n="@@homeHowItWorksTitle4">Get MPH rewards</h3>
+          <p class="text-muted" i18n="@@homeHowItWorksText4">
             By using 88mph, get MPH tokens linearly vested over the deposit
             duration. Claim rewards whenever it fits your schedule.
           </p>
@@ -433,8 +516,8 @@
               05
             </span>
           </div>
-          <h3 class="">Stake MPH</h3>
-          <p class="text-muted">
+          <h3 class="" i18n="@@homeHowItWorksTitle5">Stake MPH</h3>
+          <p class="text-muted" i18n="@@homeHowItWorksText5">
             Stake MPH tokens to receive 88mph protocol's revenues and voting
             rights.
           </p>
@@ -447,8 +530,8 @@
               06
             </span>
           </div>
-          <h3 class="">Withdraw</h3>
-          <p class="text-muted">
+          <h3 class="" i18n="@@homeHowItWorksTitle6">Withdraw</h3>
+          <p class="text-muted" i18n="@@homeHowItWorksText6">
             Withdraw, top-up, roll over your deposit + fixed-rate yield at any
             time.
           </p>
@@ -461,16 +544,25 @@
 <div class="container pt-6 px-6 pb-4 mb-7 bg-white rounded">
   <div class="row justify-content-center mb-4">
     <div class="col-9">
-      <h5 class="text-uppercase text-center text-secondary">
+      <h5
+        class="text-uppercase text-center text-secondary"
+        i18n="@@homeSpeculatePretitle"
+      >
         For advanced users
       </h5>
-      <h2 class="display-2 text-center text-dark">
+      <h2 class="display-2 text-center text-dark" i18n="@@homeSpeculateTitle">
         Speculate on future yields
       </h2>
       <p class="lead text-center text-muted">
-        Speculate on future variable-rate yields by buying yield tokens and
-        strengthen the solvency of 88mph protocol.
-        <a class="text-primary" href="https://docs.88mph.app/" target="_blank"
+        <ng-container i18n="@@homeSpeculateText"
+          >Speculate on future variable-rate yields by buying yield tokens and
+          strengthen the solvency of 88mph protocol.</ng-container
+        >&nbsp;
+        <a
+          class="text-primary"
+          href="https://docs.88mph.app/"
+          target="_blank"
+          i18n="@@learnMore"
           >Learn more</a
         >.
       </p>
@@ -489,8 +581,10 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">A new DeFi primitive</h3>
-          <p class="text-muted">
+          <h3 class="text-dark" i18n="@@homeDefiPrimitiveTitle">
+            A new DeFi primitive
+          </h3>
+          <p class="text-muted" i18n="@@homeDefiPrimitiveText">
             Yield tokens, such as $cDAI-YT, allow speculators to profit from the
             rise in the variable yield rate of third-party protocols or hedge
             part of their borrowing costs of a loan. For e.g. Dai borrower on
@@ -511,8 +605,10 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Earn variable-rate yields</h3>
-          <p class="text-muted">
+          <h3 class="text-dark" i18n="@@homeEarnVariableYieldTitle">
+            Earn variable-rate yields
+          </h3>
+          <p class="text-muted" i18n="@@homeEarnVariableYieldText">
             YTs can be purchased by users when a fixed yield rate deposit is
             made on 88mph, and each YT is tied to a deposit. YTs give holders
             the right to earn all the future variable-rate yields generated on
@@ -536,8 +632,10 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Strengthen 88mph protocol</h3>
-          <p class="text-muted">
+          <h3 class="text-dark" i18n="@@homeStrengthenProtocolTitle">
+            Strengthen 88mph protocol
+          </h3>
+          <p class="text-muted" i18n="@@homeStrengthenProtocolText">
             YTs are more than an instrument for speculating on yields. When
             someone buys YTs, the insolvency risk for fixed yield rate
             depositors is decreased, via decreasing the amount of promised
@@ -558,8 +656,10 @@
           </div>
         </div>
         <div class="col">
-          <h3 class="text-dark">Get MPH rewards</h3>
-          <p class="text-muted">
+          <h3 class="text-dark" i18n="@@homeGetRewardsTitle">
+            Get MPH rewards
+          </h3>
+          <p class="text-muted" i18n="@@homeGetRewardsText">
             When a user buys yield tokens, they receive newly-minted MPH tokens
             as the underlying deposit earns a variable-rate yield.
           </p>
@@ -569,7 +669,11 @@
   </div>
   <div class="row justify-content-center">
     <div class="col-auto">
-      <button class="btn btn-lg btn-bg-gradient mb-3" routerLink="yield">
+      <button
+        class="btn btn-lg btn-bg-gradient mb-3"
+        routerLink="yield"
+        i18n="@@btnGetYieldTokens"
+      >
         Get yield tokens
       </button>
     </div>
@@ -578,10 +682,10 @@
 <div class="container my-5">
   <div class="row justify-content-center mb-4">
     <div class="col-8">
-      <h2 class="display-2 text-center">
+      <h2 class="display-2 text-center" i18n="@@homeReasonsTitle">
         The leading non-custodial fixed yield rate protocol
       </h2>
-      <p class="lead text-center text-muted">
+      <p class="lead text-center text-muted" i18n="@@homeReasonsSubtitle">
         Here are a few other reasons why you should choose 88mph
       </p>
     </div>
@@ -595,20 +699,28 @@
             class="mx-1 icon-logo"
             alt="MPH logo"
             width="48px"
+            i18n-alt="@@MphLogo"
           />
         </span>
       </div>
-      <h3>MPH token</h3>
-      <p class="lead text-muted">
+      <h3 i18n="@@homeReasonTitle1">MPH token</h3>
+      <p class="lead text-muted" i18n="@@homeReasonText1">
         Boost your yield by staking your MPH for xMPH, provide liquidity on our
         trading pools, and get rewarded with various incentives.
       </p>
-      <a href="https://docs.88mph.app/" class="" target="_blank">Learn more</a>
+      <a
+        href="https://docs.88mph.app/"
+        class=""
+        target="_blank"
+        i18n="@@learnMore"
+        >Learn more</a
+      >
       |
       <a
         href="https://www.coingecko.com/en/coins/88mph"
         target="_blank"
         rel="noopener noreferrer"
+        i18n="@@coingecko"
         >CoinGecko</a
       >
     </div>
@@ -618,12 +730,18 @@
           <i class="fe fe-users"></i>
         </span>
       </div>
-      <h3>Community driven</h3>
-      <p class="lead text-muted">
+      <h3 i18n="@@homeReasonTitle2">Community driven</h3>
+      <p class="lead text-muted" i18n="@@homeReasonText2">
         Shape the future of 88mph by being an active member of our governance
         process and vote on 8IPs (pronounced apes) with your xMPH.
       </p>
-      <a href="https://docs.88mph.app/" class="" target="_blank">Learn more</a>
+      <a
+        href="https://docs.88mph.app/"
+        i18n="@@learnMore"
+        class=""
+        target="_blank"
+        >Learn more</a
+      >
     </div>
     <div class="col col-lg-4">
       <div class="avatar avatar-lg mb-4">
@@ -631,16 +749,19 @@
           <i class="fe fe-shield"></i>
         </span>
       </div>
-      <h3>Industry best security practices</h3>
+      <h3 i18n="@@homeReasonTitle3">Industry best security practices</h3>
       <p class="lead text-muted">
-        88mph has been audited several times by Trail of Bits, PeckShield, and
-        Code 423n4. We don't ship unaudited code and are constantly running a
-        $100k security bounty on Immunefi.
+        <ng-container i18n="@@homeReasonText3"
+          >88mph has been audited several times by Trail of Bits, PeckShield,
+          and Code 423n4. We don't ship unaudited code and are constantly
+          running a $100k security bounty on Immunefi.</ng-container
+        >&nbsp;
       </p>
       <a
         href="https://docs.88mph.app/main-products/security-and-audits"
         class=""
         target="_blank"
+        i18n="@@learnHow"
         >Learn how</a
       >
     </div>
@@ -648,8 +769,10 @@
 
   <div class="row justify-content-center mb-4">
     <div class="col-8">
-      <h2 class="display-2 text-center">Get started in minutes</h2>
-      <p class="lead text-center text-muted">
+      <h2 class="display-2 text-center" i18n="@@homeGetStartedTitle">
+        Get started in minutes
+      </h2>
+      <p class="lead text-center text-muted" i18n="@@homeGetStartedText">
         88mph supports a variety of the most popular digital currencies.
       </p>
     </div>
@@ -661,7 +784,7 @@
           1
         </span>
       </div>
-      <h3>Connect your wallet</h3>
+      <h3 i18n="@@homeGetStartedTitle1">Connect your wallet</h3>
     </div>
     <div class="col col-lg-4">
       <div class="avatar avatar-lg mb-3">
@@ -669,7 +792,7 @@
           2
         </span>
       </div>
-      <h3>Deposit</h3>
+      <h3 i18n="@@homeGetStartedTitle2">Deposit</h3>
     </div>
     <div class="col col-lg-4">
       <div class="avatar avatar-lg mb-3">
@@ -677,12 +800,16 @@
           3
         </span>
       </div>
-      <h3>Earn fixed APR & MPH rewards</h3>
+      <h3 i18n="@@homeGetStartedTitle3">Earn fixed APR & MPH rewards</h3>
     </div>
   </div>
   <div class="row justify-content-center mb-7">
     <div class="col-auto">
-      <button class="btn btn-lg btn-bg-gradient" routerLink="earn">
+      <button
+        class="btn btn-lg btn-bg-gradient"
+        routerLink="earn"
+        i18n="@@homeGetStartedBtn"
+      >
         Get started
       </button>
     </div>
@@ -690,7 +817,7 @@
 
   <div class="row justify-content-center mb-4">
     <div class="col-8">
-      <h2 class="text-center">As featured in</h2>
+      <h2 class="text-center" i18n="@@homeFeatures">As featured in</h2>
     </div>
   </div>
   <div class="row justify-content-center text-center mb-7">
@@ -701,12 +828,14 @@
           style="image-rendering: pixelated; filter: grayscale(1)"
           src="./assets/img/coingecko-logo.svg"
           alt="coingecko-logo"
+          i18n-alt="@@coingecko-logo"
         />
       </div>
       <h3>Coingecko</h3>
       <a
         href="https://www.coingecko.com/buzz/fixed-interest-rate-protocols"
         target="_blank"
+        i18n="@@read"
         >Read</a
       >
     </div>
@@ -717,10 +846,14 @@
           style="image-rendering: pixelated; filter: grayscale(1)"
           src="./assets/img/the-defiant-logo.jpg"
           alt="the-defiant-logo"
+          i18n-alt="@@the-defiant-logo"
         />
       </div>
       <h3>The Defiant</h3>
-      <a href="https://www.youtube.com/watch?v=iWq4JEsDvcg" target="_blank"
+      <a
+        href="https://www.youtube.com/watch?v=iWq4JEsDvcg"
+        target="_blank"
+        i18n="@@watch"
         >Watch</a
       >
     </div>
@@ -731,10 +864,15 @@
           style="image-rendering: pixelated; filter: grayscale(1)"
           src="./assets/img/defiprime-logo.png"
           alt="defiprime-logo"
+          i18n-alt="@@defiprime-logo"
         />
       </div>
       <h3>DefiPrime</h3>
-      <a href="https://defiprime.com/88mph" target="_blank">Read</a>
+      <ng-container i18n="@@watch"></ng-container>&nbsp;<a
+        href="https://defiprime.com/88mph"
+        target="_blank"
+        >Read</a
+      >
     </div>
     <div class="col col-lg-3">
       <div class="avatar avatar-lg mb-4">
@@ -743,10 +881,14 @@
           style="image-rendering: pixelated; filter: grayscale(1)"
           src="./assets/img/chainlink-logo.jpg"
           alt="chainlink-logo"
+          i18n-alt="@@chainlink-logo"
         />
       </div>
       <h3>Chainlink Hackathon</h3>
-      <a href="https://www.youtube.com/watch?v=R57F7zwoj0g" target="_blank"
+      <a
+        href="https://www.youtube.com/watch?v=R57F7zwoj0g"
+        target="_blank"
+        i18n="@@watch"
         >Watch</a
       >
     </div>

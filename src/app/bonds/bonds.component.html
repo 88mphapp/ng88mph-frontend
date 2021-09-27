@@ -1,24 +1,31 @@
 <div class="container mt-4">
   <div class="row align-items-end">
     <div class="col">
-      <h1 class="title-bg-gradient display-2">Speculate on future yields</h1>
+      <h1 class="title-bg-gradient display-2" i18n="@@yieldSpeculateTitle">
+        Speculate on future yields
+      </h1>
       <p class="text-white font-weight-bold mb-5 lead">
-        Yield tokens or YTs are fungible ERC-20/ERC-1155 tokens that allow
-        speculators to profit from the rise in the yield rate of variable-rate
-        yield protocols (such as Compound, Aave, and Yearn) or hedge part of
-        their borrowing costs of a loan (e.g. Dai borrower on Compound would
-        purchase cDAI YTs on 88mph). YTs are more than an instrument for
-        speculating on yields. When someone buys YTs, the insolvency risk of the
-        fixed yield rate assets is also decreased.
-        <a href="https://docs.88mph.app/" target="_blank"
-          >Learn more <i class="fe fe-external-link"></i></a
+        <ng-container i18n="@@yieldSpeculateText"
+          >Yield tokens or YTs are fungible ERC-20/ERC-1155 tokens that allow
+          speculators to profit from the rise in the yield rate of variable-rate
+          yield protocols (such as Compound, Aave, and Yearn) or hedge part of
+          their borrowing costs of a loan (e.g. Dai borrower on Compound would
+          purchase cDAI YTs on 88mph). YTs are more than an instrument for
+          speculating on yields. When someone buys YTs, the insolvency risk of
+          the fixed yield rate assets is also decreased.</ng-container
+        >
+        <a href="https://docs.88mph.app/" target="_blank">
+          <i class="fe fe-external-link"></i>
+          <ng-container i18n="@@learnMore">Learn more</ng-container>&nbsp;</a
         >.
       </p>
       <div class="card-deck mt-4 mb-6">
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase">Yield tokens balance</h5>
+            <h5 class="text-uppercase" i18n="@@yieldTokensBalance">
+              Yield tokens balance
+            </h5>
 
             <!-- Heading -->
             <h2 class="mb-3 glowing">
@@ -30,7 +37,9 @@
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase">You earn yields on</h5>
+            <h5 class="text-uppercase" i18n="@@yieldTokensYouEarn">
+              You earn yields on
+            </h5>
 
             <!-- Heading -->
             <h2 class="mb-0 glowing">
@@ -41,7 +50,9 @@
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase">Yield earned</h5>
+            <h5 class="text-uppercase" i18n="@@yieldEarnedTitle">
+              Yield earned
+            </h5>
             <!-- Heading -->
             <h2 class="mb-1 glowing">${{ totalYieldEarnedUSD.toFormat(4) }}</h2>
           </div>
@@ -49,7 +60,7 @@
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase">MPH earned</h5>
+            <h5 class="text-uppercase" i18n="@@yieldMPHEarned">MPH earned</h5>
             <!-- Heading -->
             <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(6) }} MPH</h2>
             <h5 class="mb-3 text-white">
@@ -66,7 +77,7 @@
       <!-- Active positions -->
       <div class="card mb-6" *ngIf="funderPools.length">
         <div class="card-header">
-          <h2 class="mb-0">Active positions</h2>
+          <h2 class="mb-0" i18n="@@yieldActivePositions">Active positions</h2>
           <button
             class="btn btn-sm btn-dark"
             type="button"
@@ -74,6 +85,7 @@
             data-target=".multi-collapse"
             aria-expanded="false"
             *ngIf="funderPools.length > 0"
+            i18n="@@toggleAll"
           >
             Toggle all
           </button>
@@ -83,11 +95,19 @@
             <thead>
               <tr>
                 <th></th>
-                <th class="text-white">Yield tokens balance</th>
-                <th class="text-white">You earn yield on</th>
-                <th class="text-white">Yield earned</th>
-                <th class="text-white">Refunded amount</th>
-                <th class="text-white">MPH rewards earned</th>
+                <th class="text-white" i18n="@@yieldTokensBalance">
+                  Yield tokens balance
+                </th>
+                <th class="text-white" i18n="@@yieldTokensYouEarn">
+                  You earn yield on
+                </th>
+                <th class="text-white" i18n="@@yieldEarned">Yield earned</th>
+                <th class="text-white" i18n="@@yieldRefunded">
+                  Refunded amount
+                </th>
+                <th class="text-white" i18n="@@yieldMPHRewardsEarned">
+                  MPH rewards earned
+                </th>
                 <th></th>
               </tr>
             </thead>
@@ -183,7 +203,10 @@
                     id="{{ funderPool.poolInfo.name }}"
                   >
                     <td>
-                      <h6 class="text-muted text-uppercase mb-1">
+                      <h6
+                        class="text-muted text-uppercase mb-1"
+                        i18n="@@yieldMaturationDate"
+                      >
                         Maturation Date
                       </h6>
 
@@ -247,6 +270,7 @@
                           )
                         "
                         [disabled]="!canContinue() || wallet.watching"
+                        i18n="@@claimBtn"
                       >
                         <i class="fe fe-dollar-sign mr-2 align-bottom"></i>
                         Claim
@@ -263,7 +287,9 @@
       <!-- Yield tokens opportunities -->
       <div class="card mb-6">
         <div class="card-header">
-          <h2 class="mb-0 mr-auto">Yield token opportunities</h2>
+          <h2 class="mb-0 mr-auto" i18n="@@yieldTokenOpportunities">
+            Yield token opportunities
+          </h2>
           <div class="form-group mb-0">
             <select
               class="custom-select"
@@ -275,7 +301,9 @@
                 value="{{ i }}"
                 *ngFor="let pool of allPoolList; index as i"
               >
-                {{ pool.stablecoinSymbol }} via {{ pool.protocol }} Protocol
+                {{ pool.stablecoinSymbol }} via {{ pool.protocol }}
+                <ng-container i18n="@@yieldPoolList"> Protocol</ng-container
+                >&nbsp;
               </option>
             </select>
           </div>
@@ -284,7 +312,7 @@
           class="d-block px-4 pt-4 pb-4 border-bottom border-light"
           *ngIf="!loadingCalculator"
         >
-          <h4 class="mb-1">
+          <h4 class="mb-1" i18n="@@yieldAPYPrediction">
             Your average variable-rate APY prediction for this asset is
             <strong class="glowing"
               >{{ floatingRatePrediction.toFormat(1) }}%</strong
@@ -294,6 +322,7 @@
               placement="top"
               ngbTooltip="For instance, let's imagine that YTs related to a deposit of 100 DAI costs 2.5 DAI. The YTs entitle the holders to the variable-rate yield earned by the 100 DAI principal + YT's cost (2.5 DAI) over the deposit's term. If the average Compound variable-rate APY stays at 10% over the deposit duration, then the YT delivers 10.25 DAI to its holders.
               Suppose you bought all 102.5 YTs. Your final balance will be 10.25 DAI. Thus, you earn a 7.75 DAI profit on your investment of 2.5 DAI, a 310.00% return on investment."
+              i18n-ngbTooltip="@@yieldPredictionText"
             ></i>
           </h4>
           <input
@@ -308,15 +337,20 @@
           <div class="row justify-content-between text-white px-1 mb-0">
             <div class="col">
               <small class="d-block">0%</small>
-              <small class="text-danger">I'm feeling 🐻</small>
+              <small class="text-danger" i18n="@@yieldFeeling1"
+                >I'm feeling 🐻</small
+              >
             </div>
             <div class="col text-center">
               <small>
                 {{ estimatedCurrentFloatingInterestRate.toFormat(1) }}% <br />
-                Current supply APY
+                <ng-container i18n="@@yieldCurrentAPY"
+                  >Current supply APY</ng-container
+                >&nbsp;
                 <i
                   class="fe fe-info ml-1 align-bottom"
                   placement="top"
+                  i18n-ngbTooltip="@@yieldCurrentAPYText"
                   ngbTooltip="Current variable yield rate for supplying this asset (for eg. DAI) on the underlying lending protocol used by 88mph, such as Compound or Aave."
                 ></i>
               </small>
@@ -327,19 +361,23 @@
                   estimatedCurrentFloatingInterestRate.times(2).toFormat(1)
                 }}%</small
               >
-              <small class="text-success">I'm feeling 🐂</small>
+              <small class="text-success" i18n="@@yieldFeeling2"
+                >I'm feeling 🐂</small
+              >
             </div>
           </div>
         </div>
         <div class="card-body p-0">
           <h2 class="glowing text-center py-4 mb-0" *ngIf="loadingCalculator">
-            Loading...
+            <ng-container i18n="@@loadingStats">Loading...</ng-container>&nbsp;
           </h2>
           <h2
             class="glowing text-center py-4 mb-0"
             *ngIf="!hasDebt && !loadingCalculator"
           >
-            No debt available. Select another asset.
+            <ng-container i18n="@@loadingStatsNotAvailable"
+              >No debt available. Select another asset.</ng-container
+            >&nbsp;
           </h2>
           <div
             class="table-responsive mb-0"
@@ -349,10 +387,14 @@
               <table class="table table-sm table-nowrap card-table">
                 <thead>
                   <tr>
-                    <th>Maturity</th>
-                    <th>Yield tokens available</th>
-                    <th>You earn yield on</th>
-                    <th>Est. ROI / MPH rewards APR</th>
+                    <th i18n="@@yieldMaturity">Maturity</th>
+                    <th i18n="@@yieldTokensAvailable">
+                      Yield tokens available
+                    </th>
+                    <th i18n="@@yieldTokensYouEarn">You earn yield on</th>
+                    <th i18n="@@yieldEstimatedROI">
+                      Est. ROI / MPH rewards APR
+                    </th>
                     <th></th>
                   </tr>
                 </thead>
@@ -364,7 +406,10 @@
                       <td>
                         <div class="d-flex align-items-center">
                           <div>
-                            <h6 class="text-muted text-uppercase mb-1">
+                            <h6
+                              class="text-muted text-uppercase mb-1"
+                              i18n="@@yieldMaturationDate"
+                            >
                               Maturation Date
                             </h6>
                             <small class="text-muted d-block">
@@ -409,6 +454,7 @@
                             "
                             style="border-radius: 14px"
                             placement="top"
+                            i18n-ngbTooltip="@@yieldTokensText"
                             ngbTooltip="When a user buys yield tokens, they will receive newly-minted MPH tokens as the underlying deposit earns interest. They can be staked to earn protocol revenues and voting rights."
                           >
                             <div class="avatar avatar-xxs">
@@ -429,6 +475,7 @@
                           class="btn btn-sm btn-bg-gradient"
                           (click)="buyYieldTokens(deposit)"
                           [disabled]="!canContinue() || wallet.watching"
+                          i18n="@@buy"
                         >
                           Buy
                         </button>

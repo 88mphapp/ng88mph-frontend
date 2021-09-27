@@ -14,7 +14,7 @@
           </a>
         </div>
         <div class="col">
-          <h1 class="mb-0 h3">MPH Rewards</h1>
+          <h1 class="mb-0 h3" i18n="@@modalMPHRewards">MPH Rewards</h1>
         </div>
       </div>
       <div class="row justify-content-center">
@@ -23,16 +23,27 @@
             <div class="card-body">
               <div class="row justify-content-center mb-4">
                 <div class="col-6">
-                  <h6 class="header-pretitle mb-2">Full amount</h6>
-                  <h4 class="mb-1 glowing">{{ fullAmount.toFormat(8) }} MPH</h4>
+                  <h6 class="header-pretitle mb-2" i18n="@@rewardsFullAmount">
+                    Full amount
+                  </h6>
+                  <h4 class="mb-1 glowing">
+                    {{ fullAmount.toFormat(8) }}
+                    <ng-container i18n="@@MPH">MPH</ng-container>&nbsp;
+                  </h4>
                   <div class="text-muted small d-block">
                     ${{ fullAmount.times(mphPriceUSD).toFormat(2) }}
                   </div>
                 </div>
                 <div class="col-6">
-                  <h6 class="header-pretitle mb-2">Claimed Amount</h6>
+                  <h6
+                    class="header-pretitle mb-2"
+                    i18n="@@rewardsClaimedAmount"
+                  >
+                    Claimed Amount
+                  </h6>
                   <h4 class="mb-1 glowing">
-                    {{ withdrawnAmount.toFormat(8) }} MPH
+                    {{ withdrawnAmount.toFormat(8) }}
+                    <ng-container i18n="@@MPH">MPH</ng-container>&nbsp;
                   </h4>
                   <div class="text-muted small d-block">
                     ${{ withdrawnAmount.times(mphPriceUSD).toFormat(2) }}
@@ -41,9 +52,15 @@
               </div>
               <div class="row justify-content-center mb-4">
                 <div class="col">
-                  <h6 class="header-pretitle mb-2">Current Claimable Amount</h6>
+                  <h6
+                    class="header-pretitle mb-2"
+                    i18n="@@rewardsClaimableAmount"
+                  >
+                    Current Claimable Amount
+                  </h6>
                   <h4 class="mb-1 glowing display-4">
-                    {{ currentWithdrawableAmount.toFormat(8) }} MPH
+                    {{ currentWithdrawableAmount.toFormat(8) }}
+                    <ng-container i18n="@@MPH">MPH</ng-container>&nbsp;
                   </h4>
                   <div class="text-muted small d-block">
                     ${{
@@ -57,6 +74,7 @@
                 type="button"
                 (click)="withdraw()"
                 [disabled]="!canContinue()"
+                i18n="@@claimMPH"
               >
                 Claim MPH
               </button>
@@ -64,7 +82,9 @@
           </div>
           <div class="card mb-8">
             <div class="card-header">
-              <h4 class="card-header-title">Things you can do with $MPH</h4>
+              <h4 class="card-header-title" i18n="@@whatYouCanDoMPH">
+                Things you can do with $MPH
+              </h4>
             </div>
             <div class="card-body p-0">
               <div class="list-group list-group-flush">
@@ -72,24 +92,32 @@
                   href="/stake"
                   class="list-group-item list-group-item-action px-4"
                 >
-                  <h4 class="mb-1">Stake MPH for xMPH</h4>
-                  <small class="text-muted"
+                  <h4 class="mb-1" i18n="@@stakeMPHForXMPH">
+                    Stake MPH for xMPH
+                  </h4>
+                  <small class="text-muted" i18n="@@stakeMPHText"
                     >By staking your MPH, you are eligible to collect two kinds
                     of rewards distributed as MPH.</small
                   >
-                  <small class="text-primary ml-2">Learn more</small>
+                  <small class="text-primary ml-2" i18n="@@learnMore"
+                    >Learn more</small
+                  >
                 </a>
                 <a
                   href="/farm"
                   class="list-group-item list-group-item-action px-4"
                 >
-                  <h4 class="mb-1">Provide liquidity & boost your yield</h4>
-                  <small class="text-muted"
+                  <h4 class="mb-1" i18n="@@farmYourYield">
+                    Provide liquidity & boost your yield
+                  </h4>
+                  <small class="text-muted" i18n="@@farmYourYieldText"
                     >Provide liquidity on our trading pools, and get rewarded by
                     doing so from trading fees and liquidity mining rewards paid
                     in $MPH.</small
                   >
-                  <small class="text-primary ml-2">Learn more</small>
+                  <small class="text-primary ml-2" i18n="@@learnMore"
+                    >Learn more</small
+                  >
                 </a>
               </div>
             </div>

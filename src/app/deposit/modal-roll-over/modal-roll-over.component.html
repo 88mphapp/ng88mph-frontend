@@ -13,7 +13,7 @@
           </a>
         </div>
         <div class="col">
-          <h1 class="mb-0 h3">Roll Over</h1>
+          <h1 class="mb-0 h3" i18n="@@rollOver">Roll Over</h1>
         </div>
       </div>
       <div class="row justify-content-center">
@@ -28,7 +28,9 @@
                     <div class="form-row">
                       <div class="col ml-n2">
                         <div class="form-group mb-2">
-                          <label>Select a custom maturity</label>
+                          <label i18n="@@modalRollOverCustomMaturity"
+                            >Select a custom maturity</label
+                          >
                           <input
                             type="tel"
                             class="form-control form-control-lg"
@@ -51,7 +53,10 @@
                             (input)="setDepositTime($event.target.value)"
                           />
                           <small class="form-text text-muted my-2">
-                            Max: {{ maxDepositPeriodInDays }} days
+                            <ng-container i18n="@@Max">Max:</ng-container>&nbsp;
+                            {{ maxDepositPeriodInDays }}
+                            <ng-container i18n="@@days">days</ng-container
+                            >&nbsp;
                           </small>
                         </div>
                       </div>
@@ -63,7 +68,10 @@
                   <table class="table">
                     <tbody>
                       <tr>
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@fixedAPR"
+                        >
                           Fixed APR
                         </td>
                         <td
@@ -75,7 +83,10 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@yieldEarnedAtMaturity"
+                        >
                           Yield earned at maturity
                         </td>
                         <td
@@ -92,7 +103,9 @@
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Total available at maturity | {{ depositMaturation }}
+                          <ng-container i18n="@@totalAvailableAtMaturity"
+                            >Total available at maturity </ng-container
+                          >&nbsp; | {{ depositMaturation }}
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
@@ -112,23 +125,30 @@
                                 .toFormat(2)
                             }}
                           </span>
-                          <small *ngIf="poolInfo.depositFee"
-                            >Note: A {{ poolInfo.depositFee * 100 }}% fee is
-                            taken by the underlying yield protocol ({{
-                              poolInfo.protocol
-                            }})</small
+                          <small *ngIf="poolInfo.depositFee">
+                            <ng-container i18n="@@depositFeeText1"
+                              >Note: A </ng-container
+                            >&nbsp;{{ poolInfo.depositFee * 100 }}%
+                            <ng-container i18n="@@depositFeeText2"
+                              >fee is taken by the underlying yield
+                              protocol</ng-container
+                            >&nbsp; ({{ poolInfo.protocol }})</small
                           >
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@MPHRewards"
+                        >
                           MPH rewards
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
                         >
                           <span class="h4 mb-1 glowing">
-                            {{ mphRewardAmountToken.toFormat(4) }} MPH
+                            {{ mphRewardAmountToken.toFormat(4) }}
+                            <ng-container i18n="@@MPH">MPH</ng-container>&nbsp;
                           </span>
                           <span class="h5 text-muted">
                             ${{ mphRewardAmountUSD.toFormat(2) }}
@@ -136,7 +156,10 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@MPHApr"
+                        >
                           MPH APR
                         </td>
                         <td
@@ -148,7 +171,10 @@
                         </td>
                       </tr>
                       <tr style="border-top: 1px dotted white">
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@totalAvailableIncluMPH"
+                        >
                           Total available at maturity (incl. MPH)
                         </td>
                         <td
@@ -171,6 +197,7 @@
                   class="btn btn-lg btn-bg-gradient btn-block"
                   type="button"
                   (click)="rollOver()"
+                  i18n="@@rollOver"
                 >
                   Roll Over
                 </button>

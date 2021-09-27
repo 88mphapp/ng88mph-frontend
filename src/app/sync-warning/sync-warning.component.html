@@ -1,7 +1,12 @@
 <ng-container *ngIf="shouldDisplay()">
   <div class="alert alert-pink-blue rounded-0 mb-0 mt-n3 mt-md-0">
-    Warning: The data on this site has only synced to Ethereum block
-    {{ syncBlockNumber }} (out of {{ latestBlockNumber }}). Please check back
-    soon.
+    <ng-container i18n="@@syncWarning1"
+      >Warning: The data on this site has only synced to Ethereum
+      block</ng-container
+    >&nbsp; {{ syncBlockNumber }}
+    <ng-container i18n="@@syncWarning2">(out of</ng-container>&nbsp;
+    {{ latestBlockNumber }}).
+    <ng-container i18n="@@syncWarning3">Please check back soon.</ng-container
+    >&nbsp;
   </div>
 </ng-container>

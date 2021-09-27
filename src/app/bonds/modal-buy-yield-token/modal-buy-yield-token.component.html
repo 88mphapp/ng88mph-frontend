@@ -14,7 +14,9 @@
           </a>
         </div>
         <div class="col">
-          <h1 class="mb-0 h3">Buy yield tokens</h1>
+          <h1 class="mb-0 h3" i18n="@@modalYieldTokensPretitle">
+            Buy yield tokens
+          </h1>
         </div>
       </div>
       <div class="row justify-content-center">
@@ -23,7 +25,12 @@
             <div class="card-body">
               <div class="row justify-content-center mb-4">
                 <div class="col">
-                  <h6 class="header-pretitle mb-2">Yield tokens available</h6>
+                  <h6
+                    class="header-pretitle mb-2"
+                    i18n="@@modalYieldTokensAvailable"
+                  >
+                    Yield tokens available
+                  </h6>
                   <h4 class="mb-1 glowing display-4">
                     {{ deposit.yieldTokensAvailable.toFormat(4) }}
                     {{ deposit.pool.name }} YT
@@ -36,7 +43,9 @@
                 </div>
               </div>
               <div class="form-group mb-4">
-                <label>Amount of yield tokens to buy</label>
+                <label i18n="@@modalYieldTokensToBuy"
+                  >Amount of yield tokens to buy</label
+                >
                 <div class="input-group">
                   <input
                     type="text"
@@ -62,17 +71,22 @@
                           )
                         )
                       "
+                      i18n="@@yieldTokenAmount"
                     >
                       Max
                     </button>
                   </div>
                 </div>
                 <small class="form-text text-muted">
-                  Cost: {{ youPay.toFormat(4) }}
+                  <ng-container i18n="@@modalYieldTokensCost"
+                    >Cost:</ng-container
+                  >&nbsp; {{ youPay.toFormat(4) }}
                   {{ deposit.pool.stablecoinSymbol }} /
                   {{ stablecoinBalance.toFormat(4) }}
-                  {{ deposit.pool.stablecoinSymbol }} available in your
-                  balance</small
+                  {{ deposit.pool.stablecoinSymbol }}
+                  <ng-container i18n="@@modalYieldTokensBalance"
+                    >available in your balance</ng-container
+                  >&nbsp;</small
                 >
               </div>
 
@@ -80,7 +94,10 @@
                 <table class="table">
                   <tbody>
                     <tr>
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="@@modalYieldTokensYouPay"
+                      >
                         You pay
                       </td>
                       <td
@@ -96,12 +113,16 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="@@modalYieldTokensYouEarn"
+                      >
                         You earn floating-rate yield on
                         <i
                           class="fe fe-info ml-1 align-bottom"
                           placement="top"
                           ngbTooltip="The yield payment to yield token holders is automatically triggered whenever part or all of the corresponding deposit is withdrawn, and it is also possible to manually trigger it by hitting the 'Make accrued interest claimable' button in the Claim Modal (Modal accessible from the main Yield page after YT purchase)."
+                          i18n-ngbTooltip="@@modalYieldTokensYouEarnText"
                         ></i>
                       </td>
                       <td
@@ -119,11 +140,15 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="@@modalYieldTokensRewards"
+                      >
                         MPH rewards
                         <i
                           class="fe fe-info ml-1 align-bottom"
                           placement="top"
+                          i18n-ngbTooltip="@@modalYieldTokensRewardsText"
                           ngbTooltip="When a user buys yield tokens, they will receive newly-minted MPH tokens as the underlying deposit earns interest; similar to vesting. You can claim your MPH rewards whenever you want from the Claim Modal accessible via the main Yield page. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
                         ></i>
                       </td>
@@ -139,11 +164,15 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="@@modalYieldTokensAPR"
+                      >
                         MPH APR
                         <i
                           class="fe fe-info ml-1 align-bottom"
                           placement="top"
+                          i18n-ngbTooltip="@@modalYieldTokensAPRText"
                           ngbTooltip="MPH APR varies based on the USD value of MPH. The APY is just a representation on how these MPH rewards would be during a 1-year period"
                         ></i>
                       </td>
@@ -156,12 +185,16 @@
                       </td>
                     </tr>
                     <tr style="border-top: 1px dotted white">
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="@@modalYieldTokensTotalEarned"
+                      >
                         Total earned at maturity (incl. MPH)
                         <i
                           class="fe fe-info ml-1 align-bottom"
                           placement="top"
                           ngbTooltip="Estimated floating-rate yield earned + MPH tokens"
+                          i18n-ngbTooltip="@@modalYieldTokensTotalEarnedText"
                         ></i>
                       </td>
                       <td
@@ -179,6 +212,7 @@
                 class="btn btn-lg btn-bg-gradient btn-block"
                 type="button"
                 (click)="buyYieldTokens()"
+                i18n="@@buyYieldBtn"
               >
                 Buy
               </button>

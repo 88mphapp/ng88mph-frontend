@@ -1,11 +1,12 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">
+    <h5 class="text-uppercase text-center" i18n="@@priceEarningsRatio">
       P/E Ratio
       <i
         class="fe fe-info ml-1 align-bottom"
         placement="top"
         ngbTooltip="A measurement of current market capitalization / annualized protocol earnings."
+        i18n-ngbTooltip="@@priceEarningsRatioText"
       ></i>
     </h5>
     <canvas

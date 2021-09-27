@@ -1,10 +1,11 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">
+    <h5 class="text-uppercase text-center" i18n="@@fundedInterestExpense">
       Funded Interest Expense
       <i
         class="fe fe-info ml-1 align-bottom"
         placement="top"
+        i18n-ngbTooltip="@@fundedInterestExpenseText"
         ngbTooltip="The percentage (%) of fixed-rate yield deposits whose interest expense (interest + fee) has been funded by yield token holders."
       ></i>
     </h5>
