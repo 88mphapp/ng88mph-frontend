@@ -50,17 +50,42 @@ export class HelpersService {
       const ethPriceUSD = await this.getChainlinkPriceUSD('ETH', chainID);
       return farmPriceETH * ethPriceUSD;
     } else if (
+      address === this.constants.WBTC[chainID].toLowerCase() ||
       address === this.constants.CRVHBTC[chainID].toLowerCase() ||
       address === this.constants.CRVOBTC[chainID].toLowerCase() ||
       address === this.constants.CRVRENWBTC[chainID].toLowerCase() ||
       address === this.constants.CRVRENWSBTC[chainID].toLowerCase()
     ) {
       return await this.getChainlinkPriceUSD('BTC', chainID);
-    } else if (address === this.constants.CRVHUSD[chainID].toLowerCase()) {
+    } else if (address === this.constants.BAL[chainID].toLowerCase()) {
+      const balPriceETH = await this.getChainlinkPriceETH('BAL', chainID);
+      const ethPriceUSD = await this.getChainlinkPriceUSD('ETH', chainID);
+      return balPriceETH * ethPriceUSD;
+    } else if (address === this.constants.BAT[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('BAT', chainID);
+    } else if (address === this.constants.CRV[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('CRV', chainID);
+    } else if (address === this.constants.RAI[chainID].toLowerCase()) {
+      const raiPriceETH = await this.getChainlinkPriceETH('RAI', chainID);
+      const ethPriceUSD = await this.getChainlinkPriceUSD('ETH', chainID);
+      return raiPriceETH * ethPriceUSD;
+    } else if (address === this.constants.REN[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('REN', chainID);
+    } else if (address === this.constants.SNX[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('SNX', chainID);
+    } else if (address === this.constants.REN[chainID].toLowerCase()) {
+      const tusdPriceETH = await this.getChainlinkPriceETH('TUSD', chainID);
+      const ethPriceUSD = await this.getChainlinkPriceUSD('ETH', chainID);
+      return tusdPriceETH * ethPriceUSD;
+    } else if (address === this.constants.YFI[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('YFI', chainID);
+    } else if (address === this.constants.YFI[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('ZRX', chainID);
+    } else if (address === this.constants.ZRX[chainID].toLowerCase()) {
       return 1;
     }
 
-    console.log('no chainlink price feed for: ' + address);
+    // console.log('no chainlink price feed for: ' + address);
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
     if (!rawResult.prices) {
