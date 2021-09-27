@@ -13,7 +13,9 @@
           </a>
         </div>
         <div class="col">
-          <h1 class="mb-0 h3">Claim interest earned + MPH rewards</h1>
+          <h1 class="mb-0 h3" i18n="@@modalWithdrawYieldTokensTitle">
+            Claim interest earned + MPH rewards
+          </h1>
         </div>
       </div>
       <div class="row justify-content-center">
@@ -40,7 +42,12 @@
                       </div>
                     </div>
                     <div class="col ml-n2">
-                      <h6 class="header-pretitle mb-2">Accrued interest</h6>
+                      <h6
+                        class="header-pretitle mb-2"
+                        i18n="@@modalWithdrawAccruedInterest"
+                      >
+                        Accrued interest
+                      </h6>
                       <h4 class="mb-1 glowing display-4">
                         {{ fundedDeposit.funderAccruedInterest.toFormat(8) }}
                         {{ poolInfo.stablecoinSymbol }}
@@ -57,6 +64,7 @@
                         type="button"
                         (click)="handleAccruedInterest()"
                         [disabled]="!canContinue()"
+                        i18n="@@ClaimInterestAndRewardsBtn"
                       >
                         Make accrued interest and MPH rewards claimable
                       </button>
@@ -83,7 +91,12 @@
                       </div>
                     </div>
                     <div class="col ml-n2">
-                      <h6 class="header-pretitle mb-2">Claimable interest</h6>
+                      <h6
+                        class="header-pretitle mb-2"
+                        i18n="@@modalWithdrawClaimableInterest"
+                      >
+                        Claimable interest
+                      </h6>
                       <h4 class="mb-1 glowing display-4">
                         {{ withdrawableInterestToken.toFormat(8) }}
                         {{ poolInfo.stablecoinSymbol }}
@@ -96,6 +109,7 @@
                         type="button"
                         (click)="withdrawInterest()"
                         [disabled]="!canContinue()"
+                        i18n="@@modalWithdrawClaimInterestBtn"
                       >
                         Claim Interest
                       </button>
@@ -122,12 +136,17 @@
                       </div>
                     </div>
                     <div class="col ml-n2">
-                      <h6 class="header-pretitle mb-2">
+                      <h6
+                        class="header-pretitle mb-2"
+                        i18n="@@modalWithdrawClaimableRewards"
+                      >
                         Claimable MPH rewards
                       </h6>
                       <h4 class="mb-1 glowing display-4">
                         {{ withdrawableMPHToken.toFormat(8) }}
-                        MPH
+                        <ng-container i18n="@@homeFormTrustFooter"
+                          >MPH</ng-container
+                        >&nbsp;
                       </h4>
                       <div class="text-muted small mb-3">
                         ${{ withdrawableMPHUSD.toFormat(2) }}
@@ -137,6 +156,7 @@
                         type="button"
                         (click)="withdrawMPH()"
                         [disabled]="!canContinue()"
+                        i18n="@@modalWithdrawClaimMPHBtn"
                       >
                         Claim MPH
                       </button>

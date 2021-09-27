@@ -1,21 +1,24 @@
 <div class="container mt-4 mb-6">
   <div class="row">
     <div class="col-12">
-      <h1 class="title-bg-gradient display-2">
+      <h1 class="title-bg-gradient display-2" i18n="@@farmingHeader">
         Provide liquidity & boost your yield
       </h1>
       <p class="text-white font-weight-bold mb-5 lead">
-        Provide liquidity on our trading pools, and get rewarded by doing so
-        from trading fees and liquidity mining rewards.
+        <ng-container i18n="@@farmingText"
+          >Provide liquidity on our trading pools, and get rewarded by doing so
+          from trading fees and liquidity mining rewards.</ng-container
+        >&nbsp;
         <a class="text-primary" href="https://docs.88mph.app/" target="_blank">
-          Learn more <i class="fe fe-external-link"></i>
+          <ng-container i18n="@@learnMore">Learn more</ng-container>&nbsp;
+          <i class="fe fe-external-link"></i>
         </a>
       </p>
       <div class="row">
         <div class="col-12 col-lg-8">
           <div class="card">
             <div class="card-header">
-              <h4 class="card-header-title">
+              <h4 class="card-header-title" i18n="@@farmingProvideLiquidity">
                 Provide liquidity - Boost your yield
               </h4>
             </div>
@@ -34,6 +37,7 @@
                             text-white
                             border-gradient
                           "
+                          i18n="@@farmingStep1"
                         >
                           1
                         </div>
@@ -41,7 +45,7 @@
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group">
-                        <label for="LiquidityPool"
+                        <label for="LiquidityPool" i18n="@@selectLiquidityPool"
                           >Select a liquidity pool</label
                         >
                         <select
@@ -76,6 +80,7 @@
                             text-white
                             border-gradient
                           "
+                          i18n="@@farmingStep2"
                         >
                           2
                         </div>
@@ -84,8 +89,11 @@
                     <div class="col ml-n2">
                       <!-- display if UNI-v2 pool option selected -->
                       <div class="form-group">
-                        <label
-                          >Stake LP tokens <br />
+                        <label>
+                          <ng-container i18n="@@stakeLPTokens"
+                            >Stake LP tokens</ng-container
+                          >&nbsp;
+                          <br />
                           <small
                             class="text-muted"
                             *ngIf="selectedPool == 'Uniswap v2'"
@@ -94,19 +102,26 @@
                               class="text-primary"
                               href="https://app.uniswap.org/#/add/v2/0x8888801aF4d980682e47f1A9036e589479e835C5/ETH"
                               target="_blank"
+                              i18n="@@provideLiquidity"
                               >Provide liquidity</a
                             >
-                            to the Uniswap MPH-ETH pair and earn trading fees.
+                            <ng-container i18n="@@provideLiquidityText"
+                              >to the Uniswap MPH-ETH pair and earn trading
+                              fees.</ng-container
+                            >&nbsp;
                           </small>
                           <small
                             class="text-muted"
                             *ngIf="selectedPool == 'Bancor'"
-                            >Provide liquidity to the Bancor MPH-BNT pair and
-                            earn trading fees.
+                            ><ng-container i18n="@@provideLiquidityBancor"
+                              >Provide liquidity to the Bancor MPH-BNT pair and
+                              earn trading fees.</ng-container
+                            >&nbsp;
                             <a
                               class="text-primary"
                               href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
                               target="_blank"
+                              i18n="@@manageLiquidityBancor"
                               >Manage liquidity on Bancor</a
                             >
                           </small>
@@ -118,16 +133,22 @@
                               class="text-primary"
                               href="https://analytics.sushi.com/pairs/0xb2c29e311916a346304f83aa44527092d5bd4f0f"
                               target="_blank"
+                              i18n="@@provideLiquidity"
                               >Provide liquidity</a
                             >
-                            to the SushiSwap MPH-ETH pair and earn SUSHI + MPH
+                            <ng-container i18n="@@provideLiquiditySushi"
+                              >to the SushiSwap MPH-ETH pair and earn SUSHI +
+                              MPH</ng-container
+                            >&nbsp;
                           </small>
                         </label>
                         <div
                           class="form-group"
                           *ngIf="selectedPool == 'Bancor'"
                         >
-                          <label for="LiquidityPool">Select a token</label>
+                          <label for="LiquidityPool" i18n="@@selectToken"
+                            >Select a token</label
+                          >
                           <select
                             [(ngModel)]="bancorSelectedToken"
                             class="custom-select custom-select-lg"
@@ -162,6 +183,7 @@
                                   this.unstakedMPHBalance.toFixed(18)
                                 )
                               "
+                              i18n="@@Max"
                             >
                               Max
                             </button>
@@ -174,6 +196,7 @@
                                   this.sushiUnstakedLPBalance.toFixed(18)
                                 )
                               "
+                              i18n="@@Max"
                             >
                               Max
                             </button>
@@ -189,6 +212,7 @@
                                   this.bancorUnstakedMPHBalance.toFixed(18)
                                 )
                               "
+                              i18n="@@Max"
                             >
                               Max
                             </button>
@@ -204,6 +228,7 @@
                                   this.bancorUnstakedBNTBalance.toFixed(18)
                                 )
                               "
+                              i18n="@@Max"
                             >
                               Max
                             </button>
@@ -213,13 +238,17 @@
                           class="form-text text-white"
                           *ngIf="selectedPool == 'Uniswap v2'"
                           >{{ unstakedMPHBalance.toFormat(4) }} MPH-ETH UNI-V2
-                          available</small
+                          <ng-container i18n="@@available"
+                            >available</ng-container
+                          >&nbsp;</small
                         >
                         <small
                           class="form-text text-white"
                           *ngIf="selectedPool == 'SushiSwap'"
                           >{{ sushiUnstakedLPBalance.toFormat(4) }} MPH-ETH SLP
-                          available</small
+                          <ng-container i18n="@@available"
+                            >available</ng-container
+                          >&nbsp;</small
                         >
                         <small
                           class="form-text text-white"
@@ -228,7 +257,9 @@
                             bancorSelectedToken == 'MPH'
                           "
                           >{{ bancorUnstakedMPHBalance.toFormat(4) }} MPH
-                          available</small
+                          <ng-container i18n="@@available"
+                            >available</ng-container
+                          >&nbsp;</small
                         >
                         <small
                           class="form-text text-white"
@@ -237,15 +268,19 @@
                             bancorSelectedToken == 'BNT'
                           "
                           >{{ bancorUnstakedBNTBalance.toFormat(4) }} BNT
-                          available</small
+                          <ng-container i18n="@@available"
+                            >available</ng-container
+                          >&nbsp;</small
                         >
                       </div>
                       <!-- display if ZCB pool option selected -->
                       <div class="form-group d-none">
-                        <label>Add base asset</label>
+                        <label i18n="@@addBaseAsset">Add base asset</label>
                         <div class="input-group mb-2">
                           <div class="input-group-prepend">
-                            <span class="input-group-text small">USDC</span>
+                            <span class="input-group-text small" i18n="@@USDC"
+                              >USDC</span
+                            >
                           </div>
                           <input
                             type="text"
@@ -257,18 +292,21 @@
                             <button
                               class="btn btn-lg border-gradient"
                               type="button"
+                              i18n="@@Max"
                             >
                               Max
                             </button>
                           </div>
                         </div>
-                        <small class="form-text text-white"
+                        <small
+                          class="form-text text-white"
+                          i18n="@@tknAvailable"
                           >0.00 tkn available</small
                         >
                       </div>
                       <!-- display if ZCB pool option selected -->
                       <div class="form-group d-none">
-                        <label>Add ZCB asset</label>
+                        <label i18n="@@addZCBAsset">Add ZCB asset</label>
                         <div class="input-group mb-2">
                           <div class="input-group-prepend">
                             <span class="input-group-text small"
@@ -285,12 +323,15 @@
                             <button
                               class="btn btn-lg border-gradient"
                               type="button"
+                              i18n="@@Max"
                             >
                               Max
                             </button>
                           </div>
                         </div>
-                        <small class="form-text text-white"
+                        <small
+                          class="form-text text-white"
+                          i18n="@@tknAvailable"
                           >0.00 tkn available</small
                         >
                       </div>
@@ -303,7 +344,10 @@
                 <table class="table">
                   <tbody>
                     <tr>
-                      <td class="px-0 py-1 text-white border-0 small">
+                      <td
+                        class="px-0 py-1 text-white border-0 small"
+                        i18n="@@stakedLPTokens"
+                      >
                         Staked LP tokens
                       </td>
                       <td
@@ -324,7 +368,10 @@
                       </td>
                     </tr>
                     <tr *ngIf="selectedPool == 'Bancor'">
-                      <td class="px-0 pl-3 py-1 text-white border-0 small">
+                      <td
+                        class="px-0 pl-3 py-1 text-white border-0 small"
+                        i18n="@@MPH"
+                      >
                         MPH
                       </td>
                       <td
@@ -348,7 +395,10 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-1 text-white border-0 small">
+                      <td
+                        class="px-0 py-1 text-white border-0 small"
+                        i18n="@@stakedLPValue"
+                      >
                         Staked LP Value
                       </td>
                       <td
@@ -387,7 +437,9 @@
                     </tr>
                     <tr>
                       <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Unclaimed Rewards </strong>
+                        <strong i18n="@@unclaimedRewards"
+                          >Unclaimed Rewards
+                        </strong>
                       </td>
                       <td
                         class="px-0 py-1 text-white text-right border-0 small"
@@ -407,7 +459,10 @@
                       </td>
                     </tr>
                     <tr *ngIf="selectedPool == 'SushiSwap'">
-                      <td class="px-0 pl-3 py-1 text-white border-0 small">
+                      <td
+                        class="px-0 pl-3 py-1 text-white border-0 small"
+                        i18n="@@sushi"
+                      >
                         SUSHI
                       </td>
                       <td
@@ -419,7 +474,10 @@
                       </td>
                     </tr>
                     <tr *ngIf="selectedPool == 'SushiSwap'">
-                      <td class="px-0 pl-3 py-1 text-white border-0 small">
+                      <td
+                        class="px-0 pl-3 py-1 text-white border-0 small"
+                        i18n="@@MPH"
+                      >
                         MPH
                       </td>
                       <td
@@ -435,7 +493,7 @@
                         *ngIf="selectedPool == 'SushiSwap' || active"
                       >
                         <td class="px-0 py-1 text-white border-0 small">
-                          <strong>Variable APR </strong>
+                          <strong i18n="@@variableAPR">Variable APR </strong>
                         </td>
                         <td
                           class="px-0 py-1 text-white text-right border-0 small"
@@ -457,7 +515,9 @@
                     </tr>
                     <tr *ngIf="selectedPool == 'Bancor' && bancorActive">
                       <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Variable APR to provide MPH </strong>
+                        <strong i18n="@@variableAPRToProvideMPH"
+                          >Variable APR to provide MPH
+                        </strong>
                       </td>
                       <td
                         class="px-0 py-1 text-white text-right border-0 small"
@@ -469,7 +529,9 @@
                     </tr>
                     <tr *ngIf="selectedPool == 'Bancor' && bancorActive">
                       <td class="px-0 py-1 text-white border-0 small">
-                        <strong>Variable APR to provide BNT </strong>
+                        <strong i18n="@@variableAPRToProvideBNT"
+                          >Variable APR to provide BNT
+                        </strong>
                       </td>
                       <td
                         class="px-0 py-1 text-white text-right border-0 small"
@@ -486,15 +548,19 @@
                 class="px-0 py-3 alert text-center text-warning border-warning"
                 *ngIf="!bancorActive && selectedPool == 'Bancor'"
               >
-                Bancor liquidity mining has ended. You can continue to stake MPH
-                and BNT to earn trading fees.
+                <ng-container i18n="@@bancorLiquidityText"
+                  >Bancor liquidity mining has ended. You can continue to stake
+                  MPH and BNT to earn trading fees.</ng-container
+                >&nbsp;
               </div>
               <div
                 class="px-0 py-3 alert text-center text-warning border-warning"
                 *ngIf="!active && selectedPool == 'Uniswap v2'"
               >
-                Uniswap v2 liquidity mining has ended. You can continue to
-                provide liquidity to earn trading fees.
+                <ng-container i18n="@@uniswapLiquidityText"
+                  >Uniswap v2 liquidity mining has ended. You can continue to
+                  provide liquidity to earn trading fees.</ng-container
+                >&nbsp;
               </div>
               <button
                 type="button"
@@ -502,7 +568,8 @@
                 (click)="stake()"
                 [disabled]="!canContinue() || !canStake() || wallet.watching"
               >
-                <i class="fe fe-arrow-down mr-2 align-bottom"></i>Stake
+                <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+                <ng-container i18n="@@stake">Stake</ng-container>&nbsp;
               </button>
               <div class="row">
                 <div class="col-12 col-lg-6 mb-3 mb-lg-0">
@@ -514,7 +581,8 @@
                       !canContinue() || !canClaim() || wallet.watching
                     "
                   >
-                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Claim
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
+                    <ng-container i18n="@@claim">Claim</ng-container>&nbsp;
                   </button>
                 </div>
                 <div class="col-12 col-lg-6">
@@ -526,7 +594,8 @@
                       !canContinue() || !canUnstake() || wallet.watching
                     "
                   >
-                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Unstake
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
+                    <ng-container i18n="@@unstake">Unstake</ng-container>&nbsp;
                   </button>
                 </div>
               </div>
@@ -536,7 +605,9 @@
         <div class="col-12 col-lg-4">
           <div class="card">
             <div class="card-header">
-              <h4 class="card-header-title">Things you can do</h4>
+              <h4 class="card-header-title" i18n="@@thingsYouCanDo">
+                Things you can do
+              </h4>
             </div>
             <div class="card-body p-0">
               <div class="list-group list-group-flush">
@@ -544,12 +615,18 @@
                   href="/stake"
                   class="list-group-item list-group-item-action px-4"
                 >
-                  <h4 class="mb-1">Stake MPH for xMPH</h4>
-                  <small class="text-muted"
-                    >By staking your MPH, you are eligible to collect two kinds
-                    of rewards distributed as MPH.</small
+                  <h4 class="mb-1" i18n="@@stakeMPHForXMPH">
+                    Stake MPH for xMPH
+                  </h4>
+                  <small class="text-muted">
+                    <ng-container i18n="@@stakingMPHText"
+                      >By staking your MPH, you are eligible to collect two
+                      kinds of rewards distributed as MPH.</ng-container
+                    >&nbsp;</small
                   >
-                  <small class="text-primary ml-2">Learn more</small>
+                  <small class="text-primary ml-2" i18n="@@learnMore"
+                    >Learn more</small
+                  >
                 </a>
               </div>
             </div>

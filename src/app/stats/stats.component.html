@@ -1,23 +1,27 @@
 <div class="container mt-4 mb-6">
   <div class="row">
     <div class="col-12">
-      <h1 class="title-bg-gradient display-2">88mph analytics</h1>
+      <h1 class="title-bg-gradient display-2" i18n="@@88mphAnalytics">
+        88mph analytics
+      </h1>
       <div class="card-deck mb-4">
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase">Total deposit</h5>
+            <h5 class="text-uppercase" i18n="@@totalDeposit">Total deposit</h5>
             <h2 class="mb-1 glowing">${{ totalDepositUSD.toFormat(4) }}</h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase">Historical interest distributed</h5>
+            <h5 class="text-uppercase" i18n="@@historicalInterestDistributed">
+              Historical interest distributed
+            </h5>
             <h2 class="mb-3 glowing">${{ totalInterestUSD.toFormat(4) }}</h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase">MPH price</h5>
+            <h5 class="text-uppercase" i18n="@@mphPrice">MPH price</h5>
             <h2 class="mb-3 glowing">${{ mphPriceUSD.toFormat(4) }}</h2>
           </div>
         </div>
@@ -25,8 +29,13 @@
       <div class="card-deck">
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase">MPH total supply</h5>
-            <h2 class="mb-3 glowing">{{ mphTotalSupply.toFormat(4) }} MPH</h2>
+            <h5 class="text-uppercase" i18n="@@mphTotalSupply">
+              MPH total supply
+            </h5>
+            <h2 class="mb-3 glowing">
+              {{ mphTotalSupply.toFormat(4) }}
+              <ng-container i18n="@@mph">MPH</ng-container>&nbsp;
+            </h2>
             <h5 class="text-white">
               ${{ mphTotalSupply.times(mphPriceUSD).toFormat(4) }}
             </h5>
@@ -34,20 +43,22 @@
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase">
+            <h5 class="text-uppercase" i18n="@@mphCirculatingSupply">
               MPH circulating supply
               <button
                 type="button"
                 class="btn btn-sm btn-link text-white"
                 placement="top"
                 ngbTooltip="Subtracted: Liquidity mining pool, governance treasury, developer fund, MPH staking pool, Merkle distributor, unvested rewards"
+                i18n-ngbTooltip="@@mphCirculatingSupplyText"
               >
                 <i class="fe fe-info"></i>
               </button>
             </h5>
 
             <h2 class="mb-3 glowing">
-              {{ mphCirculatingSupply.toFormat(4) }} MPH
+              {{ mphCirculatingSupply.toFormat(4) }}
+              <ng-container i18n="@@mph">MPH</ng-container>&nbsp;
             </h2>
             <h5 class="text-white">
               ${{ mphCirculatingSupply.times(mphPriceUSD).toFormat(4) }}
@@ -56,7 +67,9 @@
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase">MPH staked in rewards pool</h5>
+            <h5 class="text-uppercase" i18n="@@mphStakedRewardsPool">
+              MPH staked in rewards pool
+            </h5>
             <h2 class="mb-3 glowing">{{ mphStakedPercentage.toFormat(4) }}%</h2>
             <h5 class="text-white">
               ${{
@@ -71,11 +84,12 @@
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase">
+            <h5 class="text-uppercase" i18n="@@historicalStakingDistributed">
               Historical MPH staking rewards distributed
             </h5>
             <h2 class="mb-3 glowing">
-              {{ mphTotalHistoricalReward.toFormat(4) }} MPH
+              {{ mphTotalHistoricalReward.toFormat(4) }}
+              <ng-container i18n="@@mph">MPH</ng-container>&nbsp;
             </h2>
             <h5 class="text-white">
               ${{ mphTotalHistoricalReward.times(mphPriceUSD).toFormat(4) }}

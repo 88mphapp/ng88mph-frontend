@@ -1,11 +1,12 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-body">
-    <h5 class="text-uppercase text-center">
+    <h5 class="text-uppercase text-center" i18n="@@mphLiquidity">
       MPH Liquidity
       <i
         class="fe fe-info ml-1 align-bottom"
         placement="top"
         ngbTooltip="The amount (USD) of liquidity for MPH trading pairs (e.g. MPH/ETH)."
+        i18n-ngbTooltip="@@mphLiquidityHelpText"
       ></i>
     </h5>
     <canvas
