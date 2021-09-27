@@ -160,60 +160,111 @@ export class ConstantsService {
   };
 
   // TOKENS //
-  ZERO_ADDR = '0x0000000000000000000000000000000000000000';
-
-  WETH = {
-    [this.CHAIN_ID.MAINNET]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    [this.CHAIN_ID.RINKEBY]: '',
-  };
-  DAI = {
-    [this.CHAIN_ID.MAINNET]: '0x6b175474e89094c44da98b954eedeac495271d0f',
-    [this.CHAIN_ID.RINKEBY]: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
-  };
-  USDC = {
-    [this.CHAIN_ID.MAINNET]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    [this.CHAIN_ID.RINKEBY]: '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b',
-  };
-  USDT = {
-    [this.CHAIN_ID.MAINNET]: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-    [this.CHAIN_ID.RINKEBY]: '',
-  };
-  LINK = {
-    [this.CHAIN_ID.MAINNET]: '0x514910771af9ca656af840dff83e8264ecf986ca',
-    [this.CHAIN_ID.RINKEBY]: '0x01be23585060835e02b77ef475b0cc51aa1e0709',
-  };
-  UNI = {
-    [this.CHAIN_ID.MAINNET]: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-    [this.CHAIN_ID.RINKEBY]: '',
-  };
-  SUSHI = {
-    [this.CHAIN_ID.MAINNET]: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
-    [this.CHAIN_ID.RINKEBY]: '',
-  };
   AAVE = {
     [this.CHAIN_ID.MAINNET]: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
     [this.CHAIN_ID.RINKEBY]: '',
   };
-  STKAAVE = {
-    [this.CHAIN_ID.MAINNET]: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+  BAL = {
+    [this.CHAIN_ID.MAINNET]: '0xba100000625a3754423978a60c9317c58a424e3d',
     [this.CHAIN_ID.RINKEBY]: '',
   };
-  COMP = {
-    [this.CHAIN_ID.MAINNET]: '0xc00e94cb662c3520282e6f5717214004a7f26888',
-    [this.CHAIN_ID.RINKEBY]: '',
-  };
-  FARM = {
-    [this.CHAIN_ID.MAINNET]: '0xa0246c9032bC3A600820415aE600c6388619A14D',
+  BAT = {
+    [this.CHAIN_ID.MAINNET]: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
     [this.CHAIN_ID.RINKEBY]: '',
   };
   BNT = {
     [this.CHAIN_ID.MAINNET]: '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c',
     [this.CHAIN_ID.RINKEBY]: '',
   };
+  COMP = {
+    [this.CHAIN_ID.MAINNET]: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  CRV = {
+    [this.CHAIN_ID.MAINNET]: '0xd533a949740bb3306d119cc777fa900ba034cd52',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
   CRVRENWBTC = {
     [this.CHAIN_ID.MAINNET]: '0x49849c98ae39fff122806c06791fa73784fb3675',
     [this.CHAIN_ID.RINKEBY]: '',
   };
+  DAI = {
+    [this.CHAIN_ID.MAINNET]: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    [this.CHAIN_ID.RINKEBY]: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
+  };
+  FARM = {
+    [this.CHAIN_ID.MAINNET]: '0xa0246c9032bC3A600820415aE600c6388619A14D',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  GUSD = {
+    [this.CHAIN_ID.MAINNET]: '0x056fd409e1d7a124bd7017459dfea2f387b6d5cd',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  LINK = {
+    [this.CHAIN_ID.MAINNET]: '0x514910771af9ca656af840dff83e8264ecf986ca',
+    [this.CHAIN_ID.RINKEBY]: '0x01be23585060835e02b77ef475b0cc51aa1e0709',
+  };
+  RAI = {
+    [this.CHAIN_ID.MAINNET]: '0x03ab458634910aad20ef5f1c8ee96f1d6ac54919',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  REN = {
+    [this.CHAIN_ID.MAINNET]: '0x408e41876cccdc0f92210600ef50372656052a38',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  SNX = {
+    [this.CHAIN_ID.MAINNET]: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  STKAAVE = {
+    [this.CHAIN_ID.MAINNET]: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  SUSD = {
+    [this.CHAIN_ID.MAINNET]: '0x57ab1ec28d129707052df4df418d58a2d46d5f51',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  SUSHI = {
+    [this.CHAIN_ID.MAINNET]: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  TUSD = {
+    [this.CHAIN_ID.MAINNET]: '0x0000000000085d4780b73119b644ae5ecd22b376',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  UNI = {
+    [this.CHAIN_ID.MAINNET]: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  USDC = {
+    [this.CHAIN_ID.MAINNET]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    [this.CHAIN_ID.RINKEBY]: '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b',
+  };
+  USDP = {
+    [this.CHAIN_ID.MAINNET]: '0x1456688345527be1f37e9e627da0837d6f08c925',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  USDT = {
+    [this.CHAIN_ID.MAINNET]: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  WBTC = {
+    [this.CHAIN_ID.MAINNET]: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  WETH = {
+    [this.CHAIN_ID.MAINNET]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  YFI = {
+    [this.CHAIN_ID.MAINNET]: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  ZRX = {
+    [this.CHAIN_ID.MAINNET]: '0xe41d2489571d322189246dafa5ebde1f4699f498',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
+  ZERO_ADDR = '0x0000000000000000000000000000000000000000';
 
   // v2 tokens
   STECRV = {
@@ -230,10 +281,6 @@ export class ConstantsService {
   };
   CRVHBTC = {
     [this.CHAIN_ID.MAINNET]: '0xb19059ebb43466c323583928285a49f558e572fd',
-    [this.CHAIN_ID.RINKEBY]: '',
-  };
-  SUSD = {
-    [this.CHAIN_ID.MAINNET]: '0x57ab1ec28d129707052df4df418d58a2d46d5f51',
     [this.CHAIN_ID.RINKEBY]: '',
   };
   THREECRV = {
