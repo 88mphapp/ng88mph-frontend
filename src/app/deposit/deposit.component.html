@@ -361,7 +361,7 @@
                       </td>
                       <td>
                         <span class="h4 mb-0 glowing"
-                          >Up to {{ pool.maxAPY.toFormat(DECIMALS) }}%</span
+                          >Up to {{ pool.maxAPY.toFormat(3) }}%</span
                         >
                         <span
                           class="
@@ -388,7 +388,7 @@
                           +{{ pool.mphAPY.toFormat(DECIMALS) }}%
                         </span>
                       </td>
-                      <td class="text-right">
+                      <td class="text-left">
                         <!-- Button -->
                         <!-- <button type="button" class="btn btn-sm btn-bg-gradient mr-3" (click)="openDepositModal(pool.name)" [disabled]="wallet.watching"> -->
                         <button
