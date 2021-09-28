@@ -35,12 +35,13 @@
             </h5>
 
             <!-- Heading -->
-            <h2 class="mb-3 glowing">
+            <h2 class="mb-2 glowing">
               {{ xMPHBalance.toFormat(4) }}
               <ng-container i18n="@@xMPH">xMPH</ng-container>&nbsp;
             </h2>
             <h5 class="mb-3 text-white">
-              <ng-container>Share of the staking pool</ng-container
+              <ng-container i18n="@@shareStakingPool"
+                >Share of the staking pool</ng-container
               >:&nbsp;0.0000%
             </h5>
             <!-- Button -->
@@ -89,9 +90,17 @@
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase" i18n="@@variableAPR">Variable APR</h5>
+            <h5 class="text-uppercase">
+              <ng-container i18n="@@variableAPR">Variable APR</ng-container>
+              <i
+                class="fe fe-info ml-1 align-bottom"
+                placement="top"
+                ngbTooltip="Based on the last 2-week protocol's revenues distribution."
+                i18n-ngbTooltip="@@variableAPRHelpText"
+              ></i>
+            </h5>
             <!-- Heading -->
-            <h2 class="mb-1 glowing">{{ yearlyROI.toFormat(4) }} %</h2>
+            <h2 class="mb-2 glowing">{{ yearlyROI.toFormat(4) }} %</h2>
           </div>
         </div>
       </div>
@@ -101,14 +110,19 @@
           <!-- Title -->
           <h5 class="text-uppercase" i18n="@@xMPHBalance">xMPH balance</h5>
           <!-- Heading -->
-          <h2 class="mb-4 glowing">
+          <h2 class="mb-2 glowing">
             {{ xMPHBalance.toFormat(4) }}
             <ng-container i18n="@@xMPH">xMPH</ng-container>&nbsp;
           </h2>
+          <h5 class="mb-4 text-white">
+            <ng-container i18n="@@shareStakingPool"
+              >Share of the staking pool</ng-container
+            >:&nbsp;0.0000%
+          </h5>
           <!-- Title -->
           <h5 class="text-uppercase" i18n="@@valueInMph">Value in MPH</h5>
           <!-- Heading -->
-          <h2 class="mb-0 glowing">
+          <h2 class="mb-2 glowing">
             {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }}
             <ng-container i18n="@@mph">MPH</ng-container>&nbsp;
           </h2>
@@ -118,9 +132,17 @@
         </div>
         <div class="col-6">
           <!-- Title -->
-          <h5 class="text-uppercase" i18n="@@variableAPR">Variable APR</h5>
+          <h5 class="text-uppercase">
+            <ng-container i18n="@@variableAPR">Variable APR</ng-container>
+            <i
+              class="fe fe-info ml-1 align-bottom"
+              placement="top"
+              ngbTooltip="Based on the last 2-week protocol's revenues distribution."
+              i18n-ngbTooltip="@@variableAPRHelpText"
+            ></i>
+          </h5>
           <!-- Heading -->
-          <h2 class="mb-1 glowing">{{ yearlyROI.toFormat(4) }} %</h2>
+          <h2 class="mb-2 glowing">{{ yearlyROI.toFormat(4) }} %</h2>
         </div>
       </div>
       <div class="row">
