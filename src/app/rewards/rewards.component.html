@@ -42,7 +42,9 @@
             <h5 class="mb-3 text-white">
               <ng-container i18n="@@shareStakingPool"
                 >Share of the staking pool</ng-container
-              >:&nbsp;{{ poolProportion.toFormat(4) }}%
+              >:&nbsp;{{
+                xMPHBalance.div(xMPHTotalSupply).times(100).toFormat(4)
+              }}%
             </h5>
             <!-- Button -->
             <button

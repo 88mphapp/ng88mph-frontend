@@ -17,7 +17,6 @@ import { request, gql } from 'graphql-request';
 export class RewardsComponent implements OnInit {
   stakeAmount: BigNumber;
   xMPHBalance: BigNumber;
-  poolProportion: BigNumber;
   stakedMPHBalance: BigNumber;
   unstakedMPHBalance: BigNumber;
   tokenAllowance: BigNumber;
@@ -100,9 +99,6 @@ export class RewardsComponent implements OnInit {
         this.stakedMPHBalance = new BigNumber(data.mphholder.mphStaked);
         this.unstakedMPHBalance = new BigNumber(data.mphholder.mphBalance);
         this.xMPHBalance = new BigNumber(data.mphholder.xmphBalance);
-        this.poolProportion = this.xMPHBalance
-          .div(this.xMPHTotalSupply)
-          .times(100);
 
         this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
       });
@@ -187,7 +183,6 @@ export class RewardsComponent implements OnInit {
       this.stakedMPHBalance = new BigNumber(0);
       this.unstakedMPHBalance = new BigNumber(0);
       this.xMPHBalance = new BigNumber(0);
-      this.poolProportion = new BigNumber(0);
       this.tokenAllowance = new BigNumber(0);
     }
 
