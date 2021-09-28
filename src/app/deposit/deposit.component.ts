@@ -34,11 +34,15 @@ export class DepositComponent implements OnInit {
   totalInterestUSD: BigNumber;
   totalMPHEarned: BigNumber;
   allPoolList: DPool[];
+  allAssetList: string[];
+  allProtocolList: string[];
   allZCBPoolList: ZeroCouponBondInfo[];
   userPools: UserPool[];
   userVests: Vest[];
   userZCBPools: UserZCBPool[];
   mphPriceUSD: BigNumber;
+  selectedAsset: string;
+  selectedProtocol: string;
 
   // variables for get started section
   stepsCompleted: number;
@@ -236,6 +240,9 @@ export class DepositComponent implements OnInit {
 
     if (dpools) {
       let allPoolList = new Array<DPool>(0);
+      let allAssetList = new Array<string>(0);
+      let allProtocolList = new Array<string>(0);
+
       Promise.all(
         dpools.map(async (pool) => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
@@ -275,20 +282,30 @@ export class DepositComponent implements OnInit {
             mphDepositorRewardMintMultiplier: mphDepositorRewardMintMultiplier,
           };
           allPoolList.push(dpoolObj);
+
+          if (!allAssetList.includes(poolInfo.stablecoinSymbol)) {
+            allAssetList.push(poolInfo.stablecoinSymbol);
+          }
+          if (!allProtocolList.includes(poolInfo.protocol)) {
+            allProtocolList.push(poolInfo.protocol);
+          }
         })
       ).then(() => {
         allPoolList.sort((a, b) => {
-          const aName = a.name;
-          const bName = b.name;
-          if (aName > bName) {
-            return 1;
-          }
-          if (aName < bName) {
-            return -1;
-          }
-          return 0;
+          return a.name > b.name ? 1 : a.name < b.name ? -1 : 0;
         });
+        allAssetList.sort((a, b) => {
+          return a > b ? 1 : a < b ? -1 : 0;
+        });
+        allProtocolList.sort((a, b) => {
+          return a > b ? 1 : a < b ? -1 : 0;
+        });
+        console.log(allPoolList);
+        console.log(allAssetList);
+        console.log(allPoolList);
         this.allPoolList = allPoolList;
+        this.allAssetList = allAssetList;
+        this.allProtocolList = allProtocolList;
       });
     }
 
@@ -584,8 +601,12 @@ export class DepositComponent implements OnInit {
       }
       this.allPoolList = allPoolList;
       this.allPoolList = [];
+      this.allAssetList = [];
+      this.allProtocolList = [];
       this.allZCBPoolList = [];
       this.mphPriceUSD = new BigNumber(0);
+      this.selectedAsset = 'all';
+      this.selectedProtocol = 'all';
     }
   }
 
