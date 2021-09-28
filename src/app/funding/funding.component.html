@@ -1,10 +1,10 @@
 <div class="container mt-4 mb-6">
   <div class="row">
     <div class="col-12">
-      <h1 class="title-bg-gradient display-2">
+      <h1 class="title-bg-gradient display-2" i18n="@@fundingHeader">
         Apply for Funding - Help Grow 88mph
       </h1>
-      <p class="text-white font-weight-bold mb-5 lead">
+      <p class="text-white font-weight-bold mb-5 lead" i18n="@@fundingText">
         We provide grants for projects, initiatives, resources, NFTs, and events
         that encourage and develop the 88mph ecosystem and empower the
         community. We offer grants ranging from $100 - $5k worth of $MPH and
@@ -15,10 +15,14 @@
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase">👨‍💻👩‍💻 Ecosystem grants</h5>
+            <h5 class="text-uppercase" i18n="@@fundingEcoGrants">
+              👨‍💻👩‍💻 Ecosystem grants
+            </h5>
             <!-- Heading -->
-            <h2 class="mb-3 glowing">$100 - $5,000</h2>
-            <h5 class="mb-3 text-white">
+            <h2 class="mb-3 glowing" i18n="@@ecoGrantsPriceRange">
+              $100 - $5,000
+            </h2>
+            <h5 class="mb-3 text-white" i18n="@@fundingEcoGrantsText">
               Apply to help build 88mph & its ecosystem.
             </h5>
             <button
@@ -27,18 +31,24 @@
               onclick="location.href='https://forms.gle/K4t7DNaVrkGp8KK46';"
               value="Go to Google Forms"
             >
-              <i class="fe fe-arrow-down mr-2 align-bottom"></i>Apply for
-              ecosystem grants
+              <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+              <ng-container i18n="@@applyEcoGrants"
+                >Apply for ecosystem grants</ng-container
+              >&nbsp;
             </button>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase">👨‍🎨✍️🎈 Community grants</h5>
+            <h5 class="text-uppercase" i18n="@@fundingCommGrants">
+              👨‍🎨✍️🎈 Community grants
+            </h5>
             <!-- Heading -->
-            <h2 class="mb-3 glowing">$100 - $2,000</h2>
-            <h5 class="mb-3 text-white">
+            <h2 class="mb-3 glowing" i18n="@@commGrantsPriceRange">
+              $100 - $2,000
+            </h2>
+            <h5 class="mb-3 text-white" i18n="@@commGrantsText">
               Apply to help other community members by creating initiatives or
               resources (contents creation, NFTs, meetups, etc.).
             </h5>
@@ -48,14 +58,16 @@
               onclick="location.href='https://forms.gle/K4t7DNaVrkGp8KK46';"
               value="Go to Google Forms"
             >
-              <i class="fe fe-arrow-down mr-2 align-bottom"></i>Apply for
-              community grants
+              <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+              <ng-container i18n="@@applyCommGrants"
+                >Apply for community grants</ng-container
+              >&nbsp;
             </button>
           </div>
         </div>
       </div>
-      <h2 class="mb-2">Get funded</h2>
-      <p class="text-muted font-weight-bold">
+      <h2 class="mb-2" i18n="@@getFunded">Get funded</h2>
+      <p class="text-muted font-weight-bold" i18n="@@getFundedText">
         Please follow the steps below to apply for funding. After submitting
         your application, please allow 5 to 10 business days for a response.
       </p>
@@ -73,6 +85,7 @@
                     text-white
                     border-gradient
                   "
+                  i18n="@@fundingStep1"
                 >
                   1
                 </div>
@@ -80,8 +93,10 @@
             </div>
             <div class="col ml-n2">
               <!-- Heading -->
-              <h3>Create an Invoice on Request Network</h3>
-              <p class="font-weight-bold">
+              <h3 i18n="@@fundingStep1Header">
+                Create an Invoice on Request Network
+              </h3>
+              <p class="font-weight-bold" i18n="@@fundingStep1Text">
                 Make Sure the Invoice is addressed to mcfly@88mph.app and the
                 currency is set on $MPH.
               </p>
@@ -91,13 +106,18 @@
                 onclick="location.href='https://invoicing.request.network/';"
                 value="Go to Request Network"
               >
-                <i class="fe fe-arrow-down mr-2 align-bottom"></i>Create invoice
+                <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+                <ng-container i18n="@@createInvoice"
+                  >Create invoice</ng-container
+                >&nbsp;
               </button>
               <a
                 class="text-purple"
                 href="https://request.network/en/invoicing/getting-started/"
                 target="_blank"
-                >How-to <i class="fe fe-external-link"></i
+              >
+                <ng-container i18n="@@how-to">How-to</ng-container>&nbsp;
+                <i class="fe fe-external-link"></i
               ></a>
             </div>
           </div>
@@ -116,15 +136,16 @@
                     text-white
                     border-gradient
                   "
+                  i18n="@@fundingStep2"
                 >
                   2
                 </div>
               </div>
             </div>
             <div class="col ml-n2">
-              <h3>Submit an Application</h3>
+              <h3 i18n="@@fundingStep2Header">Submit an Application</h3>
               <!-- Heading -->
-              <p class="font-weight-bold">
+              <p class="font-weight-bold" i18n="@@fundingStep2Text">
                 This form gives us the information we need to decide on your
                 funding request.
               </p>
@@ -135,10 +156,15 @@
                 onclick="location.href='https://forms.gle/K4t7DNaVrkGp8KK46';"
                 value="Go to Google Forms"
               >
-                <i class="fe fe-arrow-down mr-2 align-bottom"></i>Apply for a
-                grant
+                <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+                <ng-container i18n="@@applyForAGrant"
+                  >Apply for a grant</ng-container
+                >&nbsp;
               </button>
-              <div class="alert alert-pink-blue border-0">
+              <div
+                class="alert alert-pink-blue border-0"
+                i18n="@@fundingStep2Text2"
+              >
                 Make sure to read the requirements listed below.
               </div>
             </div>
@@ -146,60 +172,70 @@
           <!-- / .row -->
         </div>
       </div>
-      <h2 class="mb-2">Ecosystem Grants</h2>
-      <p class="text-muted font-weight-bold">
+      <h2 class="mb-2" i18n="@@fundingEcoGrants">Ecosystem Grants</h2>
+      <p class="text-muted font-weight-bold" i18n="@@fundingEcoGrantsText2">
         Ecosystem grants aim at improving and developing 88mph, and more
         generally the DeFi ecosystem. They are for individuals or teams looking
         to develop tools, projects that could benefit from grants.
       </p>
-      <p>The following criteria are considered</p>
+      <p i18n="@@fundingGrantsCriteria">
+        The following criteria are considered
+      </p>
       <ul>
-        <li>
+        <li i18n="@@fundingGrantsCriteria1">
           How it relates to 88mph protocol and the upcoming 88mph governance.
         </li>
-        <li>
+        <li i18n="@@fundingGrantsCriteria2">
           How it may benefit and impact the 88mph protocol and the 88mph
           community.
         </li>
-        <li>
+        <li i18n="@@fundingGrantsCriteria3">
           The status and progress of the team’s MVP or previous projects (draft
           vs mainnet grade).
         </li>
-        <li>The team and how likely they are to deliver.</li>
+        <li i18n="@@fundingGrantsCriteria4">
+          The team and how likely they are to deliver.
+        </li>
         <li>
           Project’s longevity and/or business viability, feasibility,
           competitiveness, etc.
         </li>
-        <li>How the funds will be used and why they are needed.</li>
+        <li i18n="@@fundingGrantsCriteria5">
+          How the funds will be used and why they are needed.
+        </li>
       </ul>
-      <p>
+      <p i18n="@@fundingEcoGrantsText3">
         These grants are quite flexible in how they are awarded with
         demonstrating benefit to the 88mph system being most important. Existing
         and completed projects are also eligible.
       </p>
 
-      <h2 class="mb-2">Areas of research and interest</h2>
-      <p class="text-muted font-weight-bold">
+      <h2 class="mb-2" i18n="@@fundingSuggestedAreas">
+        Areas of research and interest
+      </h2>
+      <p class="text-muted font-weight-bold" i18n="@@fundingSuggestedAreasText">
         We would like to suggest areas of research and interest for the 88mph
         ecosystem. It’s by no means an exhaustive list. All applications related
         to the 88mph ecosystem are welcome, as long as your project contributes
         to the 88mph ecosystem or helps in some way.
       </p>
       <ul>
-        <li>New protocol adapters (Eg. curve).</li>
-        <li>
+        <li i18n="@@fundingSuggestedAreas1">
+          New protocol adapters (Eg. curve).
+        </li>
+        <li i18n="@@fundingSuggestedAreas2">
           Porting to other chains and Ethereum L2 (HECO, BSC, Elrond, etc).
         </li>
-        <li>
+        <li i18n="@@fundingSuggestedAreas3">
           Protocols wishing to integrate with parts of the 88mph protocol.
         </li>
-        <li>External protocol strategies.</li>
-        <li>Translation.</li>
-        <li>Dune queries.</li>
-        <li>[Your idea, project, etc]</li>
+        <li i18n="@@fundingSuggestedAreas4">External protocol strategies.</li>
+        <li i18n="@@fundingSuggestedAreas5">Translation.</li>
+        <li i18n="@@fundingSuggestedAreas6">Dune queries.</li>
+        <li i18n="@@fundingSuggestedAreas7">[Your idea, project, etc]</li>
       </ul>
-      <h2 class="mb-2">Community Grants</h2>
-      <p class="text-muted font-weight-bold">
+      <h2 class="mb-2" i18n="@@communityGrants">Community Grants</h2>
+      <p class="text-muted font-weight-bold" i18n="@@communityGrantsText">
         Community grants aim at encouraging and developing the 88mph community
         and 88mph itself. Those grants will be received by users, content
         creators and projects supporting 88mph. Those users may have helped out
@@ -208,18 +244,24 @@
         in MPH.
       </p>
       <p>
-        Users or applications with questions may join this
+        <ng-container i18n="@@communityGrantsJoin"
+          >Users or applications with questions may join this</ng-container
+        >&nbsp;
         <a
           class="text-purple"
           href="https://t.me/join88mph_grants"
           target="_blank"
+          i18n="@@telegram"
           >Telegram</a
         >
-        or the Grants channel on
+        <ng-container i18n="@@grantsChannelDiscord"
+          >or the Grants channel on</ng-container
+        >&nbsp;
         <a
           class="text-purple"
           href="https://discord.com/invite/QThgeYxDuM"
           target="_blank"
+          i18n="@@88mphDiscord"
           >88mph Discord</a
         >.
       </p>

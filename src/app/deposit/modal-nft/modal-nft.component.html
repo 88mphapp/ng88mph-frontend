@@ -13,7 +13,7 @@
           </a>
         </div>
         <div class="col">
-          <h1 class="mb-0 h3">NFT</h1>
+          <h1 class="mb-0 h3" i18n="@@NFT">NFT</h1>
         </div>
       </div>
       <div class="row justify-content-center">
@@ -22,17 +22,21 @@
             <div class="card-body">
               <!--copy start-->
               <div class="alert border-gradient mb-4">
-                After making a custom-maturity deposit, 88mph's user receives an
-                ERC-721 NFT (Non-fungible token) that represents the ownership
-                of the deposit and its fixed terms, which can be transferred or
-                traded like regular NFTs. Users have the option to customize the
-                NFT's metadata: name, description, image, etc. So you can attach
-                any creative content to your fixed-rate yield bearing NFT
-                #DeFiNFT.
+                <ng-container i18n="@@modalNFTText">
+                  After making a custom-maturity deposit, 88mph's user receives
+                  an ERC-721 NFT (Non-fungible token) that represents the
+                  ownership of the deposit and its fixed terms, which can be
+                  transferred or traded like regular NFTs. Users have the option
+                  to customize the NFT's metadata: name, description, image,
+                  etc. So you can attach any creative content to your fixed-rate
+                  yield bearing NFT #DeFiNFT. </ng-container
+                >&nbsp;
+
                 <a
                   href="https://docs.88mph.app"
                   target="_blank"
                   rel="noopener noreferrer"
+                  i18n="@@learnMore"
                   >Learn more</a
                 >.
               </div>
@@ -53,6 +57,7 @@
                             text-white
                             border-gradient
                           "
+                          i18n="@@modalNFTStep1"
                         >
                           1
                         </div>
@@ -60,7 +65,7 @@
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group">
-                        <label>Name</label>
+                        <label i18n="@@modalNFTName">Name</label>
                         <input
                           type="text"
                           class="form-control form-control-lg"
@@ -68,7 +73,10 @@
                           placeholder="Item Name"
                           aria-describedby="nameHelp"
                         />
-                        <small id="nameHelp" class="form-text text-muted"
+                        <small
+                          id="nameHelp"
+                          class="form-text text-muted"
+                          i18n="@@modalNFTNameHelp"
                           >The name to refer to your NFT.</small
                         >
                       </div>
@@ -90,6 +98,7 @@
                             text-white
                             border-gradient
                           "
+                          i18n="@@modalNFTStep2"
                         >
                           2
                         </div>
@@ -97,7 +106,9 @@
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group">
-                        <label for="Media">Upload Image</label>
+                        <label for="Media" i18n="@@modalNFTUMedia"
+                          >Upload Image</label
+                        >
                         <input
                           type="file"
                           accept="image/*"
@@ -105,7 +116,10 @@
                           class="form-control form-control-lg"
                           aria-describedby="mediaHelp"
                         />
-                        <small id="mediaHelp" class="form-text text-muted"
+                        <small
+                          id="mediaHelp"
+                          class="form-text text-muted"
+                          i18n="@@modalNFTMediaHelp"
                           >Attach a jpg, png, or gif to your NFT.</small
                         >
                       </div>
@@ -132,6 +146,7 @@
                             text-white
                             border-gradient
                           "
+                          i18n="@@modalNFTStep3"
                         >
                           3
                         </div>
@@ -198,13 +213,18 @@
                     </div>
                     <div class="col ml-n2">
                       <div>
-                        <label for="Description">Description</label>
+                        <label for="Description" i18n="@@modalNFTDescription"
+                          >Description</label
+                        >
                         <textarea
                           name="message"
                           [(ngModel)]="description"
                           placeholder="More information about your NFT."
                         ></textarea>
-                        <small id="mediaHelp" class="form-text text-muted"
+                        <small
+                          id="mediaHelp"
+                          class="form-text text-muted"
+                          i18n="@@modalNFTDescriptionHelp"
                           >Describe your fixed-rate yield bearing NFT to the
                           world.</small
                         >
@@ -227,6 +247,7 @@
                             text-white
                             border-gradient
                           "
+                          i18n="@@modalNFTStep4"
                         >
                           5
                         </div>
@@ -239,17 +260,20 @@
                         [formGroup]="a"
                       >
                         <div class="form-group">
-                          <label>Attribute Name</label>
+                          <label i18n="@@modalNFTAttName">Attribute Name</label>
                           <input type="text" formControlName="trait_type" />
                         </div>
                         <div class="form-group">
-                          <label>Attribute Value</label>
+                          <label i18n="@@modalNFTAttValue"
+                            >Attribute Value</label
+                          >
                           <input type="text" formControlName="value" />
                         </div>
                         <button
                           class="btn btn-sm border-gradient mb-3"
                           type="button"
                           (click)="deleteAttribute(i)"
+                          i18n="@@deleteAttribute"
                         >
                           Delete Attribute
                         </button>
@@ -258,10 +282,14 @@
                         class="btn btn-sm btn-bg-gradient mb-2"
                         type="button"
                         (click)="addAttribute()"
+                        i18n="@@addAttribute"
                       >
                         Add Attribute
                       </button>
-                      <small id="" class="form-text text-muted"
+                      <small
+                        id=""
+                        class="form-text text-muted"
+                        i18n="@@modalNFTOptional"
                         >Optional - Any additional properties and traits for
                         your NFT.</small
                       >
@@ -283,6 +311,7 @@
                             text-white
                             border-gradient
                           "
+                          i18n="@@modalNFTStep5"
                         >
                           6
                         </div>
@@ -290,13 +319,19 @@
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group">
-                        <label for="externalURL">External URL (optional)</label>
+                        <label for="externalURL" i18n="@@modalNFTExternalURL"
+                          >External URL (optional)</label
+                        >
                         <input
                           type="text"
                           [(ngModel)]="externalURL"
                           placeholder="https://example.com"
+                          i18n-placeholder="@@modalNFTPlaceholder"
                         />
-                        <small id="" class="form-text text-muted"
+                        <small
+                          id=""
+                          class="form-text text-muted"
+                          i18n="@@modalNFTPlaceholderHelp"
                           >An external link related to your NFT.</small
                         >
                       </div>
@@ -317,6 +352,7 @@
                             text-white
                             border-gradient
                           "
+                          i18n="@@modalNFTStep6"
                         >
                           7
                         </div>
@@ -324,11 +360,15 @@
                     </div>
                     <div class="col ml-n2">
                       <h3>
-                        View Your NFT on
+                        <ng-container i18n="@@modalNFTView"
+                          >View Your NFT on</ng-container
+                        >&nbsp;
+
                         <a
                           href="{{ openseaURL }}"
                           target="_blank"
                           class="text-primary"
+                          i18n="@@OpenSea"
                           >OpenSea!</a
                         >
                       </h3>
@@ -351,6 +391,7 @@
                 class="btn btn-lg btn-bg-gradient btn-block mb-4"
                 type="button"
                 [disabled]="true"
+                i18n="@@modalNFTAddName"
               >
                 Add a name
               </button>
@@ -359,6 +400,7 @@
                 class="btn btn-lg btn-bg-gradient btn-block mb-4"
                 type="button"
                 [disabled]="true"
+                i18n="@@modalNFTAddImg"
               >
                 Add an image file
               </button>
@@ -367,6 +409,7 @@
                 class="btn btn-lg btn-bg-gradient btn-block mb-4"
                 type="button"
                 [disabled]="true"
+                i18n="@@modalNFTAddDescription"
               >
                 Add a description
               </button>
@@ -375,10 +418,11 @@
                 (click)="clickUpdateMetadata()"
                 class="btn btn-lg btn-bg-gradient btn-block mb-4"
                 type="button"
+                i18n="@@modalNFTUpdateMetadata"
               >
                 Update NFT metadata
               </button>
-              <small class="text-warning"
+              <small class="text-warning" i18n="@@modalNFTUpdateMetadataText"
                 >Please note that it can take several minutes to get the
                 metadata updated, especially for large files. Visualize your
                 update on Opensea.io by hitting the Refresh Metadata button on

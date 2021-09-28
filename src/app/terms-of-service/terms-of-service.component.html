@@ -17,10 +17,12 @@
       </div>
       <div class="row justify-content-center">
         <div class="col-12 col-lg-8 pt-0 pr-lg-5">
-          <h1 class="display-4 text-center">Acknowledge disclaimer</h1>
+          <h1 class="display-4 text-center" i18n="@@termsOfServiceHeader">
+            Acknowledge disclaimer
+          </h1>
           <div class="card mb-6">
             <div class="card-body">
-              <p class="text-muted">
+              <p class="text-muted" i18n="@@termsOfServiceText1">
                 The Platform only serves as an introducing platform and
                 facilitator between investors and third party protocols and/or
                 platforms. The Platform does not make any profits in relation to
@@ -30,7 +32,7 @@
                 platforms and any such relations are entered into at the User’s
                 sole liability and risk.
               </p>
-              <p class="text-muted">
+              <p class="text-muted" i18n="@@termsOfServiceText2">
                 The Platform does not have any power over any crypto assets
                 and/or deposits of Users and does not provide any advice,
                 investment advice, execution only or custody services. In
@@ -41,7 +43,7 @@
                 manage any assets or financial instruments and/or issues or
                 holds any securities or financial instruments whatsoever.
               </p>
-              <p class="text-muted">
+              <p class="text-muted" i18n="@@termsOfServiceText3">
                 Moreover, the Platform does not act as a financial market
                 infrastructure, in particular a stock exchange, multilateral
                 trading facility (MTF), central counterparty, central securities
@@ -66,13 +68,13 @@
                 sale of securities or other financial instruments within the
                 trading facility with a view to concluding a contract.
               </p>
-              <p class="text-muted">
+              <p class="text-muted" i18n="@@termsOfServiceText4">
                 No funds transit via the Platform. The Platform does not perform
                 any financial intermediary activities on a professional basis
                 and does not perform any KYC (know your client) verifications on
                 Users.
               </p>
-              <p class="text-muted">
+              <p class="text-muted" i18n="@@termsOfServiceText5">
                 The Platform, Services, MPH Tokens and related materials, any
                 payment processing and other tasks are provided on an "as is",
                 "with all faults" and "as available" basis. Users expressly
@@ -103,7 +105,10 @@
                   id="termsOfServiceCheck"
                 />
                 <label class="form-check-label" for="termsOfServiceCheck">
-                  By using 88mph, you agree to 88mph's disclaimer.
+                  <ng-container i18n="@@termsOfServiceCheck"
+                    >By using 88mph, you agree to 88mph's
+                    disclaimer.</ng-container
+                  >
                 </label>
               </div>
 
@@ -111,6 +116,7 @@
                 class="btn btn-lg btn-block btn-bg-gradient"
                 (click)="acceptTerms()"
                 [disabled]="!acceptedTerms"
+                i18n="@@accept"
               >
                 Accept
               </button>
