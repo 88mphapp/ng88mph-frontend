@@ -143,6 +143,7 @@ export class PriceEarningsRatioComponent implements OnInit {
         pointBackgroundColor: 'rgba(44, 123, 229, 0.5)',
         pointHoverBorderColor: 'rgba(44, 123, 229, 1)',
         pointHoverBackgroundColor: 'rgba(44, 123, 229, 1)',
+        spanGaps: true,
         fill: false,
       },
     ];
@@ -237,35 +238,42 @@ export class PriceEarningsRatioComponent implements OnInit {
   }
 
   async handleData(data: QueryResult) {
+    // fetch mph price in USD
+    // @dev if days < 100 then coingecko api returns inaccurate timestamps
+    let days =
+      (this.timeseries.getLatestUTCDate() -
+        this.FIRST_INDEX[this.wallet.networkID] +
+        this.constants.DAY_IN_SEC) /
+      this.constants.DAY_IN_SEC;
+    if (days < 100) {
+      days = 100;
+    }
+    let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(
+      this.constants.MPH_ADDRESS[this.wallet.networkID],
+      `${days}`
+    );
+
+    console.log(days);
     for (let t in data) {
       const start = parseInt(data[t].lastRewardTimestamp);
       const end = parseInt(data[t].currentUnlockEndTimestamp);
       const amount = parseFloat(data[t].lastRewardAmount);
       const now = Date.now() / 1e3;
+      const then = this.timestamps[parseInt(t.substring(1))];
 
       // annualize earnings per year from earnings per second
       const earningsPerSecond = amount / (end - start);
       const earningsPerYear = earningsPerSecond * this.constants.YEAR_IN_SEC;
 
-      // fetch mph price in USD
-      // @dev if days < 100 then coingecko api returns inaccurate timestamps
-      let days =
-        (this.timeseries.getLatestUTCDate() -
-          this.FIRST_INDEX[this.wallet.networkID] +
-          this.constants.DAY_IN_SEC) /
-        this.constants.DAY_IN_SEC;
-      if (days < 100) {
-        days = 100;
-      }
-      let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(
-        this.constants.MPH_ADDRESS[this.wallet.networkID],
-        `${days}`
-      );
-
       // add the USD value of earnings per year to the data array
-      if (isNaN(earningsPerYear) || now > end) {
+      if (isNaN(earningsPerYear)) {
+        // distributions haven't begun
         this.earningsData[parseInt(t.substring(1))] = 0;
+      } else if (then > end) {
+        // distrubution period ended
+        this.earningsData[parseInt(t.substring(1))] = null;
       } else {
+        // distribution period ongoing
         const mphPriceUSD = mphPriceData.find(
           (key) => key[0] === this.timestamps[parseInt(t.substring(1))] * 1e3
         )[1];
