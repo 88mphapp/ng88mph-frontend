@@ -92,7 +92,8 @@
                           <label>
                             <ng-container i18n="@@depositAmount"
                               >Deposit amount</ng-container
-                            >&nbsp; ({{ selectedDepositToken }})</label
+                            >
+                            ({{ selectedDepositToken }})</label
                           >
                           <div class="input-group">
                             <input
@@ -164,12 +165,12 @@
                               {{ selectedDepositToken }}
                               <ng-container i18n="@@depositAvailable"
                                 >available | Min:</ng-container
-                              >&nbsp;
+                              >
                               {{ minDepositAmount.toFormat() }}
                               {{ selectedPoolInfo.stablecoinSymbol }}
                               <ng-container i18n="@@amountAvailablePerDeposit"
                                 >per deposit</ng-container
-                              >&nbsp;</small
+                              ></small
                             >
                           </div>
                         </div>
@@ -204,8 +205,8 @@
                                 >You will be able to redeem your deposit &
                                 fixed-rate yield on the corresponding maturity
                                 selected. Early withdrawal of your deposit is
-                                allowed minus a 0.5% fee. </ng-container
-                              >&nbsp;
+                                allowed minus a 0.5% fee.
+                              </ng-container>
                               <a
                                 href="https://docs.88mph.app"
                                 target="_blank"
@@ -380,7 +381,8 @@
                         <td class="px-0 py-2 text-white border-0 small">
                           <ng-container i18n="@@TotalAvailableMaturity"
                             >Total available at maturity</ng-container
-                          >&nbsp; | {{ depositMaturation }}
+                          >
+                          | {{ depositMaturation }}
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
@@ -545,7 +547,7 @@
                     role="status"
                     *ngIf="!txConfirmed"
                   ></div>
-                  <span class=""> &nbsp; {{ loadingMessage }}</span>
+                  <span class=""> {{ loadingMessage }}</span>
                 </div>
                 <button
                   *ngIf="depositAmount.lte(0)"
@@ -580,10 +582,11 @@
                 >
                   <ng-container i18n="@@depositStepsCompleted"
                     >Not enough</ng-container
-                  >&nbsp; {{ selectedPoolInfo.stablecoinSymbol }}
+                  >
+                  {{ selectedPoolInfo.stablecoinSymbol }}
                   <ng-container i18n="@@depositStepsCompleted"
                     >available</ng-container
-                  >&nbsp;
+                  >
                 </button>
                 <button
                   *ngIf="
@@ -651,7 +654,7 @@
                               customize with JSON metadata schemas, for example,
                               a title, a description, an image,
                               etc</ng-container
-                            >&nbsp;
+                            >
                             <a
                               href="https://opensea.io/assets/0x9d481e42d9a2b52397262cdbe76abf3ca7b52203/34"
                               target="_blank"
@@ -659,8 +662,8 @@
                               >(example)</a
                             >.
                             <ng-container i18n="@@NFTMetadataHelp3">
-                              We invite you to learn more about NFT metadata on </ng-container
-                            >&nbsp;
+                              We invite you to learn more about NFT metadata on
+                            </ng-container>
                             <a
                               href="https://nftschool.dev/reference/metadata-schemas/#intro-to-json-schemas"
                               target="_blank"
@@ -670,7 +673,7 @@
                             >
                             <ng-container i18n="@@NFTMetadataHelp5"
                               >and to store your files on</ng-container
-                            >&nbsp;
+                            >
                             <a
                               href="https://nft.storage/"
                               target="_blank"
@@ -1049,7 +1052,7 @@
                     if it's a preset maturity. It gives you full control over
                     your deposits. Withdraw, top-up, roll over your deposit +
                     fixed-rate yield at any time.</ng-container
-                  >&nbsp;
+                  >
                   <a
                     href="https://docs.88mph.app/"
                     target="_blank"

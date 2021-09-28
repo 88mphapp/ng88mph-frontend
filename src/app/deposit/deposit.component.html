@@ -5,13 +5,12 @@
     *ngIf="displayGetStarted"
   >
     <h6 class="text-uppercase text-muted">
-      <ng-container i18n="@@getStarted">Get started</ng-container>&nbsp; (<span
+      <ng-container i18n="@@getStarted">Get started</ng-container> (<span
         class="text-white h5"
         >{{ stepsCompleted }}
-        <ng-container i18n="@@depositSteps">of 3</ng-container>&nbsp;</span
-      >
-      <ng-container i18n="@@depositStepsCompleted">complete</ng-container
-      >&nbsp;)
+        <ng-container i18n="@@depositSteps">of 3</ng-container>
+      </span>
+      <ng-container i18n="@@depositStepsCompleted">complete</ng-container>)
     </h6>
     <p class="lead" i18n="@@depositStepsTitle">
       <strong>Let's get you set up.</strong> Follow the steps below to leverage
@@ -456,16 +455,19 @@
                                     >{{ deposit.countdownTimer.days
                                     }}<ng-container i18n="@@countdownDays"
                                       >d</ng-container
-                                    >&nbsp; {{ deposit.countdownTimer.hours
+                                    >
+                                    {{ deposit.countdownTimer.hours
                                     }}<ng-container i18n="@@countdownHours"
                                       >h</ng-container
-                                    >&nbsp; {{ deposit.countdownTimer.minutes
+                                    >
+                                    {{ deposit.countdownTimer.minutes
                                     }}<ng-container i18n="@@countdownMinutes"
                                       >m</ng-container
-                                    >&nbsp; {{ deposit.countdownTimer.seconds
+                                    >
+                                    {{ deposit.countdownTimer.seconds
                                     }}<ng-container i18n="@@countdownSeconds"
                                       >s</ng-container
-                                    >&nbsp;</small
+                                    ></small
                                   >
                                 </div>
                               </div>
@@ -514,9 +516,7 @@
                                 (${{
                                   deposit.interestEarnedUSD.toFormat(DECIMALS)
                                 }}) /
-                                {{
-                                  deposit.realMPHReward.toFormat(DECIMALS)
-                                }}
+                                {{ deposit.realMPHReward.toFormat(DECIMALS) }}
                                 MPH (${{
                                   deposit.realMPHReward
                                     .times(mphPriceUSD)

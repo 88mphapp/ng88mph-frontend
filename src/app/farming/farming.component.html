@@ -8,9 +8,9 @@
         <ng-container i18n="@@farmingText"
           >Provide liquidity on our trading pools, and get rewarded by doing so
           from trading fees and liquidity mining rewards.</ng-container
-        >&nbsp;
+        >
         <a class="text-primary" href="https://docs.88mph.app/" target="_blank">
-          <ng-container i18n="@@learnMore">Learn more</ng-container>&nbsp;
+          <ng-container i18n="@@learnMore">Learn more</ng-container>
           <i class="fe fe-external-link"></i>
         </a>
       </p>
@@ -92,7 +92,7 @@
                         <label>
                           <ng-container i18n="@@stakeLPTokens"
                             >Stake LP tokens</ng-container
-                          >&nbsp;
+                          >
                           <br />
                           <small
                             class="text-muted"
@@ -108,7 +108,7 @@
                             <ng-container i18n="@@provideLiquidityText"
                               >to the Uniswap MPH-ETH pair and earn trading
                               fees.</ng-container
-                            >&nbsp;
+                            >
                           </small>
                           <small
                             class="text-muted"
@@ -116,7 +116,7 @@
                             ><ng-container i18n="@@provideLiquidityBancor"
                               >Provide liquidity to the Bancor MPH-BNT pair and
                               earn trading fees.</ng-container
-                            >&nbsp;
+                            >
                             <a
                               class="text-primary"
                               href="https://app.bancor.network/eth/portfolio/stake/add/single/0xAbf26410b1cfF45641aF087eE939E52e328ceE46"
@@ -139,7 +139,7 @@
                             <ng-container i18n="@@provideLiquiditySushi"
                               >to the SushiSwap MPH-ETH pair and earn SUSHI +
                               MPH</ng-container
-                            >&nbsp;
+                            >
                           </small>
                         </label>
                         <div
@@ -240,16 +240,16 @@
                           >{{ unstakedMPHBalance.toFormat(4) }} MPH-ETH UNI-V2
                           <ng-container i18n="@@available"
                             >available</ng-container
-                          >&nbsp;</small
-                        >
+                          >
+                        </small>
                         <small
                           class="form-text text-white"
                           *ngIf="selectedPool == 'SushiSwap'"
                           >{{ sushiUnstakedLPBalance.toFormat(4) }} MPH-ETH SLP
                           <ng-container i18n="@@available"
                             >available</ng-container
-                          >&nbsp;</small
-                        >
+                          >
+                        </small>
                         <small
                           class="form-text text-white"
                           *ngIf="
@@ -259,8 +259,8 @@
                           >{{ bancorUnstakedMPHBalance.toFormat(4) }} MPH
                           <ng-container i18n="@@available"
                             >available</ng-container
-                          >&nbsp;</small
-                        >
+                          >
+                        </small>
                         <small
                           class="form-text text-white"
                           *ngIf="
@@ -270,8 +270,8 @@
                           >{{ bancorUnstakedBNTBalance.toFormat(4) }} BNT
                           <ng-container i18n="@@available"
                             >available</ng-container
-                          >&nbsp;</small
-                        >
+                          >
+                        </small>
                       </div>
                       <!-- display if ZCB pool option selected -->
                       <div class="form-group d-none">
@@ -551,7 +551,7 @@
                 <ng-container i18n="@@bancorLiquidityText"
                   >Bancor liquidity mining has ended. You can continue to stake
                   MPH and BNT to earn trading fees.</ng-container
-                >&nbsp;
+                >
               </div>
               <div
                 class="px-0 py-3 alert text-center text-warning border-warning"
@@ -560,7 +560,7 @@
                 <ng-container i18n="@@uniswapLiquidityText"
                   >Uniswap v2 liquidity mining has ended. You can continue to
                   provide liquidity to earn trading fees.</ng-container
-                >&nbsp;
+                >
               </div>
               <button
                 type="button"
@@ -569,7 +569,7 @@
                 [disabled]="!canContinue() || !canStake() || wallet.watching"
               >
                 <i class="fe fe-arrow-down mr-2 align-bottom"></i>
-                <ng-container i18n="@@stake">Stake</ng-container>&nbsp;
+                <ng-container i18n="@@stake">Stake</ng-container>
               </button>
               <div class="row">
                 <div class="col-12 col-lg-6 mb-3 mb-lg-0">
@@ -582,7 +582,7 @@
                     "
                   >
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                    <ng-container i18n="@@claim">Claim</ng-container>&nbsp;
+                    <ng-container i18n="@@claim">Claim</ng-container>
                   </button>
                 </div>
                 <div class="col-12 col-lg-6">
@@ -595,7 +595,7 @@
                     "
                   >
                     <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                    <ng-container i18n="@@unstake">Unstake</ng-container>&nbsp;
+                    <ng-container i18n="@@unstake">Unstake</ng-container>
                   </button>
                 </div>
               </div>
@@ -622,8 +622,8 @@
                     <ng-container i18n="@@stakingMPHText"
                       >By staking your MPH, you are eligible to collect two
                       kinds of rewards distributed as MPH.</ng-container
-                    >&nbsp;</small
-                  >
+                    >
+                  </small>
                   <small class="text-primary ml-2" i18n="@@learnMore"
                     >Learn more</small
                   >

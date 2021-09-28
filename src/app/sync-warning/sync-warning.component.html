@@ -4,10 +4,9 @@
       >Warning: The data on this site has only synced to Ethereum
       block</ng-container
     >
-    &nbsp;{{ syncBlockNumber }}&nbsp;<ng-container i18n="@@syncWarning2"
-      >(out of</ng-container
-    >&nbsp;{{ latestBlockNumber }}).&nbsp;<ng-container i18n="@@syncWarning3"
-      >Please check back soon.</ng-container
-    >
+    {{ syncBlockNumber }}
+    <ng-container i18n="@@syncWarning2">(out of</ng-container>
+    {{ latestBlockNumber }}).
+    <ng-container i18n="@@syncWarning3">Please check back soon.</ng-container>
   </div>
 </ng-container>

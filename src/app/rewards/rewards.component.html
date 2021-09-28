@@ -19,9 +19,9 @@
           >Staking your MPH for xMPH allows you to earn 100% of 88mph protocol
           revenues (bi-weekly MPH buy-back mechanism) and voting
           rights.</ng-container
-        >&nbsp;
+        >
         <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
-          <ng-container i18n="@@learnMore">Learn more</ng-container>&nbsp;
+          <ng-container i18n="@@learnMore">Learn more</ng-container>
           <i class="fe fe-external-link"></i>
         </a>
       </p>
@@ -37,14 +37,12 @@
             <!-- Heading -->
             <h2 class="mb-2 glowing">
               {{ xMPHBalance.toFormat(4) }}
-              <ng-container i18n="@@xMPH">xMPH</ng-container>&nbsp;
+              <ng-container i18n="@@xMPH">xMPH</ng-container>
             </h2>
             <h5 class="mb-3 text-white">
               <ng-container i18n="@@shareStakingPool"
                 >Share of the staking pool</ng-container
-              >:&nbsp;{{
-                xMPHBalance.div(xMPHTotalSupply).times(100).toFormat(4)
-              }}%
+              >: {{ xMPHBalance.div(xMPHTotalSupply).times(100).toFormat(4) }}%
             </h5>
             <!-- Button -->
             <button
@@ -55,7 +53,7 @@
               [disabled]="!canUnstake() || wallet.watching"
             >
               <i class="fe fe-arrow-down mr-2 align-bottom"></i>
-              <ng-container i18n="@@unstake">Unstake</ng-container>&nbsp;
+              <ng-container i18n="@@unstake">Unstake</ng-container>
             </button>
           </div>
         </div>
@@ -74,7 +72,7 @@
             <!-- Heading -->
             <span class="h2 mb-0 glowing">
               {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }}
-              <ng-container i18n="@@mph">MPH</ng-container>&nbsp;
+              <ng-container i18n="@@mph">MPH</ng-container>
             </span>
             <span class="badge badge-xl badge-soft-success mt-n2">
               +{{
@@ -114,19 +112,19 @@
           <!-- Heading -->
           <h2 class="mb-2 glowing">
             {{ xMPHBalance.toFormat(4) }}
-            <ng-container i18n="@@xMPH">xMPH</ng-container>&nbsp;
+            <ng-container i18n="@@xMPH">xMPH</ng-container>
           </h2>
           <h5 class="mb-4 text-white">
             <ng-container i18n="@@shareStakingPool"
               >Share of the staking pool</ng-container
-            >:&nbsp;0.0000%
+            >: 0.0000%
           </h5>
           <!-- Title -->
           <h5 class="text-uppercase" i18n="@@valueInMph">Value in MPH</h5>
           <!-- Heading -->
           <h2 class="mb-2 glowing">
             {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }}
-            <ng-container i18n="@@mph">MPH</ng-container>&nbsp;
+            <ng-container i18n="@@mph">MPH</ng-container>
           </h2>
           <h5 class="mb-3 text-white">
             ${{ xMPHBalance.times(xMPHPriceUSD).toFormat(4) }}
@@ -182,8 +180,8 @@
                   >{{ unstakedMPHBalance.toFormat(4) }}
                   <ng-container i18n="@@mphAvailable"
                     >MPH available</ng-container
-                  >&nbsp;</small
-                >
+                  >
+                </small>
               </div>
               <button
                 *ngIf="this.stakeAmount.lte(0)"
@@ -232,7 +230,7 @@
                 [disabled]="!canStake() || wallet.watching"
               >
                 <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                <ng-container i18n="@@stakeMph">Stake MPH</ng-container>&nbsp;
+                <ng-container i18n="@@stakeMph">Stake MPH</ng-container>
               </button>
               <div class="row">
                 <div class="col-12 mb-3 mb-lg-0">
@@ -246,7 +244,7 @@
                     <i class="fe fe-arrow-down mr-2 align-bottom"></i>
                     <ng-container i18n="@@unstakeXMph"
                       >Unstake xMPH</ng-container
-                    >&nbsp;
+                    >
                   </button>
                 </div>
               </div>
@@ -385,8 +383,9 @@
                 <!-- Next distribution on {{ distributionEndTime }} -->
                 <ng-container i18n="@@nextDistributionOn"
                   >Next distribution in</ng-container
-                >&nbsp;{{ daysToNextDistribution }}&nbsp;<ng-container
-                  i18n="@@nextDistributionOnDays"
+                >
+                {{ daysToNextDistribution }}
+                <ng-container i18n="@@nextDistributionOnDays"
                   >days</ng-container
                 >
                 <i
@@ -411,11 +410,11 @@
                   class="list-group-item list-group-item-action px-4"
                 >
                   <h4 class="mb-1">
-                    <ng-container i18n="@@earnUpTo">Earn up to</ng-container
-                    >&nbsp; {{ maxAPY.toFixed(2) }}%
+                    <ng-container i18n="@@earnUpTo">Earn up to</ng-container>
+                    {{ maxAPY.toFixed(2) }}%
                     <ng-container i18n="@@fixed-rateApr"
                       >fixed-rate APR</ng-container
-                    >&nbsp;
+                    >
                   </h4>
                   <small class="text-muted" i18n="@@thingsYouCanDoText1"
                     >Deposit your crypto or stablecoin to start earning
