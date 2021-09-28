@@ -196,6 +196,10 @@ export class ConstantsService {
     [this.CHAIN_ID.MAINNET]: '0xa0246c9032bC3A600820415aE600c6388619A14D',
     [this.CHAIN_ID.RINKEBY]: '',
   };
+  FTT = {
+    [this.CHAIN_ID.MAINNET]: '0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
   GUSD = {
     [this.CHAIN_ID.MAINNET]: '0x056fd409e1d7a124bd7017459dfea2f387b6d5cd',
     [this.CHAIN_ID.RINKEBY]: '',

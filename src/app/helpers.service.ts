@@ -81,6 +81,10 @@ export class HelpersService {
       return await this.getChainlinkPriceUSD('YFI', chainID);
     } else if (address === this.constants.ZRX[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('ZRX', chainID);
+    } else if (address === this.constants.FTT[chainID].toLowerCase()) {
+      const fttPriceETH = await this.getChainlinkPriceETH('FTT', chainID);
+      const ethPriceUSD = await this.getChainlinkPriceUSD('ETH', chainID);
+      return fttPriceETH * ethPriceUSD;
     } else if (address === this.constants.CRVHUSD[chainID].toLowerCase()) {
       return 1;
     }
