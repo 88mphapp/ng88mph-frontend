@@ -331,22 +331,35 @@
           <h2 class="mb-0 mr-auto" i18n="@@yieldTokenOpportunities">
             Yield token opportunities
           </h2>
-          <div class="form-group mb-0">
-            <select
-              class="custom-select"
-              id="pool-select"
-              data-toggle="select"
-              (change)="selectPool($event.target.value)"
-            >
-              <option
-                value="{{ i }}"
-                *ngFor="let pool of allPoolList; index as i"
-              >
-                {{ pool.stablecoinSymbol }} via {{ pool.protocol }}
-                <ng-container i18n="@@yieldPoolList"> Protocol</ng-container
-                >&nbsp;
-              </option>
-            </select>
+        </div>
+        <div class="card-header">
+          <div class="form-row">
+            <div class="col-6">
+              <div class="form-group mb-0 mr-2">
+                <select class="custom-select" id="" data-toggle="select">
+                  <option value="">Protocol</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group mb-0">
+                <select
+                  class="custom-select"
+                  id="pool-select"
+                  data-toggle="select"
+                  (change)="selectPool($event.target.value)"
+                >
+                  <option
+                    value="{{ i }}"
+                    *ngFor="let pool of allPoolList; index as i"
+                  >
+                    {{ pool.stablecoinSymbol }} via {{ pool.protocol }}
+                    <ng-container i18n="@@yieldPoolList"> Protocol</ng-container
+                    >&nbsp;
+                  </option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
         <div
