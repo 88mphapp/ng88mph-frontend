@@ -300,9 +300,6 @@ export class DepositComponent implements OnInit {
         allProtocolList.sort((a, b) => {
           return a > b ? 1 : a < b ? -1 : 0;
         });
-        console.log(allPoolList);
-        console.log(allAssetList);
-        console.log(allPoolList);
         this.allPoolList = allPoolList;
         this.allAssetList = allAssetList;
         this.allProtocolList = allProtocolList;
