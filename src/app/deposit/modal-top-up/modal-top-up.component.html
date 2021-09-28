@@ -25,7 +25,8 @@
                   <label>
                     <ng-container i18n="@@topUpAmount"
                       >Top up amount</ng-container
-                    >&nbsp; ({{ poolInfo.stablecoinSymbol }})</label
+                    >
+                    ({{ poolInfo.stablecoinSymbol }})</label
                   >
                   <div class="input-group">
                     <input
@@ -76,9 +77,8 @@
                     <small class="form-text text-muted"
                       >{{ depositTokenBalance.toFormat(4) }}
                       {{ poolInfo.stablecoinSymbol }}
-                      <ng-container i18n="@@Max">available</ng-container
-                      >&nbsp;</small
-                    >
+                      <ng-container i18n="@@Max">available</ng-container>
+                    </small>
                   </div>
                 </div>
                 <div class="table-responsive pr-3">
@@ -186,7 +186,8 @@
                         <td class="px-0 py-2 text-white border-0 small">
                           <ng-container i18n="@@withdrawableAtMaturity"
                             >Withdrawable at maturity</ng-container
-                          >&nbsp; | {{ depositMaturation }}
+                          >
+                          | {{ depositMaturation }}
                         </td>
                       </tr>
                       <tr>
@@ -252,11 +253,13 @@
                           <small>
                             <ng-container i18n="@@depositFeeText1"
                               >Note: A</ng-container
-                            >&nbsp; {{ poolInfo.depositFee * 100 }}%
+                            >
+                            {{ poolInfo.depositFee * 100 }}%
                             <ng-container i18n="@@depositFeeText2"
                               >fee is taken by the underlying yield
                               protocol</ng-container
-                            >&nbsp; ({{ poolInfo.protocol }})</small
+                            >
+                            ({{ poolInfo.protocol }})</small
                           >
                         </td>
                       </tr>
@@ -280,7 +283,7 @@
                         >
                           <span class="mb-1 glowing">
                             {{ mphRewardAmountToken.toFormat(4) }}
-                            <ng-container i18n="@@MPH">MPH</ng-container>&nbsp;
+                            <ng-container i18n="@@MPH">MPH</ng-container>
                           </span>
                           <span class="text-muted">
                             (${{ mphRewardAmountUSD.toFormat(4) }})
@@ -303,7 +306,7 @@
                                 .plus(mphRewardAmountToken)
                                 .toFormat(4)
                             }}
-                            <ng-container i18n="@@MPH">MPH</ng-container>&nbsp;
+                            <ng-container i18n="@@MPH">MPH</ng-container>
                           </span>
                           <span class="text-muted">
                             (${{

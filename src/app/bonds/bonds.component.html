@@ -354,8 +354,9 @@
                     *ngFor="let pool of allPoolList; index as i"
                   >
                     {{ pool.stablecoinSymbol }} via {{ pool.protocol }}
-                    <ng-container i18n="@@yieldPoolList"> Protocol</ng-container
-                    >&nbsp;
+                    <ng-container i18n="@@yieldPoolList">
+                      Protocol</ng-container
+                    >
                   </option>
                 </select>
               </div>
@@ -400,7 +401,7 @@
                 {{ estimatedCurrentFloatingInterestRate.toFormat(1) }}% <br />
                 <ng-container i18n="@@yieldCurrentAPY"
                   >Current supply APY</ng-container
-                >&nbsp;
+                >
                 <i
                   class="fe fe-info ml-1 align-bottom"
                   placement="top"
@@ -423,7 +424,7 @@
         </div>
         <div class="card-body p-0">
           <h2 class="glowing text-center py-4 mb-0" *ngIf="loadingCalculator">
-            <ng-container i18n="@@loadingStats">Loading...</ng-container>&nbsp;
+            <ng-container i18n="@@loadingStats">Loading...</ng-container>
           </h2>
           <h2
             class="glowing text-center py-4 mb-0"
@@ -431,7 +432,7 @@
           >
             <ng-container i18n="@@loadingStatsNotAvailable"
               >No debt available. Select another asset.</ng-container
-            >&nbsp;
+            >
           </h2>
           <div
             class="table-responsive mb-0"
