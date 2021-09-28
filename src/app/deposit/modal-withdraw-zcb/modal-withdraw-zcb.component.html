@@ -15,18 +15,18 @@
           </a>
         </div>
         <div class="col">
-          <h1 class="mb-0 h3">Withdraw</h1>
+          <h1 class="mb-0 h3" i18n="withdraw">Withdraw</h1>
         </div>
       </div>
       <div class="row justify-content-center">
         <div class="col-12 col-lg-6 pt-0">
           <div class="card mb-8">
             <div class="card-body">
-              <p class="text-white">
+              <p class="text-white" i18n="withdrawZCBText">
                 Convert your zero coupon bonds 1:1 for the underlying asset.
               </p>
               <div class="form-group mb-0">
-                <label>Amount</label>
+                <label i18n="amount">Amount</label>
                 <div class="input-group mb-2">
                   <input
                     type="text"
@@ -41,6 +41,7 @@
                       class="btn btn-lg border-gradient"
                       type="button"
                       (click)="setMaxWithdrawAmount()"
+                      i18n="Max"
                     >
                       Max
                     </button>
@@ -55,12 +56,14 @@
                 }}
                 ({{ this.userZCBPool.amountToken.toFormat() }}
                 {{ this.userZCBPool.poolInfo.stablecoinSymbol }})
-                available</small
+                <ng-container i18n="@@available">available</ng-container
+                >&nbsp;</small
               >
               <button
                 class="btn btn-lg btn-bg-gradient btn-block"
                 type="button"
                 (click)="withdraw()"
+                i18n="withdraw"
               >
                 Withdraw
               </button>

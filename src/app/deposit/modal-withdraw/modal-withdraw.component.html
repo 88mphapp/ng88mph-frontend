@@ -16,10 +16,10 @@
         </div>
         <div class="col">
           <ng-container *ngIf="userDeposit.locked">
-            <h1 class="mb-0 h3">Withdraw early</h1>
+            <h1 class="mb-0 h3" i18n="@@withdrawEarly">Withdraw early</h1>
           </ng-container>
           <ng-container *ngIf="!userDeposit.locked">
-            <h1 class="mb-0 h3">Withdraw</h1>
+            <h1 class="mb-0 h3" i18n="@@withdraw">Withdraw</h1>
           </ng-container>
         </div>
       </div>
@@ -28,18 +28,21 @@
           <div class="card mb-8">
             <div class="card-body">
               <ng-container *ngIf="userDeposit.locked">
-                <div class="alert border-gradient mb-4">
+                <div
+                  class="alert border-gradient mb-4"
+                  i18n="@@withdrawModalText"
+                >
                   Warning: by withdrawing your deposit before the maturation
                   date, you will forfeit your fixed-rate yield earned so far.
                 </div>
               </ng-container>
               <ng-container *ngIf="!userDeposit.locked">
-                <p class="text-white">
+                <p class="text-white" i18n="@@withdrawYourDeposit">
                   Withdraw your deposit and fixed-rate yield.
                 </p>
               </ng-container>
               <div class="form-group mb-1">
-                <label>Amount</label>
+                <label i18n="@@amount">Amount</label>
                 <div class="input-group">
                   <input
                     type="text"
@@ -55,6 +58,7 @@
                 class="btn btn-sm btn-dark mr-2"
                 type="button"
                 (click)="presetWithdrawAmount(25)"
+                i18n="@@25%"
               >
                 25%
               </button>
@@ -62,6 +66,7 @@
                 class="btn btn-sm btn-dark mr-2"
                 type="button"
                 (click)="presetWithdrawAmount(50)"
+                i18n="@@50%"
               >
                 50%
               </button>
@@ -69,6 +74,7 @@
                 class="btn btn-sm btn-dark mr-2"
                 type="button"
                 (click)="presetWithdrawAmount(75)"
+                i18n="@@75%"
               >
                 75%
               </button>
@@ -76,6 +82,7 @@
                 class="btn btn-sm btn-dark mr-2"
                 type="button"
                 (click)="presetWithdrawAmount(100)"
+                i18n="@@100%"
               >
                 100%
               </button>
@@ -84,13 +91,18 @@
                 {{ poolInfo.stablecoinSymbol }}
                 (${{
                   maxWithdrawAmountToken.times(stablecoinPriceUSD).toFormat(2)
-                }}) available</small
+                }})
+                <ng-container i18n="@available">available</ng-container
+                >&nbsp;</small
               >
               <div class="table-responsive py-3 pr-3">
                 <table class="table">
                   <tbody>
                     <tr>
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="amountToWithdraw"
+                      >
                         Amount to withdraw
                       </td>
                       <td
@@ -114,7 +126,10 @@
                       </td>
                     </tr>
                     <tr *ngIf="!userDeposit.locked">
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="fixedRateYieldToWithdraw"
+                      >
                         Fixed-rate yield to withdraw
                       </td>
                       <td
@@ -138,11 +153,15 @@
                       </td>
                     </tr>
                     <tr *ngIf="userDeposit.locked">
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="earlyWithdrawFee"
+                      >
                         Early withdraw fee (0.5%)
                         <i
                           class="fe fe-info ml-1 align-bottom"
                           placement="top"
+                          i18n-ngbTooltip="earlyWithdrawFeeText"
                           ngbTooltip="Early withdraw fee applied on the amount you want to withdraw. 100% of the fee is redistributed to MPH stakers."
                         ></i>
                       </td>
@@ -163,7 +182,10 @@
                       </td>
                     </tr>
                     <tr style="border-top: 1px dotted white">
-                      <td class="px-0 py-2 text-white border-0 small">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="totslAmountToWithdraw"
+                      >
                         Total amount to withdraw
                       </td>
                       <td
@@ -190,11 +212,11 @@
                 type="button"
                 (click)="withdraw()"
               >
-                <ng-container *ngIf="userDeposit.locked"
+                <ng-container *ngIf="userDeposit.locked" i18n="withdrawEarly"
                   >Withdraw early</ng-container
                 >
 
-                <ng-container *ngIf="!userDeposit.locked"
+                <ng-container *ngIf="!userDeposit.locked" i18n="withdraw"
                   >Withdraw</ng-container
                 >
               </button>

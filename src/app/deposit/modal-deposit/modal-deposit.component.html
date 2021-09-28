@@ -15,7 +15,7 @@
           </a>
         </div>
         <div class="col">
-          <h1 class="mb-0 h3">Deposit</h1>
+          <h1 class="mb-0 h3" i18n="@@modalDeposit">Deposit</h1>
         </div>
       </div>
       <div class="row justify-content-center">
@@ -46,7 +46,9 @@
                       </div>
                       <div class="col ml-n2">
                         <div class="form-group mb-0">
-                          <label>Select fixed APR asset</label>
+                          <label i18n="@@modalDepositSelectAsset"
+                            >Select fixed APR asset</label
+                          >
                           <div class="input-group input-group-lg">
                             <select
                               class="custom-select"
@@ -87,8 +89,10 @@
                       </div>
                       <div class="col ml-n2">
                         <div class="form-group mb-1">
-                          <label
-                            >Deposit amount ({{ selectedDepositToken }})</label
+                          <label>
+                            <ng-container i18n="@@depositAmount"
+                              >Deposit amount</ng-container
+                            >&nbsp; ({{ selectedDepositToken }})</label
                           >
                           <div class="input-group">
                             <input
@@ -103,7 +107,7 @@
                           </div>
                         </div>
                         <div class="form-group mb-1" *ngIf="shouldDisplayZap">
-                          <label>Deposit token</label>
+                          <label i18n="@@depositToken"> Deposit token </label>
                           <div class="input-group input-group-lg">
                             <select
                               class="custom-select"
@@ -125,6 +129,7 @@
                           class="btn btn-sm btn-dark mr-2"
                           type="button"
                           (click)="presetDepositAmount(25)"
+                          i18n="@@presetDepositAmount25"
                         >
                           25%
                         </button>
@@ -132,6 +137,7 @@
                           class="btn btn-sm btn-dark mr-2"
                           type="button"
                           (click)="presetDepositAmount(50)"
+                          i18n="@@presetDepositAmount50"
                         >
                           50%
                         </button>
@@ -139,6 +145,7 @@
                           class="btn btn-sm btn-dark mr-2"
                           type="button"
                           (click)="presetDepositAmount(75)"
+                          i18n="@@presetDepositAmount75"
                         >
                           75%
                         </button>
@@ -146,6 +153,7 @@
                           class="btn btn-sm btn-dark mr-2"
                           type="button"
                           (click)="presetDepositAmount(100)"
+                          i18n="@@presetDepositAmount100"
                         >
                           100%
                         </button>
@@ -154,10 +162,14 @@
                             <small class="form-text text-muted mb-0"
                               >{{ depositTokenBalance.toFormat(4) }}
                               {{ selectedDepositToken }}
-                              available | Min:
+                              <ng-container i18n="@@depositAvailable"
+                                >available | Min:</ng-container
+                              >&nbsp;
                               {{ minDepositAmount.toFormat() }}
-                              {{ selectedPoolInfo.stablecoinSymbol }} per
-                              deposit</small
+                              {{ selectedPoolInfo.stablecoinSymbol }}
+                              <ng-container i18n="@@amountAvailablePerDeposit"
+                                >per deposit</ng-container
+                              >&nbsp;</small
                             >
                           </div>
                         </div>
@@ -186,17 +198,21 @@
                       <div class="col ml-n2">
                         <div class="form-row mb-0">
                           <div class="col">
-                            <h4 class="mb-2">Maturity</h4>
-                            <small class="text-muted"
-                              >You will be able to redeem your deposit &
-                              fixed-rate yield on the corresponding maturity
-                              selected. Early withdrawal of your deposit is
-                              allowed minus a 0.5% fee.
+                            <h4 class="mb-2" i18n="@@maturity">Maturity</h4>
+                            <small class="text-muted">
+                              <ng-container i18n="@@depositMaturityText"
+                                >You will be able to redeem your deposit &
+                                fixed-rate yield on the corresponding maturity
+                                selected. Early withdrawal of your deposit is
+                                allowed minus a 0.5% fee. </ng-container
+                              >&nbsp;
                               <a
                                 href="https://docs.88mph.app"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                >Learn more.</a
+                                i18n="@@learnMore"
+                              >
+                                Learn more.</a
                               ></small
                             >
                           </div>
@@ -208,7 +224,9 @@
                             "
                           >
                             <div class="form-group mt-3">
-                              <label>Select a custom maturity</label>
+                              <label i18n="@@selectCustomMaturity"
+                                >Select a custom maturity</label
+                              >
                               <div class="input-group align-items-center">
                                 <input
                                   type="tel"
@@ -239,8 +257,13 @@
                                 />
                               </div>
                               <small class="form-text text-muted my-2">
-                                Max:
-                                {{ maxDepositPeriodInDays }} days
+                                <ng-container i18n="@@depositMaturityMax"
+                                  >Max:</ng-container
+                                >
+                                {{ maxDepositPeriodInDays }}
+                                <ng-container i18n="@@depositMaturityMaxDays"
+                                  >days</ng-container
+                                >
                               </small>
                             </div>
                           </div>
@@ -249,7 +272,9 @@
                             *ngIf="selectedZCBPools.length > 0"
                           >
                             <div class="form-group mb-0">
-                              <label for="PresetMaturity"
+                              <label
+                                for="PresetMaturity"
+                                i18n="@@depositPresetMaturity"
                                 >OR a preset maturity</label
                               >
                               <div class="input-group input-group-lg">
@@ -261,7 +286,9 @@
                                   data-toggle="select"
                                   (ngModelChange)="setPresetMaturity()"
                                 >
-                                  <option [ngValue]="null">None</option>
+                                  <option [ngValue]="null" i18n="@@none">
+                                    None
+                                  </option>
                                   <option
                                     *ngFor="let pool of selectedZCBPools"
                                     [ngValue]="pool"
@@ -270,7 +297,10 @@
                                   </option>
                                 </select>
                               </div>
-                              <small class="form-text text-muted my-2">
+                              <small
+                                class="form-text text-muted my-2"
+                                i18n="@@presetMaturityText"
+                              >
                                 Unlike custom maturity, preset maturity doesn't
                                 allow early withdrawal of the principal. But you
                                 can sell the principal at a discounted market
@@ -289,11 +319,15 @@
                   <table class="table">
                     <tbody>
                       <tr>
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@fixedAPR"
+                        >
                           Fixed APR
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
+                            i18n-ngbTooltip="@@depositAssetsText"
                             ngbTooltip="When users/protocols deposit assets into 88mph, they earn a fixed-rate yield during the duration of the deposit that is redeemable at maturity. A longer deposit's maturity will earn a lower rate because we can't predicte the variable yield rate on the underlying protocols used to generate the yield (Aave, Compound, etc.)."
                           ></i>
                         </td>
@@ -304,11 +338,15 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@depositYieldEarnedMaturity"
+                        >
                           Yield earned at maturity
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
+                            i18n-ngbTooltip="@@YieldEarnedMaturityText"
                             ngbTooltip="Fixed-rate yield available for withdraw at maturity."
                           ></i>
                         </td>
@@ -340,11 +378,14 @@
                       </tr>
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
-                          Total available at maturity | {{ depositMaturation }}
+                          <ng-container i18n="@@TotalAvailableMaturity"
+                            >Total available at maturity</ng-container
+                          >&nbsp; | {{ depositMaturation }}
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
                             ngbTooltip="Initial deposit + fixed-rate yield earned."
+                            i18n-ngbTooltip="@@TotalAvailableMaturityText"
                           ></i>
                         </td>
                         <td
@@ -392,11 +433,15 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@mphRewards"
+                        >
                           MPH rewards
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
+                            i18n-ngbTooltip="@@mphRewardsExplained"
                             ngbTooltip="Using 88mph gives rewards in MPH token. MPH rewards are vested linearly over the deposit duration. You can claim your MPH rewards whenever you want over the vesting period. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
                           ></i>
                         </td>
@@ -415,11 +460,15 @@
                       </tr>
                       <!--displayed if preset maturity selected-->
                       <tr *ngIf="presetMaturity">
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@mphAPR"
+                        >
                           MPH APR
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
+                            i18n-ngbTooltip="@@mphAPRStakeText"
                             ngbTooltip="Earned by providing liquidity and stake your SushiSwap SLP tokens on the 88mph Stake page."
                           ></i>
                         </td>
@@ -432,11 +481,15 @@
                         </td>
                       </tr>
                       <tr *ngIf="!presetMaturity">
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@mphAPR"
+                        >
                           MPH APR
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
+                            i18n-ngbTooltip="@@mphAPRText"
                             ngbTooltip="MPH APR varies based on the USD value of MPH. The APR is just a representation on how these MPH rewards would be during a 1-year period"
                           ></i>
                         </td>
@@ -449,11 +502,15 @@
                         </td>
                       </tr>
                       <tr style="border-top: 1px dotted white">
-                        <td class="px-0 py-2 text-white border-0 small">
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
+                          i18n="@@totalAvailableIncluMPH"
+                        >
                           Total available at maturity (incl. MPH)
                           <i
                             class="fe fe-info ml-1 align-bottom"
                             placement="top"
+                            i18n-ngbTooltip="@@TotalDepositText"
                             ngbTooltip="Initial deposit + fixed-rate yield earned + MPH tokens"
                           ></i>
                         </td>
@@ -495,6 +552,7 @@
                   type="button"
                   class="btn btn-lg btn-block btn-bg-gradient mb-3"
                   [disabled]="true"
+                  i18n="@@enterAnAmount"
                 >
                   Enter an Amount
                 </button>
@@ -506,6 +564,7 @@
                   type="button"
                   (click)="approve()"
                   [disabled]="!this.wallet.connected || this.wallet.watching"
+                  i18n="@@approve"
                 >
                   Approve
                 </button>
@@ -519,7 +578,12 @@
                   class="btn btn-lg btn-block btn-bg-gradient mb-3"
                   [disabled]="true"
                 >
-                  Not enough {{ selectedPoolInfo.stablecoinSymbol }} available
+                  <ng-container i18n="@@depositStepsCompleted"
+                    >Not enough</ng-container
+                  >&nbsp; {{ selectedPoolInfo.stablecoinSymbol }}
+                  <ng-container i18n="@@depositStepsCompleted"
+                    >available</ng-container
+                  >&nbsp;
                 </button>
                 <button
                   *ngIf="
@@ -532,6 +596,7 @@
                   type="button"
                   class="btn btn-lg btn-block btn-bg-gradient mb-3"
                   [disabled]="true"
+                  i18n="@@NFTDataDescription"
                 >
                   Add a name, image file, and description to your NFT
                 </button>
@@ -550,6 +615,7 @@
                     !canContinue() || this.wallet.watching || isLoading
                   "
                   routerLink="/earn"
+                  i18n="@@depositBtn"
                 >
                   Deposit
                 </button>
@@ -564,7 +630,7 @@
                         aria-expanded="false"
                         aria-controls="collapseExample"
                       >
-                        <label for="NFTmetadata"
+                        <label for="NFTmetadata" i18n="@@NFTCustomData"
                           >Custom NFT metadata (optional)
                           <i class="fe fe-chevron-down ml-auto"></i
                         ></label>
@@ -579,25 +645,37 @@
                           <small
                             id="NFTmetadataHelp"
                             class="form-text text-muted text-left"
-                            >88mph's deposits are ERC-720 tokens that you can
-                            customize with JSON metadata schemas, for example, a
-                            title, a description, an image, etc
+                          >
+                            <ng-container i18n="@@NFTMetadataHelp1"
+                              >88mph's deposits are ERC-720 tokens that you can
+                              customize with JSON metadata schemas, for example,
+                              a title, a description, an image,
+                              etc</ng-container
+                            >&nbsp;
                             <a
                               href="https://opensea.io/assets/0x9d481e42d9a2b52397262cdbe76abf3ca7b52203/34"
                               target="_blank"
+                              i18n="@@NFTMetadataHelp2"
                               >(example)</a
-                            >. We invite you to learn more about NFT metadata on
+                            >.
+                            <ng-container i18n="@@NFTMetadataHelp3">
+                              We invite you to learn more about NFT metadata on </ng-container
+                            >&nbsp;
                             <a
                               href="https://nftschool.dev/reference/metadata-schemas/#intro-to-json-schemas"
                               target="_blank"
                               rel="noopener noreferrer"
+                              i18n="@@NFTMetadataHelp4"
                               >NFT School</a
                             >
-                            and to store your files on
+                            <ng-container i18n="@@NFTMetadataHelp5"
+                              >and to store your files on</ng-container
+                            >&nbsp;
                             <a
                               href="https://nft.storage/"
                               target="_blank"
                               rel="noopener noreferrer"
+                              i18n="@@NFTMetadataHelp6"
                               >NFT Storage</a
                             >.</small
                           >
@@ -619,6 +697,7 @@
                                       text-white
                                       border-gradient
                                     "
+                                    i18n="@@NFTDescription1"
                                   >
                                     1
                                   </div>
@@ -626,18 +705,20 @@
                               </div>
                               <div class="col ml-n2">
                                 <div class="form-group">
-                                  <label>Name</label>
+                                  <label i18n="@@NFTName">Name</label>
                                   <input
                                     type="text"
                                     class="form-control form-control-lg w-100"
                                     [(ngModel)]="name"
                                     name="name"
                                     placeholder="Item Name"
+                                    i18n-placeholder="@@NFTName"
                                     aria-describedby="nameHelp"
                                   />
                                   <small
                                     id="nameHelp"
                                     class="form-text text-muted"
+                                    i18n="@@NFTNameHelp"
                                     >The name to refer to your NFT.</small
                                   >
                                 </div>
@@ -659,6 +740,7 @@
                                       text-white
                                       border-gradient
                                     "
+                                    i18n="@@NFTDescription2"
                                   >
                                     2
                                   </div>
@@ -666,7 +748,9 @@
                               </div>
                               <div class="col ml-n2">
                                 <div class="form-group">
-                                  <label for="Media">Upload Image</label>
+                                  <label for="Media" i18n="@@NFTMedia"
+                                    >Upload Image</label
+                                  >
                                   <input
                                     type="file"
                                     accept="image/*"
@@ -679,6 +763,7 @@
                                   <small
                                     id="mediaHelp"
                                     class="form-text text-muted"
+                                    i18n="@@NFTMediaType"
                                     >Attach a jpg, png, or gif to your
                                     NFT.</small
                                   >
@@ -707,6 +792,7 @@
                                       text-white
                                       border-gradient
                                     "
+                                    i18n="@@NFTDescription3"
                                   >
                                     3
                                   </div>
@@ -783,16 +869,22 @@
                               </div>
                               <div class="col ml-n2">
                                 <div>
-                                  <label for="Description">Description</label>
+                                  <label
+                                    for="Description"
+                                    i18n="@@NFTDescription"
+                                    >Description</label
+                                  >
                                   <textarea
                                     name="message"
                                     [(ngModel)]="description"
                                     placeholder="More information about your NFT."
+                                    i18n-placeholder="@@NFTDescriptionHelp"
                                     class="form-control form-control-lg w-100"
                                   ></textarea>
                                   <small
                                     id="mediaHelp"
                                     class="form-text text-muted"
+                                    i18n="@@NFTMediaHelp"
                                     >Describe your fixed-rate yield bearing NFT
                                     to the world.</small
                                   >
@@ -815,6 +907,7 @@
                                       text-white
                                       border-gradient
                                     "
+                                    i18n="@@NFTDescription4"
                                   >
                                     5
                                   </div>
@@ -830,27 +923,36 @@
                                   [formGroup]="a"
                                 >
                                   <div class="form-group">
-                                    <label>Attribute Name</label>
+                                    <label i18n="@@NFTAttributeName"
+                                      >Attribute Name</label
+                                    >
                                     <input
                                       type="text"
                                       formControlName="trait_type"
                                       class="form-control form-control-lg w-100"
                                       placeholder="Hat"
+                                      i18n-placeholder="
+                                        @@NFTAttributePlaceholder"
                                     />
                                   </div>
                                   <div class="form-group">
-                                    <label>Attribute Value</label>
+                                    <label i18n="@@NFTAttributeValue"
+                                      >Attribute Value</label
+                                    >
                                     <input
                                       type="text"
                                       formControlName="value"
                                       class="form-control form-control-lg w-100"
                                       placeholder="Rainbow Baseball Cap"
+                                      i18n-placeholder="
+                                        @@NFTAttributeValuePlaceholder"
                                     />
                                   </div>
                                   <button
                                     class="btn btn-sm border-gradient mb-3"
                                     type="button"
                                     (click)="deleteAttribute(i)"
+                                    i18n="@@deleteAttributeBtn"
                                   >
                                     Delete Attribute
                                   </button>
@@ -859,10 +961,14 @@
                                   class="btn btn-sm btn-bg-gradient mb-2"
                                   type="button"
                                   (click)="addAttribute()"
+                                  i18n="@@addAttributeBtn"
                                 >
                                   Add Attribute
                                 </button>
-                                <small id="" class="form-text text-muted"
+                                <small
+                                  id=""
+                                  class="form-text text-muted"
+                                  i18n="@@optionalNFTAttributes"
                                   >Optional - Any additional properties and
                                   traits for your NFT.</small
                                 >
@@ -884,6 +990,7 @@
                                       text-white
                                       border-gradient
                                     "
+                                    i18n="@@NFTDescription5"
                                   >
                                     6
                                   </div>
@@ -891,7 +998,9 @@
                               </div>
                               <div class="col ml-n2">
                                 <div class="form-group">
-                                  <label for="externalURL"
+                                  <label
+                                    for="externalURL"
+                                    i18n="@@nftExternalUrl"
                                     >External URL (optional)</label
                                   >
                                   <input
@@ -899,9 +1008,13 @@
                                     [(ngModel)]="externalURL"
                                     name="externalURL"
                                     placeholder="https://example.com"
+                                    i18n="@@nftExternalUrlPlaceholder"
                                     class="form-control form-control-lg w-100"
                                   />
-                                  <small id="" class="form-text text-muted"
+                                  <small
+                                    id=""
+                                    class="form-text text-muted"
+                                    i18n="@@nftExternalUrlText"
                                     >An external link related to your
                                     NFT.</small
                                   >
@@ -922,22 +1035,26 @@
                     </div>
                   </div>
                 </div>
-                <p class="small">
+                <p class="small" i18n="@@depositAwarenessText">
                   88mph is a non-custodial, fully on-chain protocol acting as an
                   intermediary between you and third-party variable yield rate
                   protocols to offer the best fixed yield rate on your assets.
                 </p>
                 <p class="small">
-                  After confirming your deposit, it will generate a yield at a
-                  variable rate on third-party protocols until it reaches its
-                  maturity. Depositors receive an NFT (ERC-721) representing
-                  their custom-maturity deposit or ERC-20 tokens if it's a
-                  preset maturity. It gives you full control over your deposits.
-                  Withdraw, top-up, roll over your deposit + fixed-rate yield at
-                  any time.<a
+                  <ng-container i18n="@@depositAwarenessText2"
+                    >After confirming your deposit, it will generate a yield at
+                    a variable rate on third-party protocols until it reaches
+                    its maturity. Depositors receive an NFT (ERC-721)
+                    representing their custom-maturity deposit or ERC-20 tokens
+                    if it's a preset maturity. It gives you full control over
+                    your deposits. Withdraw, top-up, roll over your deposit +
+                    fixed-rate yield at any time.</ng-container
+                  >&nbsp;
+                  <a
                     href="https://docs.88mph.app/"
                     target="_blank"
                     rel="noopener noreferrer"
+                    i18n="@@learnMore"
                     >Learn more.</a
                   >
                 </p>
