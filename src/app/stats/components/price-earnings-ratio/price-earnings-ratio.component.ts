@@ -250,7 +250,10 @@ export class PriceEarningsRatioComponent implements OnInit {
     }
     let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(
       this.constants.MPH_ADDRESS[this.wallet.networkID],
-      `${days}`
+      `${days}`,
+      this.blocks,
+      this.timestamps,
+      this.wallet.networkID
     );
 
     for (let t in data) {
