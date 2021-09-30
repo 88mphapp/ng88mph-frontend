@@ -92,9 +92,9 @@ export class HelpersService {
   async getHistoricalTokenPriceUSD(
     tokenAddress: string,
     days: string,
-    blocks?: number[],
-    timestamps?: number[],
-    chainID?: number
+    blocks: number[],
+    timestamps: number[],
+    chainID: number
   ): Promise<Array<Array<number>>> {
     const address = tokenAddress.toLowerCase();
 

@@ -294,7 +294,10 @@ export class MphLiquidityComponent implements OnInit {
       this.constants.DAY_IN_SEC;
     let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(
       this.constants.MPH_ADDRESS[this.wallet.networkID],
-      `${days}`
+      `${days}`,
+      this.blocks,
+      this.timestamps,
+      this.wallet.networkID
     );
     for (let time in this.timestamps) {
       const entry = data.find(
