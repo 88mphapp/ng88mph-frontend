@@ -80,6 +80,10 @@
       "USD": "0x8fffffd4afb6115b954bd326cbe7b4ba576818f6",
       "ETH": "0x986b5e1e1755e3c2440e960477f25201b0a8bbd4"
     },
+    "USDP": {
+      "USD": "",
+      "ETH": "0x3a08ebbab125224b7b6474384ee39fbb247d2200"
+    },
     "USDT": {
       "USD": "0x3e7d1eab13ad0104d2750b8863b489d65364e32d",
       "ETH": "0xee9f2375b4bdf6387aa8265dd4fb8f16512a1d46"

@@ -69,6 +69,11 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/blocklytics/rinkeby-blocks',
   };
+  CHAINLINK_GRAPHQL_ENDPOINT = {
+    [this.CHAIN_ID.MAINNET]:
+      'https://api.thegraph.com/subgraphs/name/openpredict/chainlink-prices-subgraph',
+    [this.CHAIN_ID.RINKEBY]: '',
+  };
   UNISWAP_V2_GRAPHQL_ENDPOINT =
     'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
   UNISWAP_V3_GRAPHQL_ENDPOINT =

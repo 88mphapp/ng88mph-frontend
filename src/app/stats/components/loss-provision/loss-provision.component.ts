@@ -235,26 +235,32 @@ export class LossProvisionComponent implements OnInit {
         this.data[i].label &&
         this.data[i].label != '0xb1abaac351e06d40441cf2cd97f6f0098e6473f2'
       ) {
-        // fetch historical token prices from coingecko API
-        let apiResult: number[][] = [];
-        let prices: number[] = [];
-        apiResult = await this.helpers.getHistoricalTokenPriceUSD(
-          this.data[i].stablecoin,
-          `${days}`
-        );
-
-        // push historical USD data to the DataObject
-        for (let j in this.timestamps) {
-          // find the historical price in the api result
-          let found = apiResult.find(
-            (price) => price[0] == this.timestamps[j] * 1000
+        let tvl = this.data[i].dataLossProvision.find((x) => x > 0);
+        if (tvl) {
+          // fetch historical token prices from coingecko API
+          let apiResult: number[][] = [];
+          let prices: number[] = [];
+          apiResult = await this.helpers.getHistoricalTokenPriceUSD(
+            this.data[i].stablecoin,
+            `${days}`,
+            this.blocks,
+            this.timestamps,
+            this.wallet.networkID
           );
-          if (found) {
-            // if a historical price is found
-            this.data[i].dataUSD[j] = found[1];
-          } else {
-            // if no historical price is found
-            this.data[i].dataUSD[j] = 0;
+
+          // push historical USD data to the DataObject
+          for (let j in this.timestamps) {
+            // find the historical price in the api result
+            let found = apiResult.find(
+              (price) => price[0] == this.timestamps[j] * 1000
+            );
+            if (found) {
+              // if a historical price is found
+              this.data[i].dataUSD[j] = found[1];
+            } else {
+              // if no historical price is found
+              this.data[i].dataUSD[j] = 0;
+            }
           }
         }
       } else if (

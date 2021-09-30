@@ -221,19 +221,25 @@ export class HistoricalAssetTvlComponent implements OnInit {
     }
     for (let pool in this.data) {
       if (this.data[pool].label) {
-        let apiResult: number[][] = [];
-        apiResult = await this.helpers.getHistoricalTokenPriceUSD(
-          this.data[pool].stablecoin,
-          `${days}`
-        );
-
-        for (let t in this.timestamps) {
-          const found = apiResult.find(
-            (price) => price[0] === this.timestamps[t] * 1000
+        let tvl = this.data[pool].dataTVL.find((x) => x > 0);
+        if (tvl) {
+          let apiResult: number[][] = [];
+          apiResult = await this.helpers.getHistoricalTokenPriceUSD(
+            this.data[pool].stablecoin,
+            `${days}`,
+            this.blocks,
+            this.timestamps,
+            this.wallet.networkID
           );
-          found
-            ? this.data[pool].dataUSD.push(found[1])
-            : this.data[pool].dataUSD.push(0);
+
+          for (let t in this.timestamps) {
+            const found = apiResult.find(
+              (price) => price[0] === this.timestamps[t] * 1000
+            );
+            found
+              ? this.data[pool].dataUSD.push(found[1])
+              : this.data[pool].dataUSD.push(0);
+          }
         }
       } else {
         this.data.shift();

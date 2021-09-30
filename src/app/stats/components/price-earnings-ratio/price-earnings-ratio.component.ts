@@ -253,7 +253,6 @@ export class PriceEarningsRatioComponent implements OnInit {
       `${days}`
     );
 
-    console.log(days);
     for (let t in data) {
       const start = parseInt(data[t].lastRewardTimestamp);
       const end = parseInt(data[t].currentUnlockEndTimestamp);
