@@ -26,7 +26,6 @@ import { ModalRollOverComponent } from './deposit/modal-roll-over/modal-roll-ove
 import { ChartsModule } from 'ng2-charts';
 import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liquidity.component';
 import { ModalBuyYieldTokenComponent } from './bonds/modal-buy-yield-token/modal-buy-yield-token.component';
-import { ScrollingModule } from '@angular/cdk/scrolling';
 import { HistoricalAssetTvlComponent } from './stats/components/historical-asset-tvl/historical-asset-tvl.component';
 import { MphSupplyDistributionComponent } from './stats/components/mph-supply-distribution/mph-supply-distribution.component';
 import { HistoricalFixedInterestRatesComponent } from './stats/components/historical-fixed-interest-rates/historical-fixed-interest-rates.component';
@@ -41,6 +40,8 @@ import { LossProvisionComponent } from './stats/components/loss-provision/loss-p
 import { HistoricalStakingRewardsComponent } from './stats/components/historical-staking-rewards/historical-staking-rewards.component';
 import { PriceEarningsRatioComponent } from './stats/components/price-earnings-ratio/price-earnings-ratio.component';
 import { XmphSupplyDistributionComponent } from './stats/components/xmph-supply-distribution/xmph-supply-distribution.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -86,10 +87,11 @@ import { XmphSupplyDistributionComponent } from './stats/components/xmph-supply-
     NgbModule,
     FormsModule,
     ChartsModule,
-    ScrollingModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    MatTableModule,
+    MatSortModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

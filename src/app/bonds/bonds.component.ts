@@ -723,6 +723,21 @@ export class BondsComponent implements OnInit {
   get hasDebt(): boolean {
     return this.fundableDeposits.length > 0;
   }
+
+  sortBy(event: any) {
+    this.fundableDeposits =
+      event.direction === 'asc'
+        ? [
+            ...this.fundableDeposits.sort(
+              (a, b) => a[event.active] - b[event.active]
+            ),
+          ]
+        : [
+            ...this.fundableDeposits.sort(
+              (a, b) => b[event.active] - a[event.active]
+            ),
+          ];
+  }
 }
 
 interface QueryResult {

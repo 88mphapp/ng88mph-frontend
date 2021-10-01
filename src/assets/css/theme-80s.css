@@ -16649,3 +16649,11 @@ input[type="range"]:focus::-ms-fill-upper {
   outline: 0;
   box-shadow: transparent;
 }
+
+td.mat-cell {
+  border-bottom-style: none;
+}
+
+th.mat-header-cell {
+  border-bottom-style: none;
+}
