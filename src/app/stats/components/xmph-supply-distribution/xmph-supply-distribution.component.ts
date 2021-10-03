@@ -96,6 +96,7 @@ export class XmphSupplyDistributionComponent implements OnInit {
       }
       orderBy: xmphBalance
       orderDirection: asc
+      first: 1000
     ) {
       address
       xmphBalance
