@@ -335,6 +335,23 @@
             </div>
             <ng-container i18n="@@ethereum">Ethereum</ng-container>
           </button>
+          <!-- <button
+            class="dropdown-item d-flex align-items-center mr-2"
+            type="button"
+            (click)="wallet.changeChain(137)"
+          >
+            <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="16px"
+              />
+            </div>
+            <ng-container i18n="@@ethereumRinkeby"
+              >Polygon Mainnet</ng-container
+            >
+          </button> -->
           <button
             class="dropdown-item d-flex align-items-center mr-2"
             type="button"
@@ -574,6 +591,17 @@
           </div>
           <ng-container i18n="@@ethereum">v3 - Ethereum</ng-container>
         </ng-container>
+        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON">
+          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/matic-icon.png"
+              alt="logo matic-purple-white"
+              width="20px"
+            />
+          </div>
+          <ng-container i18n="@@ethereum">v3 - Polygon (Matic)</ng-container>
+        </ng-container>
         <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
           <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
             <img
@@ -604,6 +632,21 @@
             />
           </div>
           <ng-container i18n="@@ethereum">Ethereum</ng-container>
+        </button>
+        <button
+          class="dropdown-item d-flex align-items-center"
+          type="button"
+          (click)="wallet.changeChain(137)"
+        >
+          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/matic-icon.png"
+              alt="logo matic-purple-white"
+              width="24px"
+            />
+          </div>
+          <ng-container i18n="@@ethereum">Polygon (Matic)</ng-container>
         </button>
         <button
           class="dropdown-item d-flex align-items-center mr-2"
