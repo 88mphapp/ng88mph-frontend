@@ -65,6 +65,8 @@ export class HelpersService {
       return await this.getChainlinkPriceETH('USDP', chainID);
     } else if (address === this.constants.USDT[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('USDT', chainID);
+    } else if (address === this.constants.WMATIC[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('MATIC', chainID);
     } else if (address === this.constants.YFI[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('YFI', chainID);
     } else if (address === this.constants.ZRX[chainID].toLowerCase()) {
@@ -84,6 +86,7 @@ export class HelpersService {
       return await this.getChainlinkPriceUSD('ETH', chainID);
     }
 
+    // console.log("no chainlink price feed for: " + address);
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
     return rawResult.prices[0][1];
