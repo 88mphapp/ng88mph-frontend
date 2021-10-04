@@ -102,10 +102,22 @@ export class HeaderComponent implements OnInit {
     }
 
     if (loadGlobal) {
-      this.gasPrice = new BigNumber(await readonlyWeb3.eth.getGasPrice()).div(
-        1e9
-      );
+      this.fetchGasPrice();
+      setInterval(() => {
+        this.fetchGasPrice();
+      }, 5000);
     }
+  }
+
+  async fetchGasPrice() {
+    const apiStr = 'https://api.blocknative.com/gasprices/blockprices';
+    const request = await fetch(apiStr, {
+      headers: { Authorization: `${this.constants.BLOCKNATIVE_KEY}` },
+    });
+    const result = await request.json();
+    this.gasPrice = new BigNumber(
+      result.blockPrices[0].estimatedPrices[2].price
+    );
   }
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
