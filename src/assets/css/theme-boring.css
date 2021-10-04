@@ -15812,3 +15812,8 @@ td.mat-cell {
 th.mat-header-cell {
   border-bottom-style: none;
 }
+
+.mat-table-row:hover {
+  color: #ffffff;
+  background-color: #161522;
+}
