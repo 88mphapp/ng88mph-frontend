@@ -34,6 +34,7 @@ export class BondsComponent implements OnInit {
   floatingRatePrediction: BigNumber;
   mphPriceUSD: BigNumber;
   selectedPool: DPool;
+  now: number;
 
   constructor(
     private modalService: NgbModal,
@@ -76,6 +77,7 @@ export class BondsComponent implements OnInit {
   }
 
   loadData(loadUser: boolean, loadGlobal: boolean): void {
+    this.now = Math.floor(Date.now() / 1e3);
     let funderID = this.wallet.actualAddress.toLowerCase();
     const queryString = gql`
       {
@@ -315,6 +317,7 @@ export class BondsComponent implements OnInit {
               userTotalRefundedAmountUSD: new BigNumber(0),
               userTotalMPHRewardsEarned: new BigNumber(0),
               userTotalMPHRewardsEarnedUSD: new BigNumber(0),
+              isExpanded: false,
             };
             funderPools.push(funderPool);
             pool = funderPool;
@@ -385,6 +388,14 @@ export class BondsComponent implements OnInit {
           totalMPHEarned = totalMPHEarned.plus(mphEarned);
         })
       ).then(() => {
+        funderPools.sort((a, b) => {
+          return a.userTotalYieldTokenBalanceUSD <
+            b.userTotalYieldTokenBalanceUSD
+            ? 1
+            : a.userTotalYieldTokenBalanceUSD > b.userTotalYieldTokenBalanceUSD
+            ? -1
+            : 0;
+        });
         this.funderPools = funderPools;
         this.totalYieldTokenBalanceUSD = totalYieldTokenBalanceUSD;
         this.totalDepositEarningYield = totalDepositEarningYield;
@@ -722,6 +733,49 @@ export class BondsComponent implements OnInit {
 
   get hasDebt(): boolean {
     return this.fundableDeposits.length > 0;
+  }
+
+  toggleAllFundings() {
+    for (let pool in this.funderPools) {
+      this.funderPools[pool].isExpanded = !this.funderPools[pool].isExpanded;
+    }
+  }
+
+  sortByFunderPool(event: any) {
+    if (event.active === 'name') {
+      this.funderPools =
+        event.direction === 'asc'
+          ? [
+              ...this.funderPools.sort((a, b) =>
+                a[event.active] > b[event.active] ? 1 : -1
+              ),
+            ]
+          : [
+              ...this.funderPools.sort((a, b) =>
+                b[event.active] > a[event.active] ? 1 : -1
+              ),
+            ];
+    } else {
+      this.funderPools =
+        event.direction === 'asc'
+          ? [
+              ...this.funderPools.sort(
+                (a, b) => a[event.active] - b[event.active]
+              ),
+            ]
+          : [
+              ...this.funderPools.sort(
+                (a, b) => b[event.active] - a[event.active]
+              ),
+            ];
+    }
+  }
+
+  sortByFunding(pool: FunderPool, event: any) {
+    pool.fundings =
+      event.direction === 'asc'
+        ? [...pool.fundings.sort((a, b) => a[event.active] - b[event.active])]
+        : [...pool.fundings.sort((a, b) => b[event.active] - a[event.active])];
   }
 
   sortBy(event: any) {

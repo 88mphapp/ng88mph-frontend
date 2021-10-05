@@ -127,172 +127,276 @@
             aria-expanded="false"
             *ngIf="funderPools.length > 0"
             i18n="@@toggleAll"
+            (click)="toggleAllFundings()"
           >
             Toggle all
           </button>
         </div>
         <div class="table-responsive mb-0">
-          <table class="table table-sm table-nowrap card-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th class="text-white" i18n="@@yieldTokensBalance">
-                  Yield tokens balance
-                </th>
-                <th class="text-white" i18n="@@yieldTokensYouEarn">
-                  You earn yield on
-                </th>
-                <th class="text-white" i18n="@@yieldEarned">Yield earned</th>
-                <th class="text-white" i18n="@@yieldRefunded">
-                  Refunded amount
-                </th>
-                <th class="text-white" i18n="@@yieldMPHRewardsEarned">
-                  MPH rewards earned
-                </th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody class="list">
-              <ng-container *ngFor="let funderPool of funderPools">
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <!-- Image -->
-                      <div class="avatar avatar-xs">
-                        <img
-                          class="avatar-img rounded-circle mr-3"
-                          src="{{ funderPool.poolInfo.iconPath }}"
-                          alt="..."
-                        />
-                      </div>
+          <table
+            class="table table-sm table-nowrap card-table"
+            mat-table
+            matSort
+            matSortActive="userTotalYieldTokenBalanceUSD"
+            matSortDirection="desc"
+            matSortDisableClear
+            [dataSource]="funderPools"
+            (matSortChange)="sortByFunderPool($event)"
+            multiTemplateDataRows
+          >
+            <ng-container matColumnDef="name">
+              <th
+                class="text-white"
+                mat-header-cell
+                mat-sort-header
+                *matHeaderCellDef
+              >
+                Asset
+              </th>
+              <td mat-cell *matCellDef="let pool">
+                <div class="d-flex align-items-center">
+                  <div class="avatar avatar-xs">
+                    <img
+                      class="avatar-img rounded-circle mr-3"
+                      src="{{ pool.poolInfo.iconPath }}"
+                      alt="..."
+                    />
+                  </div>
 
-                      <div class="ml-3">
-                        <!-- Heading -->
-                        <h4 class="font-weight-normal mb-1">
-                          {{ funderPool.poolInfo.name }}
-                        </h4>
+                  <div class="ml-3">
+                    <h4 class="font-weight-normal mb-1">
+                      {{ pool.poolInfo.name }}
+                    </h4>
 
-                        <!-- Text -->
-                        <small class="text-muted">{{
-                          funderPool.poolInfo.protocol
-                        }}</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <h4 class="mb-1 font-weight-normal glowing">
-                      {{ funderPool.userTotalYieldTokenBalance.toFormat(4) }}
-                      {{ funderPool.poolInfo.name }} YT
-                    </h4>
-                    <span class="text-white">
-                      ${{
-                        funderPool.userTotalYieldTokenBalanceUSD.toFormat(4)
-                      }}
-                    </span>
-                  </td>
-                  <td>
-                    <h4 class="mb-1 font-weight-normal glowing">
-                      {{ funderPool.userTotalEarnYieldOn.toFormat(4) }}
-                      {{ funderPool.poolInfo.stablecoinSymbol }}
-                    </h4>
-                    <span class="text-white">
-                      ${{ funderPool.userTotalEarnYieldOnUSD.toFormat(4) }}
-                    </span>
-                  </td>
-                  <td>
-                    <h4 class="mb-1 font-weight-normal glowing">
-                      {{ funderPool.userTotalYieldEarned.toFormat(4) }}
-                      {{ funderPool.poolInfo.stablecoinSymbol }}
-                    </h4>
-                    <span class="text-white">
-                      ${{ funderPool.userTotalYieldEarnedUSD.toFormat(4) }}
-                    </span>
-                  </td>
-                  <td>
-                    <h4 class="mb-1 font-weight-normal glowing">
-                      {{ funderPool.userTotalRefundedAmount.toFormat(4) }}
-                      {{ funderPool.poolInfo.stablecoinSymbol }}
-                    </h4>
-                    <span class="text-white">
-                      ${{ funderPool.userTotalRefundedAmountUSD.toFormat(4) }}
-                    </span>
-                  </td>
-                  <td>
-                    <h4 class="mb-1 font-weight-normal glowing">
-                      {{ funderPool.userTotalMPHRewardsEarned.toFormat(4) }} MPH
-                    </h4>
-                    <span class="text-white">
-                      ${{ funderPool.userTotalMPHRewardsEarnedUSD.toFormat(4) }}
-                    </span>
-                  </td>
-                  <td class="text-right">
-                    <button
-                      class="btn btn-sm btn-dark btn-rounded-circle"
-                      type="button"
-                      data-toggle="collapse"
-                      [attr.data-target]="'#' + funderPool.poolInfo.name"
-                      aria-expanded="false"
-                      [attr.aria-controls]="funderPool.poolInfo.name"
-                    >
-                      <i class="fe fe-chevron-down"></i>
-                    </button>
-                  </td>
-                </tr>
-                <ng-container *ngFor="let funding of funderPool.fundings">
-                  <tr
-                    class="multi-collapse collapse hide"
-                    id="{{ funderPool.poolInfo.name }}"
-                  >
-                    <td>
-                      <h6
-                        class="text-muted text-uppercase mb-1"
-                        i18n="@@yieldMaturationDate"
-                      >
-                        Maturity Date
-                      </h6>
+                    <small class="text-muted">{{
+                      pool.poolInfo.protocol
+                    }}</small>
+                  </div>
+                </div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Asset</td>
+            </ng-container>
 
-                      <!-- Text -->
+            <ng-container matColumnDef="userTotalYieldTokenBalanceUSD">
+              <th
+                class="text-white"
+                mat-header-cell
+                mat-sort-header
+                *matHeaderCellDef
+              >
+                Yield Token Balance
+              </th>
+              <td mat-cell *matCellDef="let pool">
+                <h4 class="mb-1 font-weight-normal glowing">
+                  {{ pool.userTotalYieldTokenBalance.toFormat(4) }}
+                  {{ pool.poolInfo.name }} YT
+                </h4>
+                <span class="text-white">
+                  ${{ pool.userTotalYieldTokenBalanceUSD.toFormat(4) }}
+                </span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Yield Token Balance</td>
+            </ng-container>
+
+            <ng-container matColumnDef="userTotalEarnYieldOnUSD">
+              <th
+                class="text-white"
+                mat-header-cell
+                mat-sort-header
+                *matHeaderCellDef
+              >
+                You Earn Yield On
+              </th>
+              <td mat-cell *matCellDef="let pool">
+                <h4 class="mb-1 font-weight-normal glowing">
+                  {{ pool.userTotalEarnYieldOn.toFormat(4) }}
+                  {{ pool.poolInfo.stablecoinSymbol }}
+                </h4>
+                <span class="text-white">
+                  ${{ pool.userTotalEarnYieldOnUSD.toFormat(4) }}
+                </span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>You Earn Yield On</td>
+            </ng-container>
+
+            <ng-container matColumnDef="userTotalYieldEarnedUSD">
+              <th
+                class="text-white"
+                mat-header-cell
+                mat-sort-header
+                *matHeaderCellDef
+              >
+                Yield Earned
+              </th>
+              <td mat-cell *matCellDef="let pool">
+                <h4 class="mb-1 font-weight-normal glowing">
+                  {{ pool.userTotalYieldEarned.toFormat(4) }}
+                  {{ pool.poolInfo.stablecoinSymbol }}
+                </h4>
+                <span class="text-white">
+                  ${{ pool.userTotalYieldEarnedUSD.toFormat(4) }}
+                </span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Yield Earned</td>
+            </ng-container>
+
+            <ng-container matColumnDef="userTotalRefundedAmountUSD">
+              <th
+                class="text-white"
+                mat-header-cell
+                mat-sort-header
+                *matHeaderCellDef
+              >
+                Refund Amount
+              </th>
+              <td mat-cell *matCellDef="let pool">
+                <h4 class="mb-1 font-weight-normal glowing">
+                  {{ pool.userTotalRefundedAmount.toFormat(4) }}
+                  {{ pool.poolInfo.stablecoinSymbol }}
+                </h4>
+                <span class="text-white">
+                  ${{ pool.userTotalRefundedAmountUSD.toFormat(4) }}
+                </span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Refunded Amount</td>
+            </ng-container>
+
+            <ng-container matColumnDef="userTotalMPHRewardsEarned">
+              <th
+                class="text-white"
+                mat-header-cell
+                mat-sort-header
+                *matHeaderCellDef
+              >
+                MPH Rewards Earned
+              </th>
+              <td mat-cell *matCellDef="let pool">
+                <h4 class="mb-1 font-weight-normal glowing">
+                  {{ pool.userTotalMPHRewardsEarned.toFormat(4) }} MPH
+                </h4>
+                <span class="text-white">
+                  ${{ pool.userTotalMPHRewardsEarnedUSD.toFormat(4) }}
+                </span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>MPH Rewards Earned</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let pool">
+                <button
+                  class="btn btn-sm btn-dark btn-rounded-circle"
+                  type="button"
+                  (click)="pool.isExpanded = !pool.isExpanded"
+                >
+                  <i class="fe fe-chevron-down"></i>
+                </button>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <ng-container matColumnDef="expandedDetail">
+              <td mat-cell *matCellDef="let pool" [attr.colspan]="7">
+                <table
+                  class="table table-hover table-sm table-nowrap card-table"
+                  mat-table
+                  matSort
+                  matSortActive="maturationTimestamp"
+                  matSortDirection="asc"
+                  matSortDisableClear
+                  [dataSource]="pool.fundings"
+                  (matSortChange)="sortByFunding(pool, $event)"
+                >
+                  <ng-container matColumnDef="maturationTimestamp">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                      Maturity Date
+                    </th>
+                    <td mat-cell *matCellDef="let funding">
                       <small class="text-muted d-block">
                         {{ timestampToDateString(funding.maturationTimestamp) }}
                       </small>
+                      <span
+                        class="badge mb-1 badge-soft-danger"
+                        *ngIf="funding.maturationTimestamp > now"
+                        i18n="@@depositLocked"
+                      >
+                        Locked
+                      </span>
+                      <span
+                        class="badge mb-1 badge-soft-success"
+                        *ngIf="funding.maturationTimestamp <= now"
+                        i18n="@@depositUnlocked"
+                      >
+                        Unlocked
+                      </span>
                     </td>
-                    <td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="yieldTokenBalanceUSD">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                      Yield Token Balance
+                    </th>
+                    <td mat-cell *matCellDef="let funding">
                       <h4 class="mb-1 font-weight-normal glowing">
                         {{ funding.yieldTokenBalance.toFormat(4) }}
-                        {{ funderPool.poolInfo.name }} YT
+                        {{ pool.poolInfo.name }} YT
                       </h4>
                       <span class="text-muted">
                         ${{ funding.yieldTokenBalanceUSD.toFormat(4) }}
                       </span>
                     </td>
-                    <td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="earnYieldOnUSD">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                      You Earn Yield On
+                    </th>
+                    <td mat-cell *matCellDef="let funding">
                       <h4 class="mb-1 font-weight-normal glowing">
                         {{ funding.earnYieldOn.toFormat(4) }}
-                        {{ funderPool.poolInfo.stablecoinSymbol }}
+                        {{ pool.poolInfo.stablecoinSymbol }}
                       </h4>
                       <span class="text-muted">
                         ${{ funding.earnYieldOnUSD.toFormat(4) }}
                       </span>
                     </td>
-                    <td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="yieldEarnedUSD">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                      Yield Earned
+                    </th>
+                    <td mat-cell *matCellDef="let funding">
                       <h4 class="mb-1 font-weight-normal glowing">
                         {{ funding.yieldEarned.toFormat(4) }}
-                        {{ funderPool.poolInfo.stablecoinSymbol }}
+                        {{ pool.poolInfo.stablecoinSymbol }}
                       </h4>
                       <span class="text-muted"
                         >${{ funding.yieldEarnedUSD.toFormat(4) }}</span
                       >
                     </td>
-                    <td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="refundedAmountUSD">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                      Refunded Amount
+                    </th>
+                    <td mat-cell *matCellDef="let funding">
                       <h4 class="mb-1 font-weight-normal glowing">
                         {{ funding.refundedAmount.toFormat(4) }}
-                        {{ funderPool.poolInfo.stablecoinSymbol }}
+                        {{ pool.poolInfo.stablecoinSymbol }}
                       </h4>
                       <span class="text-muted"
                         >${{ funding.refundedAmountUSD.toFormat(4) }}</span
                       >
                     </td>
-                    <td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="mphRewardsEarned">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                      MPH Rewards Earned
+                    </th>
+                    <td mat-cell *matCellDef="let funding">
                       <h4 class="mb-1 font-weight-normal glowing">
                         {{ funding.mphRewardsEarned.toFormat(4) }} MPH
                       </h4>
@@ -300,13 +404,17 @@
                         >${{ funding.mphRewardsEarnedUSD.toFormat(4) }}</span
                       >
                     </td>
-                    <td class="text-right">
+                  </ng-container>
+
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let funding">
                       <button
                         type="button"
                         class="btn btn-sm border-gradient"
                         (click)="
                           openWithdrawYieldTokenInterestModal(
-                            funderPool.poolInfo,
+                            pool.poolInfo,
                             funding
                           )
                         "
@@ -317,10 +425,73 @@
                         Claim
                       </button>
                     </td>
-                  </tr>
-                </ng-container>
-              </ng-container>
-            </tbody>
+                  </ng-container>
+
+                  <tr
+                    mat-header-row
+                    *matHeaderRowDef="[
+                      'maturationTimestamp',
+                      'yieldTokenBalanceUSD',
+                      'earnYieldOnUSD',
+                      'yieldEarnedUSD',
+                      'refundedAmountUSD',
+                      'mphRewardsEarned',
+                      'actions'
+                    ]"
+                  ></tr>
+                  <tr
+                    class="mat-table-row"
+                    mat-row
+                    *matRowDef="
+                      let funding;
+                      columns: [
+                        'maturationTimestamp',
+                        'yieldTokenBalanceUSD',
+                        'earnYieldOnUSD',
+                        'yieldEarnedUSD',
+                        'refundedAmountUSD',
+                        'mphRewardsEarned',
+                        'actions'
+                      ]
+                    "
+                  ></tr>
+                </table>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="[
+                'name',
+                'userTotalYieldTokenBalanceUSD',
+                'userTotalEarnYieldOnUSD',
+                'userTotalYieldEarnedUSD',
+                'userTotalRefundedAmountUSD',
+                'userTotalMPHRewardsEarned',
+                'actions'
+              ]"
+            ></tr>
+            <tr
+              class="mat-table-row"
+              mat-row
+              *matRowDef="
+                let pool;
+                columns: [
+                  'name',
+                  'userTotalYieldTokenBalanceUSD',
+                  'userTotalEarnYieldOnUSD',
+                  'userTotalYieldEarnedUSD',
+                  'userTotalRefundedAmountUSD',
+                  'userTotalMPHRewardsEarned',
+                  'actions'
+                ]
+              "
+            ></tr>
+            <tr
+              [hidden]="!pool.isExpanded"
+              mat-row
+              *matRowDef="let pool; columns: ['expandedDetail']"
+            ></tr>
           </table>
         </div>
       </div>
