@@ -1,48 +1,60 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
+  <div class="card-header">
+    <h4 class="card-title mb-0" i18n="@@assetTVL">
+      Asset TVL
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        i18n-ngbTooltip="@@assetTVLText"
+        ngbTooltip="The amount (USD) of deposited assets in fixed-interest rate bond pools."
+      ></i>
+    </h4>
+  </div>
+  <div class="card-header">
+    <div class="form-row">
+      <div class="col-6">
+        <div class="form-group mb-0 mr-2">
+          <select class="d-none">
+            <option value="all" selected>All</option>
+            <option *ngFor="let pool of allData" [ngValue]="pool.label">
+              {{ pool.label }}
+            </option>
+          </select>
+          <select
+            [(ngModel)]="SELECTED_ASSET"
+            name="selected"
+            (change)="focusAsset()"
+            class="custom-select"
+          >
+            <option value="all" selected>All</option>
+            <option *ngFor="let pool of allData" [ngValue]="pool.label">
+              {{ pool.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group mb-0 mr-2">
+          <select class="d-none">
+            <option value="daily">Daily</option>
+            <option value="weekly" selected>Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+          <select
+            [(ngModel)]="PERIOD_NAME"
+            name="period"
+            (change)="changePeriod()"
+            class="custom-select"
+          >
+            <option value="daily">Daily</option>
+            <option value="weekly" selected>Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="card-body">
-    <h5 class="text-uppercase text-center d-flex justify-content-between">
-      <select class="invisible chart-select border-gradient ml-auto mr-2">
-        <option value="all" selected>All</option>
-        <option *ngFor="let pool of allData" [ngValue]="pool.label">
-          {{ pool.label }}
-        </option>
-      </select>
-      <select class="invisible chart-select border-gradient">
-        <option value="daily">Daily</option>
-        <option value="weekly" selected>Weekly</option>
-        <option value="monthly">Monthly</option>
-      </select>
-      <span i18n="@@assetTVL">
-        Asset TVL
-        <i
-          class="fe fe-info ml-1 align-bottom"
-          placement="top"
-          i18n-ngbTooltip="@@assetTVLText"
-          ngbTooltip="The amount (USD) of deposited assets in fixed-interest rate bond pools."
-        ></i>
-      </span>
-      <select
-        [(ngModel)]="SELECTED_ASSET"
-        name="selected"
-        (change)="focusAsset()"
-        class="chart-select border-gradient ml-auto mr-2"
-      >
-        <option value="all" selected>All</option>
-        <option *ngFor="let pool of allData" [ngValue]="pool.label">
-          {{ pool.label }}
-        </option>
-      </select>
-      <select
-        [(ngModel)]="PERIOD_NAME"
-        name="period"
-        (change)="changePeriod()"
-        class="chart-select border-gradient"
-      >
-        <option value="daily">Daily</option>
-        <option value="weekly" selected>Weekly</option>
-        <option value="monthly">Monthly</option>
-      </select>
-    </h5>
     <canvas
       baseChart
       [datasets]="barChartData"

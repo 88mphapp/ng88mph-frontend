@@ -1,31 +1,35 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
-  <div class="card-body">
-    <h5 class="text-uppercase text-center d-flex justify-content-between">
-      <select class="invisible chart-select border-gradient">
+  <div class="card-header">
+    <h4 class="card-title mb-0" i18n="@@priceEarningsRatio">
+      P/E Ratio
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        placement="top"
+        i18n-ngbTooltip="@@priceEarningsRatioText"
+        ngbTooltip="A measurement of current market capitalization / annualized protocol earnings."
+      ></i>
+    </h4>
+  </div>
+  <div class="card-header">
+    <div class="form-group mb-0">
+      <select class="d-none">
         <option value="daily">Daily</option>
         <option value="weekly" selected>Weekly</option>
         <option value="monthly">Monthly</option>
       </select>
-      <span i18n="@@priceEarningsRatio">
-        P/E Ratio
-        <i
-          class="fe fe-info ml-1 align-bottom"
-          placement="top"
-          i18n-ngbTooltip="@@priceEarningsRatioText"
-          ngbTooltip="A measurement of current market capitalization / annualized protocol earnings."
-        ></i>
-      </span>
       <select
         [(ngModel)]="PERIOD_NAME"
         name="period"
         (change)="changePeriod()"
-        class="chart-select border-gradient"
+        class="custom-select"
       >
         <option value="daily">Daily</option>
         <option value="weekly" selected>Weekly</option>
         <option value="monthly">Monthly</option>
       </select>
-    </h5>
+    </div>
+  </div>
+  <div class="card-body">
     <canvas
       baseChart
       [datasets]="lineChartData"
