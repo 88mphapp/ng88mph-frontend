@@ -336,6 +336,21 @@
             <ng-container i18n="@@ethereum">Ethereum</ng-container>
           </button>
           <button
+            class="dropdown-item d-flex align-items-center"
+            type="button"
+            (click)="wallet.changeChain(137)"
+          >
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/matic-icon.png"
+                alt="logo matic-purple-white"
+                width="16px"
+              />
+            </div>
+            <ng-container i18n="@@polygon">Polygon (Matic)</ng-container>
+          </button>
+          <button
             class="dropdown-item d-flex align-items-center mr-2"
             type="button"
             (click)="wallet.changeChain(4)"
@@ -405,7 +420,7 @@
       </div>
       <a
         class="btn btn-block btn-dark mr-1 mb-3"
-        href="https://www.gasnow.org/"
+        href="https://www.blocknative.com/gas-estimator"
         target="_blank"
         ><img
           src="./assets/img/local_gas_station_white_24dp.svg"
@@ -574,6 +589,17 @@
           </div>
           <ng-container i18n="@@ethereum">v3 - Ethereum</ng-container>
         </ng-container>
+        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON">
+          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/matic-icon.png"
+              alt="logo matic-purple-white"
+              width="20px"
+            />
+          </div>
+          <ng-container i18n="@@polygon">v3 - Polygon (Matic)</ng-container>
+        </ng-container>
         <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
           <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
             <img
@@ -604,6 +630,21 @@
             />
           </div>
           <ng-container i18n="@@ethereum">Ethereum</ng-container>
+        </button>
+        <button
+          class="dropdown-item d-flex align-items-center"
+          type="button"
+          (click)="wallet.changeChain(137)"
+        >
+          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/matic-icon.png"
+              alt="logo matic-purple-white"
+              width="24px"
+            />
+          </div>
+          <ng-container i18n="@@ethereum">Polygon (Matic)</ng-container>
         </button>
         <button
           class="dropdown-item d-flex align-items-center mr-2"
@@ -673,7 +714,7 @@
     </div>
     <a
       class="btn btn-sm btn-dark mr-3"
-      href="https://www.gasnow.org/"
+      href="https://www.blocknative.com/gas-estimator"
       target="_blank"
       ><img
         src="./assets/img/local_gas_station_white_24dp.svg"
