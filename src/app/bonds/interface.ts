@@ -15,6 +15,7 @@ export interface FunderPool {
   userTotalRefundedAmountUSD: BigNumber;
   userTotalMPHRewardsEarned: BigNumber;
   userTotalMPHRewardsEarnedUSD: BigNumber;
+  isExpanded: boolean;
 }
 
 export interface Funding {
