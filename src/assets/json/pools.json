@@ -2,8 +2,8 @@
   "1": {
     "cDAI": {
       "name": "cDAI",
-      "address": "0x11b1c87983f881b3686f8b1171628357faa30038",
-      "stablecoin": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "address": "0x11B1c87983F881B3686F8b1171628357FAA30038",
+      "stablecoin": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       "stablecoinSymbol": "DAI",
       "stablecoinDecimals": 18,
       "protocol": "Compound",
@@ -13,7 +13,7 @@
     "cUNI": {
       "name": "cUNI",
       "address": "0x5dda04b2BDBBc3FcFb9B60cd9eBFd1b27f1A4fE3",
-      "stablecoin": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+      "stablecoin": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
       "stablecoinSymbol": "UNI",
       "stablecoinDecimals": 18,
       "protocol": "Compound",
@@ -22,8 +22,8 @@
     },
     "cLINK": {
       "name": "cLINK",
-      "address": "0x572be575d1aa1ca84d8ac4274067f7bcb578a368",
-      "stablecoin": "0x514910771af9ca656af840dff83e8264ecf986ca",
+      "address": "0x572bE575D1aA1Ca84d8Ac4274067f7bCB578a368",
+      "stablecoin": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
       "stablecoinSymbol": "LINK",
       "stablecoinDecimals": 18,
       "protocol": "Compound",
@@ -33,7 +33,7 @@
     "cBAT": {
       "name": "cBAT",
       "address": "0x6BF909CE507e94608F0fCbAb2CFdd499e0150a21",
-      "stablecoin": "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+      "stablecoin": "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
       "stablecoinSymbol": "BAT",
       "stablecoinDecimals": 18,
       "protocol": "Compound",
@@ -43,7 +43,7 @@
     "cCOMP": {
       "name": "cCOMP",
       "address": "0xc1F147DB2b6a9c9FbF322fAC3D1Fbf8B8aAEec10",
-      "stablecoin": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+      "stablecoin": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
       "stablecoinSymbol": "COMP",
       "stablecoinDecimals": 18,
       "protocol": "Compound",
@@ -53,7 +53,7 @@
     "cUSDT": {
       "name": "cUSDT",
       "address": "0x7f10134c32A4544e4CDC0fD57F5c820Bff3070E9",
-      "stablecoin": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "stablecoin": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
       "stablecoinSymbol": "USDT",
       "stablecoinDecimals": 6,
       "protocol": "Compound",
@@ -63,7 +63,7 @@
     "cWBTC": {
       "name": "cWBTC",
       "address": "0xA0E78812E9cD3E754a83bbd74A3F1579b50436E8",
-      "stablecoin": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+      "stablecoin": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
       "stablecoinSymbol": "WBTC",
       "stablecoinDecimals": 8,
       "protocol": "Compound",
@@ -73,7 +73,7 @@
     "cZRX": {
       "name": "cZRX",
       "address": "0x0F834C3601088d1B060c47737A2F5Ce4FFA5AC1D",
-      "stablecoin": "0xe41d2489571d322189246dafa5ebde1f4699f498",
+      "stablecoin": "0xE41d2489571d322189246DaFA5ebDe1F4699F498",
       "stablecoinSymbol": "ZRX",
       "stablecoinDecimals": 18,
       "protocol": "Compound",
@@ -93,7 +93,7 @@
     "cUSDC": {
       "name": "cUSDC",
       "address": "0x7DC14d047D6d8bb03539f92B9E2cA1f1648A5717",
-      "stablecoin": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
       "stablecoinSymbol": "USDC",
       "stablecoinDecimals": 6,
       "protocol": "Compound",
@@ -103,17 +103,17 @@
     "aDAI": {
       "name": "aDAI",
       "address": "0x6D97eA6e14D35e10b50df9475e9EFaAd1982065E",
-      "stablecoin": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "stablecoin": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       "stablecoinSymbol": "DAI",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aDAI.svg",
-      "moneyMarket": "0x011735dc889446b9582b6e7a9b792e2a0d11f56d"
+      "moneyMarket": "0x011735Dc889446b9582b6E7a9B792E2a0D11f56d"
     },
     "aUSDC": {
       "name": "aUSDC",
       "address": "0x2d3141f4C9872d4F53B587C3fB8b22736FeB54b0",
-      "stablecoin": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
       "stablecoinSymbol": "USDC",
       "stablecoinDecimals": 6,
       "protocol": "Aave",
@@ -123,7 +123,7 @@
     "aUSDT": {
       "name": "aUSDT",
       "address": "0xb1b225402b5eC977AF8c721f42F21Db5518785dc",
-      "stablecoin": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "stablecoin": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
       "stablecoinSymbol": "USDT",
       "stablecoinDecimals": 6,
       "protocol": "Aave",
@@ -133,12 +133,12 @@
     "aBAL": {
       "name": "aBAL",
       "address": "0x24867F5665414D93f7b3d195f848917D57D5BE27",
-      "stablecoin": "0xba100000625a3754423978a60c9317c58a424e3d",
+      "stablecoin": "0xba100000625a3754423978a60c9317c58a424e3D",
       "stablecoinSymbol": "BAL",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/bal.svg",
-      "moneyMarket": "0x79e554c00a41d4718da04d3adbebe21d9e677cf3"
+      "moneyMarket": "0x79E554C00A41D4718da04D3AdBebe21d9E677CF3"
     },
     "aCRV": {
       "name": "aCRV",
@@ -153,7 +153,7 @@
     "aGUSD": {
       "name": "aGUSD",
       "address": "0xbFDB51ec0ADc6D5bF2ebBA54248D40f81796E12B",
-      "stablecoin": "0x056fd409e1d7a124bd7017459dfea2f387b6d5cd",
+      "stablecoin": "0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd",
       "stablecoinSymbol": "GUSD",
       "stablecoinDecimals": 2,
       "protocol": "Aave",
@@ -163,7 +163,7 @@
     "aLINK": {
       "name": "aLINK",
       "address": "0x6e6002a4Bd704a3C8E24A70b0Be670f1C2B4d35c",
-      "stablecoin": "0x514910771af9ca656af840dff83e8264ecf986ca",
+      "stablecoin": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
       "stablecoinSymbol": "LINK",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
@@ -173,7 +173,7 @@
     "aRAI": {
       "name": "aRAI",
       "address": "0x2A74f09a8E4899115529ec8808C5FC1DE62c2fe4",
-      "stablecoin": "0x03ab458634910aad20ef5f1c8ee96f1d6ac54919",
+      "stablecoin": "0x03ab458634910AaD20eF5f1C8ee96F1D6ac54919",
       "stablecoinSymbol": "RAI",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
@@ -183,7 +183,7 @@
     "aREN": {
       "name": "aREN",
       "address": "0x4D794db79C4a85DC763d08A7c440A92A2D153Ffd",
-      "stablecoin": "0x408e41876cccdc0f92210600ef50372656052a38",
+      "stablecoin": "0x408e41876cCCDC0F92210600ef50372656052a38",
       "stablecoinSymbol": "REN",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
@@ -193,7 +193,7 @@
     "aSNX": {
       "name": "aSNX",
       "address": "0x60F0f24b0fBf066e877C3A89014c2e4E98C33678",
-      "stablecoin": "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f",
+      "stablecoin": "0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F",
       "stablecoinSymbol": "SNX",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
@@ -213,7 +213,7 @@
     "aUSDP": {
       "name": "aUSDP",
       "address": "0xF50eF673ee810e6aCb725F941a53Bf92586a39Ad",
-      "stablecoin": "0x8e870d67f660d95d5be530380d0ec0bd388289e1",
+      "stablecoin": "0x8E870D67F660D95d5be530380D0eC0bd388289E1",
       "stablecoinSymbol": "USDP",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
@@ -223,7 +223,7 @@
     "aWBTC": {
       "name": "aWBTC",
       "address": "0x0fd585328666923A3a772dd5C37e2Dc065C7B137",
-      "stablecoin": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+      "stablecoin": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
       "stablecoinSymbol": "WBTC",
       "stablecoinDecimals": 8,
       "protocol": "Aave",
@@ -233,7 +233,7 @@
     "aWETH": {
       "name": "aWETH",
       "address": "0xaE5ddE7EA5c44b38c0bCcfb985c40006ED744EA6",
-      "stablecoin": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "stablecoin": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
       "stablecoinSymbol": "WETH",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
@@ -253,7 +253,7 @@
     "aSUSD": {
       "name": "aSUSD",
       "address": "0xafdD82D73f5dae907f86aD37F346221081Dc917b",
-      "stablecoin": "0x57ab1ec28d129707052df4df418d58a2d46d5f51",
+      "stablecoin": "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
       "stablecoinSymbol": "SUSD",
       "stablecoinDecimals": 18,
       "protocol": "Aave",
@@ -274,7 +274,7 @@
     "bDAI": {
       "name": "bDAI",
       "address": "0x4B4626c1265d22B71ded11920795A3c6127A0559",
-      "stablecoin": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "stablecoin": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       "stablecoinSymbol": "DAI",
       "stablecoinDecimals": 18,
       "protocol": "B.Protocol",
@@ -284,7 +284,7 @@
     "bUSDC": {
       "name": "bUSDC",
       "address": "0x4f7EC502cA0Be8Ef1f984AB1f164022a15ff5561",
-      "stablecoin": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
       "stablecoinSymbol": "USDC",
       "stablecoinDecimals": 6,
       "protocol": "B.Protocol",
@@ -294,7 +294,7 @@
     "bUSDT": {
       "name": "bUSDT",
       "address": "0x062214FbE3F15D217512DEb14572eb01FACE0392",
-      "stablecoin": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "stablecoin": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
       "stablecoinSymbol": "USDT",
       "stablecoinDecimals": 6,
       "protocol": "B.Protocol",
@@ -314,7 +314,7 @@
     "crUSDC": {
       "name": "crUSDC",
       "address": "0xF61681b8Cbf87615F30f96F491FA28a2Ff39947a",
-      "stablecoin": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "stablecoin": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
       "stablecoinSymbol": "USDC",
       "stablecoinDecimals": 6,
       "protocol": "Cream",
@@ -324,7 +324,7 @@
     "crUSDT": {
       "name": "crUSDT",
       "address": "0x3816579C8Cb62500a45AE29A33040A3DEA4160de",
-      "stablecoin": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "stablecoin": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
       "stablecoinSymbol": "USDT",
       "stablecoinDecimals": 6,
       "protocol": "Cream",
@@ -336,7 +336,7 @@
     "cDAI": {
       "name": "cDAI",
       "address": "0x71482F8cD0e956051208603709639FA28cBc1F33",
-      "stablecoin": "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea",
+      "stablecoin": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
       "stablecoinSymbol": "DAI",
       "stablecoinDecimals": 18,
       "protocol": "Compound",
@@ -346,12 +346,74 @@
     "cUSDC": {
       "name": "cUSDC",
       "address": "0x3d59EcA28fC3CA2338951A7C8E0C435a1691550b",
-      "stablecoin": "0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b",
+      "stablecoin": "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b",
       "stablecoinSymbol": "USDC",
       "stablecoinDecimals": 6,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/usdc.svg",
       "moneyMarket": "0x91E5f67660573424504c5B461Eb6D4a886211d32"
+    }
+  },
+  "137": {
+    "aDAI": {
+      "name": "aDAI",
+      "address": "0xa78276C04D8d807FeB8271fE123C1f94c08A414d",
+      "stablecoin": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
+      "stablecoinSymbol": "DAI",
+      "stablecoinDecimals": 18,
+      "protocol": "Aave",
+      "iconPath": "assets/img/token-icons/dai.svg",
+      "moneyMarket": "0x452E9566eb6a2994ca69Bb47106914bb079f2875"
+    },
+    "aUSDC": {
+      "name": "aUSDC",
+      "address": "0x3933bAAc41f04D0FFa0977b0e879Bc56482aD667",
+      "stablecoin": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "stablecoinSymbol": "USDC",
+      "stablecoinDecimals": 6,
+      "protocol": "Aave",
+      "iconPath": "assets/img/token-icons/usdc.svg",
+      "moneyMarket": "0x3b4657b36cfBF782527b5b90749d079B1756A224"
+    },
+    "aUSDT": {
+      "name": "aUSDT",
+      "address": "0xf5eF24a27f35Cbe8A2b0a954ACF81d7064CE6B70",
+      "stablecoin": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+      "stablecoinSymbol": "USDT",
+      "stablecoinDecimals": 6,
+      "protocol": "Aave",
+      "iconPath": "assets/img/token-icons/usdt.png",
+      "moneyMarket": "0xB87c90feF9bb01b5583D7e2d9Aec1a280D8870df"
+    },
+    "aWBTC": {
+      "name": "aWBTC",
+      "address": "0x0E99145166e2982bb67054A1E5d3a902Fc4d2b59",
+      "stablecoin": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
+      "stablecoinSymbol": "WBTC",
+      "stablecoinDecimals": 8,
+      "protocol": "Aave",
+      "iconPath": "assets/img/token-icons/wbtc.svg",
+      "moneyMarket": "0xfB54Da5DDaaA24dCbb3071F8a4D97E1Fdd62A091"
+    },
+    "aWETH": {
+      "name": "aWETH",
+      "address": "0x3B79Eb9675ED29554f57b719dC66A461a4C84970",
+      "stablecoin": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+      "stablecoinSymbol": "WETH",
+      "stablecoinDecimals": 18,
+      "protocol": "Aave",
+      "iconPath": "assets/img/token-icons/weth.svg",
+      "moneyMarket": "0x865609f665641a28148137bFC14a32aBbC7c6357"
+    },
+    "aWMATIC": {
+      "name": "aWMATIC",
+      "address": "0x4f28Fc2Be45682D1be1d0f155f4a52D4509Db629",
+      "stablecoin": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+      "stablecoinSymbol": "WMATIC",
+      "stablecoinDecimals": 18,
+      "protocol": "Aave",
+      "iconPath": "assets/img/token-icons/wmatic.svg",
+      "moneyMarket": "0xd29813550df02ca4a8a557ba387d5ad141788dc4"
     }
   }
 }
