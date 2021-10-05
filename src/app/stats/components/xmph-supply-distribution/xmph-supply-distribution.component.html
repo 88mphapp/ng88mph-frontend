@@ -1,6 +1,6 @@
 <div *ngIf="pieChartData" class="card mb-4 mb-lg-0">
-  <div class="card-body">
-    <h5 class="text-uppercase text-center" i18n="@@xmphSupplyDistribution">
+  <div class="card-header">
+    <h4 class="card-title mb-0" i18n="@@xmphSupplyDistribution">
       xMPH Holders
       <i
         class="fe fe-info ml-1 align-bottom"
@@ -8,7 +8,9 @@
         ngbTooltip="The distribution of xMPH by address."
         i18n-ngbTooltip="@@mphSupplyDistributionText"
       ></i>
-    </h5>
+    </h4>
+  </div>
+  <div class="card-body">
     <canvas
       baseChart
       [datasets]="pieChartData"
