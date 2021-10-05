@@ -74,7 +74,7 @@
               {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }}
               <ng-container i18n="@@mph">MPH</ng-container>
             </span>
-            <span class="badge badge-xl badge-soft-success mt-n2">
+            <span class="badge badge-xl badge-soft-success mt-n2 ml-1">
               +{{
                 xMPHBalance
                   .times(pricePerFullShare)
@@ -117,15 +117,23 @@
           <h5 class="mb-4 text-white">
             <ng-container i18n="@@shareStakingPool"
               >Share of the staking pool</ng-container
-            >: 0.0000%
+            >: {{ xMPHBalance.div(xMPHTotalSupply).times(100).toFormat(4) }}%
           </h5>
           <!-- Title -->
           <h5 class="text-uppercase" i18n="@@valueInMph">Value in MPH</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">
+          <span class="h2 mb-0 glowing">
             {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }}
             <ng-container i18n="@@mph">MPH</ng-container>
-          </h2>
+          </span>
+          <span class="badge badge-soft-success mt-n2">
+            +{{
+              xMPHBalance
+                .times(pricePerFullShare)
+                .minus(stakedMPHBalance)
+                .toFormat(4)
+            }}
+          </span>
           <h5 class="mb-3 text-white">
             ${{ xMPHBalance.times(xMPHPriceUSD).toFormat(4) }}
           </h5>
