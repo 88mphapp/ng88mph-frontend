@@ -15817,3 +15817,7 @@ th.mat-header-cell {
   color: #ffffff;
   background-color: #161522;
 }
+
+tr.mat-header-row {
+  height: auto;
+}
