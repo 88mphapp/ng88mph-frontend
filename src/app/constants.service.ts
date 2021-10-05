@@ -106,14 +106,16 @@ export class ConstantsService {
       'https://eth-mainnet.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
     [this.CHAIN_ID.RINKEBY]:
       'https://eth-rinkeby.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
-    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.POLYGON]:
+      'https://polygon-mainnet.g.alchemy.com/v2/q7fqBluE1Tn5t76RmCeylJnF7NPfvN7P',
   };
   RPC_WS = {
     [this.CHAIN_ID.MAINNET]:
       'wss://eth-mainnet.ws.alchemyapi.io/v2/y8L870PADfUHPFM9_-GMMUOpHckqNtR-',
     [this.CHAIN_ID.RINKEBY]:
       'wss://eth-rinkeby.ws.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
-    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.POLYGON]:
+      'wss://polygon-mainnet.g.alchemy.com/v2/q7fqBluE1Tn5t76RmCeylJnF7NPfvN7P',
   };
 
   // API KEYS //
