@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
@@ -58,7 +58,8 @@ export class DepositComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService,
     public datas: DataService,
-    private router: Router
+    private router: Router,
+    private zone: NgZone
   ) {
     this.resetData(true, true);
   }
@@ -73,12 +74,16 @@ export class DepositComponent implements OnInit {
       this.resetData(true, false);
     });
     this.wallet.chainChangedEvent.subscribe((networkID) => {
-      this.resetData(true, true);
-      this.loadData(true, true);
+      this.zone.run(() => {
+        this.resetData(true, true);
+        this.loadData(true, true);
+      });
     });
     this.wallet.accountChangedEvent.subscribe((account) => {
-      this.resetData(true, false);
-      this.loadData(true, false);
+      this.zone.run(() => {
+        this.resetData(true, false);
+        this.loadData(true, false);
+      });
     });
     this.wallet.txConfirmedEvent.subscribe(() => {
       setTimeout(() => {
@@ -243,7 +248,7 @@ export class DepositComponent implements OnInit {
       let allAssetList = new Array<string>(0);
       let allProtocolList = new Array<string>(0);
 
-      Promise.all(
+      await Promise.all(
         dpools.map(async (pool) => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
@@ -280,6 +285,11 @@ export class DepositComponent implements OnInit {
             maxAPY: await this.datas.getPoolMaxAPY(poolInfo.address),
             mphAPY: mphAPY,
             mphDepositorRewardMintMultiplier: mphDepositorRewardMintMultiplier,
+            totalUserDepositsToken: new BigNumber(0),
+            totalUserDepositsUSD: new BigNumber(0),
+            userDeposits: [],
+            poolInfo: poolInfo,
+            isExpanded: false,
           };
           allPoolList.push(dpoolObj);
 
@@ -409,13 +419,6 @@ export class DepositComponent implements OnInit {
                 .minus(vest.withdrawnAmount);
             }
 
-            // use contract call to fetch claimableMPH
-            // let claimableMPH = new BigNumber(
-            //   await vestingContract.methods
-            //     .getVestWithdrawableAmount(deposit.vest.nftID)
-            //     .call({from: this.wallet.actualAddress.toLowerCase()})
-            // ).div(this.constants.PRECISION);
-
             const userPoolDeposit: UserDeposit = {
               nftID: +deposit.nftID,
               locked: +deposit.maturationTimestamp >= Date.now() / 1e3,
@@ -466,6 +469,11 @@ export class DepositComponent implements OnInit {
             totalUserDepositsUSD: totalUserDepositsUSD,
           };
           userPools.push(userPool);
+
+          const activePool = this.allPoolList.find(
+            (pool) => pool.name === poolInfo.name
+          );
+          activePool.userDeposits = userPoolDeposits;
         })
       ).then(() => {
         this.userPools = userPools;
@@ -556,10 +564,19 @@ export class DepositComponent implements OnInit {
           ).times(stablecoinPrice);
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
           totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
+          activePool.totalUserDepositsToken = poolDeposit;
+          activePool.totalUserDepositsUSD = poolDepositUSD;
         })
       ).then(() => {
         this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
         this.totalInterestUSD = totalInterestUSD;
+        this.allPoolList = [
+          ...this.allPoolList.sort(
+            (a, b) =>
+              b.totalUserDepositsUSD.toNumber() -
+              a.totalUserDepositsUSD.toNumber()
+          ),
+        ];
       });
     }
   }
@@ -579,24 +596,6 @@ export class DepositComponent implements OnInit {
     }
 
     if (resetGlobal) {
-      const allPoolList = new Array<DPool>(0);
-      const poolInfoList = this.contract.getPoolInfoList();
-      for (const poolInfo of poolInfoList) {
-        const dpoolObj: DPool = {
-          name: poolInfo.name,
-          protocol: poolInfo.protocol,
-          stablecoin: poolInfo.stablecoin,
-          stablecoinSymbol: poolInfo.stablecoinSymbol,
-          iconPath: poolInfo.iconPath,
-          totalDepositToken: new BigNumber(0),
-          totalDepositUSD: new BigNumber(0),
-          maxAPY: new BigNumber(0),
-          mphAPY: new BigNumber(0),
-          mphDepositorRewardMintMultiplier: new BigNumber(0),
-        };
-        allPoolList.push(dpoolObj);
-      }
-      this.allPoolList = allPoolList;
       this.allPoolList = [];
       this.allAssetList = [];
       this.allProtocolList = [];
@@ -718,6 +717,63 @@ export class DepositComponent implements OnInit {
         this.wallet.displayGenericError(error);
       }
     );
+  }
+
+  toggleAllDeposits() {
+    for (let pool in this.allPoolList) {
+      if (this.allPoolList[pool].userDeposits.length > 0) {
+        this.allPoolList[pool].isExpanded = !this.allPoolList[pool].isExpanded;
+      }
+    }
+  }
+
+  sortBy(event: any) {
+    if (event.active === 'stablecoinSymbol') {
+      this.allPoolList =
+        event.direction === 'asc'
+          ? [
+              ...this.allPoolList.sort((a, b) =>
+                a[event.active] > b[event.active] ? 1 : -1
+              ),
+            ]
+          : [
+              ...this.allPoolList.sort((a, b) =>
+                b[event.active] > a[event.active] ? 1 : -1
+              ),
+            ];
+    } else {
+      this.allPoolList =
+        event.direction === 'asc'
+          ? [
+              ...this.allPoolList.sort(
+                (a, b) => a[event.active] - b[event.active]
+              ),
+            ]
+          : [
+              ...this.allPoolList.sort(
+                (a, b) => b[event.active] - a[event.active]
+              ),
+            ];
+    }
+  }
+
+  sortByDeposits(pool: DPool, event: any) {
+    pool.userDeposits =
+      event.direction === 'asc'
+        ? [
+            ...pool.userDeposits.sort(
+              (a, b) => a[event.active] - b[event.active]
+            ),
+          ]
+        : [
+            ...pool.userDeposits.sort(
+              (a, b) => b[event.active] - a[event.active]
+            ),
+          ];
+  }
+
+  timestampToDateString(timestampSec: number): string {
+    return new Date(timestampSec * 1e3).toLocaleDateString();
   }
 }
 
