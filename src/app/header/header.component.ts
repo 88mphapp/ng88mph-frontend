@@ -73,7 +73,12 @@ export class HeaderComponent implements OnInit {
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     let address = this.wallet.actualAddress;
 
-    if (loadUser && address) {
+    if (
+      loadUser &&
+      address &&
+      this.wallet.networkID ===
+        (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+    ) {
       const mph = await this.contract.getContract(
         this.constants.MPH_ADDRESS[this.wallet.networkID],
         `MPHToken`
