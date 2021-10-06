@@ -46,8 +46,8 @@
         class="nav-item"
         ngbNavItem="/stake"
         *ngIf="
-          wallet.networkID ==
-          (constants.CHAIN_ID.MAINNET || constants.CHAIN_ID.RINKEBY)
+          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+          wallet.networkID === constants.CHAIN_ID.RINKEBY
         "
       >
         <a
