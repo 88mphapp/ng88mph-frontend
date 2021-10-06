@@ -48,8 +48,6 @@ export class LandingPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData(this.wallet.connected, true);
-
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
       this.loadData(true, true);
@@ -99,7 +97,12 @@ export class LandingPageComponent implements OnInit {
 
     if (loadGlobal) {
       this.datas.getMaxAPY().then((x) => (this.maxAPY = x));
-      this.datas.getMaxMPHAPY().then((x) => (this.maxMPHAPY = x));
+      if (
+        this.wallet.networkID ===
+        (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+      ) {
+        this.datas.getMaxMPHAPY().then((x) => (this.maxMPHAPY = x));
+      }
 
       const queryString = gql`
         {
@@ -110,12 +113,24 @@ export class LandingPageComponent implements OnInit {
             address
             totalDeposit
             oneYearInterestRate
-            poolDepositorRewardMintMultiplier
+            ${
+              this.wallet.networkID ===
+              (this.constants.CHAIN_ID.MAINNET ||
+                this.constants.CHAIN_ID.RINKEBY)
+                ? `poolDepositorRewardMintMultiplier`
+                : ''
+            }
             historicalInterestPaid
           }
-          globalStats (id: "0") {
+          ${
+            this.wallet.networkID ===
+            (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+              ? `globalStats (id: "0") {
             xMPHRewardDistributed
           }`
+              : ''
+          }
+          `
               : ''
           }
         }
@@ -162,9 +177,12 @@ export class LandingPageComponent implements OnInit {
               stablecoinPrice
             ),
             oneYearInterestRate: new BigNumber(pool.oneYearInterestRate),
-            poolDepositorRewardMintMultiplier: new BigNumber(
-              pool.poolDepositorRewardMintMultiplier
-            ),
+            poolDepositorRewardMintMultiplier:
+              this.wallet.networkID ===
+              (this.constants.CHAIN_ID.MAINNET ||
+                this.constants.CHAIN_ID.RINKEBY)
+                ? new BigNumber(pool.poolDepositorRewardMintMultiplier)
+                : new BigNumber(0),
           };
 
           totalDepositUSD = totalDepositUSD.plus(
@@ -196,14 +214,19 @@ export class LandingPageComponent implements OnInit {
         this.updateAPY();
       });
     }
-    const mphPriceUSD = await this.helpers.getMPHPriceUSD();
-    this.totalEarningsUSD = new BigNumber(
-      data.globalStats.xMPHRewardDistributed
-    )
-      .times(mphPriceUSD)
-      .div(1e6);
-    if (this.totalEarningsUSD.isNaN()) {
-      this.totalEarningsUSD = new BigNumber(0);
+    if (
+      this.wallet.networkID ===
+      (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+    ) {
+      const mphPriceUSD = await this.helpers.getMPHPriceUSD();
+      this.totalEarningsUSD = new BigNumber(
+        data.globalStats.xMPHRewardDistributed
+      )
+        .times(mphPriceUSD)
+        .div(1e6);
+      if (this.totalEarningsUSD.isNaN()) {
+        this.totalEarningsUSD = new BigNumber(0);
+      }
     }
   }
 
