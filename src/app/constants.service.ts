@@ -58,7 +58,8 @@ export class ConstantsService {
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3',
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby',
-    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.POLYGON]:
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-polygon',
   };
   GRAPHQL_ENDPOINT_V2 = {
     [this.CHAIN_ID.MAINNET]:
@@ -78,14 +79,16 @@ export class ConstantsService {
       'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future',
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-rinkeby',
-    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.POLYGON]:
+      'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-polygon',
   };
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/blocklytics/rinkeby-blocks',
-    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.POLYGON]:
+      'https://api.thegraph.com/subgraphs/name/elkfinance/matic-blocks',
   };
   CHAINLINK_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
