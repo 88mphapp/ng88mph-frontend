@@ -16,6 +16,7 @@ import { TermsOfServiceComponent } from '../terms-of-service/terms-of-service.co
 })
 export class HeaderComponent implements OnInit {
   gasPrice: BigNumber;
+  gasInterval: any;
   mphBalance: BigNumber;
   xMPHBalance: BigNumber;
   acceptedTerms: boolean;
@@ -48,6 +49,7 @@ export class HeaderComponent implements OnInit {
 
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.zone.run(() => {
+        clearInterval(this.gasInterval);
         this.resetData(true, true);
         this.loadData(true, true);
       });
@@ -69,8 +71,6 @@ export class HeaderComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-
     let address = this.wallet.actualAddress;
 
     if (loadUser && address) {
@@ -102,10 +102,26 @@ export class HeaderComponent implements OnInit {
     }
 
     if (loadGlobal) {
-      this.fetchGasPrice();
-      setInterval(() => {
-        this.fetchGasPrice();
-      }, 5000);
+      setTimeout(async () => {
+        if (this.wallet.networkID === this.constants.CHAIN_ID.MAINNET) {
+          this.fetchGasPrice();
+          clearInterval(this.gasInterval);
+          this.gasInterval = setInterval(() => {
+            this.fetchGasPrice();
+          }, 15000);
+        } else {
+          const readonlyWeb3 = this.wallet.readonlyWeb3(this.wallet.networkID);
+          this.gasPrice = new BigNumber(
+            await readonlyWeb3.eth.getGasPrice()
+          ).div(1e9);
+          clearInterval(this.gasInterval);
+          this.gasInterval = setInterval(async () => {
+            this.gasPrice = new BigNumber(
+              await readonlyWeb3.eth.getGasPrice()
+            ).div(1e9);
+          }, 15000);
+        }
+      }, 3000);
     }
   }
 
