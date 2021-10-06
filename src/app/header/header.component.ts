@@ -103,37 +103,18 @@ export class HeaderComponent implements OnInit {
 
     if (loadGlobal) {
       setTimeout(async () => {
-        if (this.wallet.networkID === this.constants.CHAIN_ID.MAINNET) {
-          this.fetchGasPrice();
-          clearInterval(this.gasInterval);
-          this.gasInterval = setInterval(() => {
-            this.fetchGasPrice();
-          }, 15000);
-        } else {
-          const readonlyWeb3 = this.wallet.readonlyWeb3(this.wallet.networkID);
+        const readonlyWeb3 = this.wallet.readonlyWeb3(this.wallet.networkID);
+        this.gasPrice = new BigNumber(await readonlyWeb3.eth.getGasPrice()).div(
+          1e9
+        );
+        clearInterval(this.gasInterval);
+        this.gasInterval = setInterval(async () => {
           this.gasPrice = new BigNumber(
             await readonlyWeb3.eth.getGasPrice()
           ).div(1e9);
-          clearInterval(this.gasInterval);
-          this.gasInterval = setInterval(async () => {
-            this.gasPrice = new BigNumber(
-              await readonlyWeb3.eth.getGasPrice()
-            ).div(1e9);
-          }, 15000);
-        }
+        }, 5000);
       }, 3000);
     }
-  }
-
-  async fetchGasPrice() {
-    const apiStr = 'https://api.blocknative.com/gasprices/blockprices';
-    const request = await fetch(apiStr, {
-      headers: { Authorization: `${this.constants.BLOCKNATIVE_KEY}` },
-    });
-    const result = await request.json();
-    this.gasPrice = new BigNumber(
-      result.blockPrices[0].estimatedPrices[2].price
-    );
   }
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
