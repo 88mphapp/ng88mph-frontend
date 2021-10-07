@@ -48,6 +48,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadData(this.wallet.connected || this.wallet.watching, true);
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
       this.loadData(true, true);
