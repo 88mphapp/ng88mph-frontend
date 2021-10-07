@@ -23,7 +23,11 @@ export class TimeSeriesService {
     return interval / period;
   }
 
-  async getCustomTimeSeries(customStart: number, customPeriod: number) {
+  async getCustomTimeSeries(
+    customStart: number,
+    customPeriod: number,
+    networkID: number = this.wallet.networkID
+  ) {
     let timeStamps: number[] = [];
     let blocks: number[] = [];
     let data: number[][] = [];
@@ -118,7 +122,7 @@ export class TimeSeriesService {
 
     // run the query and create array of blocks
     await request(
-      this.constants.BLOCKS_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      this.constants.BLOCKS_GRAPHQL_ENDPOINT[networkID],
       blocksQuery
     ).then((data) => {
       for (let block in data) {

@@ -182,8 +182,9 @@ export class MphSupplyDistributionComponent implements OnInit {
   async loadData(networkID: number): Promise<boolean> {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
-      this.FIRST_INDEX[this.wallet.networkID],
-      this.PERIOD
+      this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET],
+      this.PERIOD,
+      this.constants.CHAIN_ID.MAINNET
     );
 
     // populate timestamps, blocks, and readable arrays
@@ -227,7 +228,9 @@ export class MphSupplyDistributionComponent implements OnInit {
 
     // then run the query
     request(
-      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[
+        this.constants.CHAIN_ID.MAINNET
+      ],
       supplyQuery
     ).then((data: QueryResult) => this.handleSupplyData(data));
 
@@ -269,7 +272,9 @@ export class MphSupplyDistributionComponent implements OnInit {
 
       // then run the query
       let result = await request(
-        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[
+          this.constants.CHAIN_ID.MAINNET
+        ],
         addressQuery
       ).then((data: QueryResult) => {
         return data;
@@ -313,14 +318,18 @@ export class MphSupplyDistributionComponent implements OnInit {
         if (holder !== undefined) {
           if (
             address ===
-            this.constants.GOV_TREASURY[this.wallet.networkID].toLowerCase()
+            this.constants.GOV_TREASURY[
+              this.constants.CHAIN_ID.MAINNET
+            ].toLowerCase()
           ) {
             this.govTreasury[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
             );
           } else if (
             address ===
-            this.constants.DEV_WALLET[this.wallet.networkID].toLowerCase()
+            this.constants.DEV_WALLET[
+              this.constants.CHAIN_ID.MAINNET
+            ].toLowerCase()
           ) {
             this.devWallet[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
@@ -328,7 +337,7 @@ export class MphSupplyDistributionComponent implements OnInit {
           } else if (
             address ===
             this.constants.MERKLE_DISTRIBUTOR[
-              this.wallet.networkID
+              this.constants.CHAIN_ID.MAINNET
             ].toLowerCase()
           ) {
             this.merkleDistributor[parseInt(t.substring(1))] = parseFloat(
@@ -337,10 +346,12 @@ export class MphSupplyDistributionComponent implements OnInit {
           } else if (
             address ===
               this.constants.XMPH_ADDRESS[
-                this.wallet.networkID
+                this.constants.CHAIN_ID.MAINNET
               ].toLowerCase() ||
             address ===
-              this.constants.V2_REWARDS[this.wallet.networkID].toLowerCase()
+              this.constants.V2_REWARDS[
+                this.constants.CHAIN_ID.MAINNET
+              ].toLowerCase()
           ) {
             if (this.rewards[parseInt(t.substring(1))] === undefined) {
               this.rewards[parseInt(t.substring(1))] = 0;
@@ -350,28 +361,36 @@ export class MphSupplyDistributionComponent implements OnInit {
             );
           } else if (
             address ===
-            this.constants.UNISWAP_V2_LP[this.wallet.networkID].toLowerCase()
+            this.constants.UNISWAP_V2_LP[
+              this.constants.CHAIN_ID.MAINNET
+            ].toLowerCase()
           ) {
             this.uniswapv2[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
             );
           } else if (
             address ===
-            this.constants.UNISWAP_V3_LP[this.wallet.networkID].toLowerCase()
+            this.constants.UNISWAP_V3_LP[
+              this.constants.CHAIN_ID.MAINNET
+            ].toLowerCase()
           ) {
             this.uniswapv3[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
             );
           } else if (
             address ===
-            this.constants.SUSHISWAP_LP[this.wallet.networkID].toLowerCase()
+            this.constants.SUSHISWAP_LP[
+              this.constants.CHAIN_ID.MAINNET
+            ].toLowerCase()
           ) {
             this.sushiswap[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
             );
           } else if (
             address ===
-            this.constants.BANCOR_LP[this.wallet.networkID].toLowerCase()
+            this.constants.BANCOR_LP[
+              this.constants.CHAIN_ID.MAINNET
+            ].toLowerCase()
           ) {
             this.bancor[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
@@ -390,31 +409,37 @@ export class MphSupplyDistributionComponent implements OnInit {
   getAddresses(): string[] {
     let addresses: string[] = [];
     addresses.push(
-      this.constants.GOV_TREASURY[this.wallet.networkID].toLowerCase()
+      this.constants.GOV_TREASURY[this.constants.CHAIN_ID.MAINNET].toLowerCase()
     );
     addresses.push(
-      this.constants.DEV_WALLET[this.wallet.networkID].toLowerCase()
+      this.constants.DEV_WALLET[this.constants.CHAIN_ID.MAINNET].toLowerCase()
     );
     addresses.push(
-      this.constants.MERKLE_DISTRIBUTOR[this.wallet.networkID].toLowerCase()
+      this.constants.MERKLE_DISTRIBUTOR[
+        this.constants.CHAIN_ID.MAINNET
+      ].toLowerCase()
     );
     addresses.push(
-      this.constants.XMPH_ADDRESS[this.wallet.networkID].toLowerCase()
+      this.constants.XMPH_ADDRESS[this.constants.CHAIN_ID.MAINNET].toLowerCase()
     );
     addresses.push(
-      this.constants.V2_REWARDS[this.wallet.networkID].toLowerCase()
+      this.constants.V2_REWARDS[this.constants.CHAIN_ID.MAINNET].toLowerCase()
     );
     addresses.push(
-      this.constants.UNISWAP_V2_LP[this.wallet.networkID].toLowerCase()
+      this.constants.UNISWAP_V2_LP[
+        this.constants.CHAIN_ID.MAINNET
+      ].toLowerCase()
     );
     addresses.push(
-      this.constants.UNISWAP_V3_LP[this.wallet.networkID].toLowerCase()
+      this.constants.UNISWAP_V3_LP[
+        this.constants.CHAIN_ID.MAINNET
+      ].toLowerCase()
     );
     addresses.push(
-      this.constants.SUSHISWAP_LP[this.wallet.networkID].toLowerCase()
+      this.constants.SUSHISWAP_LP[this.constants.CHAIN_ID.MAINNET].toLowerCase()
     );
     addresses.push(
-      this.constants.BANCOR_LP[this.wallet.networkID].toLowerCase()
+      this.constants.BANCOR_LP[this.constants.CHAIN_ID.MAINNET].toLowerCase()
     );
     return addresses;
   }

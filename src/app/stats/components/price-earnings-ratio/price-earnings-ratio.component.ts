@@ -152,8 +152,9 @@ export class PriceEarningsRatioComponent implements OnInit {
   async loadData(networkID: number): Promise<boolean> {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
-      this.FIRST_INDEX[this.wallet.networkID],
-      this.PERIOD
+      this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET],
+      this.PERIOD,
+      this.constants.CHAIN_ID.MAINNET
     );
 
     // populate timestamps, blocks, and readable arrays
@@ -188,7 +189,7 @@ export class PriceEarningsRatioComponent implements OnInit {
     // @dev if days < 100 then coingecko api returns inaccurate timestamps
     let days =
       (this.timeseries.getLatestUTCDate() -
-        this.FIRST_INDEX[this.wallet.networkID] +
+        this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET] +
         this.constants.DAY_IN_SEC) /
       this.constants.DAY_IN_SEC;
     if (days < 100) {
@@ -232,7 +233,9 @@ export class PriceEarningsRatioComponent implements OnInit {
 
     // then run the query
     request(
-      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[
+        this.constants.CHAIN_ID.MAINNET
+      ],
       query
     ).then((data: QueryResult) => this.handleData(data));
   }
@@ -242,14 +245,14 @@ export class PriceEarningsRatioComponent implements OnInit {
     // @dev if days < 100 then coingecko api returns inaccurate timestamps
     let days =
       (this.timeseries.getLatestUTCDate() -
-        this.FIRST_INDEX[this.wallet.networkID] +
+        this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET] +
         this.constants.DAY_IN_SEC) /
       this.constants.DAY_IN_SEC;
     if (days < 100) {
       days = 100;
     }
     let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(
-      this.constants.MPH_ADDRESS[this.wallet.networkID],
+      this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET],
       `${days}`,
       this.blocks,
       this.timestamps,

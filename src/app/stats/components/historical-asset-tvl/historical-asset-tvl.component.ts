@@ -17,6 +17,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
   FIRST_INDEX = {
     [this.constants.CHAIN_ID.MAINNET]: 1630972800,
     [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+    [this.constants.CHAIN_ID.POLYGON]: 1633392000,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   PERIOD_NAME: string = 'daily';
@@ -241,8 +242,6 @@ export class HistoricalAssetTvlComponent implements OnInit {
               : this.data[pool].dataUSD.push(0);
           }
         }
-      } else {
-        this.data.shift();
       }
     }
 
@@ -260,8 +259,12 @@ export class HistoricalAssetTvlComponent implements OnInit {
       }
     }
 
+    this.data.shift();
     this.allData = [];
     this.allData = this.data;
+    this.allData.sort((a, b) => {
+      return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
+    });
     this.focusAsset();
   }
 
@@ -271,18 +274,21 @@ export class HistoricalAssetTvlComponent implements OnInit {
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1630972800,
         [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
+        [this.constants.CHAIN_ID.RINKEBY]: 1633392000,
       };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1630800000,
         [this.constants.CHAIN_ID.RINKEBY]: 1624147200,
+        [this.constants.CHAIN_ID.RINKEBY]: 1633219200,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1630454400,
         [this.constants.CHAIN_ID.RINKEBY]: 1622505600,
+        [this.constants.CHAIN_ID.RINKEBY]: 1633046400,
       };
     }
     this.resetChart();

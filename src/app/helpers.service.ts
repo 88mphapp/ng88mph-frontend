@@ -99,197 +99,228 @@ export class HelpersService {
     timestamps: number[],
     chainID: number
   ): Promise<Array<Array<number>>> {
-    const address = tokenAddress.toLowerCase();
+    let address = tokenAddress.toLowerCase();
 
-    if (address === this.constants.AAVE[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'AAVE',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.BAL[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesETH(
-        'BAL',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.BAT[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'BAT',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.BNT[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'BNT',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.COMP[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'COMP',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.CRV[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'CRV',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.DAI[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'DAI',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.FARM[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesETH(
-        'FARM',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.FTT[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesETH(
-        'FTT',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.GUSD[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'USDC',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.LINK[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'LINK',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.RAI[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesETH(
-        'RAI',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.REN[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'REN',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.SNX[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'SNX',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.SUSD[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'sUSD',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.SUSHI[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'SUSHI',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.TUSD[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesETH(
-        'TUSD',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.UNI[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'UNI',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.USDC[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'USDC',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.USDP[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesETH(
-        'PAX',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.USDT[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'USDT',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.YFI[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'YFI',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (address === this.constants.ZRX[chainID].toLowerCase()) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'ZRX',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (
-      address === this.constants.WBTC[chainID].toLowerCase() ||
-      address === this.constants.CRVHBTC[chainID].toLowerCase() ||
-      address === this.constants.CRVOBTC[chainID].toLowerCase() ||
-      address === this.constants.CRVRENWBTC[chainID].toLowerCase() ||
-      address === this.constants.CRVRENWSBTC[chainID].toLowerCase()
+    if (chainID === this.constants.CHAIN_ID.MAINNET) {
+      if (address === this.constants.AAVE[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'AAVE',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.BAL[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesETH(
+          'BAL',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.BAT[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'BAT',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.BNT[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'BNT',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.COMP[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'COMP',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.CRV[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'CRV',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.DAI[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'DAI',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.FARM[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesETH(
+          'FARM',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.FTT[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesETH(
+          'FTT',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.GUSD[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'USDC',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.LINK[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'LINK',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.RAI[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesETH(
+          'RAI',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.REN[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'REN',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.SNX[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'SNX',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.SUSD[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'sUSD',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.SUSHI[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'SUSHI',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.TUSD[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesETH(
+          'TUSD',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.UNI[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'UNI',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.USDC[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'USDC',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.USDP[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesETH(
+          'PAX',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.USDT[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'USDT',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.YFI[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'YFI',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (address === this.constants.ZRX[chainID].toLowerCase()) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'ZRX',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (
+        address === this.constants.WBTC[chainID].toLowerCase() ||
+        address === this.constants.CRVHBTC[chainID].toLowerCase() ||
+        address === this.constants.CRVOBTC[chainID].toLowerCase() ||
+        address === this.constants.CRVRENWBTC[chainID].toLowerCase() ||
+        address === this.constants.CRVRENWSBTC[chainID].toLowerCase()
+      ) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'BTC',
+          blocks,
+          timestamps,
+          chainID
+        );
+      } else if (
+        address === this.constants.WETH[chainID].toLowerCase() ||
+        address === this.constants.STECRV[chainID].toLowerCase()
+      ) {
+        return await this.getHistoricalChainlinkPricesUSD(
+          'ETH',
+          blocks,
+          timestamps,
+          chainID
+        );
+      }
+    }
+
+    if (
+      address !== this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
     ) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'BTC',
-        blocks,
-        timestamps,
-        chainID
-      );
-    } else if (
-      address === this.constants.WETH[chainID].toLowerCase() ||
-      address === this.constants.STECRV[chainID].toLowerCase()
-    ) {
-      return await this.getHistoricalChainlinkPricesUSD(
-        'ETH',
-        blocks,
-        timestamps,
-        chainID
-      );
+      address = this.getMainnetAddress(address, chainID);
     }
 
     const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=${days}`;
     const rawResult = await this.httpsGet(apiStr, 300);
     return rawResult.prices;
+  }
+
+  getMainnetAddress(tokenAddress: string, chainID: number): string {
+    const address = tokenAddress.toLowerCase();
+
+    if (address === this.constants.DAI[chainID]) {
+      return this.constants.DAI[this.constants.CHAIN_ID.MAINNET];
+    } else if (address === this.constants.USDC[chainID]) {
+      return this.constants.USDC[this.constants.CHAIN_ID.MAINNET];
+    } else if (address === this.constants.USDT[chainID]) {
+      return this.constants.USDT[this.constants.CHAIN_ID.MAINNET];
+    } else if (address === this.constants.WBTC[chainID]) {
+      return this.constants.WBTC[this.constants.CHAIN_ID.MAINNET];
+    } else if (address === this.constants.WETH[chainID]) {
+      return this.constants.WETH[this.constants.CHAIN_ID.MAINNET];
+    } else if (address === this.constants.WMATIC[chainID]) {
+      return this.constants.WMATIC[this.constants.CHAIN_ID.MAINNET];
+    }
+
+    console.log(
+      'Historical price lookup for ' + address + 'has not been set up yet'
+    );
+    return 'unknown address';
   }
 
   processWeb3Number(number): string {

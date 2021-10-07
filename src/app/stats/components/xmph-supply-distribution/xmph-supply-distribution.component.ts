@@ -111,9 +111,14 @@ export class XmphSupplyDistributionComponent implements OnInit {
       return false;
     }
 
+    let requestNetworkID =
+      this.wallet.networkID === this.constants.CHAIN_ID.RINKEBY
+        ? this.wallet.networkID
+        : this.constants.CHAIN_ID.MAINNET;
+
     // run the query
     request(
-      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[requestNetworkID],
       query
     ).then((data: QueryResult) => this.handleData(data));
 
