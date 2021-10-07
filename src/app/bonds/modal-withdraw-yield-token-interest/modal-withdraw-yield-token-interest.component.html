@@ -49,7 +49,7 @@
                         Accrued interest
                       </h6>
                       <h4 class="mb-1 glowing display-4">
-                        {{ fundedDeposit.funderAccruedInterest.toFormat(8) }}
+                        {{ fundedDeposit.funderAccruedInterest.toFormat(18) }}
                         {{ poolInfo.stablecoinSymbol }}
                       </h4>
                       <div class="text-muted small mb-3">
@@ -65,8 +65,19 @@
                         (click)="handleAccruedInterest()"
                         [disabled]="!canContinue()"
                         i18n="@@ClaimInterestAndRewardsBtn"
+                        *ngIf="fundedDeposit.funderAccruedInterest.gt(0)"
                       >
-                        Make accrued interest and MPH rewards claimable
+                        Make Accrued Interest and MPH Rewards Claimable
+                      </button>
+                      <button
+                        class="btn btn-lg btn-bg-gradient"
+                        type="button"
+                        (click)="handleAccruedInterest()"
+                        [disabled]="true"
+                        i18n="@@ClaimInterestAndRewardsBtn"
+                        *ngIf="fundedDeposit.funderAccruedInterest.eq(0)"
+                      >
+                        No Interest Accrued
                       </button>
                     </div>
                   </div>
@@ -98,7 +109,7 @@
                         Claimable interest
                       </h6>
                       <h4 class="mb-1 glowing display-4">
-                        {{ withdrawableInterestToken.toFormat(8) }}
+                        {{ withdrawableInterestToken.toFormat(18) }}
                         {{ poolInfo.stablecoinSymbol }}
                       </h4>
                       <div class="text-muted small mb-3">
@@ -110,14 +121,31 @@
                         (click)="withdrawInterest()"
                         [disabled]="!canContinue()"
                         i18n="@@modalWithdrawClaimInterestBtn"
+                        *ngIf="withdrawableInterestToken.gt(0)"
                       >
                         Claim Interest
+                      </button>
+                      <button
+                        class="btn btn-lg btn-bg-gradient"
+                        type="button"
+                        (click)="withdrawInterest()"
+                        [disabled]="true"
+                        i18n="@@modalWithdrawClaimInterestBtn"
+                        *ngIf="withdrawableInterestToken.eq(0)"
+                      >
+                        No Interest To Claim
                       </button>
                     </div>
                   </div>
                   <!-- / .row -->
                 </div>
-                <div class="list-group-item pb-0">
+                <div
+                  class="list-group-item pb-0"
+                  *ngIf="
+                    wallet.networkID === constants.CHAIN_ID.MAINNET ||
+                    wallet.networkID === constants.CHAIN_ID.RINKEBY
+                  "
+                >
                   <div class="row">
                     <div class="col-auto text-center">
                       <div class="avatar avatar-sm">
@@ -143,7 +171,7 @@
                         Claimable MPH rewards
                       </h6>
                       <h4 class="mb-1 glowing display-4">
-                        {{ withdrawableMPHToken.toFormat(8) }}
+                        {{ withdrawableMPHToken.toFormat(18) }}
                         <ng-container i18n="@@homeFormTrustFooter"
                           >MPH</ng-container
                         >
@@ -157,8 +185,19 @@
                         (click)="withdrawMPH()"
                         [disabled]="!canContinue()"
                         i18n="@@modalWithdrawClaimMPHBtn"
+                        *ngIf="withdrawableMPHToken.gt(0)"
                       >
                         Claim MPH
+                      </button>
+                      <button
+                        class="btn btn-lg btn-bg-gradient"
+                        type="button"
+                        (click)="withdrawMPH()"
+                        [disabled]="true"
+                        i18n="@@modalWithdrawClaimMPHBtn"
+                        *ngIf="withdrawableMPHToken.eq(0)"
+                      >
+                        No MPH to Claim
                       </button>
                     </div>
                   </div>

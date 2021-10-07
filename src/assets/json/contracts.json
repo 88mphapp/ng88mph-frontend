@@ -24,5 +24,8 @@
     "Vesting02": "0xab5bAA840b4C9321aa66144ffB2693E2db1166C7",
     "CompoundLens": "0xc68BFb6D3150CCc26193007F3096a9B691d3692c",
     "DInterestLens": "0x1BBeA3Fa282dc0199E7dCea34E152FA955fd3c21"
+  },
+  "137": {
+    "DInterestLens": "0x162083f8096f54d68c6a5f8E86adB400FfC4b201"
   }
 }
