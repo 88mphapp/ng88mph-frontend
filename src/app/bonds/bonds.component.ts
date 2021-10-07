@@ -255,34 +255,39 @@ export class BondsComponent implements OnInit {
           // calculate the amount of mph earned
           // @dev this only accounts for already distributed MPH, does not estimate MPH rewards based on interest earned to date
           let mphEarned = new BigNumber(0);
-          await yieldToken.methods
-            .accumulativeDividendOf(
-              funding.nftID,
-              this.constants.MPH_ADDRESS[this.wallet.networkID],
-              funder.address
-            )
-            .call()
-            .then((result) => {
-              const funderDistributedMPH = new BigNumber(result).div(
-                this.constants.PRECISION
-              );
-              mphEarned = mphEarned.plus(funderDistributedMPH);
-            });
+          let funderWithdrawableMPH = new BigNumber(0);
+          if (
+            this.wallet.networkID ===
+            (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+          ) {
+            await yieldToken.methods
+              .accumulativeDividendOf(
+                funding.nftID,
+                this.constants.MPH_ADDRESS[this.wallet.networkID],
+                funder.address
+              )
+              .call()
+              .then((result) => {
+                const funderDistributedMPH = new BigNumber(result).div(
+                  this.constants.PRECISION
+                );
+                mphEarned = mphEarned.plus(funderDistributedMPH);
+              });
 
-          // fetch amount of mph that can be withdrawn
-          let funderWithdrawableMPH;
-          await yieldToken.methods
-            .dividendOf(
-              funding.nftID,
-              this.constants.MPH_ADDRESS[this.wallet.networkID],
-              funder.address
-            )
-            .call()
-            .then((result) => {
-              funderWithdrawableMPH = new BigNumber(result).div(
-                this.constants.PRECISION
-              );
-            });
+            // fetch amount of mph that can be withdrawn
+            await yieldToken.methods
+              .dividendOf(
+                funding.nftID,
+                this.constants.MPH_ADDRESS[this.wallet.networkID],
+                funder.address
+              )
+              .call()
+              .then((result) => {
+                funderWithdrawableMPH = new BigNumber(result).div(
+                  this.constants.PRECISION
+                );
+              });
+          }
 
           if (
             funderAccruedInterest.eq(0) &&

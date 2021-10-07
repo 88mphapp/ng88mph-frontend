@@ -71,22 +71,27 @@ export class ModalWithdrawYieldTokenInterestComponent implements OnInit {
         );
       });
 
-    // fetch withdrawableMPH
-    this.fundedDeposit.yieldToken.methods
-      .dividendOf(
-        this.fundedDeposit.fundingID,
-        this.constants.MPH_ADDRESS[this.wallet.networkID],
-        this.wallet.actualAddress
-      )
-      .call()
-      .then((withdrawableMPH) => {
-        this.withdrawableMPHToken = new BigNumber(withdrawableMPH).div(
-          this.constants.PRECISION
-        );
-        this.withdrawableMPHUSD = this.withdrawableMPHToken.times(
-          this.mphPriceUSD
-        );
-      });
+    if (
+      this.wallet.networkID ===
+      (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+    ) {
+      // fetch withdrawableMPH
+      this.fundedDeposit.yieldToken.methods
+        .dividendOf(
+          this.fundedDeposit.fundingID,
+          this.constants.MPH_ADDRESS[this.wallet.networkID],
+          this.wallet.actualAddress
+        )
+        .call()
+        .then((withdrawableMPH) => {
+          this.withdrawableMPHToken = new BigNumber(withdrawableMPH).div(
+            this.constants.PRECISION
+          );
+          this.withdrawableMPHUSD = this.withdrawableMPHToken.times(
+            this.mphPriceUSD
+          );
+        });
+    }
   }
 
   resetData(): void {
