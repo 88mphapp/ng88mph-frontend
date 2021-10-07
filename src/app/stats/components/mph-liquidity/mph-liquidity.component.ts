@@ -134,8 +134,9 @@ export class MphLiquidityComponent implements OnInit {
   async loadData(networkID: number): Promise<boolean> {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
-      this.FIRST_INDEX[this.wallet.networkID],
-      this.PERIOD
+      this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET],
+      this.PERIOD,
+      this.constants.CHAIN_ID.MAINNET
     );
 
     // populate timestamps, blocks, and readable arrays
@@ -174,7 +175,7 @@ export class MphLiquidityComponent implements OnInit {
     let queryString = `query Uniswap_V2 {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pair(
-        id: "${this.constants.UNISWAP_V2_LP[this.wallet.networkID]}",
+        id: "${this.constants.UNISWAP_V2_LP[this.constants.CHAIN_ID.MAINNET]}",
         block: {
           number: ${this.blocks[i]}
         }
@@ -196,7 +197,7 @@ export class MphLiquidityComponent implements OnInit {
     let queryString = `query Uniswap_V3 {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pool(
-        id: "${this.constants.UNISWAP_V3_LP[this.wallet.networkID]}",
+        id: "${this.constants.UNISWAP_V3_LP[this.constants.CHAIN_ID.MAINNET]}",
         block: {
           number: ${this.blocks[i]}
         }
@@ -218,7 +219,7 @@ export class MphLiquidityComponent implements OnInit {
     let queryString = `query Sushiswap {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pair(
-        id: "${this.constants.SUSHISWAP_LP[this.wallet.networkID]}",
+        id: "${this.constants.SUSHISWAP_LP[this.constants.CHAIN_ID.MAINNET]}",
         block: {
           number: ${this.blocks[i]}
         }
@@ -237,13 +238,10 @@ export class MphLiquidityComponent implements OnInit {
   }
 
   async loadBancor() {
-    if (this.wallet.networkID !== this.constants.CHAIN_ID.MAINNET) {
-      return;
-    }
     const start_date = this.timestamps[0];
     const end_date = this.timestamps[this.timestamps.length - 1];
     const apiStr = `https://api-v2.bancor.network/history/liquidity-depth/?dlt_type=ethereum&token_dlt_id=${
-      this.constants.MPH_ADDRESS[this.wallet.networkID]
+      this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
     }&start_date=${start_date}&end_date=${end_date}&interval=day`;
     const result = await this.helpers.httpsGet(apiStr);
 
@@ -289,11 +287,11 @@ export class MphLiquidityComponent implements OnInit {
   async handleBancorData(data: Array<BancorNetworkHistory>) {
     const days =
       (this.timeseries.getLatestUTCDate() -
-        this.FIRST_INDEX[this.wallet.networkID] +
+        this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET] +
         this.constants.DAY_IN_SEC) /
       this.constants.DAY_IN_SEC;
     let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(
-      this.constants.MPH_ADDRESS[this.wallet.networkID],
+      this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET],
       `${days}`,
       this.blocks,
       this.timestamps,

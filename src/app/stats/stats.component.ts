@@ -30,18 +30,18 @@ export class StatsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(this.wallet.networkID);
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData();
-      this.loadData();
+      this.loadData(this.wallet.networkID);
     });
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.resetData();
-      this.loadData();
+      this.loadData(networkID);
     });
   }
 
-  async loadData() {
+  async loadData(networkID: number) {
     const queryString = gql`
       {
         dpools {
@@ -56,71 +56,81 @@ export class StatsComponent implements OnInit {
         }
       }
     `;
-    request(
+    await request(
       this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
       queryString
-    ).then((data: QueryResult) => this.handleData(data));
+    ).then((data: QueryResult) => this.handleData(data, networkID));
 
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
 
-    const mph = this.contract.getContract(
-      this.constants.MPH_ADDRESS[this.wallet.networkID],
-      `MPHToken`
-    );
+    if (
+      this.wallet.networkID ===
+      (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+    ) {
+      const mph = this.contract.getContract(
+        this.constants.MPH_ADDRESS[this.wallet.networkID],
+        `MPHToken`
+      );
 
-    const xmph = await this.contract.getContract(
-      this.constants.XMPH_ADDRESS[this.wallet.networkID],
-      `xMPH`
-    );
+      const xmph = await this.contract.getContract(
+        this.constants.XMPH_ADDRESS[this.wallet.networkID],
+        `xMPH`
+      );
 
-    await mph.methods
-      .totalSupply()
-      .call()
-      .then((totalSupply) => {
-        this.mphTotalSupply = new BigNumber(totalSupply).div(
-          this.constants.PRECISION
-        );
-      });
+      await mph.methods
+        .totalSupply()
+        .call()
+        .then((totalSupply) => {
+          this.mphTotalSupply = new BigNumber(totalSupply).div(
+            this.constants.PRECISION
+          );
+        });
 
-    mph.methods
-      .balanceOf(xmph.options.address)
-      .call()
-      .then((stakedBalance) => {
-        this.mphStakedPercentage = new BigNumber(stakedBalance)
-          .div(this.mphTotalSupply)
-          .div(this.constants.PRECISION)
-          .times(100);
-      });
+      mph.methods
+        .balanceOf(xmph.options.address)
+        .call()
+        .then((stakedBalance) => {
+          this.mphStakedPercentage = new BigNumber(stakedBalance)
+            .div(this.mphTotalSupply)
+            .div(this.constants.PRECISION)
+            .times(100);
+        });
 
-    // compute circulating supply
-    let mphCirculatingSupply = this.mphTotalSupply;
-    const getBalance = async (address) => {
-      if (address !== '') {
-        return new BigNumber(await mph.methods.balanceOf(address).call()).div(
-          this.constants.PRECISION
-        );
-      } else {
-        return new BigNumber(0);
+      // compute circulating supply
+      let mphCirculatingSupply = this.mphTotalSupply;
+      const getBalance = async (address) => {
+        if (address !== '') {
+          return new BigNumber(await mph.methods.balanceOf(address).call()).div(
+            this.constants.PRECISION
+          );
+        } else {
+          return new BigNumber(0);
+        }
+      };
+      const accountsToUpdate = [
+        this.constants.XMPH_ADDRESS[this.wallet.networkID],
+        this.constants.GOV_TREASURY[this.wallet.networkID],
+        this.constants.DEV_WALLET[this.wallet.networkID],
+        this.constants.MERKLE_DISTRIBUTOR[this.wallet.networkID],
+      ];
+      const accountBalances = await Promise.all(
+        accountsToUpdate.map((account) => getBalance(account))
+      );
+      for (const balance of accountBalances) {
+        mphCirculatingSupply = mphCirculatingSupply.minus(balance);
       }
-    };
-    const accountsToUpdate = [
-      this.constants.XMPH_ADDRESS[this.wallet.networkID],
-      this.constants.GOV_TREASURY[this.wallet.networkID],
-      this.constants.DEV_WALLET[this.wallet.networkID],
-      this.constants.MERKLE_DISTRIBUTOR[this.wallet.networkID],
-    ];
-    const accountBalances = await Promise.all(
-      accountsToUpdate.map((account) => getBalance(account))
-    );
-    for (const balance of accountBalances) {
-      mphCirculatingSupply = mphCirculatingSupply.minus(balance);
+      this.mphCirculatingSupply = mphCirculatingSupply;
     }
-    this.mphCirculatingSupply = mphCirculatingSupply;
   }
 
-  async handleData(data: QueryResult) {
+  async handleData(data: QueryResult, networkID: number) {
+    // bail if a chain change has occured
+    if (networkID !== this.wallet.networkID) {
+      return;
+    }
+
     const dpools = data.dpools;
     const rewards = data.globalStats;
 
