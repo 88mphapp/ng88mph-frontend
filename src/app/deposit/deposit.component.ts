@@ -65,12 +65,13 @@ export class DepositComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadData(this.wallet.connected || this.wallet.watching, true);
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
       this.loadData(true, true);
     });
     this.wallet.disconnectedEvent.subscribe(() => {
-      this.resetData(true, false);
+      this.resetData(true, true);
     });
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.zone.run(() => {
@@ -80,8 +81,8 @@ export class DepositComponent implements OnInit {
     });
     this.wallet.accountChangedEvent.subscribe((account) => {
       this.zone.run(() => {
-        this.resetData(true, false);
-        this.loadData(true, false);
+        this.resetData(true, true);
+        this.loadData(true, true);
       });
     });
     this.wallet.txConfirmedEvent.subscribe(() => {
@@ -101,11 +102,11 @@ export class DepositComponent implements OnInit {
     let userID = this.wallet.actualAddress.toLowerCase();
 
     if (loadUser && userID) {
+      // load xMPH balance for 'get started' section
       if (
         this.wallet.networkID ===
         (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
       ) {
-        // load xMPH balance for 'get started' section
         const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
         xmph.methods
           .balanceOf(userID)
@@ -182,9 +183,7 @@ export class DepositComponent implements OnInit {
           pools {
             id
             address
-            deposits(where: { user: "${userID}", amount_gt: "${
-                this.constants.DUST_THRESHOLD
-              }" }, orderBy: nftID) {
+            deposits(where: { user: "${userID}", amount_gt: "${this.constants.DUST_THRESHOLD}" }, orderBy: nftID) {
               nftID
               virtualTokenTotalSupply
               maturationTimestamp
@@ -192,20 +191,14 @@ export class DepositComponent implements OnInit {
               interestRate
               feeRate
               amount
-              ${
-                this.wallet.networkID ===
-                (this.constants.CHAIN_ID.MAINNET ||
-                  this.constants.CHAIN_ID.RINKEBY)
-                  ? `vest {
-                    nftID
-                    owner
-                    lastUpdateTimestamp
-                    accumulatedAmount
-                    withdrawnAmount
-                    vestAmountPerStablecoinPerSecond
-                    totalExpectedMPHAmount
-                  }`
-                  : ''
+              vest {
+                nftID
+                owner
+                lastUpdateTimestamp
+                accumulatedAmount
+                withdrawnAmount
+                vestAmountPerStablecoinPerSecond
+                totalExpectedMPHAmount
               }
             }
           }
@@ -213,19 +206,13 @@ export class DepositComponent implements OnInit {
             maturationTimestamp
             virtualTokenTotalSupply
             interestRate
-            ${
-              this.wallet.networkID ===
-              (this.constants.CHAIN_ID.MAINNET ||
-                this.constants.CHAIN_ID.RINKEBY)
-                ? `vest {
-                  nftID
-                  withdrawnAmount
-                  accumulatedAmount
-                  totalExpectedMPHAmount
-                  lastUpdateTimestamp
-                  vestAmountPerStablecoinPerSecond
-                }`
-                : ''
+            vest {
+              nftID
+              withdrawnAmount
+              accumulatedAmount
+              totalExpectedMPHAmount
+              lastUpdateTimestamp
+              vestAmountPerStablecoinPerSecond
             }
           }
           totalDepositByPool {
@@ -245,12 +232,7 @@ export class DepositComponent implements OnInit {
           id
           address
           totalDeposit
-          ${
-            this.wallet.networkID ===
-            (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
-              ? `poolDepositorRewardMintMultiplier`
-              : ''
-          }
+          poolDepositorRewardMintMultiplier
         }`
             : ''
         }
@@ -263,7 +245,6 @@ export class DepositComponent implements OnInit {
   }
 
   async handleData(data: QueryResult) {
-    console.log(data);
     const { user, dpools } = data;
     let stablecoinPriceCache = {};
 
@@ -287,21 +268,14 @@ export class DepositComponent implements OnInit {
           }
 
           // get MPH APR
-          let mphDepositorRewardMintMultiplier = new BigNumber(0);
-          let mphAPY = new BigNumber(0);
-          if (
-            this.wallet.networkID ===
-            (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
-          ) {
-            mphDepositorRewardMintMultiplier = new BigNumber(
-              pool.poolDepositorRewardMintMultiplier
-            );
-            mphAPY = mphDepositorRewardMintMultiplier
-              .times(this.mphPriceUSD)
-              .times(this.constants.YEAR_IN_SEC)
-              .div(stablecoinPrice)
-              .times(100);
-          }
+          const mphDepositorRewardMintMultiplier = new BigNumber(
+            pool.poolDepositorRewardMintMultiplier
+          );
+          const mphAPY = mphDepositorRewardMintMultiplier
+            .times(this.mphPriceUSD)
+            .times(this.constants.YEAR_IN_SEC)
+            .div(stablecoinPrice)
+            .times(100);
 
           const dpoolObj: DPool = {
             name: poolInfo.name,
@@ -414,6 +388,7 @@ export class DepositComponent implements OnInit {
             totalMPHEarned = totalMPHEarned.plus(realMPHReward);
 
             let vest: Vest;
+            let claimableMPH;
             if (deposit.vest) {
               vest = {
                 nftID: +deposit.vest.nftID,
@@ -429,15 +404,8 @@ export class DepositComponent implements OnInit {
                   deposit.vest.totalExpectedMPHAmount
                 ),
               };
-            }
 
-            // manually calculate claimableMPH
-            let claimableMPH;
-            if (
-              this.wallet.networkID ===
-              (this.constants.CHAIN_ID.MAINNET ||
-                this.constants.CHAIN_ID.RINKEBY)
-            ) {
+              // manually calculate claimableMPH
               const currentTimestamp = Math.min(
                 Math.floor(Date.now() / 1e3),
                 parseFloat(deposit.maturationTimestamp)
@@ -517,17 +485,14 @@ export class DepositComponent implements OnInit {
         this.userPools = userPools;
       });
 
-      if (
-        this.wallet.networkID ===
-        (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
-      ) {
-        // compute total claimable MPH rewards
-        let totalClaimableMPH = new BigNumber(0);
-        let userVests: Vest[] = [];
-        Promise.all(
-          user.deposits.map((deposit) => {
-            const vest = deposit.vest;
+      // compute total claimable MPH rewards
+      let totalClaimableMPH = new BigNumber(0);
+      let userVests: Vest[] = [];
+      Promise.all(
+        user.deposits.map((deposit) => {
+          const vest = deposit.vest;
 
+          if (vest) {
             // add the vest to list of user vests
             const vestObj: Vest = {
               nftID: parseInt(vest.nftID),
@@ -571,12 +536,12 @@ export class DepositComponent implements OnInit {
             }
 
             totalClaimableMPH = totalClaimableMPH.plus(claimableMPH);
-          })
-        ).then(() => {
-          this.userVests = userVests;
-          this.totalMPHEarned = totalClaimableMPH;
-        });
-      }
+          }
+        })
+      ).then(() => {
+        this.userVests = userVests;
+        this.totalMPHEarned = totalClaimableMPH;
+      });
 
       // compute total deposit & interest in USD
       let totalDepositUSD = new BigNumber(0);
