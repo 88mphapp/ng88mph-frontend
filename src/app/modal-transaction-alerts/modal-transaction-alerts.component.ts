@@ -23,17 +23,9 @@ export class ModalTransactionAlertsComponent implements OnInit {
     this.explorerLink = this.getExplorerLink();
   }
 
-  // @dev this will need to be updated when non-ethereum chains are in use
-  // @dev see below link from sushiswap for inspiration
-  // https://github.com/sushiswap/sushiswap-interface/blob/canary/src/functions/explorer.ts
   getExplorerLink(): string {
-    const prefix = `https://${
-      this.networkID === 1
-        ? ''
-        : this.constants.NETWORK_METADATA[
-            this.networkID
-          ].chainName.toLowerCase() + '.'
-    }etherscan.io`;
+    const prefix =
+      this.constants.NETWORK_METADATA[this.networkID].blockExplorerUrls[0];
     const suffix = `/tx/${this.hash}`;
     return prefix + suffix;
   }
