@@ -25,6 +25,11 @@
                 <div class="col-6">
                   <h6 class="header-pretitle mb-2" i18n="@@rewardsFullAmount">
                     Full amount
+                    <span
+                      class="badge badge-soft-success ml-1"
+                      *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+                      >Soon</span
+                    >
                   </h6>
                   <h4 class="mb-1 glowing">
                     {{ fullAmount.toFormat(8) }}

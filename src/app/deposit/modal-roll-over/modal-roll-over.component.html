@@ -144,6 +144,13 @@
                           i18n="@@MPHRewards"
                         >
                           MPH rewards
+                          <span
+                            class="badge badge-soft-success ml-1"
+                            *ngIf="
+                              wallet.networkID === constants.CHAIN_ID.POLYGON
+                            "
+                            >Soon</span
+                          >
                         </td>
                         <td
                           class="px-0 py-2 text-white text-right border-0 small"
