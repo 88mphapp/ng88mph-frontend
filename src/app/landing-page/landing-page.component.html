@@ -1,23 +1,52 @@
 <div class="container my-5">
   <div class="row d-flex align-items-center mb-6">
     <div class="col-12 mb-4 mb-lg-0 col-lg-8">
-      <h1 class="title-bg-gradient display-2" i18n="@@homeHeaderTitle">
+      <!--Mainnet-->
+      <h1
+        class="title-bg-gradient display-2"
+        i18n="@@homeHeaderTitleMainnet"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+      >
         Earn up to {{ maxAPY.toFormat(2) }}% fixed APR +
         {{ maxMPHAPY.toFormat(2) }}% $MPH APR on your crypto
       </h1>
       <p
         class="text-white font-weight-bold mb-5 lead"
-        i18n="@@homeHeaderSubtitle"
+        i18n="@@homeHeaderSubtitleMainnet"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
       >
         Deposit crypto or stablecoins to earn a fixed yield rate & get MPH
         tokens.
+      </p>
+      <!--Polygon-->
+      <h1
+        class="title-bg-gradient display-2"
+        i18n="@@homeHeaderTitlePolygon"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+      >
+        Earn up to {{ maxAPY.toFormat(2) }}% fixed APR + upcoming incentives on
+        your crypto
+      </h1>
+      <p
+        class="text-white font-weight-bold mb-5 lead"
+        i18n="@@homeHeaderSubtitlePolygon"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+      >
+        Deposit crypto or stablecoins to earn a fixed yield rate. Withdraw any
+        time.
       </p>
 
       <div class="row mt-5 mb-4 mb-lg-7">
         <div class="col-6 col-lg-auto">
           <!-- Title -->
           <h6 class="text-uppercase text-muted" i18n="@@homeStatsTVL">
+            <span *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+              >v3</span
+            >
             TVL
+            <span *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+              >on Polygon</span
+            >
             <i
               class="fe fe-info ml-1 align-bottom"
               placement="top"
@@ -196,6 +225,11 @@
                       i18n="@@homeFormMPHRewards"
                     >
                       MPH rewards
+                      <span
+                        class="badge badge-soft-success ml-1"
+                        *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+                        >Soon</span
+                      >
                       <i
                         class="fe fe-info ml-1 align-bottom"
                         placement="top"
@@ -261,10 +295,13 @@
           >
             Start Earning
           </button>
-          <ng-container i18n="@@homeFormTrustFooter"
+          <ng-container
+            *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+            i18n="@@homeFormTrustFooter"
             >Trusted by its users since</ng-container
           >
           <a
+            *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
             class="text-secondary"
             href="https://etherscan.io/tx/0x1077dd81f059bba91c9ce7033526e3d4e172f552a03ec62a990a414018f83a09"
             target="_blank"
@@ -326,7 +363,12 @@
             <ng-container i18n="@@homeEarnFixedYieldText"
               >Deposit your assets and earn a fixed yield rate on your capital
               to hedge against market rates volatility. You will also get MPH
-              tokens by using 88mph.</ng-container
+              tokens by using 88mph
+              <span
+                class="badge badge-soft-success ml-1"
+                *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+                >Soon</span
+              >.</ng-container
             >
 
             <a href="https://docs.88mph.app/" target="_blank" i18n="@@learnMore"
@@ -672,7 +714,12 @@
           </h3>
           <p class="text-muted" i18n="@@homeGetRewardsText">
             When a user buys yield tokens, they receive newly-minted MPH tokens
-            as the underlying deposit earns a variable-rate yield.
+            as the underlying deposit earns a variable-rate yield
+            <span
+              class="badge badge-soft-success ml-1"
+              *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+              >Soon</span
+            >.
           </p>
         </div>
       </div>

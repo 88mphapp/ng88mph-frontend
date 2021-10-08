@@ -16,6 +16,8 @@
     text-center text-dark
   "
   role="alert"
+  *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+  i18n="@@alertMessageMainnetLaunch"
 >
   📣 88mph v3 is live! Read
   <a
@@ -24,6 +26,43 @@
     rel="noopener noreferrer"
     >our announcement</a
   >. Please be mindful of the smart contract risks, learn more at:
+  <a href="https://docs.88mph.app" target="_blank" rel="noopener noreferrer"
+    >docs.88mph.app</a
+  >
+  <button
+    type="button"
+    class="close text-white"
+    data-dismiss="alert"
+    aria-label="Close"
+  >
+    <span aria-hidden="true">
+      <i class="fe fe-x"></i>
+    </span>
+  </button>
+</div>
+<div
+  class="
+    alert alert-dark
+    text-white
+    rounded-0
+    mb-0
+    border-top-0 border-left-0 border-right-0
+    mt-md-0
+    alert-dismissible
+    fade
+    show
+    text-center text-dark
+  "
+  role="alert"
+  *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+  i18n="@@alertMessagePolygonLaunch"
+>
+  📣 88mph v3 is live on Polygon (<a
+    href="https://twitter.com/0xPolygonToday/status/1446467976207667232"
+    target="_blank"
+    rel="noopener noreferrer"
+    >Tweet</a
+  >)! Please be mindful of the smart contract risks, learn more at:
   <a href="https://docs.88mph.app" target="_blank" rel="noopener noreferrer"
     >docs.88mph.app</a
   >
@@ -347,17 +386,24 @@
       <div class="col-12 col-lg-4 mb-3">
         <h5 class="text-uppercase" i18n="@@poweredBy">Powered by</h5>
         <a
+          class="d-block mb-3"
           href="https://dashboard.alchemyapi.io/signup?referral=507c7bcb-3eb5-4ca7-b859-70471d743f21"
           target="_blank"
           ><img
-            style="
-              height: 42px;
-              image-rendering: pixelated;
-              filter: grayscale(1);
-            "
+            style="height: 42px; image-rendering: pixelated"
             src="https://static.alchemyapi.io/images/marketing/badge.png"
             alt="Alchemy Supercharged"
             i18n-alt="@@alchemySupercharged"
+        /></a>
+        <a
+          *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+          href="https://dashboard.alchemyapi.io/signup?referral=507c7bcb-3eb5-4ca7-b859-70471d743f21"
+          target="_blank"
+          ><img
+            style="height: 42px; image-rendering: pixelated"
+            src="./assets/img/powered-by-polygon.svg"
+            alt="Powered by Polygon"
+            i18n-alt="@@poweredByPolygon"
         /></a>
       </div>
     </div>

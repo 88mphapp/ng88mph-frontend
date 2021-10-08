@@ -4,7 +4,7 @@
       <h1 class="title-bg-gradient display-2" i18n="@@88mphAnalytics">
         88mph analytics
       </h1>
-      <p>
+      <p *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
         Looking for
         <a href="https://88mph.app/v2/stats" target="_blank"
           >88mph v2 analytics</a

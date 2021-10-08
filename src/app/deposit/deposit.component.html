@@ -39,7 +39,10 @@
               <strong>Deposit</strong> crypto or stablecoins below to start
               earning fixed APR and MPH tokens.
             </p>
-            <p class="text-warning">
+            <p
+              class="text-warning"
+              *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+            >
               Don't see your previous deposits below? Check on
               <a
                 href="https://88mph.app/v2/deposits"
@@ -82,6 +85,11 @@
             <p class="mb-0" i18n="@@depositStepsText2">
               <strong>Claim</strong> your first MPH rewards linked to each of
               your deposit.
+              <span
+                class="badge badge-soft-success ml-1"
+                *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+                >SOON</span
+              >
             </p>
           </div>
         </div>
@@ -173,6 +181,11 @@
         <!-- Title -->
         <h5 class="text-uppercase" i18n="@@depositClaimableRewards">
           Claimable MPH rewards
+          <span
+            class="badge badge-soft-success ml-1"
+            *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+            >Soon</span
+          >
         </h5>
         <!-- Heading -->
         <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(6) }} MPH</h2>
@@ -212,6 +225,11 @@
       <!-- Title -->
       <h5 class="text-uppercase" i18n="@@depositClaimableRewards">
         Claimable MPH rewards
+        <span
+          class="badge badge-soft-success ml-1"
+          *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+          >Soon</span
+        >
       </h5>
       <!-- Heading -->
       <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(DECIMALS) }} MPH</h2>

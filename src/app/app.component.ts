@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ConstantsService } from './constants.service';
 import { WalletService } from './wallet.service';
 
 @Component({
@@ -13,7 +14,11 @@ export class AppComponent {
   themeURL = this.getThemeURL();
   themes = ['boring', '80s'];
 
-  constructor(public wallet: WalletService, public sanitizer: DomSanitizer) {
+  constructor(
+    public wallet: WalletService,
+    public constants: ConstantsService,
+    public sanitizer: DomSanitizer
+  ) {
     const storedThemeName = window.localStorage.getItem('themeName');
     if (storedThemeName != null) {
       this.themeName = storedThemeName;

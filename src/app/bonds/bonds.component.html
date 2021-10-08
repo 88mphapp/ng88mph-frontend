@@ -19,7 +19,10 @@
           <i class="fe fe-external-link"></i></a
         >.
       </p>
-      <p class="text-warning mb-5">
+      <p
+        class="text-warning mb-5"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+      >
         Looking for your floating rate bonds? Check on
         <a
           href="https://88mph.app/v2/deposits"
@@ -69,7 +72,14 @@
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase" i18n="@@yieldMPHEarned">MPH earned</h5>
+            <h5 class="text-uppercase" i18n="@@yieldMPHEarned">
+              MPH earned
+              <span
+                class="badge badge-soft-success ml-1"
+                *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+                >Soon</span
+              >
+            </h5>
             <!-- Heading -->
             <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(6) }} MPH</h2>
             <h5 class="mb-3 text-white">
@@ -102,7 +112,14 @@
           <!-- Heading -->
           <h2 class="mb-4 glowing">${{ totalYieldEarnedUSD.toFormat(4) }}</h2>
           <!-- Title -->
-          <h5 class="text-uppercase">MPH earned</h5>
+          <h5 class="text-uppercase">
+            MPH earned
+            <span
+              class="badge badge-soft-success ml-1"
+              *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+              >Soon</span
+            >
+          </h5>
           <!-- Heading -->
           <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(6) }} MPH</h2>
           <h5 class="mb-3 text-white">

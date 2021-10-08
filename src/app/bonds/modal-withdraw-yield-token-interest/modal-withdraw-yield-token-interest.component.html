@@ -14,7 +14,10 @@
         </div>
         <div class="col">
           <h1 class="mb-0 h3" i18n="@@modalWithdrawYieldTokensTitle">
-            Claim interest earned + MPH rewards
+            Claim interest earned
+            <span *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+              >MPH rewards</span
+            >
           </h1>
         </div>
       </div>
@@ -67,7 +70,14 @@
                         i18n="@@ClaimInterestAndRewardsBtn"
                         *ngIf="fundedDeposit.funderAccruedInterest.gt(0)"
                       >
-                        Make Accrued Interest and MPH Rewards Claimable
+                        Make Accrued Interest
+                        <span
+                          *ngIf="
+                            wallet.networkID === constants.CHAIN_ID.MAINNET
+                          "
+                          >and MPH Rewards</span
+                        >
+                        Claimable
                       </button>
                       <button
                         class="btn btn-lg btn-bg-gradient"
@@ -163,7 +173,10 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col ml-n2">
+                    <div
+                      class="col ml-n2"
+                      *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+                    >
                       <h6
                         class="header-pretitle mb-2"
                         i18n="@@modalWithdrawClaimableRewards"

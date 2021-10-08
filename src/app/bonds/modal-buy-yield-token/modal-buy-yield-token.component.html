@@ -145,6 +145,13 @@
                         i18n="@@modalYieldTokensRewards"
                       >
                         MPH rewards
+                        <span
+                          class="badge badge-soft-success ml-1"
+                          *ngIf="
+                            wallet.networkID === constants.CHAIN_ID.POLYGON
+                          "
+                          >Soon</span
+                        >
                         <i
                           class="fe fe-info ml-1 align-bottom"
                           placement="top"
