@@ -58,7 +58,7 @@ export class ConstantsService {
       nativeCurrency: {
         name: 'Avalanche',
         symbol: 'AVAX',
-        decimals: 9,
+        decimals: 18,
       },
       rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
       blockExplorerUrls: ['https://cchain.explorer.avax.network'],
@@ -73,7 +73,8 @@ export class ConstantsService {
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby',
     [this.CHAIN_ID.POLYGON]:
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-polygon',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]:
+      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-avalanche',
   };
   GRAPHQL_ENDPOINT_V2 = {
     [this.CHAIN_ID.MAINNET]:
@@ -130,7 +131,7 @@ export class ConstantsService {
       'https://eth-rinkeby.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
     [this.CHAIN_ID.POLYGON]:
       'https://polygon-mainnet.g.alchemy.com/v2/q7fqBluE1Tn5t76RmCeylJnF7NPfvN7P',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]: 'https://api.avax.network/ext/bc/C/rpc',
   };
   RPC_WS = {
     [this.CHAIN_ID.MAINNET]:
@@ -288,7 +289,7 @@ export class ConstantsService {
     [this.CHAIN_ID.MAINNET]: '0x6b175474e89094c44da98b954eedeac495271d0f',
     [this.CHAIN_ID.RINKEBY]: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
     [this.CHAIN_ID.POLYGON]: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]: '0xd586e7f844cea2f87f50152665bcbc2c279d8d70',
   };
   FARM = {
     [this.CHAIN_ID.MAINNET]: '0xa0246c9032bC3A600820415aE600c6388619A14D',
@@ -312,7 +313,7 @@ export class ConstantsService {
     [this.CHAIN_ID.MAINNET]: '0x514910771af9ca656af840dff83e8264ecf986ca',
     [this.CHAIN_ID.RINKEBY]: '0x01be23585060835e02b77ef475b0cc51aa1e0709',
     [this.CHAIN_ID.POLYGON]: '',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]: '0x5947bb275c521040051d82396192181b413227a3',
   };
   RAI = {
     [this.CHAIN_ID.MAINNET]: '0x03ab458634910aad20ef5f1c8ee96f1d6ac54919',
@@ -366,7 +367,7 @@ export class ConstantsService {
     [this.CHAIN_ID.MAINNET]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     [this.CHAIN_ID.RINKEBY]: '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b',
     [this.CHAIN_ID.POLYGON]: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
   };
   USDP = {
     [this.CHAIN_ID.MAINNET]: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
@@ -378,19 +379,25 @@ export class ConstantsService {
     [this.CHAIN_ID.MAINNET]: '0xdac17f958d2ee523a2206206994597c13d831ec7',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]: '0xc7198437980c041c805a1edcba50c1ce5db95118',
+  };
+  WAVAX = {
+    [this.CHAIN_ID.MAINNET]: '',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
   };
   WBTC = {
     [this.CHAIN_ID.MAINNET]: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]: '0x50b7545627a5162f82a992c33b87adc75187b218',
   };
   WETH = {
     [this.CHAIN_ID.MAINNET]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]: '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
   };
   WMATIC = {
     [this.CHAIN_ID.MAINNET]: '',

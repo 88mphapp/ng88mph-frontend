@@ -132,5 +132,35 @@
       "USD": "0x0A6513e40db6EB1b165753AD52E80663aeA50545",
       "ETH": "0xf9d5AAC6E5572AEFa6bd64108ff86a222F69B64d"
     }
+  },
+  "43114": {
+    "AVAX": {
+      "USD": "0x0A77230d17318075983913bC2145DB16C7366156",
+      "ETH": ""
+    },
+    "BTC": {
+      "USD": "0x2779D32d5166BAaa2B2b658333bA7e6Ec0C65743",
+      "ETH": ""
+    },
+    "DAI": {
+      "USD": "0x51D7180edA2260cc4F6e4EebB82FEF5c3c2B8300",
+      "ETH": ""
+    },
+    "ETH": {
+      "USD": "0x976B3D034E162d8bD72D6b9C989d545b839003b0",
+      "ETH": ""
+    },
+    "LINK": {
+      "USD": "0x49ccd9ca821EfEab2b98c60dC60F518E765EDe9a",
+      "ETH": ""
+    },
+    "USDC": {
+      "USD": "0xF096872672F44d6EBA71458D74fe67F9a77a23B9",
+      "ETH": ""
+    },
+    "USDT": {
+      "USD": "0xEBE676ee90Fe1112671f19b6B7459bC678B67e8a",
+      "ETH": ""
+    }
   }
 }

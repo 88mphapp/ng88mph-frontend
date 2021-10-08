@@ -65,6 +65,8 @@ export class HelpersService {
       return await this.getChainlinkPriceETH('USDP', chainID);
     } else if (address === this.constants.USDT[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('USDT', chainID);
+    } else if (address === this.constants.WAVAX[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('AVAX', chainID);
     } else if (address === this.constants.WMATIC[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('MATIC', chainID);
     } else if (address === this.constants.YFI[chainID].toLowerCase()) {
