@@ -322,7 +322,7 @@ export class HelpersService {
     console.log(
       'Historical price lookup for ' + address + 'has not been set up yet'
     );
-    return 'unknown address';
+    return address;
   }
 
   processWeb3Number(number): string {

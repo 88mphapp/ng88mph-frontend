@@ -74,8 +74,8 @@ export class HeaderComponent implements OnInit {
     if (
       loadUser &&
       address &&
-      this.wallet.networkID ===
-        (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+      (this.wallet.networkID === this.constants.CHAIN_ID.MAINNET ||
+        this.wallet.networkID === this.constants.CHAIN_ID.RINKEBY)
     ) {
       const mph = await this.contract.getContract(
         this.constants.MPH_ADDRESS[this.wallet.networkID],

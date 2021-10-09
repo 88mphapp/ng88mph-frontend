@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import { ConstantsService } from '../constants.service';
@@ -24,7 +24,8 @@ export class StatsComponent implements OnInit {
     public helpers: HelpersService,
     public contract: ContractService,
     public constants: ConstantsService,
-    public wallet: WalletService
+    public wallet: WalletService,
+    private zone: NgZone
   ) {
     this.resetData();
   }
@@ -36,8 +37,10 @@ export class StatsComponent implements OnInit {
       this.loadData(this.wallet.networkID);
     });
     this.wallet.chainChangedEvent.subscribe((networkID) => {
-      this.resetData();
-      this.loadData(networkID);
+      this.zone.run(() => {
+        this.resetData();
+        this.loadData(networkID);
+      });
     });
   }
 
@@ -66,8 +69,8 @@ export class StatsComponent implements OnInit {
     });
 
     if (
-      this.wallet.networkID ===
-      (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+      this.wallet.networkID === this.constants.CHAIN_ID.MAINNET ||
+      this.wallet.networkID === this.constants.CHAIN_ID.RINKEBY
     ) {
       const mph = this.contract.getContract(
         this.constants.MPH_ADDRESS[this.wallet.networkID],

@@ -142,7 +142,7 @@ export class ConstantsService {
       'wss://eth-rinkeby.ws.alchemyapi.io/v2/2LxgvUYd5FzgiXVoAWlq-KyM4v-E7KJ4',
     [this.CHAIN_ID.POLYGON]:
       'wss://polygon-mainnet.g.alchemy.com/v2/q7fqBluE1Tn5t76RmCeylJnF7NPfvN7P',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]: 'wss://api.avax.network/ext/bc/C/ws',
   };
 
   // API KEYS //
@@ -402,7 +402,7 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
   };
   WMATIC = {
-    [this.CHAIN_ID.MAINNET]: '',
+    [this.CHAIN_ID.MAINNET]: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
     [this.CHAIN_ID.AVALANCHE]: '',
