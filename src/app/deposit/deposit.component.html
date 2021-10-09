@@ -87,7 +87,10 @@
               your deposit.
               <span
                 class="badge badge-soft-success ml-1"
-                *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+                *ngIf="
+                  wallet.networkID === constants.CHAIN_ID.POLYGON ||
+                  wallet.networkID === constants.CHAIN_ID.AVALANCHE
+                "
                 >SOON</span
               >
             </p>
@@ -183,7 +186,10 @@
           Claimable MPH rewards
           <span
             class="badge badge-soft-success ml-1"
-            *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+            *ngIf="
+              wallet.networkID === constants.CHAIN_ID.POLYGON ||
+              wallet.networkID === constants.CHAIN_ID.AVALANCHE
+            "
             >Soon</span
           >
         </h5>
@@ -227,7 +233,10 @@
         Claimable MPH rewards
         <span
           class="badge badge-soft-success ml-1"
-          *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+          *ngIf="
+            wallet.networkID === constants.CHAIN_ID.POLYGON ||
+            wallet.networkID === constants.CHAIN_ID.AVALANCHE
+          "
           >Soon</span
         >
       </h5>

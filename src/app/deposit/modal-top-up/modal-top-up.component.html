@@ -269,6 +269,14 @@
                           i18n="@@MPHRewards"
                         >
                           MPH rewards
+                          <span
+                            class="badge badge-soft-success ml-1"
+                            *ngIf="
+                              wallet.networkID === constants.CHAIN_ID.POLYGON ||
+                              wallet.networkID === constants.CHAIN_ID.AVALANCHE
+                            "
+                            >Soon</span
+                          >
                         </td>
                       </tr>
                       <tr>
@@ -324,13 +332,6 @@
                           i18n="@@MPHApr"
                         >
                           MPH APR
-                          <span
-                            class="badge badge-soft-success ml-1"
-                            *ngIf="
-                              wallet.networkID === constants.CHAIN_ID.POLYGON
-                            "
-                            >Soon</span
-                          >
                         </td>
                       </tr>
                       <tr>
