@@ -94,7 +94,7 @@ export class DepositComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const readonlyWeb3 = this.wallet.readonlyWeb3(this.wallet.networkID);
 
     this.displayGetStarted =
       window.localStorage.getItem('displayEarnGetStarted') != 'false';
