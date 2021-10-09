@@ -22,7 +22,10 @@
       <h1
         class="title-bg-gradient display-2"
         i18n="@@homeHeaderTitlePolygon"
-        *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE
+        "
       >
         Earn up to {{ maxAPY.toFormat(2) }}% fixed APR + upcoming incentives on
         your crypto
@@ -30,7 +33,10 @@
       <p
         class="text-white font-weight-bold mb-5 lead"
         i18n="@@homeHeaderSubtitlePolygon"
-        *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE
+        "
       >
         Deposit crypto or stablecoins to earn a fixed yield rate. Withdraw any
         time.
@@ -40,13 +46,7 @@
         <div class="col-6 col-lg-auto">
           <!-- Title -->
           <h6 class="text-uppercase text-muted" i18n="@@homeStatsTVL">
-            <span *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
-              >v3</span
-            >
             TVL
-            <span *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
-              >on Polygon</span
-            >
             <i
               class="fe fe-info ml-1 align-bottom"
               placement="top"
@@ -227,7 +227,10 @@
                       MPH rewards
                       <span
                         class="badge badge-soft-success ml-1"
-                        *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+                        *ngIf="
+                          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+                          wallet.networkID === constants.CHAIN_ID.AVALANCHE
+                        "
                         >Soon</span
                       >
                       <i
@@ -366,7 +369,10 @@
               tokens by using 88mph
               <span
                 class="badge badge-soft-success ml-1"
-                *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+                *ngIf="
+                  wallet.networkID === constants.CHAIN_ID.POLYGON ||
+                  wallet.networkID === constants.CHAIN_ID.AVALANCHE
+                "
                 >Soon</span
               >.</ng-container
             >
@@ -717,7 +723,10 @@
             as the underlying deposit earns a variable-rate yield
             <span
               class="badge badge-soft-success ml-1"
-              *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+              *ngIf="
+                wallet.networkID === constants.CHAIN_ID.POLYGON ||
+                wallet.networkID === constants.CHAIN_ID.AVALANCHE
+              "
               >Soon</span
             >.
           </p>
