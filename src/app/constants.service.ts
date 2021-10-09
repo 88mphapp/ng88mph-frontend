@@ -98,7 +98,8 @@ export class ConstantsService {
       'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-rinkeby',
     [this.CHAIN_ID.POLYGON]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-polygon',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]:
+      'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-avalanche',
   };
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
@@ -107,7 +108,8 @@ export class ConstantsService {
       'https://api.thegraph.com/subgraphs/name/blocklytics/rinkeby-blocks',
     [this.CHAIN_ID.POLYGON]:
       'https://api.thegraph.com/subgraphs/name/elkfinance/matic-blocks',
-    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.AVALANCHE]:
+      'https://api.thegraph.com/subgraphs/name/dasconnor/avalanche-blocks',
   };
   CHAINLINK_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
