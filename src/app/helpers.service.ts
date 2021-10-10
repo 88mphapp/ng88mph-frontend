@@ -297,7 +297,12 @@ export class HelpersService {
       address = this.getMainnetAddress(address, chainID);
     }
 
-    const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=${days}`;
+    let apiStr;
+    if (address === this.constants.WAVAX[chainID]) {
+      apiStr = `https://api.coingecko.com/api/v3/coins/avalanche/contract/${address}/market_chart/?vs_currency=usd&days=${days}`;
+    } else {
+      apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=${days}`;
+    }
     const rawResult = await this.httpsGet(apiStr, 300);
     return rawResult.prices;
   }
