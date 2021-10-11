@@ -8,6 +8,7 @@ import { ContractService } from '../contract.service';
 import { WalletService } from '../wallet.service';
 import { Watch } from '../watch';
 import { TermsOfServiceComponent } from '../terms-of-service/terms-of-service.component';
+import { request, gql } from 'graphql-request';
 
 @Component({
   selector: 'app-header',
@@ -69,7 +70,8 @@ export class HeaderComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    let address = this.wallet.actualAddress;
+    const address = this.wallet.actualAddress.toLowerCase();
+    const readonlyWeb3 = this.wallet.readonlyWeb3(this.wallet.networkID);
 
     if (
       loadUser &&
@@ -77,36 +79,27 @@ export class HeaderComponent implements OnInit {
       (this.wallet.networkID === this.constants.CHAIN_ID.MAINNET ||
         this.wallet.networkID === this.constants.CHAIN_ID.RINKEBY)
     ) {
-      const mph = await this.contract.getContract(
-        this.constants.MPH_ADDRESS[this.wallet.networkID],
-        `MPHToken`
-      );
-      mph.methods
-        .balanceOf(address)
-        .call()
-        .then((mphBalance) => {
-          this.mphBalance = new BigNumber(mphBalance).div(
-            this.constants.PRECISION
-          );
-        });
-
-      const xmph = await this.contract.getContract(
-        this.constants.XMPH_ADDRESS[this.wallet.networkID],
-        `xMPH`
-      );
-      xmph.methods
-        .balanceOf(address)
-        .call()
-        .then((xMPHBalance) => {
-          this.xMPHBalance = new BigNumber(xMPHBalance).div(
-            this.constants.PRECISION
-          );
-        });
+      const queryString = gql`
+        {
+          mphholder (
+            id: "${address}"
+          ) {
+            mphBalance
+            xmphBalance
+          }
+        }
+      `;
+      request(
+        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+        queryString
+      ).then((data: QueryResult) => {
+        this.mphBalance = new BigNumber(data.mphholder.mphBalance);
+        this.xMPHBalance = new BigNumber(data.mphholder.xmphBalance);
+      });
     }
 
     if (loadGlobal) {
       setTimeout(async () => {
-        const readonlyWeb3 = this.wallet.readonlyWeb3(this.wallet.networkID);
         this.gasPrice = new BigNumber(await readonlyWeb3.eth.getGasPrice()).div(
           1e9
         );
@@ -171,4 +164,11 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
+}
+
+interface QueryResult {
+  mphholder: {
+    mphBalance: string;
+    xmphBalance: string;
+  };
 }
