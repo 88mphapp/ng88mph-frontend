@@ -48,10 +48,14 @@ export class BondsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData(this.wallet.connected || this.wallet.watching, true);
+    this.loadData(
+      this.wallet.connected || this.wallet.watching,
+      true,
+      this.wallet.networkID
+    );
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, false);
-      this.loadData(true, false);
+      this.loadData(true, false, this.wallet.networkID);
     });
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
@@ -59,24 +63,24 @@ export class BondsComponent implements OnInit {
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.zone.run(() => {
         this.resetData(true, true);
-        this.loadData(true, true);
+        this.loadData(true, true, this.wallet.networkID);
       });
     });
     this.wallet.accountChangedEvent.subscribe((account) => {
       this.zone.run(() => {
         this.resetData(true, false);
-        this.loadData(true, false);
+        this.loadData(true, false, this.wallet.networkID);
       });
     });
     this.wallet.txConfirmedEvent.subscribe(() => {
       setTimeout(() => {
         this.resetData(true, true);
-        this.loadData(true, true);
+        this.loadData(true, true, this.wallet.networkID);
       }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
     });
   }
 
-  loadData(loadUser: boolean, loadGlobal: boolean): void {
+  loadData(loadUser: boolean, loadGlobal: boolean, networkID: number): void {
     this.now = Math.floor(Date.now() / 1e3);
     let funderID = this.wallet.actualAddress.toLowerCase();
     const queryString = gql`
@@ -121,14 +125,19 @@ export class BondsComponent implements OnInit {
     request(
       this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
       queryString
-    ).then((data: QueryResult) => this.handleData(data));
+    ).then((data: QueryResult) => this.handleData(data, networkID));
 
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
   }
 
-  async handleData(data: QueryResult) {
+  async handleData(data: QueryResult, networkID: number) {
+    // bail if a chain change has occured
+    if (networkID !== this.wallet.networkID) {
+      return;
+    }
+
     const funder = data.funder;
     const dpools = data.dpools;
     let stablecoinPriceCache = {};
@@ -253,12 +262,12 @@ export class BondsComponent implements OnInit {
           yieldEarned = yieldEarned.minus(refundedAmount);
 
           // calculate the amount of mph earned
-          // @dev this only accounts for already distributed MPH, does not estimate MPH rewards based on interest earned to date
           let mphEarned = new BigNumber(0);
+          let funderAccruedMPH = new BigNumber(0);
           let funderWithdrawableMPH = new BigNumber(0);
           if (
-            this.wallet.networkID ===
-            (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+            this.wallet.networkID === this.constants.CHAIN_ID.MAINNET ||
+            this.wallet.networkID === this.constants.CHAIN_ID.RINKEBY
           ) {
             await yieldToken.methods
               .accumulativeDividendOf(
@@ -287,6 +296,11 @@ export class BondsComponent implements OnInit {
                   this.constants.PRECISION
                 );
               });
+
+            funderAccruedMPH = funderAccruedInterest.times(
+              funding.pool.poolFunderRewardMultiplier
+            );
+            mphEarned = mphEarned.plus(funderAccruedMPH);
           }
 
           if (
@@ -296,7 +310,8 @@ export class BondsComponent implements OnInit {
             (!funding.active ||
               new BigNumber(funding.principalPerToken).lte(
                 this.constants.DUST_THRESHOLD
-              ))
+              ) ||
+              now > parseInt(funding.deposit.maturationTimestamp))
           ) {
             return;
           }
