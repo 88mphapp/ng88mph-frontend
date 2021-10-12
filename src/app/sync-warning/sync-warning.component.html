@@ -1,12 +1,22 @@
 <ng-container *ngIf="shouldDisplay()">
-  <div class="alert alert-pink-blue rounded-0 mb-0 mt-n3 mt-md-0 text-center">
+  <div
+    class="
+      alert alert-pink-blue
+      rounded-0
+      mb-0
+      mt-md-0
+      text-center
+      border-left-0 border-right-0
+    "
+  >
     <ng-container i18n="@@syncWarning1"
-      >Warning: The data on this site has only synced to Ethereum
-      block</ng-container
+      >88mph has only synced to block</ng-container
     >
     {{ syncBlockNumber }}
     <ng-container i18n="@@syncWarning2">(out of</ng-container>
     {{ latestBlockNumber }}).
-    <ng-container i18n="@@syncWarning3">Please check back soon.</ng-container>
+    <ng-container i18n="@@syncWarning3"
+      >If your data aren't updated yet, check back in a minute.</ng-container
+    >
   </div>
 </ng-container>
