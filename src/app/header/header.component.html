@@ -491,6 +491,10 @@
         </div>
       </div>
       <a
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+          wallet.networkID === constants.CHAIN_ID.MAINNET
+        "
         class="btn btn-block btn-dark mr-1 mb-3"
         href="https://www.blocknative.com/gas-estimator"
         target="_blank"
@@ -837,6 +841,10 @@
       </div>
     </div>
     <a
+      *ngIf="
+        wallet.networkID === constants.CHAIN_ID.POLYGON ||
+        wallet.networkID === constants.CHAIN_ID.MAINNET
+      "
       class="btn btn-sm btn-dark mr-3"
       href="https://www.blocknative.com/gas-estimator"
       target="_blank"

@@ -15,7 +15,7 @@
           the fixed yield rate assets is also decreased.</ng-container
         >
         <a href="https://docs.88mph.app/" target="_blank"
-          ><ng-container i18n="@@learnMore">Learn more</ng-container>
+          ><ng-container i18n="@@learnMore"> Learn more</ng-container>
           <i class="fe fe-external-link"></i></a
         >.
       </p>
@@ -78,7 +78,8 @@
                 class="badge badge-soft-success ml-1"
                 *ngIf="
                   wallet.networkID === constants.CHAIN_ID.POLYGON ||
-                  wallet.networkID === constants.CHAIN_ID.AVALANCHE
+                  wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+                  wallet.networkID === constants.CHAIN_ID.FANTOM
                 "
                 >Soon</span
               >
@@ -121,7 +122,8 @@
               class="badge badge-soft-success ml-1"
               *ngIf="
                 wallet.networkID === constants.CHAIN_ID.POLYGON ||
-                wallet.networkID === constants.CHAIN_ID.AVALANCHE
+                wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+                wallet.networkID === constants.CHAIN_ID.FANTOM
               "
               >Soon</span
             >

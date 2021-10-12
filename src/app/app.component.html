@@ -88,10 +88,43 @@
   "
   role="alert"
   *ngIf="wallet.networkID === constants.CHAIN_ID.AVALANCHE"
-  i18n="@@alertMessagePolygonLaunch"
+  i18n="@@alertMessageAvalancheLaunch"
 >
   📣 88mph v3 is live on Avalanche! Please be mindful of the smart contract
   risks, learn more at:
+  <a href="https://docs.88mph.app" target="_blank" rel="noopener noreferrer"
+    >docs.88mph.app</a
+  >
+  <button
+    type="button"
+    class="close text-white"
+    data-dismiss="alert"
+    aria-label="Close"
+  >
+    <span aria-hidden="true">
+      <i class="fe fe-x"></i>
+    </span>
+  </button>
+</div>
+<div
+  class="
+    alert alert-dark
+    text-white
+    rounded-0
+    mb-0
+    border-top-0 border-left-0 border-right-0
+    mt-md-0
+    alert-dismissible
+    fade
+    show
+    text-center text-dark
+  "
+  role="alert"
+  *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM"
+  i18n="@@alertMessageFantomLaunch"
+>
+  📣 88mph v3 is live on Fantom! Please be mindful of the smart contract risks,
+  learn more at:
   <a href="https://docs.88mph.app" target="_blank" rel="noopener noreferrer"
     >docs.88mph.app</a
   >
