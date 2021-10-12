@@ -162,5 +162,35 @@
       "USD": "0xEBE676ee90Fe1112671f19b6B7459bC678B67e8a",
       "ETH": ""
     }
+  },
+  "250": {
+    "BTC": {
+      "USD": "0x8e94C22142F4A64b99022ccDd994f4e9EC86E4B4",
+      "ETH": ""
+    },
+    "DAI": {
+      "USD": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
+      "ETH": ""
+    },
+    "ETH": {
+      "USD": "0x11DdD3d147E5b83D01cee7070027092397d63658",
+      "ETH": ""
+    },
+    "FTM": {
+      "USD": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
+      "ETH": ""
+    },
+    "LINK": {
+      "USD": "0x221C773d8647BC3034e91a0c47062e26D20d97B4",
+      "ETH": ""
+    },
+    "USDC": {
+      "USD": "0x2553f4eeb82d5A26427b8d1106C51499CBa5D99c",
+      "ETH": ""
+    },
+    "USDT": {
+      "USD": "0xF64b636c5dFe1d3555A847341cDC449f612307d0",
+      "ETH": ""
+    }
   }
 }

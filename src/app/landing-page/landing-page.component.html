@@ -24,7 +24,8 @@
         i18n="@@homeHeaderTitlePolygon"
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
-          wallet.networkID === constants.CHAIN_ID.AVALANCHE
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+          wallet.networkID === constants.CHAIN_ID.FANTOM
         "
       >
         Earn up to {{ maxAPY.toFormat(2) }}% fixed APR + upcoming incentives on
@@ -35,7 +36,8 @@
         i18n="@@homeHeaderSubtitlePolygon"
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
-          wallet.networkID === constants.CHAIN_ID.AVALANCHE
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+          wallet.networkID === constants.CHAIN_ID.FANTOM
         "
       >
         Deposit crypto or stablecoins to earn a fixed yield rate. Withdraw any
