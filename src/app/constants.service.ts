@@ -117,7 +117,8 @@ export class ConstantsService {
       'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-polygon',
     [this.CHAIN_ID.AVALANCHE]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-avalanche',
-    [this.CHAIN_ID.FANTOM]: '',
+    [this.CHAIN_ID.FANTOM]:
+      'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future-fantom',
   };
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:

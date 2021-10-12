@@ -99,7 +99,7 @@ export class DataService {
     const rawInterestAmountToken = new BigNumber(
       await pool.methods
         .calculateInterestAmount(depositAmount, depositTime)
-        .call()
+        .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
     );
 
     const interestEarnedToken = await this.helpers.applyFeeToInterest(
