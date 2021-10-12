@@ -45,6 +45,8 @@ export class StatsComponent implements OnInit {
   }
 
   async loadData(networkID: number) {
+    const readonlyWeb3 = this.wallet.readonlyWeb3(networkID);
+
     const queryString = gql`
       {
         dpools {
@@ -84,7 +86,7 @@ export class StatsComponent implements OnInit {
 
       await mph.methods
         .totalSupply()
-        .call()
+        .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
         .then((totalSupply) => {
           this.mphTotalSupply = new BigNumber(totalSupply).div(
             this.constants.PRECISION
@@ -93,7 +95,7 @@ export class StatsComponent implements OnInit {
 
       mph.methods
         .balanceOf(xmph.options.address)
-        .call()
+        .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
         .then((stakedBalance) => {
           this.mphStakedPercentage = new BigNumber(stakedBalance)
             .div(this.mphTotalSupply)
@@ -105,9 +107,11 @@ export class StatsComponent implements OnInit {
       let mphCirculatingSupply = this.mphTotalSupply;
       const getBalance = async (address) => {
         if (address !== '') {
-          return new BigNumber(await mph.methods.balanceOf(address).call()).div(
-            this.constants.PRECISION
-          );
+          return new BigNumber(
+            await mph.methods
+              .balanceOf(address)
+              .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
+          ).div(this.constants.PRECISION);
         } else {
           return new BigNumber(0);
         }

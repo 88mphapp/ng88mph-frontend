@@ -20,6 +20,7 @@ export class FundedInterestExpensesComponent implements OnInit {
     [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
     [this.constants.CHAIN_ID.POLYGON]: 1633392000,
     [this.constants.CHAIN_ID.AVALANCHE]: 1633392000,
+    [this.constants.CHAIN_ID.FANTOM]: 1633910400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   PERIOD_NAME: string = 'daily';
@@ -310,6 +311,7 @@ export class FundedInterestExpensesComponent implements OnInit {
         [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
         [this.constants.CHAIN_ID.RINKEBY]: 1633392000,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633392000,
+        [this.constants.CHAIN_ID.FANTOM]: 1633910400,
       };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
@@ -318,6 +320,7 @@ export class FundedInterestExpensesComponent implements OnInit {
         [this.constants.CHAIN_ID.RINKEBY]: 1624147200,
         [this.constants.CHAIN_ID.RINKEBY]: 1633219200,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
+        [this.constants.CHAIN_ID.FANTOM]: 1633219200,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
@@ -326,6 +329,7 @@ export class FundedInterestExpensesComponent implements OnInit {
         [this.constants.CHAIN_ID.RINKEBY]: 1622505600,
         [this.constants.CHAIN_ID.RINKEBY]: 1633046400,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633046400,
+        [this.constants.CHAIN_ID.FANTOM]: 1633046400,
       };
     }
     this.resetChart();

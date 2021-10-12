@@ -295,6 +295,15 @@ export class HelpersService {
       }
     }
 
+    if (address === this.constants.FUSD[this.constants.CHAIN_ID.FANTOM]) {
+      let prices: number[][] = [];
+      for (let t in timestamps) {
+        const timestamp = timestamps[t] * 1000;
+        prices[t] = [timestamp, 1];
+      }
+      return prices;
+    }
+
     if (
       address !== this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
     ) {
