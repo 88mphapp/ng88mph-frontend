@@ -41,6 +41,8 @@ export class HelpersService {
       return await this.getChainlinkPriceETH('FARM', chainID);
     } else if (address === this.constants.FTT[chainID].toLowerCase()) {
       return await this.getChainlinkPriceETH('FTT', chainID);
+    } else if (address === this.constants.FUSD[chainID].toLowerCase()) {
+      return 1;
     } else if (address === this.constants.GUSD[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('USDC', chainID);
     } else if (address === this.constants.LINK[chainID].toLowerCase()) {
@@ -67,6 +69,8 @@ export class HelpersService {
       return await this.getChainlinkPriceUSD('USDT', chainID);
     } else if (address === this.constants.WAVAX[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('AVAX', chainID);
+    } else if (address === this.constants.WFTM[chainID].toLowerCase()) {
+      return await this.getChainlinkPriceUSD('FTM', chainID);
     } else if (address === this.constants.WMATIC[chainID].toLowerCase()) {
       return await this.getChainlinkPriceUSD('MATIC', chainID);
     } else if (address === this.constants.YFI[chainID].toLowerCase()) {
@@ -312,6 +316,8 @@ export class HelpersService {
 
     if (address === this.constants.DAI[chainID]) {
       return this.constants.DAI[this.constants.CHAIN_ID.MAINNET];
+    } else if (address === this.constants.LINK[chainID]) {
+      return this.constants.LINK[this.constants.CHAIN_ID.MAINNET];
     } else if (address === this.constants.USDC[chainID]) {
       return this.constants.USDC[this.constants.CHAIN_ID.MAINNET];
     } else if (address === this.constants.USDT[chainID]) {
@@ -371,7 +377,9 @@ export class HelpersService {
         readonlyWeb3
       );
       const tokenPriceUSD =
-        (await oracleContract.methods.latestAnswer().call()) / 1e8;
+        (await oracleContract.methods
+          .latestAnswer()
+          .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)) / 1e8;
       return tokenPriceUSD;
     } else {
       console.log(symbol + '/USD price feed does not exist.');
@@ -394,7 +402,9 @@ export class HelpersService {
         readonlyWeb3
       );
       const tokenPriceETH =
-        (await oracleContract.methods.latestAnswer().call()) / 1e18;
+        (await oracleContract.methods
+          .latestAnswer()
+          .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)) / 1e18;
       return tokenPriceETH * ethPriceUSD;
     } else {
       console.log(symbol + '/ETH price feed does not exist.');
@@ -603,8 +613,9 @@ export class HelpersService {
     poolInfo: PoolInfo
   ): Promise<BigNumber> {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const lastBlock = (await readonlyWeb3.eth.getBlockNumber()) - 1;
     const pool = this.contract.getPool(poolInfo.name, readonlyWeb3);
-    const feeModelAddress = await pool.methods.feeModel().call();
+    const feeModelAddress = await pool.methods.feeModel().call({}, lastBlock);
     const feeModelContract = this.contract.getContract(
       feeModelAddress,
       'IFeeModel',
@@ -613,7 +624,7 @@ export class HelpersService {
     const interestAmount = this.processWeb3Number(rawInterestAmount);
     const feeAmount = await feeModelContract.methods
       .getInterestFeeAmount(poolInfo.address, interestAmount)
-      .call();
+      .call({}, lastBlock);
 
     return new BigNumber(rawInterestAmount).minus(feeAmount);
   }

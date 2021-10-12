@@ -335,6 +335,17 @@
             </div>
             <ng-container i18n="@@avalanche">Avalanche</ng-container>
           </ng-container>
+          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM">
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/fantom-icon.png"
+                alt="logo fantom-blue-white"
+                width="16px"
+              />
+            </div>
+            <ng-container i18n="@@fantom">Fantom</ng-container>
+          </ng-container>
           <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
             <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
               <img
@@ -395,6 +406,21 @@
               />
             </div>
             <ng-container i18n="@@avalanche">Avalanche</ng-container>
+          </button>
+          <button
+            class="dropdown-item d-flex align-items-center"
+            type="button"
+            (click)="wallet.changeChain(250)"
+          >
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/fantom-icon.png"
+                alt="logo fantom-blue-white"
+                width="16px"
+              />
+            </div>
+            <ng-container i18n="@@fantom">Fantom</ng-container>
           </button>
           <button
             class="dropdown-item d-flex align-items-center mr-2"
@@ -657,6 +683,17 @@
           </div>
           <ng-container i18n="@@avalanche">v3 - Avalanche</ng-container>
         </ng-container>
+        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM">
+          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/fantom-icon.png"
+              alt="logo fantom-blue-white"
+              width="20px"
+            />
+          </div>
+          <ng-container i18n="@@fantom">v3 - Fantom</ng-container>
+        </ng-container>
         <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
           <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
             <img
@@ -717,6 +754,21 @@
             />
           </div>
           <ng-container i18n="@@avalanche">Avalanche</ng-container>
+        </button>
+        <button
+          class="dropdown-item d-flex align-items-center"
+          type="button"
+          (click)="wallet.changeChain(250)"
+        >
+          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+            <img
+              class="avatar-img rounded-circle"
+              src="./assets/img/fantom-icon.png"
+              alt="logo fantom-blue-white"
+              width="24px"
+            />
+          </div>
+          <ng-container i18n="@@fantom">Fantom</ng-container>
         </button>
         <button
           class="dropdown-item d-flex align-items-center mr-2"
