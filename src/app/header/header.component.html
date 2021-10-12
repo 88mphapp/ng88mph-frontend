@@ -73,7 +73,15 @@
           Farm
         </a>
       </li>
-      <li class="nav-item" ngbNavItem="/stats">
+      <li
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE
+        "
+        class="nav-item"
+        ngbNavItem="/stats"
+      >
         <a
           class="nav-link text-white"
           routerLink="stats"
@@ -491,6 +499,10 @@
         </div>
       </div>
       <a
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+          wallet.networkID === constants.CHAIN_ID.MAINNET
+        "
         class="btn btn-block btn-dark mr-1 mb-3"
         href="https://www.blocknative.com/gas-estimator"
         target="_blank"
@@ -837,6 +849,10 @@
       </div>
     </div>
     <a
+      *ngIf="
+        wallet.networkID === constants.CHAIN_ID.POLYGON ||
+        wallet.networkID === constants.CHAIN_ID.MAINNET
+      "
       class="btn btn-sm btn-dark mr-3"
       href="https://www.blocknative.com/gas-estimator"
       target="_blank"
