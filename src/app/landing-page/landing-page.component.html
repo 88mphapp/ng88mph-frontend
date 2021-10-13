@@ -68,7 +68,7 @@
             class="text-uppercase text-muted"
             i18n="@@homeStatsTotalYieldDistributed"
           >
-            Total fixed-rate yield distributed
+            Total fixed-rate yield earned
             <i
               class="fe fe-info ml-1 align-bottom"
               placement="top"
@@ -79,7 +79,7 @@
 
           <!-- Heading -->
           <h2 class="display-4 mb-2 glowing">
-            ${{ totalInterestUSD.toFormat(3) }}m
+            ${{ totalInterestUSD.div(1e6).toFormat(3) }}m
           </h2>
         </div>
         <div class="col-6 col-lg-auto">
