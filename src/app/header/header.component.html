@@ -77,7 +77,8 @@
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
           wallet.networkID === constants.CHAIN_ID.MAINNET ||
-          wallet.networkID === constants.CHAIN_ID.AVALANCHE
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+          wallet.networkID === constants.CHAIN_ID.FANTOM
         "
         class="nav-item"
         ngbNavItem="/stats"
