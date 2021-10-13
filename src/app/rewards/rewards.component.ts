@@ -208,43 +208,12 @@ export class RewardsComponent implements OnInit {
   async loadRewardAccumulationStats() {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
-    // compute protocol fees for v2
-    const allPoolsV2 = this.contract.getPoolInfoList(true);
-    let protocolFeesUSDV2 = new BigNumber(0);
-    let countedStablecoinMapV2 = {};
-    Promise.all(
-      allPoolsV2.map(async (poolInfo) => {
-        if (countedStablecoinMapV2[poolInfo.stablecoinSymbol]) {
-          return;
-        }
-        countedStablecoinMapV2[poolInfo.stablecoinSymbol] = true;
-        const poolStablecoin = this.contract.getContract(
-          poolInfo.stablecoin,
-          'ERC20',
-          readonlyWeb3
-        );
-        const poolFeesToken = new BigNumber(
-          await poolStablecoin.methods
-            .balanceOf(this.constants.DUMPER_V2)
-            .call()
-        ).div(Math.pow(10, poolInfo.stablecoinDecimals));
-        const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-          poolInfo.stablecoin,
-          this.wallet.networkID
-        );
-        protocolFeesUSDV2 = protocolFeesUSDV2.plus(
-          poolFeesToken.times(stablecoinPrice)
-        );
-      })
-    ).then(() => {
-      this.protocolFeesUSD = this.protocolFeesUSD.plus(protocolFeesUSDV2);
-      this.totalRewardsUSD = this.totalRewardsUSD.plus(protocolFeesUSDV2);
-    });
-
-    // compute protocol fees for v3
     const allPools = this.contract.getPoolInfoList();
+    const allPoolsV2 = this.contract.getPoolInfoList(true);
     let protocolFeesUSD = new BigNumber(0);
     let countedStablecoinMap = {};
+
+    // compute protocol fees for v3
     Promise.all(
       allPools.map(async (poolInfo) => {
         if (countedStablecoinMap[poolInfo.stablecoinSymbol]) {
