@@ -19,10 +19,23 @@
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase" i18n="@@historicalInterestDistributed">
-              Historical interest distributed
+            <h5
+              class="text-uppercase"
+              i18n="@@historicalInterestDistributed"
+              ngbTooltip="Distributed: ${{
+                totalInterestDistributedUSD.toFormat(2)
+              }} Pending: ${{ totalInterestOwedUSD.toFormat(2) }}"
+            >
+              Interest earned
+              <i class="fe fe-info"></i>
             </h5>
-            <h2 class="mb-3 glowing">${{ totalInterestUSD.toFormat(4) }}</h2>
+            <h2 class="mb-3 glowing">
+              ${{
+                totalInterestDistributedUSD
+                  .plus(totalInterestOwedUSD)
+                  .toFormat(4)
+              }}
+            </h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">

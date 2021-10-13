@@ -16,7 +16,8 @@ export class StatsComponent implements OnInit {
   mphStakedPercentage: BigNumber;
   mphTotalHistoricalReward: BigNumber;
   totalDepositUSD: BigNumber;
-  totalInterestUSD: BigNumber;
+  totalInterestDistributedUSD: BigNumber;
+  totalInterestOwedUSD: BigNumber;
   mphPriceUSD: BigNumber;
   mphCirculatingSupply: BigNumber;
 
@@ -54,6 +55,7 @@ export class StatsComponent implements OnInit {
           address
           stablecoin
           totalDeposit
+          totalInterestOwed
           historicalInterestPaid
         }
         globalStats(id: "0") {
@@ -149,7 +151,8 @@ export class StatsComponent implements OnInit {
 
     if (dpools) {
       let totalDepositUSD = new BigNumber(0);
-      let totalInterestUSD = new BigNumber(0);
+      let totalInterestDistributedUSD = new BigNumber(0);
+      let totalInterestOwedUSD = new BigNumber(0);
       let stablecoinPriceCache = {};
       Promise.all(
         dpools.map(async (pool) => {
@@ -164,15 +167,23 @@ export class StatsComponent implements OnInit {
           const poolDepositUSD = new BigNumber(pool.totalDeposit).times(
             stablecoinPrice
           );
-          const poolInterestUSD = new BigNumber(
+          const poolInterestDistributedUSD = new BigNumber(
             pool.historicalInterestPaid
           ).times(stablecoinPrice);
+          const poolInterestOwedUSD = new BigNumber(
+            pool.totalInterestOwed
+          ).times(stablecoinPrice);
+
           totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
-          totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
+          totalInterestDistributedUSD = totalInterestDistributedUSD.plus(
+            poolInterestDistributedUSD
+          );
+          totalInterestOwedUSD = totalInterestOwedUSD.plus(poolInterestOwedUSD);
         })
       ).then(() => {
         this.totalDepositUSD = totalDepositUSD;
-        this.totalInterestUSD = totalInterestUSD;
+        this.totalInterestDistributedUSD = totalInterestDistributedUSD;
+        this.totalInterestOwedUSD = totalInterestOwedUSD;
       });
     }
   }
@@ -182,7 +193,8 @@ export class StatsComponent implements OnInit {
     this.mphStakedPercentage = new BigNumber(0);
     this.mphTotalHistoricalReward = new BigNumber(0);
     this.totalDepositUSD = new BigNumber(0);
-    this.totalInterestUSD = new BigNumber(0);
+    this.totalInterestDistributedUSD = new BigNumber(0);
+    this.totalInterestOwedUSD = new BigNumber(0);
     this.mphPriceUSD = new BigNumber(0);
     this.mphCirculatingSupply = new BigNumber(0);
   }
@@ -194,6 +206,7 @@ interface QueryResult {
     address: string;
     stablecoin: string;
     totalDeposit: number;
+    totalInterestOwed: number;
     historicalInterestPaid: number;
   }[];
   globalStats: {
