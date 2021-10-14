@@ -107,16 +107,27 @@ export class DepositComponent implements OnInit {
         this.wallet.networkID ===
         (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
       ) {
-        const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
-        xmph.methods
-          .balanceOf(userID)
-          .call()
-          .then((xMPHBalance) => {
-            if (new BigNumber(xMPHBalance).gt(0)) {
-              this.stakedMPH = true;
-              this.stepsCompleted += 1;
+        const mphQueryString = gql`
+          {
+            mphholder (
+              id: "${userID}"
+            ) {
+              xmphBalance
             }
-          });
+          }
+        `;
+        request(
+          this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
+          mphQueryString
+        ).then((data: MPHHolderQueryResult) => {
+          const xMPHBalance: BigNumber = new BigNumber(
+            data.mphholder.xmphBalance
+          );
+          if (xMPHBalance.gt(0)) {
+            this.stakedMPH = true;
+            this.stepsCompleted += 1;
+          }
+        });
       }
 
       // load Zero Coupon Bond / Preset Maturity data
@@ -785,6 +796,12 @@ export class DepositComponent implements OnInit {
   timestampToDateString(timestampSec: number): string {
     return new Date(timestampSec * 1e3).toLocaleDateString();
   }
+}
+
+interface MPHHolderQueryResult {
+  mphholder: {
+    xmphBalance: string;
+  };
 }
 
 interface QueryResult {
