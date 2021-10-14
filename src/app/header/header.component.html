@@ -73,7 +73,16 @@
           Farm
         </a>
       </li>
-      <li class="nav-item" ngbNavItem="/stats">
+      <li
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+          wallet.networkID === constants.CHAIN_ID.FANTOM
+        "
+        class="nav-item"
+        ngbNavItem="/stats"
+      >
         <a
           class="nav-link text-white"
           routerLink="stats"
