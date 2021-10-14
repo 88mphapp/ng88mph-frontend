@@ -335,12 +335,14 @@ export class HelpersService {
       return this.constants.WBTC[this.constants.CHAIN_ID.MAINNET];
     } else if (address === this.constants.WETH[chainID]) {
       return this.constants.WETH[this.constants.CHAIN_ID.MAINNET];
+    } else if (address === this.constants.WFTM[chainID]) {
+      return this.constants.WFTM[this.constants.CHAIN_ID.MAINNET];
     } else if (address === this.constants.WMATIC[chainID]) {
       return this.constants.WMATIC[this.constants.CHAIN_ID.MAINNET];
     }
 
     console.log(
-      'Historical price lookup for ' + address + 'has not been set up yet'
+      'Historical price lookup for ' + address + ' has not been set up yet'
     );
     return address;
   }

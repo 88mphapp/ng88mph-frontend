@@ -113,6 +113,7 @@ export class LandingPageComponent implements OnInit {
             id
             address
             totalDeposit
+            totalInterestOwed
             oneYearInterestRate
             ${
               this.wallet.networkID ===
@@ -189,11 +190,11 @@ export class LandingPageComponent implements OnInit {
           totalDepositUSD = totalDepositUSD.plus(
             dpoolObj.totalDepositUSD.div(1e6)
           );
-          totalInterestUSD = totalInterestUSD
-            .plus(
-              new BigNumber(pool.historicalInterestPaid).times(stablecoinPrice)
-            )
-            .div(1e6);
+          totalInterestUSD = totalInterestUSD.plus(
+            new BigNumber(pool.historicalInterestPaid)
+              .plus(pool.totalInterestOwed)
+              .times(stablecoinPrice)
+          );
           allPoolList.push(dpoolObj);
         })
       ).then(() => {
@@ -416,6 +417,7 @@ interface QueryResult {
     id: string;
     address: string;
     totalDeposit: number;
+    totalInterestOwed: number;
     oneYearInterestRate: number;
     poolDepositorRewardMintMultiplier: number;
     historicalInterestPaid: number;
