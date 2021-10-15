@@ -1,6 +1,12 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-header">
-    <h4 class="card-title mb-0" i18n="@@mphLiquidity">
+    <h4
+      class="card-title mb-0"
+      i18n="@@mphLiquidity"
+      placement="top"
+      i18n-ngbTooltip="@@mphLiquidityHelpText"
+      ngbTooltip="The amount (USD) of liquidity for MPH trading pairs (e.g. MPH/ETH)."
+    >
       MPH Liquidity
       <span
         class="badge badge-soft-success ml-1"
@@ -11,12 +17,7 @@
         "
         >Ethereum</span
       >
-      <i
-        class="fe fe-info ml-1 align-bottom"
-        placement="top"
-        i18n-ngbTooltip="@@mphLiquidityHelpText"
-        ngbTooltip="The amount (USD) of liquidity for MPH trading pairs (e.g. MPH/ETH)."
-      ></i>
+      <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
   </div>
   <div class="card-header">
