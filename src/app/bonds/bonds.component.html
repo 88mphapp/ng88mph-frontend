@@ -562,18 +562,19 @@
           class="d-block px-4 pt-4 pb-4 border-bottom border-light"
           *ngIf="!loadingCalculator"
         >
-          <h4 class="mb-1" i18n="@@yieldAPYPrediction">
+          <h4
+            class="mb-1"
+            i18n="@@yieldAPYPrediction"
+            placement="top"
+            ngbTooltip="For instance, let's imagine that YTs related to a deposit of 100 DAI costs 2.5 DAI. The YTs entitle the holders to the variable-rate yield earned by the 100 DAI principal + YT's cost (2.5 DAI) over the deposit's term. If the average Compound variable-rate APY stays at 10% over the deposit duration, then the YT delivers 10.25 DAI to its holders.
+              Suppose you bought all 102.5 YTs. Your final balance will be 10.25 DAI. Thus, you earn a 7.75 DAI profit on your investment of 2.5 DAI, a 310.00% return on investment."
+            i18n-ngbTooltip="@@yieldPredictionText"
+          >
             Your average variable-rate APY prediction for this asset is
             <strong class="glowing"
               >{{ floatingRatePrediction.toFormat(1) }}%</strong
             >.
-            <i
-              class="fe fe-info ml-1 align-bottom"
-              placement="top"
-              ngbTooltip="For instance, let's imagine that YTs related to a deposit of 100 DAI costs 2.5 DAI. The YTs entitle the holders to the variable-rate yield earned by the 100 DAI principal + YT's cost (2.5 DAI) over the deposit's term. If the average Compound variable-rate APY stays at 10% over the deposit duration, then the YT delivers 10.25 DAI to its holders.
-              Suppose you bought all 102.5 YTs. Your final balance will be 10.25 DAI. Thus, you earn a 7.75 DAI profit on your investment of 2.5 DAI, a 310.00% return on investment."
-              i18n-ngbTooltip="@@yieldPredictionText"
-            ></i>
+            <i class="fe fe-info ml-1 align-bottom"></i>
           </h4>
           <input
             type="range"
@@ -592,17 +593,16 @@
               >
             </div>
             <div class="col text-center">
-              <small>
+              <small
+                placement="top"
+                i18n-ngbTooltip="@@yieldCurrentAPYText"
+                ngbTooltip="Current 30-day exponential moving average (EMA) of the variable yield rate for supplying this asset (for eg. DAI) on the underlying lending protocol used by 88mph, such as Compound or Aave."
+              >
                 {{ estimatedCurrentFloatingInterestRate.toFormat(1) }}% <br />
                 <ng-container i18n="@@yieldCurrentAPY"
                   >Current supply APY</ng-container
                 >
-                <i
-                  class="fe fe-info ml-1 align-bottom"
-                  placement="top"
-                  i18n-ngbTooltip="@@yieldCurrentAPYText"
-                  ngbTooltip="Current 30-day exponential moving average (EMA) of the variable yield rate for supplying this asset (for eg. DAI) on the underlying lending protocol used by 88mph, such as Compound or Aave."
-                ></i>
+                <i class="fe fe-info ml-1 align-bottom"></i>
               </small>
             </div>
             <div class="col text-right">
