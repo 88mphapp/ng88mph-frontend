@@ -291,214 +291,238 @@
           </form>
         </div>
       </div>
-      <div class="dropdown">
-        <button
-          class="
-            btn btn-block
-            mb-3
-            btn-dark
-            dropdown-toggle
-            mr-3
-            d-flex
-            align-items-center
-            justify-content-center
-          "
-          type="button"
-          id="dropdownNetwork"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
-            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@ethereum">Ethereum</ng-container>
-          </ng-container>
-          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON">
-            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/matic-icon.png"
-                alt="logo matic-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@polygon">Polygon (Matic)</ng-container>
-          </ng-container>
-          <ng-container
-            *ngIf="wallet.networkID === constants.CHAIN_ID.AVALANCHE"
-          >
-            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/avalanche-icon.png"
-                alt="logo avalanche-red-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@avalanche">Avalanche</ng-container>
-          </ng-container>
-          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM">
-            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/fantom-icon.png"
-                alt="logo fantom-blue-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@fantom">Fantom</ng-container>
-          </ng-container>
-          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
-            <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@rinkeby">Rinkeby</ng-container>
-          </ng-container>
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
-          <h6 class="dropdown-header" i18n="@@selectNetworkV3">
-            Select Network (88mph v3)
-          </h6>
+      <ng-template
+        [ngIf]="
+          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+          wallet.networkID === constants.CHAIN_ID.RINKEBY ||
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+          wallet.networkID === constants.CHAIN_ID.FANTOM
+        "
+        [ngIfElse]="wrongNetwork"
+      >
+        <div class="dropdown">
           <button
-            class="dropdown-item d-flex align-items-center"
+            class="
+              btn btn-block
+              mb-3
+              btn-dark
+              dropdown-toggle
+              mr-3
+              d-flex
+              align-items-center
+              justify-content-center
+            "
             type="button"
-            (click)="wallet.changeChain(1)"
+            id="dropdownNetwork"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
           >
-            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@ethereum">Ethereum</ng-container>
-          </button>
-          <button
-            class="dropdown-item d-flex align-items-center"
-            type="button"
-            (click)="wallet.changeChain(137)"
-          >
-            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/matic-icon.png"
-                alt="logo matic-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@polygon">Polygon (Matic)</ng-container>
-          </button>
-          <button
-            class="dropdown-item d-flex align-items-center"
-            type="button"
-            (click)="wallet.changeChain(43114)"
-          >
-            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/avalanche-icon.png"
-                alt="logo avalanche-red-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@avalanche">Avalanche</ng-container>
-          </button>
-          <button
-            class="dropdown-item d-flex align-items-center"
-            type="button"
-            (click)="wallet.changeChain(250)"
-          >
-            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/fantom-icon.png"
-                alt="logo fantom-blue-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@fantom">Fantom</ng-container>
-          </button>
-          <button
-            class="dropdown-item d-flex align-items-center mr-2"
-            type="button"
-            (click)="wallet.changeChain(4)"
-          >
-            <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@ethereumRinkeby"
-              >Ethereum Rinkeby</ng-container
+            <ng-container
+              *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
             >
+              <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/ethereum-icon.png"
+                  alt="logo eth-diamond-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@ethereum">Ethereum</ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON"
+            >
+              <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/matic-icon.png"
+                  alt="logo matic-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@polygon">Polygon (Matic)</ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="wallet.networkID === constants.CHAIN_ID.AVALANCHE"
+            >
+              <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/avalanche-icon.png"
+                  alt="logo avalanche-red-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@avalanche">Avalanche</ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM"
+            >
+              <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/fantom-icon.png"
+                  alt="logo fantom-blue-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@fantom">Fantom</ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY"
+            >
+              <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/ethereum-icon.png"
+                  alt="logo eth-diamond-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@rinkeby">Rinkeby</ng-container>
+            </ng-container>
           </button>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header" i18n="@@selectLegacyVersion">
-            Select 88mph legacy version
-          </h6>
-          <a
-            class="dropdown-item d-flex align-items-center"
-            href="https://88mph.app/v2/"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><div class="avatar avatar-xxxs avatar-online mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@88mphV2">88mph v2</ng-container>
-          </a>
-          <a
-            class="dropdown-item d-flex align-items-center"
-            href="https://88mph.app/v1/"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><div class="avatar avatar-xxxs avatar-online mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@88mphv1">88mph v1</ng-container>
-          </a>
-          <a
-            class="dropdown-item d-flex align-items-center"
-            href="https://88mph.app/v0/"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><div class="avatar avatar-xxxs avatar-online mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="16px"
-              />
-            </div>
-            <ng-container i18n="@@88mphV0">88mph v0</ng-container>
-          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
+            <h6 class="dropdown-header" i18n="@@selectNetworkV3">
+              Select Network (88mph v3)
+            </h6>
+            <button
+              class="dropdown-item d-flex align-items-center"
+              type="button"
+              (click)="wallet.changeChain(1)"
+            >
+              <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/ethereum-icon.png"
+                  alt="logo eth-diamond-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@ethereum">Ethereum</ng-container>
+            </button>
+            <button
+              class="dropdown-item d-flex align-items-center"
+              type="button"
+              (click)="wallet.changeChain(137)"
+            >
+              <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/matic-icon.png"
+                  alt="logo matic-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@polygon">Polygon (Matic)</ng-container>
+            </button>
+            <button
+              class="dropdown-item d-flex align-items-center"
+              type="button"
+              (click)="wallet.changeChain(43114)"
+            >
+              <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/avalanche-icon.png"
+                  alt="logo avalanche-red-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@avalanche">Avalanche</ng-container>
+            </button>
+            <button
+              class="dropdown-item d-flex align-items-center"
+              type="button"
+              (click)="wallet.changeChain(250)"
+            >
+              <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/fantom-icon.png"
+                  alt="logo fantom-blue-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@fantom">Fantom</ng-container>
+            </button>
+            <button
+              class="dropdown-item d-flex align-items-center mr-2"
+              type="button"
+              (click)="wallet.changeChain(4)"
+            >
+              <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/ethereum-icon.png"
+                  alt="logo eth-diamond-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@ethereumRinkeby"
+                >Ethereum Rinkeby</ng-container
+              >
+            </button>
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header" i18n="@@selectLegacyVersion">
+              Select 88mph legacy version
+            </h6>
+            <a
+              class="dropdown-item d-flex align-items-center"
+              href="https://88mph.app/v2/"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><div class="avatar avatar-xxxs avatar-online mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/ethereum-icon.png"
+                  alt="logo eth-diamond-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@88mphV2">88mph v2</ng-container>
+            </a>
+            <a
+              class="dropdown-item d-flex align-items-center"
+              href="https://88mph.app/v1/"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><div class="avatar avatar-xxxs avatar-online mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/ethereum-icon.png"
+                  alt="logo eth-diamond-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@88mphv1">88mph v1</ng-container>
+            </a>
+            <a
+              class="dropdown-item d-flex align-items-center"
+              href="https://88mph.app/v0/"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><div class="avatar avatar-xxxs avatar-online mr-2">
+                <img
+                  class="avatar-img rounded-circle"
+                  src="./assets/img/ethereum-icon.png"
+                  alt="logo eth-diamond-purple-white"
+                  width="16px"
+                />
+              </div>
+              <ng-container i18n="@@88mphV0">88mph v0</ng-container>
+            </a>
+          </div>
         </div>
-      </div>
+      </ng-template>
+      <ng-template #wrongNetwork>
+        <button type="button" class="btn btn-block btn-danger mr-1 mb-3">
+          Wrong Network
+        </button>
+      </ng-template>
       <a
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
@@ -648,207 +672,227 @@
   </div>
   <!-- User desktop -->
   <div class="navbar-user d-none d-lg-flex">
-    <div class="dropdown">
-      <button
-        class="
-          btn btn-sm btn-dark
-          dropdown-toggle
-          mr-1
-          d-flex
-          align-items-center
-        "
-        type="button"
-        id="dropdownNetwork"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
-          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/ethereum-icon.png"
-              alt="logo eth-diamond-purple-white"
-              width="20px"
-            />
-          </div>
-          <ng-container i18n="@@ethereum">v3 - Ethereum</ng-container>
-        </ng-container>
-        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON">
-          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/matic-icon.png"
-              alt="logo matic-purple-white"
-              width="20px"
-            />
-          </div>
-          <ng-container i18n="@@polygon">v3 - Polygon (Matic)</ng-container>
-        </ng-container>
-        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.AVALANCHE">
-          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/avalanche-icon.png"
-              alt="logo avalanche-red-white"
-              width="20px"
-            />
-          </div>
-          <ng-container i18n="@@avalanche">v3 - Avalanche</ng-container>
-        </ng-container>
-        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM">
-          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/fantom-icon.png"
-              alt="logo fantom-blue-white"
-              width="20px"
-            />
-          </div>
-          <ng-container i18n="@@fantom">v3 - Fantom</ng-container>
-        </ng-container>
-        <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
-          <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/ethereum-icon.png"
-              alt="logo eth-diamond-purple-white"
-              width="20px"
-            />
-          </div>
-          <ng-container i18n="@@rinkeby">v3 - Rinkeby</ng-container>
-        </ng-container>
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
-        <h6 class="dropdown-header" i18n="@@selectNetworkV3">
-          Select Network (88mph v3)
-        </h6>
+    <ng-template
+      [ngIf]="
+        wallet.networkID === constants.CHAIN_ID.POLYGON ||
+        wallet.networkID === constants.CHAIN_ID.MAINNET ||
+        wallet.networkID === constants.CHAIN_ID.RINKEBY ||
+        wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+        wallet.networkID === constants.CHAIN_ID.FANTOM
+      "
+      [ngIfElse]="wrongNetwork"
+    >
+      <div class="dropdown">
         <button
-          class="dropdown-item d-flex align-items-center"
+          class="
+            btn btn-sm btn-dark
+            dropdown-toggle
+            mr-1
+            d-flex
+            align-items-center
+          "
           type="button"
-          (click)="wallet.changeChain(1)"
+          id="dropdownNetwork"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
         >
-          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/ethereum-icon.png"
-              alt="logo eth-diamond-purple-white"
-              width="24px"
-            />
-          </div>
-          <ng-container i18n="@@ethereum">Ethereum</ng-container>
+          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="20px"
+              />
+            </div>
+            <ng-container i18n="@@ethereum">v3 - Ethereum</ng-container>
+          </ng-container>
+          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON">
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/matic-icon.png"
+                alt="logo matic-purple-white"
+                width="20px"
+              />
+            </div>
+            <ng-container i18n="@@polygon">v3 - Polygon (Matic)</ng-container>
+          </ng-container>
+          <ng-container
+            *ngIf="wallet.networkID === constants.CHAIN_ID.AVALANCHE"
+          >
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/avalanche-icon.png"
+                alt="logo avalanche-red-white"
+                width="20px"
+              />
+            </div>
+            <ng-container i18n="@@avalanche">v3 - Avalanche</ng-container>
+          </ng-container>
+          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM">
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/fantom-icon.png"
+                alt="logo fantom-blue-white"
+                width="20px"
+              />
+            </div>
+            <ng-container i18n="@@fantom">v3 - Fantom</ng-container>
+          </ng-container>
+          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
+            <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="20px"
+              />
+            </div>
+            <ng-container i18n="@@rinkeby">v3 - Rinkeby</ng-container>
+          </ng-container>
         </button>
-        <button
-          class="dropdown-item d-flex align-items-center"
-          type="button"
-          (click)="wallet.changeChain(137)"
-        >
-          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/matic-icon.png"
-              alt="logo matic-purple-white"
-              width="24px"
-            />
-          </div>
-          <ng-container i18n="@@ethereum">Polygon (Matic)</ng-container>
-        </button>
-        <button
-          class="dropdown-item d-flex align-items-center"
-          type="button"
-          (click)="wallet.changeChain(43114)"
-        >
-          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/avalanche-icon.png"
-              alt="logo avalanche-red-white"
-              width="24px"
-            />
-          </div>
-          <ng-container i18n="@@avalanche">Avalanche</ng-container>
-        </button>
-        <button
-          class="dropdown-item d-flex align-items-center"
-          type="button"
-          (click)="wallet.changeChain(250)"
-        >
-          <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/fantom-icon.png"
-              alt="logo fantom-blue-white"
-              width="24px"
-            />
-          </div>
-          <ng-container i18n="@@fantom">Fantom</ng-container>
-        </button>
-        <button
-          class="dropdown-item d-flex align-items-center mr-2"
-          type="button"
-          (click)="wallet.changeChain(4)"
-        >
-          <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/ethereum-icon.png"
-              alt="logo eth-diamond-purple-white"
-              width="24px"
-            />
-          </div>
-          <ng-container i18n="@@ethereumRinkeby">Ethereum Rinkeby</ng-container>
-        </button>
-        <div class="dropdown-divider"></div>
-        <h6 class="dropdown-header" i18n="@@selectLegacyVersion">
-          Select 88mph legacy version
-        </h6>
-        <a
-          class="dropdown-item d-flex align-items-center"
-          href="https://88mph.app/v2/"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><div class="avatar avatar-xxxs avatar-online mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/ethereum-icon.png"
-              alt="logo eth-diamond-purple-white"
-              width="24px"
-            />
-          </div>
-          <ng-container i18n="@@88mphV2">88mph v2</ng-container>
-        </a>
-        <a
-          class="dropdown-item d-flex align-items-center"
-          href="https://88mph.app/v1/"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><div class="avatar avatar-xxxs avatar-online mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/ethereum-icon.png"
-              alt="logo eth-diamond-purple-white"
-              width="24px"
-            />
-          </div>
-          <ng-container i18n="@@88mphV1">88mph v1</ng-container>
-        </a>
-        <a
-          class="dropdown-item d-flex align-items-center"
-          href="https://88mph.app/v0/"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><div class="avatar avatar-xxxs avatar-online mr-2">
-            <img
-              class="avatar-img rounded-circle"
-              src="./assets/img/ethereum-icon.png"
-              alt="logo eth-diamond-purple-white"
-              width="24px"
-            />
-          </div>
-          <ng-container i18n="@@88mphV0">88mph v0</ng-container>
-        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
+          <h6 class="dropdown-header" i18n="@@selectNetworkV3">
+            Select Network (88mph v3)
+          </h6>
+          <button
+            class="dropdown-item d-flex align-items-center"
+            type="button"
+            (click)="wallet.changeChain(1)"
+          >
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            <ng-container i18n="@@ethereum">Ethereum</ng-container>
+          </button>
+          <button
+            class="dropdown-item d-flex align-items-center"
+            type="button"
+            (click)="wallet.changeChain(137)"
+          >
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/matic-icon.png"
+                alt="logo matic-purple-white"
+                width="24px"
+              />
+            </div>
+            <ng-container i18n="@@ethereum">Polygon (Matic)</ng-container>
+          </button>
+          <button
+            class="dropdown-item d-flex align-items-center"
+            type="button"
+            (click)="wallet.changeChain(43114)"
+          >
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/avalanche-icon.png"
+                alt="logo avalanche-red-white"
+                width="24px"
+              />
+            </div>
+            <ng-container i18n="@@avalanche">Avalanche</ng-container>
+          </button>
+          <button
+            class="dropdown-item d-flex align-items-center"
+            type="button"
+            (click)="wallet.changeChain(250)"
+          >
+            <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/fantom-icon.png"
+                alt="logo fantom-blue-white"
+                width="24px"
+              />
+            </div>
+            <ng-container i18n="@@fantom">Fantom</ng-container>
+          </button>
+          <button
+            class="dropdown-item d-flex align-items-center mr-2"
+            type="button"
+            (click)="wallet.changeChain(4)"
+          >
+            <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            <ng-container i18n="@@ethereumRinkeby"
+              >Ethereum Rinkeby</ng-container
+            >
+          </button>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header" i18n="@@selectLegacyVersion">
+            Select 88mph legacy version
+          </h6>
+          <a
+            class="dropdown-item d-flex align-items-center"
+            href="https://88mph.app/v2/"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><div class="avatar avatar-xxxs avatar-online mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            <ng-container i18n="@@88mphV2">88mph v2</ng-container>
+          </a>
+          <a
+            class="dropdown-item d-flex align-items-center"
+            href="https://88mph.app/v1/"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><div class="avatar avatar-xxxs avatar-online mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            <ng-container i18n="@@88mphV1">88mph v1</ng-container>
+          </a>
+          <a
+            class="dropdown-item d-flex align-items-center"
+            href="https://88mph.app/v0/"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><div class="avatar avatar-xxxs avatar-online mr-2">
+              <img
+                class="avatar-img rounded-circle"
+                src="./assets/img/ethereum-icon.png"
+                alt="logo eth-diamond-purple-white"
+                width="24px"
+              />
+            </div>
+            <ng-container i18n="@@88mphV0">88mph v0</ng-container>
+          </a>
+        </div>
       </div>
-    </div>
+    </ng-template>
+    <ng-template #wrongNetwork>
+      <button type="button" class="btn btn-sm btn-danger mr-3">
+        Wrong Network
+      </button>
+    </ng-template>
     <a
       *ngIf="
         wallet.networkID === constants.CHAIN_ID.POLYGON ||
