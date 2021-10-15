@@ -1,13 +1,14 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
   <div class="card-header">
-    <h4 class="card-title mb-0" i18n="@@estimatedNetMargin">
+    <h4
+      class="card-title mb-0"
+      i18n="@@estimatedNetMargin"
+      placement="top"
+      i18n-ngbTooltip="@@estimatedNetMarginText"
+      ngbTooltip="Expressed as a percentage (%), NIM is a measure of the profitability of underlying deposits after interest expenses have been paid."
+    >
       Net Interest Margin
-      <i
-        class="fe fe-info ml-1 align-bottom"
-        placement="top"
-        i18n-ngbTooltip="@@estimatedNetMarginText"
-        ngbTooltip="Expressed as a percentage (%), NIM is a measure of the profitability of underlying deposits after interest expenses have been paid."
-      ></i>
+      <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
   </div>
   <div class="card-header">

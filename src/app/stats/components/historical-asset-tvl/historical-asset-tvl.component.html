@@ -1,13 +1,14 @@
 <div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-header">
-    <h4 class="card-title mb-0" i18n="@@assetTVL">
+    <h4
+      class="card-title mb-0"
+      i18n="@@assetTVL"
+      placement="top"
+      i18n-ngbTooltip="@@assetTVLText"
+      ngbTooltip="The amount (USD) of deposited assets in fixed-interest rate bond pools."
+    >
       Asset TVL
-      <i
-        class="fe fe-info ml-1 align-bottom"
-        placement="top"
-        i18n-ngbTooltip="@@assetTVLText"
-        ngbTooltip="The amount (USD) of deposited assets in fixed-interest rate bond pools."
-      ></i>
+      <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
   </div>
   <div class="card-header">

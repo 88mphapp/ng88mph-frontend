@@ -61,13 +61,14 @@
         <div class="card mb-5 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase" i18n="@@valueInMph">
+            <h5
+              class="text-uppercase"
+              i18n="@@valueInMph"
+              placement="top"
+              ngbTooltip="1 xMPH = {{ pricePerFullShare.toFormat(4) }} MPH"
+            >
               Value in MPH
-              <i
-                class="fe fe-info ml-1 align-bottom"
-                placement="top"
-                ngbTooltip="1 xMPH = {{ pricePerFullShare.toFormat(4) }} MPH"
-              ></i>
+              <i class="fe fe-info ml-1 align-bottom"></i>
             </h5>
             <!-- Heading -->
             <span class="h2 mb-0 glowing">
@@ -90,14 +91,14 @@
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase">
+            <h5
+              class="text-uppercase"
+              placement="top"
+              ngbTooltip="Based on the last 2-week protocol's revenues distribution."
+              i18n-ngbTooltip="@@variableAPRHelpText"
+            >
               <ng-container i18n="@@variableAPR">Variable APR</ng-container>
-              <i
-                class="fe fe-info ml-1 align-bottom"
-                placement="top"
-                ngbTooltip="Based on the last 2-week protocol's revenues distribution."
-                i18n-ngbTooltip="@@variableAPRHelpText"
-              ></i>
+              <i class="fe fe-info ml-1 align-bottom"></i>
             </h5>
             <!-- Heading -->
             <h2 class="mb-2 glowing">{{ yearlyROI.toFormat(4) }} %</h2>
@@ -140,14 +141,14 @@
         </div>
         <div class="col-6">
           <!-- Title -->
-          <h5 class="text-uppercase">
+          <h5
+            class="text-uppercase"
+            placement="top"
+            ngbTooltip="Based on the last 2-week protocol's revenues distribution."
+            i18n-ngbTooltip="@@variableAPRHelpText"
+          >
             <ng-container i18n="@@variableAPR">Variable APR</ng-container>
-            <i
-              class="fe fe-info ml-1 align-bottom"
-              placement="top"
-              ngbTooltip="Based on the last 2-week protocol's revenues distribution."
-              i18n-ngbTooltip="@@variableAPRHelpText"
-            ></i>
+            <i class="fe fe-info ml-1 align-bottom"></i>
           </h5>
           <!-- Heading -->
           <h2 class="mb-2 glowing">{{ yearlyROI.toFormat(4) }} %</h2>
@@ -289,12 +290,14 @@
                         class="px-0 py-2 text-white border-0 small"
                         i18n="@@feesAccumulated"
                       >
-                        88mph fees accumulated
-                        <i
-                          class="fe fe-info ml-1 align-bottom"
+                        <span
+                          i18n-ngbTooltip="@@feesAccumulatedToolTip"
                           placement="top"
                           ngbTooltip="20% of the fixed-rate yield promised to depositors at deposit time and 0.5% on early withdrawals"
-                        ></i>
+                        >
+                          88mph fees accumulated
+                          <i class="fe fe-info ml-1 align-bottom"></i
+                        ></span>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
@@ -309,13 +312,14 @@
                         class="px-0 py-2 text-white border-0 small"
                         i18n="@@stkAAVEAccumulated"
                       >
-                        $stkAAVE accumulated
-                        <i
-                          class="fe fe-info ml-1 align-bottom"
+                        <span
                           placement="top"
                           ngbTooltip="88mph's participation in Aave markets gives rewards in stkAAVE token."
                           i18n-ngbTooltip="@@stkAAVEText"
-                        ></i>
+                        >
+                          $stkAAVE accumulated
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
@@ -330,13 +334,14 @@
                         class="px-0 py-2 text-white border-0 small"
                         i18n="@@compAccumulated"
                       >
-                        $COMP accumulated
-                        <i
-                          class="fe fe-info ml-1 align-bottom"
+                        <span
                           placement="top"
                           ngbTooltip="88mph's participation in Compound markets gives rewards in COMP token."
                           i18n-ngbTooltip="@@compAccumulatedText"
-                        ></i>
+                        >
+                          $COMP accumulated
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
@@ -351,13 +356,14 @@
                         class="px-0 py-2 text-white border-0 small"
                         i18n="@@farmAccumulated"
                       >
-                        $FARM accumulated
-                        <i
-                          class="fe fe-info ml-1 align-bottom"
+                        <span
                           placement="top"
                           ngbTooltip="88mph's participation in Harvest markets gives rewards in FARM token."
                           i18n-ngbTooltip="@@farmAccumulatedText"
-                        ></i>
+                        >
+                          $FARM accumulated
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
@@ -387,7 +393,12 @@
               </div>
             </div>
             <div class="card-footer">
-              <small class="mb-0">
+              <small
+                class="mb-0"
+                placement="top"
+                ngbTooltip="88mph Protocol revenues are distributed to MPH stakers on a bi-weekly basis via a buy-back mechansim. 88mph governance decides the percentage of revenues distributed, by default, it's 100%."
+                i18n-ngbTooltip="@@nextDistributionText"
+              >
                 <!-- Next distribution on {{ distributionEndTime }} -->
                 <ng-container i18n="@@nextDistributionOn"
                   >Next distribution in</ng-container
@@ -396,12 +407,7 @@
                 <ng-container i18n="@@nextDistributionOnDays"
                   >days</ng-container
                 >
-                <i
-                  class="fe fe-info ml-1 align-bottom"
-                  placement="top"
-                  ngbTooltip="88mph Protocol revenues are distributed to MPH stakers on a bi-weekly basis via a buy-back mechansim. 88mph governance decides the percentage of revenues distributed, by default, it's 100%."
-                  i18n-ngbTooltip="@@nextDistributionText"
-                ></i>
+                <i class="fe fe-info ml-1 align-bottom"></i>
               </small>
             </div>
           </div>

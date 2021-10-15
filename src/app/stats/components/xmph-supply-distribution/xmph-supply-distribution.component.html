@@ -1,6 +1,12 @@
 <div *ngIf="pieChartData" class="card mb-4 mb-lg-0">
   <div class="card-header">
-    <h4 class="card-title mb-0" i18n="@@xmphSupplyDistribution">
+    <h4
+      class="card-title mb-0"
+      i18n="@@xmphSupplyDistribution"
+      placement="top"
+      ngbTooltip="The distribution of xMPH by address."
+      i18n-ngbTooltip="@@mphSupplyDistributionText"
+    >
       xMPH Holders
       <span
         class="badge badge-soft-success ml-1"
@@ -11,12 +17,7 @@
         "
         >Ethereum</span
       >
-      <i
-        class="fe fe-info ml-1 align-bottom"
-        placement="top"
-        ngbTooltip="The distribution of xMPH by address."
-        i18n-ngbTooltip="@@mphSupplyDistributionText"
-      ></i>
+      <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
   </div>
   <div class="card-body">
