@@ -67,4 +67,12 @@ export interface DPool {
   oneYearInterestRate: BigNumber;
   oracleInterestRate: BigNumber;
   poolFunderRewardMultiplier: BigNumber;
+  poolFundableDeposits: FundableDeposit[];
+  totalYieldTokensAvailable: BigNumber;
+  totalYieldTokensAvailableUSD: BigNumber;
+  totalEarnYieldOn: BigNumber;
+  totalEarnYieldOnUSD: BigNumber;
+  maxEstimatedAPR: BigNumber;
+  maxEstimatedMPHRewardsAPR: BigNumber;
+  isExpanded: boolean;
 }
