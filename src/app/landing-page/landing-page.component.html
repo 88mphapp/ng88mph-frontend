@@ -5,7 +5,10 @@
       <h1
         class="title-bg-gradient display-2"
         i18n="@@homeHeaderTitleMainnet"
-        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+          wallet.networkID === constants.CHAIN_ID.RINKEBY
+        "
       >
         Earn up to {{ maxAPY.toFormat(2) }}% fixed APR +
         {{ maxMPHAPY.toFormat(2) }}% $MPH APR on your crypto
@@ -13,7 +16,10 @@
       <p
         class="text-white font-weight-bold mb-5 lead"
         i18n="@@homeHeaderSubtitleMainnet"
-        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+          wallet.networkID === constants.CHAIN_ID.RINKEBY
+        "
       >
         Deposit crypto or stablecoins to earn a fixed yield rate & get MPH
         tokens.

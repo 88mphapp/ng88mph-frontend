@@ -299,7 +299,7 @@
           wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
           wallet.networkID === constants.CHAIN_ID.FANTOM
         "
-        [ngIfElse]="wrongNetwork"
+        [ngIfElse]="wrongNetworkMobile"
       >
         <div class="dropdown">
           <button
@@ -518,15 +518,16 @@
           </div>
         </div>
       </ng-template>
-      <ng-template #wrongNetwork>
+      <ng-template #wrongNetworkMobile>
         <button type="button" class="btn btn-block btn-danger mr-1 mb-3">
-          Wrong Network
+          Unsupported Network
         </button>
       </ng-template>
       <a
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
-          wallet.networkID === constants.CHAIN_ID.MAINNET
+          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+          wallet.networkID === constants.CHAIN_ID.RINKEBY
         "
         class="btn btn-block btn-dark mr-1 mb-3"
         href="https://www.blocknative.com/gas-estimator"
@@ -890,13 +891,14 @@
     </ng-template>
     <ng-template #wrongNetwork>
       <button type="button" class="btn btn-sm btn-danger mr-3">
-        Wrong Network
+        Unsupported Network
       </button>
     </ng-template>
     <a
       *ngIf="
         wallet.networkID === constants.CHAIN_ID.POLYGON ||
-        wallet.networkID === constants.CHAIN_ID.MAINNET
+        wallet.networkID === constants.CHAIN_ID.MAINNET ||
+        wallet.networkID === constants.CHAIN_ID.RINKEBY
       "
       class="btn btn-sm btn-dark mr-3"
       href="https://www.blocknative.com/gas-estimator"
