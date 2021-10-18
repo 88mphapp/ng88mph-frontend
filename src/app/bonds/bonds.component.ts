@@ -799,8 +799,9 @@ export class BondsComponent implements OnInit {
   }
 
   toggleAllOpportunities() {
+    const zeroIndexIsExpanded: boolean = this.allPoolList[0].isExpanded;
     for (let pool in this.allPoolList) {
-      this.allPoolList[0].isExpanded
+      zeroIndexIsExpanded
         ? (this.allPoolList[pool].isExpanded = false)
         : (this.allPoolList[pool].isExpanded = true);
     }
