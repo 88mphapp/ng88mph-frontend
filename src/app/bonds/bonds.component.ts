@@ -33,11 +33,9 @@ export class BondsComponent implements OnInit {
   allAssetList: string[];
   selectedAsset: string;
   selectedProtocol: string;
-  allFundableDeposits: FundableDeposit[];
   mphPriceUSD: BigNumber;
   selectedPool: DPool;
   loading: boolean;
-  poolView: boolean;
   now: number;
 
   constructor(
@@ -455,7 +453,6 @@ export class BondsComponent implements OnInit {
       let allPoolList = new Array<DPool>(0);
       let allProtocolList = new Array<string>(0);
       let allAssetList = new Array<string>(0);
-      let allFundableDeposits = new Array<FundableDeposit>(0);
 
       Promise.all(
         dpools.map(async (pool) => {
@@ -582,7 +579,6 @@ export class BondsComponent implements OnInit {
               this.getEstimatedROI(fundableDeposit);
               this.getEstimatedRewardsAPR(fundableDeposit);
               poolFundableDeposits.push(fundableDeposit);
-              allFundableDeposits.push(fundableDeposit);
 
               dpoolObj.totalYieldTokensAvailable =
                 dpoolObj.totalYieldTokensAvailable.plus(
@@ -632,7 +628,6 @@ export class BondsComponent implements OnInit {
               this.getEstimatedROI(fundableDeposit);
               this.getEstimatedRewardsAPR(fundableDeposit);
               poolFundableDeposits.push(fundableDeposit);
-              allFundableDeposits.push(fundableDeposit);
 
               dpoolObj.totalYieldTokensAvailable =
                 dpoolObj.totalYieldTokensAvailable.plus(
@@ -687,17 +682,12 @@ export class BondsComponent implements OnInit {
         allProtocolList.sort((a, b) => {
           return a > b ? 1 : a < b ? -1 : 0;
         });
-        allFundableDeposits.sort((a, b) => {
-          return a.maturationTimestamp > b.maturationTimestamp
-            ? 1
-            : a.maturationTimestamp < b.maturationTimestamp
-            ? -1
-            : 0;
-        });
+        allPoolList.find(
+          (pool) => pool.poolFundableDeposits.length > 0
+        ).isExpanded = true;
         this.allPoolList = allPoolList;
         this.allProtocolList = allProtocolList;
         this.allAssetList = allAssetList;
-        this.allFundableDeposits = allFundableDeposits;
         this.loading = false;
       });
     }
@@ -718,10 +708,8 @@ export class BondsComponent implements OnInit {
       this.allAssetList = [];
       this.selectedAsset = 'all';
       this.selectedProtocol = 'all';
-      this.allFundableDeposits = [];
       this.mphPriceUSD = new BigNumber(0);
       this.loading = true;
-      this.poolView = true;
     }
   }
 
@@ -764,6 +752,16 @@ export class BondsComponent implements OnInit {
     deposit.mphRewardsAPR = mphRewardAPR;
   }
 
+  debtAvailable(): boolean {
+    for (let p in this.allPoolList) {
+      const pool = this.allPoolList[p];
+      if (pool.poolFundableDeposits.length > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   timestampToDateString(timestampSec: number): string {
     return new Date(timestampSec * 1e3).toLocaleDateString();
   }
@@ -802,7 +800,9 @@ export class BondsComponent implements OnInit {
 
   toggleAllOpportunities() {
     for (let pool in this.allPoolList) {
-      this.allPoolList[pool].isExpanded = !this.allPoolList[pool].isExpanded;
+      this.allPoolList[0].isExpanded
+        ? (this.allPoolList[pool].isExpanded = false)
+        : (this.allPoolList[pool].isExpanded = true);
     }
   }
 
@@ -841,21 +841,6 @@ export class BondsComponent implements OnInit {
       event.direction === 'asc'
         ? [...pool.fundings.sort((a, b) => a[event.active] - b[event.active])]
         : [...pool.fundings.sort((a, b) => b[event.active] - a[event.active])];
-  }
-
-  sortBy(event: any) {
-    this.allFundableDeposits =
-      event.direction === 'asc'
-        ? [
-            ...this.allFundableDeposits.sort(
-              (a, b) => a[event.active] - b[event.active]
-            ),
-          ]
-        : [
-            ...this.allFundableDeposits.sort(
-              (a, b) => b[event.active] - a[event.active]
-            ),
-          ];
   }
 
   sortAllPools(event: any) {
