@@ -74,5 +74,6 @@ export interface DPool {
   totalEarnYieldOnUSD: BigNumber;
   maxEstimatedAPR: BigNumber;
   maxEstimatedMPHRewardsAPR: BigNumber;
+  surplus: BigNumber;
   isExpanded: boolean;
 }
