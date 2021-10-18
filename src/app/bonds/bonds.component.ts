@@ -118,6 +118,7 @@ export class BondsComponent implements OnInit {
           oneYearInterestRate
           oracleInterestRate
           poolFunderRewardMultiplier
+          surplus
           deposits(
             where: {
               amount_gt: "${this.constants.DUST_THRESHOLD}",
@@ -497,173 +498,178 @@ export class BondsComponent implements OnInit {
             totalEarnYieldOnUSD: new BigNumber(0),
             maxEstimatedAPR: new BigNumber(0),
             maxEstimatedMPHRewardsAPR: new BigNumber(0),
+            surplus: new BigNumber(pool.surplus),
             isExpanded: false,
           };
 
-          let poolFundableDeposits: FundableDeposit[] = [];
+          if (dpoolObj.surplus.lt(0)) {
+            let poolFundableDeposits: FundableDeposit[] = [];
+            for (let d in pool.deposits) {
+              const deposit = pool.deposits[d];
 
-          for (let d in pool.deposits) {
-            const deposit = pool.deposits[d];
-
-            const depositAmount = new BigNumber(deposit.amount);
-            const interestRate = new BigNumber(deposit.interestRate);
-            const feeRate = new BigNumber(deposit.feeRate);
-            const virtualTokenTotalSupply = new BigNumber(
-              deposit.virtualTokenTotalSupply
-            );
-            const totalPrincipal = virtualTokenTotalSupply
-              .div(interestRate.plus(1))
-              .times(interestRate.plus(feeRate).plus(1));
-
-            // compute upper bound / max fund amount for the deposit
-            let bound: BigNumber;
-            let unfundedDepositAmount: BigNumber;
-            const stablecoinPrecision = Math.pow(
-              10,
-              poolInfo.stablecoinDecimals
-            );
-
-            if (deposit.funding) {
-              const supply = deposit.funding.totalSupply;
-              const principalPerToken = deposit.funding.principalPerToken;
-              const unfundedPrincipalAmount = totalPrincipal.minus(
-                supply * principalPerToken
+              const depositAmount = new BigNumber(deposit.amount);
+              const interestRate = new BigNumber(deposit.interestRate);
+              const feeRate = new BigNumber(deposit.feeRate);
+              const virtualTokenTotalSupply = new BigNumber(
+                deposit.virtualTokenTotalSupply
               );
-              unfundedDepositAmount = unfundedPrincipalAmount
-                .div(totalPrincipal)
-                .times(deposit.amount);
-              if (unfundedDepositAmount.lt(this.constants.DUST_THRESHOLD)) {
-                unfundedDepositAmount = new BigNumber(0);
-              }
-              bound = new BigNumber(
-                await poolContract.methods
-                  .calculateInterestAmount(
-                    this.helpers.processWeb3Number(
-                      unfundedDepositAmount.times(stablecoinPrecision)
-                    ),
-                    this.helpers.processWeb3Number(
-                      +deposit.maturationTimestamp - now
-                    )
-                  )
-                  .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
-              ).div(stablecoinPrecision);
-            } else {
-              bound = new BigNumber(
-                await poolContract.methods
-                  .calculateInterestAmount(
-                    this.helpers.processWeb3Number(
-                      new BigNumber(deposit.amount).times(stablecoinPrecision)
-                    ),
-                    this.helpers.processWeb3Number(
-                      +deposit.maturationTimestamp - now
-                    )
-                  )
-                  .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
-              ).div(stablecoinPrecision);
-            }
-            if (
-              deposit.funding === null &&
-              bound.gt(this.constants.DUST_THRESHOLD)
-            ) {
-              const fundableDeposit: FundableDeposit = {
-                id: deposit.id,
-                pool: dpoolObj,
-                maturationTimestamp: +deposit.maturationTimestamp,
-                unfundedDepositAmount: depositAmount,
-                unfundedDepositAmountUSD: depositAmount.times(stablecoinPrice),
-                yieldTokensAvailable: totalPrincipal,
-                yieldTokensAvailableUSD: bound.times(stablecoinPrice),
-                estimatedAPR: new BigNumber(0),
-                mphRewardsAPR: new BigNumber(0),
-              };
-              this.getEstimatedROI(fundableDeposit);
-              this.getEstimatedRewardsAPR(fundableDeposit);
-              poolFundableDeposits.push(fundableDeposit);
+              const totalPrincipal = virtualTokenTotalSupply
+                .div(interestRate.plus(1))
+                .times(interestRate.plus(feeRate).plus(1));
 
-              dpoolObj.totalYieldTokensAvailable =
-                dpoolObj.totalYieldTokensAvailable.plus(
-                  fundableDeposit.yieldTokensAvailable
+              // compute upper bound / max fund amount for the deposit
+              let bound: BigNumber;
+              let unfundedDepositAmount: BigNumber;
+              const stablecoinPrecision = Math.pow(
+                10,
+                poolInfo.stablecoinDecimals
+              );
+
+              if (deposit.funding) {
+                const supply = deposit.funding.totalSupply;
+                const principalPerToken = deposit.funding.principalPerToken;
+                const unfundedPrincipalAmount = totalPrincipal.minus(
+                  supply * principalPerToken
                 );
-              dpoolObj.totalYieldTokensAvailableUSD =
-                dpoolObj.totalYieldTokensAvailableUSD.plus(
-                  fundableDeposit.yieldTokensAvailableUSD
-                );
-              dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn.plus(
-                fundableDeposit.unfundedDepositAmount
-              );
-              dpoolObj.totalEarnYieldOnUSD = dpoolObj.totalEarnYieldOnUSD.plus(
-                fundableDeposit.unfundedDepositAmountUSD
-              );
-              if (fundableDeposit.estimatedAPR.gt(dpoolObj.maxEstimatedAPR)) {
-                dpoolObj.maxEstimatedAPR = fundableDeposit.estimatedAPR;
+                unfundedDepositAmount = unfundedPrincipalAmount
+                  .div(totalPrincipal)
+                  .times(deposit.amount);
+                if (unfundedDepositAmount.lt(this.constants.DUST_THRESHOLD)) {
+                  unfundedDepositAmount = new BigNumber(0);
+                }
+                bound = new BigNumber(
+                  await poolContract.methods
+                    .calculateInterestAmount(
+                      this.helpers.processWeb3Number(
+                        unfundedDepositAmount.times(stablecoinPrecision)
+                      ),
+                      this.helpers.processWeb3Number(
+                        +deposit.maturationTimestamp - now
+                      )
+                    )
+                    .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
+                ).div(stablecoinPrecision);
+              } else {
+                bound = new BigNumber(
+                  await poolContract.methods
+                    .calculateInterestAmount(
+                      this.helpers.processWeb3Number(
+                        new BigNumber(deposit.amount).times(stablecoinPrecision)
+                      ),
+                      this.helpers.processWeb3Number(
+                        +deposit.maturationTimestamp - now
+                      )
+                    )
+                    .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
+                ).div(stablecoinPrecision);
               }
               if (
-                fundableDeposit.mphRewardsAPR.gt(
-                  dpoolObj.maxEstimatedMPHRewardsAPR
-                )
+                deposit.funding === null &&
+                bound.gt(this.constants.DUST_THRESHOLD)
               ) {
-                dpoolObj.maxEstimatedMPHRewardsAPR =
-                  fundableDeposit.mphRewardsAPR;
-              }
-            } else if (bound.gt(this.constants.DUST_THRESHOLD)) {
-              const supply = deposit.funding.totalSupply;
-              const principalPerToken = deposit.funding.principalPerToken;
-              const unfundedPrincipalAmount = totalPrincipal.minus(
-                supply * principalPerToken
-              );
-              const yieldTokensAvailable =
-                unfundedPrincipalAmount.div(principalPerToken);
-              const fundableDeposit: FundableDeposit = {
-                id: deposit.id,
-                pool: dpoolObj,
-                maturationTimestamp: +deposit.maturationTimestamp,
-                unfundedDepositAmount: unfundedDepositAmount,
-                unfundedDepositAmountUSD:
-                  unfundedDepositAmount.times(stablecoinPrice),
-                yieldTokensAvailable: yieldTokensAvailable,
-                yieldTokensAvailableUSD: bound.times(stablecoinPrice),
-                estimatedAPR: new BigNumber(0),
-                mphRewardsAPR: new BigNumber(0),
-              };
-              this.getEstimatedROI(fundableDeposit);
-              this.getEstimatedRewardsAPR(fundableDeposit);
-              poolFundableDeposits.push(fundableDeposit);
+                const fundableDeposit: FundableDeposit = {
+                  id: deposit.id,
+                  pool: dpoolObj,
+                  maturationTimestamp: +deposit.maturationTimestamp,
+                  unfundedDepositAmount: depositAmount,
+                  unfundedDepositAmountUSD:
+                    depositAmount.times(stablecoinPrice),
+                  yieldTokensAvailable: totalPrincipal,
+                  yieldTokensAvailableUSD: bound.times(stablecoinPrice),
+                  estimatedAPR: new BigNumber(0),
+                  mphRewardsAPR: new BigNumber(0),
+                };
+                this.getEstimatedROI(fundableDeposit);
+                this.getEstimatedRewardsAPR(fundableDeposit);
+                poolFundableDeposits.push(fundableDeposit);
 
-              dpoolObj.totalYieldTokensAvailable =
-                dpoolObj.totalYieldTokensAvailable.plus(
-                  fundableDeposit.yieldTokensAvailable
+                dpoolObj.totalYieldTokensAvailable =
+                  dpoolObj.totalYieldTokensAvailable.plus(
+                    fundableDeposit.yieldTokensAvailable
+                  );
+                dpoolObj.totalYieldTokensAvailableUSD =
+                  dpoolObj.totalYieldTokensAvailableUSD.plus(
+                    fundableDeposit.yieldTokensAvailableUSD
+                  );
+                dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn.plus(
+                  fundableDeposit.unfundedDepositAmount
                 );
-              dpoolObj.totalYieldTokensAvailableUSD =
-                dpoolObj.totalYieldTokensAvailableUSD.plus(
-                  fundableDeposit.yieldTokensAvailableUSD
+                dpoolObj.totalEarnYieldOnUSD =
+                  dpoolObj.totalEarnYieldOnUSD.plus(
+                    fundableDeposit.unfundedDepositAmountUSD
+                  );
+                if (fundableDeposit.estimatedAPR.gt(dpoolObj.maxEstimatedAPR)) {
+                  dpoolObj.maxEstimatedAPR = fundableDeposit.estimatedAPR;
+                }
+                if (
+                  fundableDeposit.mphRewardsAPR.gt(
+                    dpoolObj.maxEstimatedMPHRewardsAPR
+                  )
+                ) {
+                  dpoolObj.maxEstimatedMPHRewardsAPR =
+                    fundableDeposit.mphRewardsAPR;
+                }
+              } else if (bound.gt(this.constants.DUST_THRESHOLD)) {
+                const supply = deposit.funding.totalSupply;
+                const principalPerToken = deposit.funding.principalPerToken;
+                const unfundedPrincipalAmount = totalPrincipal.minus(
+                  supply * principalPerToken
                 );
-              dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn.plus(
-                fundableDeposit.unfundedDepositAmount
-              );
-              dpoolObj.totalEarnYieldOnUSD = dpoolObj.totalEarnYieldOnUSD.plus(
-                fundableDeposit.unfundedDepositAmountUSD
-              );
-              if (fundableDeposit.estimatedAPR.gt(dpoolObj.maxEstimatedAPR)) {
-                dpoolObj.maxEstimatedAPR = fundableDeposit.estimatedAPR;
-              }
-              if (
-                fundableDeposit.mphRewardsAPR.gt(
-                  dpoolObj.maxEstimatedMPHRewardsAPR
-                )
-              ) {
-                dpoolObj.maxEstimatedMPHRewardsAPR =
-                  fundableDeposit.mphRewardsAPR;
+                const yieldTokensAvailable =
+                  unfundedPrincipalAmount.div(principalPerToken);
+                const fundableDeposit: FundableDeposit = {
+                  id: deposit.id,
+                  pool: dpoolObj,
+                  maturationTimestamp: +deposit.maturationTimestamp,
+                  unfundedDepositAmount: unfundedDepositAmount,
+                  unfundedDepositAmountUSD:
+                    unfundedDepositAmount.times(stablecoinPrice),
+                  yieldTokensAvailable: yieldTokensAvailable,
+                  yieldTokensAvailableUSD: bound.times(stablecoinPrice),
+                  estimatedAPR: new BigNumber(0),
+                  mphRewardsAPR: new BigNumber(0),
+                };
+                this.getEstimatedROI(fundableDeposit);
+                this.getEstimatedRewardsAPR(fundableDeposit);
+                poolFundableDeposits.push(fundableDeposit);
+
+                dpoolObj.totalYieldTokensAvailable =
+                  dpoolObj.totalYieldTokensAvailable.plus(
+                    fundableDeposit.yieldTokensAvailable
+                  );
+                dpoolObj.totalYieldTokensAvailableUSD =
+                  dpoolObj.totalYieldTokensAvailableUSD.plus(
+                    fundableDeposit.yieldTokensAvailableUSD
+                  );
+                dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn.plus(
+                  fundableDeposit.unfundedDepositAmount
+                );
+                dpoolObj.totalEarnYieldOnUSD =
+                  dpoolObj.totalEarnYieldOnUSD.plus(
+                    fundableDeposit.unfundedDepositAmountUSD
+                  );
+                if (fundableDeposit.estimatedAPR.gt(dpoolObj.maxEstimatedAPR)) {
+                  dpoolObj.maxEstimatedAPR = fundableDeposit.estimatedAPR;
+                }
+                if (
+                  fundableDeposit.mphRewardsAPR.gt(
+                    dpoolObj.maxEstimatedMPHRewardsAPR
+                  )
+                ) {
+                  dpoolObj.maxEstimatedMPHRewardsAPR =
+                    fundableDeposit.mphRewardsAPR;
+                }
               }
             }
+            poolFundableDeposits.sort((a, b) => {
+              return a.maturationTimestamp > b.maturationTimestamp
+                ? 1
+                : a.maturationTimestamp < b.maturationTimestamp
+                ? -1
+                : 0;
+            });
+            dpoolObj.poolFundableDeposits = poolFundableDeposits;
           }
-          poolFundableDeposits.sort((a, b) => {
-            return a.maturationTimestamp > b.maturationTimestamp
-              ? 1
-              : a.maturationTimestamp < b.maturationTimestamp
-              ? -1
-              : 0;
-          });
-          dpoolObj.poolFundableDeposits = poolFundableDeposits;
           allPoolList.push(dpoolObj);
           if (!allAssetList.includes(poolInfo.stablecoinSymbol)) {
             allAssetList.push(poolInfo.stablecoinSymbol);
@@ -682,9 +688,12 @@ export class BondsComponent implements OnInit {
         allProtocolList.sort((a, b) => {
           return a > b ? 1 : a < b ? -1 : 0;
         });
-        allPoolList.find(
+        let firstPoolWithDebt = allPoolList.find(
           (pool) => pool.poolFundableDeposits.length > 0
-        ).isExpanded = true;
+        );
+        if (firstPoolWithDebt) {
+          firstPoolWithDebt.isExpanded = true;
+        }
         this.allPoolList = allPoolList;
         this.allProtocolList = allProtocolList;
         this.allAssetList = allAssetList;
@@ -916,6 +925,7 @@ interface QueryResult {
     oneYearInterestRate: string;
     oracleInterestRate: string;
     poolFunderRewardMultiplier: string;
+    surplus: string;
     deposits: {
       id: string;
       nftID: string;
