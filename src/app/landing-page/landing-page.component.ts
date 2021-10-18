@@ -27,13 +27,12 @@ export class LandingPageComponent implements OnInit {
   interestEarnedToken: BigNumber;
   interestEarnedUSD: BigNumber;
   mphReward: BigNumber;
-  mphRewardUSD: BigNumber;
   mphRewardAPY: BigNumber;
   totalEarnedUSD: BigNumber;
-  tenYearCompounded: BigNumber;
   maxAPY: BigNumber;
   maxMPHAPY: BigNumber;
   depositTokenBalance: BigNumber;
+  mphPriceUSD: BigNumber;
 
   constructor(
     private modalService: NgbModal,
@@ -104,6 +103,10 @@ export class LandingPageComponent implements OnInit {
       ) {
         this.datas.getMaxMPHAPY().then((x) => (this.maxMPHAPY = x));
       }
+
+      this.helpers.getMPHPriceUSD().then((price) => {
+        this.mphPriceUSD = price;
+      });
 
       const queryString = gql`
         {
@@ -220,11 +223,10 @@ export class LandingPageComponent implements OnInit {
       this.wallet.networkID ===
       (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
     ) {
-      const mphPriceUSD = await this.helpers.getMPHPriceUSD();
       this.totalEarningsUSD = new BigNumber(
         data.globalStats.xMPHRewardDistributed
       )
-        .times(mphPriceUSD)
+        .times(this.mphPriceUSD)
         .div(1e6);
       if (this.totalEarningsUSD.isNaN()) {
         this.totalEarningsUSD = new BigNumber(0);
@@ -267,12 +269,11 @@ export class LandingPageComponent implements OnInit {
       this.interestEarnedToken = new BigNumber(0);
       this.interestEarnedUSD = new BigNumber(0);
       this.mphReward = new BigNumber(0);
-      this.mphRewardUSD = new BigNumber(0);
       this.mphRewardAPY = new BigNumber(0);
       this.totalEarnedUSD = new BigNumber(0);
-      this.tenYearCompounded = new BigNumber(0);
       this.maxAPY = new BigNumber(0);
       this.maxMPHAPY = new BigNumber(0);
+      this.mphPriceUSD = new BigNumber(0);
     }
   }
 
@@ -346,18 +347,11 @@ export class LandingPageComponent implements OnInit {
     this.mphReward = this.selectedPool.poolDepositorRewardMintMultiplier
       .times(depositAmount)
       .times(depositTime)
-      .div(this.constants.PRECISION);
-
-    // get MPH reward USD amount
-    const mphPriceUSD = await this.helpers.getMPHPriceUSD();
-    this.mphRewardUSD = this.selectedPool.poolDepositorRewardMintMultiplier
-      .times(depositAmount)
-      .times(depositTime)
-      .times(mphPriceUSD)
-      .div(this.constants.PRECISION);
+      .div(stablecoinPrecision);
 
     // get MPH reward APY
-    const mphAPY = this.mphRewardUSD
+    const mphAPY = this.mphReward
+      .times(this.mphPriceUSD)
       .div(this.initialDepositUSD)
       .div(depositTime)
       .times(this.constants.YEAR_IN_SEC)
@@ -370,12 +364,7 @@ export class LandingPageComponent implements OnInit {
 
     // calculate total earned USD
     this.totalEarnedUSD = this.initialDepositUSD.plus(
-      this.interestEarnedUSD.plus(this.mphRewardUSD)
-    );
-
-    // calculate total earned when compounded over 10 years
-    this.tenYearCompounded = this.initialDepositUSD.times(
-      new BigNumber(100).plus(this.apy).plus(this.mphRewardAPY).div(100).pow(10)
+      this.interestEarnedUSD.plus(this.mphReward.times(this.mphPriceUSD))
     );
   }
 
