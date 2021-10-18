@@ -254,7 +254,7 @@
                         +{{ mphReward.toFormat(2) }} MPH
                       </h4>
                       <h5 class="text-muted mb-0">
-                        +${{ mphRewardUSD.toFormat(2) }}
+                        +${{ mphReward.times(mphPriceUSD).toFormat(2) }}
                       </h5>
                     </td>
                   </tr>
@@ -276,19 +276,6 @@
                     >
                       <h4 class="mb-0 success">
                         ${{ totalEarnedUSD.toFormat(2) }}
-                      </h4>
-                    </td>
-                  </tr>
-                  <tr class="d-none">
-                    <td
-                      class="px-0 py-2 text-white border-0 small"
-                      i18n="@@homeFormTotalCompounded"
-                    >
-                      Total compounded on 10y
-                    </td>
-                    <td class="px-0 py-2 text-white text-right border-0 small">
-                      <h4 class="mb-0 glowing">
-                        ${{ tenYearCompounded.toFormat(2) }}
                       </h4>
                     </td>
                   </tr>
