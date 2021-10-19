@@ -31,6 +31,7 @@ export interface FundedDeposit {
   fundingID: number;
   stablecoinPrice: number;
   funderAccruedInterest: BigNumber;
+  funderAccruedMPH: BigNumber;
   maturationTimestamp: number;
   yieldTokenBalance: BigNumber;
   yieldTokenBalanceUSD: BigNumber;

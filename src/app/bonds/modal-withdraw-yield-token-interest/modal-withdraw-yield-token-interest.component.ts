@@ -136,6 +136,7 @@ export class ModalWithdrawYieldTokenInterestComponent implements OnInit {
       () => {},
       () => {
         this.fundedDeposit.funderAccruedInterest = new BigNumber(0);
+        this.fundedDeposit.funderAccruedMPH = new BigNumber(0);
       },
       (error) => {
         this.wallet.displayGenericError(error);

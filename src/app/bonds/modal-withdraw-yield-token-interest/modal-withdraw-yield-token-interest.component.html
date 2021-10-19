@@ -62,8 +62,16 @@
                             .toFormat(2)
                         }}
                       </div>
-                      <h4 class="mb-1 glowing display-4">0.0000 MPH</h4>
-                      <div class="text-muted small mb-3">$0.00</div>
+                      <h4 class="mb-1 glowing display-4">
+                        {{ fundedDeposit.funderAccruedMPH.toFormat(18) }} MPH
+                      </h4>
+                      <div class="text-muted small mb-3">
+                        ${{
+                          fundedDeposit.funderAccruedMPH
+                            .times(mphPriceUSD)
+                            .toFormat(2)
+                        }}
+                      </div>
                       <button
                         class="btn btn-lg btn-bg-gradient"
                         type="button"
