@@ -375,6 +375,7 @@ export class BondsComponent implements OnInit {
             fundingID: +funding.nftID,
             stablecoinPrice: stablecoinPrice,
             funderAccruedInterest: funderAccruedInterest,
+            funderAccruedMPH: funderAccruedMPH,
             maturationTimestamp: +funding.deposit.maturationTimestamp,
             yieldTokenBalance: yieldTokenBalance,
             yieldTokenBalanceUSD: yieldTokenBalanceUSD,
