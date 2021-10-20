@@ -298,7 +298,7 @@ export class DepositComponent implements OnInit {
             totalDepositUSD: new BigNumber(pool.totalDeposit).times(
               stablecoinPrice
             ),
-            maxAPY: await this.datas.getPoolMaxAPY(poolInfo.address),
+            maxAPY: await this.datas.getPoolMaxAPR(poolInfo.address),
             mphAPY: mphAPY,
             mphDepositorRewardMintMultiplier: mphDepositorRewardMintMultiplier,
             totalUserDepositsToken: new BigNumber(0),

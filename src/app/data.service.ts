@@ -10,14 +10,20 @@ import { request, gql } from 'graphql-request';
   providedIn: 'root',
 })
 export class DataService {
+  mphPriceUSD: BigNumber = new BigNumber(0);
+
   constructor(
     public constants: ConstantsService,
     public contract: ContractService,
     public wallet: WalletService,
     public helpers: HelpersService
-  ) {}
+  ) {
+    this.helpers.getMPHPriceUSD().then((price) => {
+      this.mphPriceUSD = price;
+    });
+  }
 
-  // @notice max apy is based on 7-day deposit length
+  // @notice max apy is based on 30-day deposit length
   async getMaxAPY(): Promise<BigNumber> {
     let maxAPY = new BigNumber(0);
     let dpools = new Array<DPool>(0);
@@ -37,7 +43,7 @@ export class DataService {
     });
 
     for (let dpool in dpools) {
-      const apy = await this.getPoolMaxAPY(dpools[dpool].address);
+      const apy = await this.getPoolMaxAPR(dpools[dpool].address);
       if (apy.gt(maxAPY)) {
         maxAPY = apy;
       }
@@ -66,7 +72,7 @@ export class DataService {
     });
 
     for (let dpool in dpools) {
-      const apy = await this.getPoolMPHAPY(
+      const apy = await this.getPoolRewardAPR(
         dpools[dpool].address,
         dpools[dpool].poolDepositorRewardMintMultiplier
       );
@@ -78,7 +84,7 @@ export class DataService {
     return maxMPHAPY;
   }
 
-  async getPoolMaxAPY(address: string): Promise<BigNumber> {
+  async getPoolMaxAPR(address: string): Promise<BigNumber> {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     const poolInfo = this.contract.getPoolInfoFromAddress(address);
     if (!poolInfo) {
@@ -120,7 +126,7 @@ export class DataService {
     return apy;
   }
 
-  async getPoolMPHAPY(
+  async getPoolRewardAPR(
     address: string,
     mintMintiplier: BigNumber
   ): Promise<BigNumber> {
@@ -129,20 +135,13 @@ export class DataService {
       poolInfo.stablecoin,
       this.wallet.networkID
     );
-    const mphPriceUSD = await this.helpers.getMPHPriceUSD();
-
-    const rewardPerWeek = new BigNumber(mintMintiplier)
-      .times(mphPriceUSD)
-      .times(this.constants.DAY_IN_SEC)
-      .times(7);
-    let rewardAPY = rewardPerWeek
+    const rewardAPR = new BigNumber(mintMintiplier)
+      .times(this.mphPriceUSD)
       .div(stablecoinPriceUSD)
-      .div(this.constants.DAY_IN_SEC)
-      .div(7)
       .times(this.constants.YEAR_IN_SEC)
       .times(100);
 
-    return new BigNumber(rewardAPY);
+    return new BigNumber(rewardAPR);
   }
 }
 

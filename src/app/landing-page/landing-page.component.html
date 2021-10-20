@@ -10,8 +10,8 @@
           wallet.networkID === constants.CHAIN_ID.RINKEBY
         "
       >
-        Earn up to {{ maxAPY.toFormat(2) }}% fixed APR +
-        {{ maxMPHAPY.toFormat(2) }}% $MPH APR on your crypto
+        Earn up to {{ maxAPR.toFormat(2) }}% fixed APR +
+        {{ maxRewardAPR.toFormat(2) }}% $MPH APR on your crypto
       </h1>
       <p
         class="text-white font-weight-bold mb-5 lead"
@@ -34,7 +34,7 @@
           wallet.networkID === constants.CHAIN_ID.FANTOM
         "
       >
-        Earn up to {{ maxAPY.toFormat(2) }}% fixed APR + upcoming incentives on
+        Earn up to {{ maxAPR.toFormat(2) }}% fixed APR + upcoming incentives on
         your crypto
       </h1>
       <p
@@ -151,11 +151,12 @@
                 >
                   <option
                     i18n="@@homeFormPoolList"
-                    value="{{ pool.name }}"
-                    *ngFor="let pool of allPoolList"
-                    [selected]="pool.name === selectedPool.name"
+                    value="{{ pool.key }}"
+                    *ngFor="let pool of bestPoolList | keyvalue"
+                    [selected]="pool.key === selectedPool.stablecoinSymbol"
                   >
-                    {{ pool.stablecoinSymbol }} via {{ pool.protocol }} Protocol
+                    <!-- {{ pool.stablecoinSymbol }} via {{ pool.protocol }} Protocol -->
+                    {{ pool.key }}
                   </option>
                 </select>
               </div>
@@ -196,7 +197,7 @@
                     Fixed APR / MPH APR
                   </h4>
                   <h2 class="mb-0 glowing">
-                    {{ apy.toFormat(2) }}% +{{ mphRewardAPY.toFormat(2) }}%
+                    {{ fixedAPR.toFormat(2) }}% +{{ rewardAPR.toFormat(2) }}%
                   </h2>
                 </div>
               </div>
@@ -219,7 +220,7 @@
                     </td>
                     <td class="px-0 py-2 text-white text-right border-0 small">
                       <h4 class="mb-1 glowing">
-                        {{ interestEarnedToken.toFormat(4) }}
+                        {{ interestEarned.toFormat(4) }}
                         {{ selectedPool.stablecoinSymbol }}
                       </h4>
                       <h5 class="text-muted mb-0">
@@ -254,7 +255,7 @@
                         +{{ mphReward.toFormat(2) }} MPH
                       </h4>
                       <h5 class="text-muted mb-0">
-                        +${{ mphReward.times(mphPriceUSD).toFormat(2) }}
+                        +${{ mphReward.times(datas.mphPriceUSD).toFormat(2) }}
                       </h5>
                     </td>
                   </tr>
