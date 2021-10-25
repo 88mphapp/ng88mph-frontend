@@ -1,11 +1,11 @@
 <div class="container mt-4 mb-6">
   <div class="row">
     <div class="col-12">
-      <h1 class="title-bg-gradient display-2" i18n="@@farmingHeader">
+      <h1 class="title-bg-gradient display-2" i18n="@@BridgeHeader">
         MPH Bridge
       </h1>
       <p class="text-white font-weight-bold mb-5 lead">
-        <ng-container i18n="@@farmingText"
+        <ng-container i18n="@@bridgeDesc"
           >Do more with your MPH by bridging it on our multichains
           ecosystem</ng-container
         >
@@ -14,7 +14,7 @@
         <div class="col-12 col-lg-8">
           <div class="card">
             <div class="card-header">
-              <h4 class="card-header-title" i18n="@@farmingProvideLiquidity">
+              <h4 class="card-header-title" i18n="@@bridgesubTitle">
                 Select bridge
               </h4>
             </div>
@@ -145,12 +145,39 @@
               </div>
               <div class="px-0 alert text-warning border-warning">
                 <ul class="mb-0">
-                  <li>Minimum bridgeable amount: x MPH</li>
-                  <li>Maximum bridgeable amount: x MPH</li>
-                  <li>Estimated Time of Crosschain Arrival is x min.</li>
                   <li>
-                    Crosschain amount larger than x MPH could take up to x
-                    hours.
+                    <ng-container i18n="@@bridgeMinAmount"
+                      >Minimum bridgeable amount:</ng-container
+                    >
+                    x MPH
+                  </li>
+                  <li>
+                    <ng-container i18n="@@bridgeMaxAmount"
+                      >Maximum bridgeable amount:</ng-container
+                    >
+                    x MPH
+                  </li>
+                  <li>
+                    <ng-container i18n="@@bridgeEstimatedTimeOfArrival"
+                      >Estimated Time of Crosschain Arrival is</ng-container
+                    >
+                    x min.
+                  </li>
+                  <li>
+                    <ng-container
+                      i18n="@@bridgeEstimatedTimeAmountLargerThanPart1"
+                      >Crosschain amount larger than</ng-container
+                    >
+                    x MPH
+                    <ng-container
+                      i18n="@@bridgeEstimatedTimeAmountLargerThanPart2"
+                      >could take up to</ng-container
+                    >
+                    x
+                    <ng-container
+                      i18n="@@bridgeEstimatedTimeAmountLargerThanPart3"
+                      >hours</ng-container
+                    >.
                   </li>
                 </ul>
               </div>
