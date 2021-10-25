@@ -40,7 +40,6 @@ export class DepositComponent implements OnInit {
   userPools: UserPool[];
   userVests: Vest[];
   userZCBPools: UserZCBPool[];
-  mphPriceUSD: BigNumber;
   selectedAsset: string;
   selectedProtocol: string;
 
@@ -120,8 +119,9 @@ export class DepositComponent implements OnInit {
           this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
           mphQueryString
         ).then((data: MPHHolderQueryResult) => {
+          const holder = data.mphholder;
           const xMPHBalance: BigNumber = new BigNumber(
-            data.mphholder.xmphBalance
+            holder ? holder.xmphBalance : 0
           );
           if (xMPHBalance.gt(0)) {
             this.stakedMPH = true;
@@ -180,10 +180,6 @@ export class DepositComponent implements OnInit {
       this.userZCBPools = userZCBPools;
       this.totalDepositUSD = totalDepositUSD;
     }
-
-    await this.helpers.getMPHPriceUSD().then((price) => {
-      this.mphPriceUSD = price;
-    });
 
     const queryString = gql`
       {
@@ -283,11 +279,12 @@ export class DepositComponent implements OnInit {
             pool.poolDepositorRewardMintMultiplier
           );
           const mphAPY = mphDepositorRewardMintMultiplier
-            .times(this.mphPriceUSD)
+            .times(this.datas.mphPriceUSD)
             .times(this.constants.YEAR_IN_SEC)
             .div(stablecoinPrice)
             .times(100);
 
+          // creat the DPool object
           const dpoolObj: DPool = {
             name: poolInfo.name,
             protocol: poolInfo.protocol,
@@ -306,7 +303,23 @@ export class DepositComponent implements OnInit {
             userDeposits: [],
             poolInfo: poolInfo,
             isExpanded: false,
+            isBest: false,
           };
+
+          // determine if best pool for asset
+          const sameAsset: Array<DPool> = allPoolList.filter(
+            (pool) => pool.stablecoin === poolInfo.stablecoin
+          );
+          if (sameAsset.length === 0) {
+            dpoolObj.isBest = true;
+          } else {
+            const bestPool = sameAsset.find((pool) => pool.isBest === true);
+            if (dpoolObj.maxAPY.gt(bestPool.maxAPY)) {
+              bestPool.isBest = false;
+              dpoolObj.isBest = true;
+            }
+          }
+
           allPoolList.push(dpoolObj);
 
           if (!allAssetList.includes(poolInfo.stablecoinSymbol)) {
@@ -318,7 +331,11 @@ export class DepositComponent implements OnInit {
         })
       ).then(() => {
         allPoolList.sort((a, b) => {
-          return a.name > b.name ? 1 : a.name < b.name ? -1 : 0;
+          return a.stablecoinSymbol > b.stablecoinSymbol
+            ? 1
+            : a.stablecoinSymbol < b.stablecoinSymbol
+            ? -1
+            : 0;
         });
         allAssetList.sort((a, b) => {
           return a > b ? 1 : a < b ? -1 : 0;
@@ -390,7 +407,7 @@ export class DepositComponent implements OnInit {
               }
             }
             const mphAPY = realMPHReward
-              .times(this.mphPriceUSD)
+              .times(this.datas.mphPriceUSD)
               .div(depositAmount)
               .div(stablecoinPrice)
               .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
@@ -621,9 +638,8 @@ export class DepositComponent implements OnInit {
       this.allAssetList = [];
       this.allProtocolList = [];
       this.allZCBPoolList = [];
-      this.mphPriceUSD = new BigNumber(0);
       this.selectedAsset = 'all';
-      this.selectedProtocol = 'all';
+      this.selectedProtocol = 'best';
     }
   }
 
