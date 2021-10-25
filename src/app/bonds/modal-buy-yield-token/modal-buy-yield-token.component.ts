@@ -25,6 +25,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   totalEarned: BigNumber;
   mphPriceUSD: BigNumber;
   bound: BigNumber;
+  ratio: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -41,7 +42,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   }
 
   async loadData() {
-    this.buyYieldTokenAmount = this.deposit.yieldTokensAvailable;
+    //this.buyYieldTokenAmount = this.deposit.yieldTokensAvailable;
 
     const stablecoin = this.contract.getPoolStablecoin(this.deposit.pool.name);
     this.stablecoinPriceUSD = new BigNumber(
@@ -67,7 +68,12 @@ export class ModalBuyYieldTokenComponent implements OnInit {
       this.mphPriceUSD = price;
     });
 
-    this.updateDetails();
+    await this.updateDetails();
+    this.setBuyYieldTokenAmount(
+      this.deposit.yieldTokensAvailable
+        .times(this.ratio)
+        .toFixed(this.deposit.pool.stablecoinDecimals)
+    );
   }
 
   resetData(): void {
@@ -81,6 +87,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     this.totalEarned = new BigNumber(0);
     this.mphPriceUSD = new BigNumber(0);
     this.bound = new BigNumber(0);
+    this.ratio = new BigNumber(0);
   }
 
   setBuyYieldTokenAmount(amount: number | string) {
@@ -109,6 +116,9 @@ export class ModalBuyYieldTokenComponent implements OnInit {
         )
         .call()
     ).div(stablecoinPrecision);
+
+    const ratio = this.stablecoinBalance.div(this.bound);
+    ratio.gte(1) ? (this.ratio = new BigNumber(1)) : (this.ratio = ratio);
 
     const fundPercent = this.buyYieldTokenAmount.div(
       this.deposit.yieldTokensAvailable

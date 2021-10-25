@@ -66,9 +66,9 @@
                       type="button"
                       (click)="
                         setBuyYieldTokenAmount(
-                          deposit.yieldTokensAvailable.toFixed(
-                            deposit.pool.stablecoinDecimals
-                          )
+                          deposit.yieldTokensAvailable
+                            .times(ratio)
+                            .toFixed(deposit.pool.stablecoinDecimals)
                         )
                       "
                       i18n="@@yieldTokenAmount"
@@ -222,8 +222,18 @@
                 type="button"
                 (click)="buyYieldTokens()"
                 i18n="@@buyYieldBtn"
+                *ngIf="youPay.dp(18).lte(stablecoinBalance)"
               >
                 Buy
+              </button>
+              <button
+                class="btn btn-lg btn-bg-gradient btn-block"
+                type="button"
+                [disabled]="true"
+                i18n="@@buyYieldBtn"
+                *ngIf="youPay.dp(18).gt(stablecoinBalance)"
+              >
+                Not Enough {{ deposit.pool.stablecoinSymbol }} Available
               </button>
             </div>
           </div>
