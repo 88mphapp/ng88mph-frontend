@@ -93,8 +93,9 @@ export class HeaderComponent implements OnInit {
         this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
         queryString
       ).then((data: QueryResult) => {
-        this.mphBalance = new BigNumber(data.mphholder.mphBalance);
-        this.xMPHBalance = new BigNumber(data.mphholder.xmphBalance);
+        const holder = data.mphholder;
+        this.mphBalance = new BigNumber(holder ? holder.mphBalance : 0);
+        this.xMPHBalance = new BigNumber(holder ? holder.xmphBalance : 0);
       });
     }
 
