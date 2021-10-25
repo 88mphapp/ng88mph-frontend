@@ -1,7 +1,7 @@
 <div class="container justify-content-start justify-content-lg-between">
   <!-- Toggler -->
   <button
-    class="navbar-toggler mr-3"
+    class="navbar-toggler mr-3 d-none"
     type="button"
     data-toggle="collapse"
     data-target="#navbar"
@@ -13,15 +13,18 @@
   </button>
 
   <!-- Brand -->
-  <a class="navbar-brand mr-lg-3" routerLink="">
-    <img src="./assets/img/logo.svg" alt="..." class="navbar-brand-img mr-2" />
-    <span class="h4 text-white d-lg-none" i18n="@@88mph">88mph</span>
+  <a class="navbar-brand mr-3" routerLink="">
+    <img src="./assets/img/logo.svg" alt="..." width="48" />
   </a>
 
   <!-- Collapse -->
   <div class="collapse navbar-collapse mr-lg-auto" id="navbar">
     <!-- Navigation -->
-    <ul class="navbar-nav mr-lg-auto" ngbNav [activeId]="route.url">
+    <ul
+      class="navbar-nav d-none d-lg-flex mr-lg-auto"
+      ngbNav
+      [activeId]="route.url"
+    >
       <li class="nav-item" ngbNavItem="/earn">
         <a
           class="nav-link text-white"
@@ -32,7 +35,7 @@
           Earn
         </a>
       </li>
-      <li class="nav-item nav-item border-right pr-3 mr-3" ngbNavItem="/yield">
+      <li class="nav-item nav-item" ngbNavItem="/yield">
         <a
           class="nav-link text-white"
           routerLink="yield"
@@ -180,7 +183,6 @@
         </ul>
       </li>
     </ul>
-    <div></div>
     <div class="d-lg-none">
       <!-- Connect/watch button -->
       <div class="btn-group btn-block mr-3 mb-3">
@@ -671,8 +673,9 @@
       </div>
     </div>
   </div>
+
   <!-- User desktop -->
-  <div class="navbar-user d-none d-lg-flex">
+  <div class="navbar-user ml-auto">
     <ng-template
       [ngIf]="
         wallet.networkID === constants.CHAIN_ID.POLYGON ||
@@ -707,7 +710,7 @@
                 width="20px"
               />
             </div>
-            <ng-container i18n="@@ethereum">v3 - Ethereum</ng-container>
+            v3 <span class="d-none d-lg-block">- Ethereum</span>
           </ng-container>
           <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.POLYGON">
             <div class="avatar avatar-xxxs avatar-online mainnet mr-2">
@@ -891,7 +894,7 @@
     </ng-template>
     <ng-template #wrongNetwork>
       <button type="button" class="btn btn-sm btn-danger mr-3">
-        Unsupported Network
+        Wrong Network
       </button>
     </ng-template>
     <a
@@ -900,7 +903,7 @@
         wallet.networkID === constants.CHAIN_ID.MAINNET ||
         wallet.networkID === constants.CHAIN_ID.RINKEBY
       "
-      class="btn btn-sm btn-dark mr-3"
+      class="btn btn-sm btn-dark mr-3 d-none d-lg-flex"
       href="https://www.blocknative.com/gas-estimator"
       target="_blank"
       ><img
@@ -911,7 +914,7 @@
       />{{ gasPrice.toFormat(0) }}
     </a>
     <button
-      class="btn btn-sm btn-dark mr-1 d-flex align-items-center"
+      class="btn btn-sm btn-dark mr-1 d-none d-lg-flex align-items-center"
       type="button"
       routerLink="/stake"
     >
@@ -925,7 +928,7 @@
       <ng-container i18n="@@mph">MPH</ng-container>
     </button>
     <button
-      class="btn btn-sm btn-dark mr-3 d-flex align-items-center"
+      class="btn btn-sm btn-dark mr-3 d-none d-lg-flex align-items-center"
       type="button"
       routerLink="/stake"
     >
@@ -946,16 +949,16 @@
         (click)="connectWallet()"
       >
         <div *ngIf="wallet.connected && !wallet.watching">
-          {{ wallet.userAddress.substring(0, 14) }}
+          {{ wallet.userAddress.substring(0, 8) }}
         </div>
         <div
           *ngIf="!wallet.connected && !wallet.watching"
           i18n="@@connectWallet"
         >
-          Connect Wallet
+          Connect
         </div>
         <div *ngIf="wallet.watching">
-          {{ wallet.watchedAddress.substring(0, 14) }}
+          {{ wallet.watchedAddress.substring(0, 8) }}
         </div>
       </button>
       <button
@@ -967,7 +970,7 @@
       >
         <span class="fe fe-chevron-down"></span>
       </button>
-      <div class="dropdown-menu dropdown-menu-right p-3" style="width: 300px">
+      <div class="dropdown-menu dropdown-menu-right p-3" style="width: 250px">
         <!-- Connected Wallet -->
         <span class="d-block mb-3" *ngIf="wallet.connected">
           <h6 class="dropdown-header px-0" i18n="@@connected">Connected</h6>
@@ -1102,13 +1105,7 @@
     </div>
     <div class="dropdown">
       <button
-        class="
-          btn btn-sm btn-dark
-          dropdown-toggle
-          mr-3
-          d-flex
-          align-items-center
-        "
+        class="btn btn-sm btn-dark dropdown-toggle d-flex align-items-center"
         type="button"
         id="dropdownNetwork"
         data-toggle="dropdown"
@@ -1116,7 +1113,6 @@
         aria-expanded="false"
       >
         <img
-          class="img-fluid"
           src="./assets/img/dark_mode_white_24dp.svg"
           alt="Mode icon"
           width="23px"
@@ -1147,3 +1143,128 @@
   </div>
 </div>
 <!-- / .container -->
+<div class="container d-lg-none">
+  <ul
+    class="nav nav-tabs nav-overflow border-bottom-0 ml-n3 mr-n3"
+    ngbNav
+    [activeId]="route.url"
+  >
+    <li class="nav-item ml-3" ngbNavItem="/earn">
+      <a class="nav-link text-white" routerLink="earn" ngbNavLink i18n="@@earn">
+        Earn
+      </a>
+    </li>
+    <li class="nav-item nav-item" ngbNavItem="/yield">
+      <a
+        class="nav-link text-white"
+        routerLink="yield"
+        ngbNavLink
+        i18n="@@yield"
+      >
+        Yield
+      </a>
+    </li>
+    <li
+      class="nav-item"
+      ngbNavItem="/stake"
+      *ngIf="
+        wallet.networkID === constants.CHAIN_ID.MAINNET ||
+        wallet.networkID === constants.CHAIN_ID.RINKEBY
+      "
+    >
+      <a
+        class="nav-link text-white"
+        routerLink="stake"
+        ngbNavLink
+        i18n="@@stake"
+      >
+        Stake
+      </a>
+    </li>
+    <li
+      class="nav-item"
+      ngbNavItem="/farm"
+      *ngIf="wallet.networkID == constants.CHAIN_ID.MAINNET"
+    >
+      <a class="nav-link text-white" routerLink="farm" i18n="@@farm" ngbNavLink>
+        Farm
+      </a>
+    </li>
+    <li
+      *ngIf="
+        wallet.networkID === constants.CHAIN_ID.POLYGON ||
+        wallet.networkID === constants.CHAIN_ID.MAINNET ||
+        wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+        wallet.networkID === constants.CHAIN_ID.FANTOM
+      "
+      class="nav-item"
+      ngbNavItem="/stats"
+    >
+      <a
+        class="nav-link text-white"
+        routerLink="stats"
+        i18n="@@stats"
+        ngbNavLink
+      >
+        Stats
+      </a>
+    </li>
+
+    <li class="nav-item nav-item">
+      <a
+        class="nav-link text-white"
+        href="https://forum.88mph.app/"
+        target="_blank"
+      >
+        <ng-container i18n="@@forum">Forum&nbsp;</ng-container>
+        <i class="fe fe-external-link"></i>
+      </a>
+    </li>
+    <li class="nav-item nav-item">
+      <a
+        class="nav-link text-white"
+        href="https://snapshot.org/#/88mph.eth"
+        target="_blank"
+      >
+        <ng-container i18n="@@vote">Vote&nbsp;</ng-container>
+        <i class="fe fe-external-link"></i>
+      </a>
+    </li>
+    <li class="nav-item nav-item">
+      <a
+        class="nav-link text-white"
+        href="https://docs.88mph.app/"
+        target="_blank"
+        i18n="@@documentations"
+      >
+        Docs
+      </a>
+    </li>
+
+    <li class="nav-item nav-item" ngbNavItem="/funding">
+      <a class="nav-link text-white" routerLink="funding" i18n="@@funding">
+        Funding
+      </a>
+    </li>
+    <li class="nav-item nav-item">
+      <a
+        class="nav-link text-white"
+        href="https://88mph.app/fm/"
+        target="_blank"
+        i18n="@@88FM"
+      >
+        88.0&nbsp;FM&nbsp;📻
+      </a>
+    </li>
+    <li class="nav-item nav-item mr-3">
+      <a
+        class="nav-link text-white"
+        href="https://forms.gle/UqKQ1LqhwAFCBWGBA"
+        target="_blank"
+        i18n="@@feedback"
+      >
+        Feedback
+      </a>
+    </li>
+  </ul>
+</div>
