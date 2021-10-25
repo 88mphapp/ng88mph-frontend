@@ -18,6 +18,7 @@ export interface DPool {
   userDeposits: UserDeposit[];
   poolInfo: PoolInfo;
   isExpanded: boolean;
+  isBest: boolean;
 }
 
 export interface UserPool {

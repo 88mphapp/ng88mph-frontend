@@ -198,7 +198,7 @@
         <!-- Heading -->
         <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(6) }} MPH</h2>
         <h5 class="mb-3 text-white">
-          ${{ totalMPHEarned.times(mphPriceUSD).toFormat(2) }}
+          ${{ totalMPHEarned.times(datas.mphPriceUSD).toFormat(2) }}
         </h5>
         <!-- Button -->
         <button
@@ -246,7 +246,7 @@
       <!-- Heading -->
       <h2 class="mb-1 glowing">{{ totalMPHEarned.toFormat(DECIMALS) }} MPH</h2>
       <h5 class="mb-3 text-muted">
-        ${{ totalMPHEarned.times(mphPriceUSD).toFormat(DECIMALS) }}
+        ${{ totalMPHEarned.times(datas.mphPriceUSD).toFormat(DECIMALS) }}
       </h5>
       <!-- Button -->
       <button
@@ -288,7 +288,9 @@
                   data-toggle="select"
                   [(ngModel)]="selectedProtocol"
                 >
-                  <option value="all" selected>All Protocols</option>
+                  <option value="all">All Protocols</option>
+                  <option value="best" selected>Best Protocols</option>
+                  <option disabled>----------</option>
                   <option
                     *ngFor="let protocol of allProtocolList"
                     [ngValue]="protocol"
@@ -307,6 +309,7 @@
                   [(ngModel)]="selectedAsset"
                 >
                   <option value="all" selected>All Assets</option>
+                  <option disabled>----------</option>
                   <option *ngFor="let asset of allAssetList" [ngValue]="asset">
                     {{ asset }}
                   </option>
@@ -527,7 +530,7 @@
                         {{ deposit.realMPHReward.toFormat(DECIMALS) }}
                         MPH (${{
                           deposit.realMPHReward
-                            .times(mphPriceUSD)
+                            .times(datas.mphPriceUSD)
                             .toFormat(DECIMALS)
                         }})
                       </span>
@@ -654,7 +657,11 @@
                 (selectedAsset !== 'all' &&
                   pool.stablecoinSymbol !== selectedAsset) ||
                 (selectedProtocol !== 'all' &&
-                  pool.protocol !== selectedProtocol)
+                  selectedProtocol !== 'best' &&
+                  pool.protocol !== selectedProtocol) ||
+                (selectedProtocol === 'best' &&
+                  !pool.isBest &&
+                  pool.totalUserDepositsToken.eq(0))
               "
             ></tr>
             <tr
@@ -666,7 +673,11 @@
                 (selectedAsset !== 'all' &&
                   pool.stablecoinSymbol !== selectedAsset) ||
                 (selectedProtocol !== 'all' &&
-                  pool.protocol !== selectedProtocol)
+                  selectedProtocol !== 'best' &&
+                  pool.protocol !== selectedProtocol) ||
+                (selectedProtocol === 'best' &&
+                  !pool.isBest &&
+                  pool.totalUserDepositsToken.eq(0))
               "
             ></tr>
           </table>
