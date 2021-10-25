@@ -17,6 +17,7 @@ import { HeaderComponent } from './header/header.component';
 import { FarmingComponent } from './farming/farming.component';
 import { ModalStakeLPComponent } from './farming/modal-stake-lp/modal-stake-lp.component';
 import { FundingComponent } from './funding/funding.component';
+import { BridgeComponent } from './bridge/bridge.component';
 import { ModalUnstakeComponent } from './rewards/modal-unstake/modal-unstake.component';
 import { ModalUnstakeLPComponent } from './farming/modal-unstake-lp/modal-unstake-lp.component';
 import { SyncWarningComponent } from './sync-warning/sync-warning.component';
@@ -58,6 +59,7 @@ import { MatSortModule } from '@angular/material/sort';
     FarmingComponent,
     ModalStakeLPComponent,
     FundingComponent,
+    BridgeComponent,
     ModalUnstakeComponent,
     ModalUnstakeLPComponent,
     SyncWarningComponent,

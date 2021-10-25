@@ -1,0 +1,215 @@
+<div class="container mt-4 mb-6">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="title-bg-gradient display-2" i18n="@@farmingHeader">
+        MPH Bridge
+      </h1>
+      <p class="text-white font-weight-bold mb-5 lead">
+        <ng-container i18n="@@farmingText"
+          >Do more with your MPH by bridging it on our multichains
+          ecosystem</ng-container
+        >
+      </p>
+      <div class="row">
+        <div class="col-12 col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-header-title" i18n="@@farmingProvideLiquidity">
+                Select bridge
+              </h4>
+            </div>
+            <div class="card-body">
+              <div class="list-group list-group-flush list-group-activity">
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@farmingStep1"
+                        >
+                          1
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-row">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label for="FromChain" i18n="@@selectFromChain"
+                              >From chain</label
+                            >
+                            <select
+                              class="custom-select custom-select-lg"
+                              data-toggle="select"
+                              id="FromChain"
+                            >
+                              <option>Chain</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label for="ToChain" i18n="@@selectToChain"
+                              >To chain</label
+                            >
+                            <select
+                              class="custom-select custom-select-lg"
+                              data-toggle="select"
+                              id="ToChain"
+                            >
+                              <option>Chain</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@farmingStep2"
+                        >
+                          2
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <!-- display if UNI-v2 pool option selected -->
+                      <div class="form-group">
+                        <label>Amount to bridge </label>
+                        <div class="input-group mb-2">
+                          <div class="input-group-prepend">
+                            <button
+                              class="btn btn-lg btn-dark"
+                              type="button"
+                              disabled
+                            >
+                              <div class="avatar avatar-xxs">
+                                <img
+                                  src="./assets/img/token-icons/mph-logo-24.svg"
+                                  width="24"
+                                  alt="..."
+                                  class="avatar-img rounded-circle"
+                                />
+                              </div>
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="0.00"
+                            aria-label="bridge-amount"
+                            value="0.00"
+                          />
+                          <div class="input-group-append">
+                            <button
+                              class="btn btn-lg border-gradient"
+                              type="button"
+                              i18n="@@Max"
+                            >
+                              Max
+                            </button>
+                          </div>
+                        </div>
+                        <small class="form-text text-white"
+                          >0.0000 MPH
+                          <ng-container i18n="@@available"
+                            >available</ng-container
+                          ></small
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+              </div>
+              <div class="px-0 alert text-warning border-warning">
+                <ul class="mb-0">
+                  <li>Minimum bridgeable amount: x MPH</li>
+                  <li>Maximum bridgeable amount: x MPH</li>
+                  <li>Estimated Time of Crosschain Arrival is x min.</li>
+                  <li>
+                    Crosschain amount larger than x MPH could take up to x
+                    hours.
+                  </li>
+                </ul>
+              </div>
+              <button
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                i18n="@@approve"
+              >
+                Approve
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-header-title" i18n="@@thingsYouCanDo">
+                Things you can do
+              </h4>
+            </div>
+            <div class="card-body p-0">
+              <div class="list-group list-group-flush">
+                <a
+                  href="/stake"
+                  class="list-group-item list-group-item-action px-4"
+                >
+                  <h4 class="mb-1" i18n="@@stakeMPHForXMPH">
+                    Stake MPH for xMPH
+                  </h4>
+                  <small class="text-muted">
+                    <ng-container i18n="@@stakingMPHText"
+                      >By staking your MPH, you are eligible to collect two
+                      kinds of rewards distributed as MPH.</ng-container
+                    >
+                  </small>
+                  <small class="text-primary ml-2" i18n="@@learnMore"
+                    >Learn more</small
+                  >
+                </a>
+                <a
+                  href="/farm"
+                  class="list-group-item list-group-item-action px-4"
+                >
+                  <h4 class="mb-1" i18n="@@farmYourYield">
+                    Provide liquidity & boost your yield
+                  </h4>
+                  <small class="text-muted" i18n="@@provideLiquidityText2"
+                    >Provide liquidity on our trading pools, and get rewarded by
+                    doing so from trading fees and liquidity mining.</small
+                  >
+                  <small class="text-primary ml-2" i18n="@@learnMore"
+                    >Learn more</small
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
