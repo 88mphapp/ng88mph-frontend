@@ -459,6 +459,11 @@ export class BondsComponent implements OnInit {
       Promise.all(
         dpools.map(async (pool) => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+
+          if (poolInfo.protocol === 'Cream') {
+            return;
+          }
+
           const poolContract = this.contract.getPool(poolInfo.name);
 
           if (!poolInfo) {

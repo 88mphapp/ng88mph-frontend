@@ -264,6 +264,10 @@ export class DepositComponent implements OnInit {
         dpools.map(async (pool) => {
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
 
+          if (poolInfo.protocol === 'Cream') {
+            return;
+          }
+
           const stablecoin = poolInfo.stablecoin.toLowerCase();
           let stablecoinPrice = stablecoinPriceCache[stablecoin];
           if (!stablecoinPrice) {
