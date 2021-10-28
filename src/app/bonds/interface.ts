@@ -53,6 +53,7 @@ export interface FundableDeposit {
   unfundedDepositAmountUSD: BigNumber;
   yieldTokensAvailable: BigNumber;
   yieldTokensAvailableUSD: BigNumber;
+  yieldTokensAvailableToken: BigNumber;
   estimatedAPR: BigNumber;
   mphRewardsAPR: BigNumber;
 }

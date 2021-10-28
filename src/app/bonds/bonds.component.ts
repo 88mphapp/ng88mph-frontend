@@ -582,6 +582,7 @@ export class BondsComponent implements OnInit {
                     depositAmount.times(stablecoinPrice),
                   yieldTokensAvailable: totalPrincipal,
                   yieldTokensAvailableUSD: bound.times(stablecoinPrice),
+                  yieldTokensAvailableToken: bound,
                   estimatedAPR: new BigNumber(0),
                   mphRewardsAPR: new BigNumber(0),
                 };
@@ -597,13 +598,12 @@ export class BondsComponent implements OnInit {
                   dpoolObj.totalYieldTokensAvailableUSD.plus(
                     fundableDeposit.yieldTokensAvailableUSD
                   );
-                dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn.plus(
-                  fundableDeposit.unfundedDepositAmount
-                );
-                dpoolObj.totalEarnYieldOnUSD =
-                  dpoolObj.totalEarnYieldOnUSD.plus(
-                    fundableDeposit.unfundedDepositAmountUSD
-                  );
+                dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn
+                  .plus(fundableDeposit.unfundedDepositAmount)
+                  .plus(fundableDeposit.yieldTokensAvailableToken);
+                dpoolObj.totalEarnYieldOnUSD = dpoolObj.totalEarnYieldOnUSD
+                  .plus(fundableDeposit.unfundedDepositAmountUSD)
+                  .plus(fundableDeposit.yieldTokensAvailableUSD);
                 if (fundableDeposit.estimatedAPR.gt(dpoolObj.maxEstimatedAPR)) {
                   dpoolObj.maxEstimatedAPR = fundableDeposit.estimatedAPR;
                 }
@@ -632,6 +632,7 @@ export class BondsComponent implements OnInit {
                     unfundedDepositAmount.times(stablecoinPrice),
                   yieldTokensAvailable: yieldTokensAvailable,
                   yieldTokensAvailableUSD: bound.times(stablecoinPrice),
+                  yieldTokensAvailableToken: bound,
                   estimatedAPR: new BigNumber(0),
                   mphRewardsAPR: new BigNumber(0),
                 };
@@ -647,13 +648,12 @@ export class BondsComponent implements OnInit {
                   dpoolObj.totalYieldTokensAvailableUSD.plus(
                     fundableDeposit.yieldTokensAvailableUSD
                   );
-                dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn.plus(
-                  fundableDeposit.unfundedDepositAmount
-                );
-                dpoolObj.totalEarnYieldOnUSD =
-                  dpoolObj.totalEarnYieldOnUSD.plus(
-                    fundableDeposit.unfundedDepositAmountUSD
-                  );
+                dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn
+                  .plus(fundableDeposit.unfundedDepositAmount)
+                  .plus(fundableDeposit.yieldTokensAvailableToken);
+                dpoolObj.totalEarnYieldOnUSD = dpoolObj.totalEarnYieldOnUSD
+                  .plus(fundableDeposit.unfundedDepositAmountUSD)
+                  .plus(fundableDeposit.yieldTokensAvailableUSD);
                 if (fundableDeposit.estimatedAPR.gt(dpoolObj.maxEstimatedAPR)) {
                   dpoolObj.maxEstimatedAPR = fundableDeposit.estimatedAPR;
                 }
@@ -730,15 +730,15 @@ export class BondsComponent implements OnInit {
 
   getEstimatedROI(deposit: FundableDeposit) {
     const now = Date.now() / 1e3;
-    const estimatedFloatingRate = this.helpers.parseInterestRate(
-      deposit.pool.oracleInterestRate,
-      this.constants.YEAR_IN_SEC
-    );
     const debtToFund = deposit.yieldTokensAvailableUSD;
     const estimatedInterest = deposit.unfundedDepositAmountUSD
-      .times(estimatedFloatingRate)
-      .times(deposit.maturationTimestamp - now)
-      .div(this.constants.YEAR_IN_SEC);
+      .plus(debtToFund)
+      .times(
+        this.helpers.parseInterestRate(
+          deposit.pool.oracleInterestRate,
+          deposit.maturationTimestamp - now
+        )
+      );
     const estimatedProfit = estimatedInterest.minus(debtToFund);
     const estimatedAPR = estimatedProfit.div(debtToFund).times(100);
     deposit.estimatedAPR = estimatedAPR;
@@ -750,18 +750,18 @@ export class BondsComponent implements OnInit {
     const mphFunderRewardMultiplier = new BigNumber(
       deposit.pool.poolFunderRewardMultiplier
     );
-    const estimatedFloatingRate = this.helpers.parseInterestRate(
-      deposit.pool.oracleInterestRate,
-      this.constants.YEAR_IN_SEC
-    );
     const estimatedInterestToken = deposit.unfundedDepositAmount
+      .plus(deposit.yieldTokensAvailableToken)
       .times(Math.pow(10, deposit.pool.stablecoinDecimals))
-      .times(estimatedFloatingRate)
-      .times(deposit.maturationTimestamp - now)
-      .div(this.constants.YEAR_IN_SEC);
+      .times(
+        this.helpers.parseInterestRate(
+          deposit.pool.oracleInterestRate,
+          deposit.maturationTimestamp - now
+        )
+      );
     const mphReward = estimatedInterestToken
       .times(mphFunderRewardMultiplier)
-      .div(this.constants.PRECISION);
+      .div(Math.pow(10, deposit.pool.stablecoinDecimals));
     const mphRewardUSD = mphReward.times(this.mphPriceUSD);
     const mphRewardAPR = mphRewardUSD.div(debtToFund).times(100);
     deposit.mphRewardsAPR = mphRewardAPR;
