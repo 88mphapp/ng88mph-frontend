@@ -156,16 +156,17 @@
 
         <!-- Heading -->
         <h2 class="mb-3 glowing">${{ totalDepositUSD.toFormat(DECIMALS) }}</h2>
-        <!-- Button -->
-        <button
-          type="button"
-          class="btn btn-sm btn-bg-gradient d-none"
-          (click)="openDepositModal()"
-          [disabled]="wallet.watching"
-          i18n="@@depositBtn"
+
+        <!-- insurance link -->
+        <a
+          href="https://blog.insurace.io/88mph-v3-new-listing-special-offer-540d8df4889c"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Insure your deposit against smart contract vulnerabilities with our partner InsurAce and enjoy a 50% rebate on the cover's premium. Learn more."
         >
-          <i class="fe fe-arrow-down mr-2 align-bottom"></i>Deposit
-        </button>
+          <img src="./assets/img/insur.webp" alt="INSUR logo" width="16" />
+          Insure your deposit
+        </a>
       </div>
     </div>
 
@@ -220,12 +221,23 @@
       <!-- Title -->
       <h5 class="text-uppercase" i18n="@@depositsBalance">Deposits balance</h5>
       <!-- Heading -->
-      <h2 class="mb-4 glowing">${{ totalDepositUSD.toFormat(DECIMALS) }}</h2>
+      <h2 class="mb-1 glowing">${{ totalDepositUSD.toFormat(DECIMALS) }}</h2>
+      <!-- insurance link -->
+      <a
+        class="mb-4 d-block"
+        href="https://blog.insurace.io/88mph-v3-new-listing-special-offer-540d8df4889c"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Insure your deposit against smart contract vulnerabilities with our partner InsurAce and enjoy a 50% rebate on the cover's premium. Learn more."
+      >
+        <img src="./assets/img/insur.webp" alt="INSUR logo" width="16" />
+        Insure your deposit
+      </a>
+
       <!-- Title -->
       <h5 class="text-uppercase" i18n="@@interestEarnedMaturity">
         Interest earned at maturity
       </h5>
-
       <!-- Heading -->
       <h2 class="mb-0 glowing">${{ totalInterestUSD.toFormat(DECIMALS) }}</h2>
     </div>
