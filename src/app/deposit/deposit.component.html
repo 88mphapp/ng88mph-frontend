@@ -163,6 +163,11 @@
           target="_blank"
           rel="noopener noreferrer"
           title="Insure your deposit against smart contract vulnerabilities with our partner InsurAce and enjoy a 50% rebate on the cover's premium. Learn more."
+          *ngIf="
+            wallet.networkID === constants.CHAIN_ID.POLYGON ||
+            wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+            wallet.networkID === constants.CHAIN_ID.MAINNET
+          "
         >
           <img src="./assets/img/insur.webp" alt="INSUR logo" width="16" />
           Insure your deposit
@@ -229,6 +234,11 @@
         target="_blank"
         rel="noopener noreferrer"
         title="Insure your deposit against smart contract vulnerabilities with our partner InsurAce and enjoy a 50% rebate on the cover's premium. Learn more."
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+          wallet.networkID === constants.CHAIN_ID.MAINNET
+        "
       >
         <img src="./assets/img/insur.webp" alt="INSUR logo" width="16" />
         Insure your deposit
