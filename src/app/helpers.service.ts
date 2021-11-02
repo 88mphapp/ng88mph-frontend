@@ -1,3 +1,4 @@
+import Web3 from 'web3';
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from './constants.service';
@@ -376,7 +377,7 @@ export class HelpersService {
   }
 
   async getChainlinkPriceUSD(symbol: string, chainID: number): Promise<number> {
-    const readonlyWeb3 = this.wallet.readonlyWeb3(chainID);
+    const readonlyWeb3 = new Web3(this.constants.RPC[chainID]);
     const chainlinkAddress = require(`src/assets/json/chainlink.json`)[chainID][
       symbol
     ]['USD'];
@@ -388,9 +389,7 @@ export class HelpersService {
         readonlyWeb3
       );
       const tokenPriceUSD =
-        (await oracleContract.methods
-          .latestAnswer()
-          .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)) / 1e8;
+        (await oracleContract.methods.latestAnswer().call()) / 1e8;
       return tokenPriceUSD;
     } else {
       console.log(symbol + '/USD price feed does not exist.');
@@ -400,8 +399,7 @@ export class HelpersService {
 
   async getChainlinkPriceETH(symbol: string, chainID: number): Promise<number> {
     const ethPriceUSD: number = await this.getChainlinkPriceUSD('ETH', chainID);
-
-    const readonlyWeb3 = this.wallet.readonlyWeb3(chainID);
+    const readonlyWeb3 = new Web3(this.constants.RPC[chainID]);
     const chainlinkAddress = require(`src/assets/json/chainlink.json`)[chainID][
       symbol
     ]['ETH'];
@@ -413,9 +411,7 @@ export class HelpersService {
         readonlyWeb3
       );
       const tokenPriceETH =
-        (await oracleContract.methods
-          .latestAnswer()
-          .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)) / 1e18;
+        (await oracleContract.methods.latestAnswer().call()) / 1e18;
       return tokenPriceETH * ethPriceUSD;
     } else {
       console.log(symbol + '/ETH price feed does not exist.');
@@ -623,10 +619,9 @@ export class HelpersService {
     rawInterestAmount: BigNumber,
     poolInfo: PoolInfo
   ): Promise<BigNumber> {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const lastBlock = (await readonlyWeb3.eth.getBlockNumber()) - 1;
+    const readonlyWeb3 = new Web3(this.constants.RPC[this.wallet.networkID]);
     const pool = this.contract.getPool(poolInfo.name, readonlyWeb3);
-    const feeModelAddress = await pool.methods.feeModel().call({}, lastBlock);
+    const feeModelAddress = await pool.methods.feeModel().call();
     const feeModelContract = this.contract.getContract(
       feeModelAddress,
       'IFeeModel',
@@ -635,7 +630,7 @@ export class HelpersService {
     const interestAmount = this.processWeb3Number(rawInterestAmount);
     const feeAmount = await feeModelContract.methods
       .getInterestFeeAmount(poolInfo.address, interestAmount)
-      .call({}, lastBlock);
+      .call();
 
     return new BigNumber(rawInterestAmount).minus(feeAmount);
   }
