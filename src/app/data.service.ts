@@ -5,12 +5,15 @@ import { ContractService } from './contract.service';
 import { WalletService } from './wallet.service';
 import { HelpersService } from './helpers.service';
 import { request, gql } from 'graphql-request';
+import Web3 from 'web3';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
   mphPriceUSD: BigNumber = new BigNumber(0);
+  daiPriceUSD: BigNumber = new BigNumber(0);
+  assetPriceUSD: any = {};
 
   constructor(
     public constants: ConstantsService,
@@ -21,6 +24,30 @@ export class DataService {
     this.helpers.getMPHPriceUSD().then((price) => {
       this.mphPriceUSD = price;
     });
+    this.helpers
+      .getTokenPriceUSD(
+        this.constants.DAI[this.constants.CHAIN_ID.MAINNET],
+        this.constants.CHAIN_ID.MAINNET
+      )
+      .then((price) => {
+        this.daiPriceUSD = new BigNumber(price);
+      });
+  }
+
+  async getAssetPriceUSD(address: string, networkID: number): Promise<number> {
+    // add network key if one does not exist
+    if (!this.assetPriceUSD[networkID]) {
+      this.assetPriceUSD[networkID] = {};
+    }
+
+    // fetch asset price, adding asset key if one does not exist
+    let assetPrice = this.assetPriceUSD[networkID][address];
+    if (!assetPrice) {
+      assetPrice = await this.helpers.getTokenPriceUSD(address, networkID);
+      this.assetPriceUSD[networkID][address] = assetPrice;
+    }
+
+    return assetPrice;
   }
 
   // @notice max apy is based on 30-day deposit length
@@ -85,7 +112,8 @@ export class DataService {
   }
 
   async getPoolMaxAPR(address: string): Promise<BigNumber> {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
+    // const readonlyWeb3 = this.wallet.readonlyWeb3();
+    const readonlyWeb3 = new Web3(this.constants.RPC[this.wallet.networkID]);
     const poolInfo = this.contract.getPoolInfoFromAddress(address);
     if (!poolInfo) {
       return new BigNumber(0);
@@ -105,7 +133,7 @@ export class DataService {
     const rawInterestAmountToken = new BigNumber(
       await pool.methods
         .calculateInterestAmount(depositAmount, depositTime)
-        .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
+        .call()
     );
 
     const interestEarnedToken = await this.helpers.applyFeeToInterest(
