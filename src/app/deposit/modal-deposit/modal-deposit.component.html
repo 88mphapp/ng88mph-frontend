@@ -632,7 +632,14 @@
                 >
                   Deposit
                 </button>
-                <div class="form-row text-center">
+                <div
+                  class="form-row text-center"
+                  *ngIf="
+                    wallet.networkID === constants.CHAIN_ID.MAINNET ||
+                    wallet.networkID === constants.CHAIN_ID.RINKEBY ||
+                    wallet.networkID === constants.CHAIN_ID.POLYGON
+                  "
+                >
                   <div class="col">
                     <div class="form-group mb-0">
                       <a
@@ -669,7 +676,8 @@
                               href="https://opensea.io/assets/0x9d481e42d9a2b52397262cdbe76abf3ca7b52203/34"
                               target="_blank"
                               i18n="@@NFTMetadataHelp2"
-                              >(example)</a
+                            >
+                              (example)</a
                             >.
                             <ng-container i18n="@@NFTMetadataHelp3">
                               We invite you to learn more about NFT metadata on
@@ -679,8 +687,8 @@
                               target="_blank"
                               rel="noopener noreferrer"
                               i18n="@@NFTMetadataHelp4"
-                              >NFT School</a
-                            >
+                              >NFT School
+                            </a>
                             <ng-container i18n="@@NFTMetadataHelp5"
                               >and to store your files on</ng-container
                             >
@@ -689,7 +697,8 @@
                               target="_blank"
                               rel="noopener noreferrer"
                               i18n="@@NFTMetadataHelp6"
-                              >NFT Storage</a
+                            >
+                              NFT Storage</a
                             >.</small
                           >
                           <small class="text-warning"
