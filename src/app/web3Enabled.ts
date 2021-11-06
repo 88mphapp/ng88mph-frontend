@@ -55,7 +55,7 @@ export class Web3Enabled {
       const genericMobileWalletConfig = {
         name: 'Web3 wallet (Metamask)',
         mobile: true,
-        desktop: true,
+        desktop: false,
         preferred: true,
         type: 'injected' as 'injected',
         iconSrc:
@@ -84,6 +84,7 @@ export class Web3Enabled {
 
       const wallets = [
         genericMobileWalletConfig,
+        { walletName: 'metamask', preferred: true },
         {
           walletName: 'walletConnect',
           rpc: this.constants.RPC,
@@ -100,12 +101,6 @@ export class Web3Enabled {
           email: 'hello@88mph.app',
           rpcUrl: this.constants.RPC[this.networkID],
           preferred: true,
-        },
-        {
-          walletName: 'walletLink',
-          rpcUrl: this.constants.RPC[this.networkID],
-          appName: '88mph',
-          appLogoUrl: 'https://88mph.app/docs/img/88mph-logo-dark.png',
         },
         {
           walletName: 'fortmatic',
