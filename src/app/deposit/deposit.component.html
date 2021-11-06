@@ -568,6 +568,11 @@
                         (click)="openNFTModal(deposit, pool.poolInfo)"
                         [disabled]="wallet.watching"
                         i18n="@@NFTBtn"
+                        *ngIf="
+                          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+                          wallet.networkID === constants.CHAIN_ID.RINKEBY ||
+                          wallet.networkID === constants.CHAIN_ID.POLYGON
+                        "
                       >
                         <i class="fe fe-settings mr-2 align-bottom"></i>NFT
                       </button>
