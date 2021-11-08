@@ -26,22 +26,31 @@ export class ContractService {
       .stablecoin;
   }
 
-  getPoolInfo(name: string, v2: boolean = false): PoolInfo {
-    return require(`../assets/json/pools${v2 ? '-v2' : ''}.json`)[
-      this.wallet.networkID
-    ][name];
+  getPoolInfo(
+    name: string,
+    networkID: number = this.wallet.networkID,
+    v2: boolean = false
+  ): PoolInfo {
+    return require(`../assets/json/pools${v2 ? '-v2' : ''}.json`)[networkID][
+      name
+    ];
   }
 
-  getPoolInfoList(v2: boolean = false): PoolInfo[] {
+  getPoolInfoList(
+    networkID: number = this.wallet.networkID,
+    v2: boolean = false
+  ): PoolInfo[] {
     return Object.keys(
-      require(`../assets/json/pools${v2 ? '-v2' : ''}.json`)[
-        this.wallet.networkID
-      ]
-    ).map((pool) => this.getPoolInfo(pool, v2));
+      require(`../assets/json/pools${v2 ? '-v2' : ''}.json`)[networkID]
+    ).map((pool) => this.getPoolInfo(pool, networkID, v2));
   }
 
-  getPoolInfoFromAddress(address: string): PoolInfo {
-    return this.getPoolInfoList().find(
+  getPoolInfoFromAddress(
+    address: string,
+    networkID: number = this.wallet.networkID,
+    v2: boolean = false
+  ): PoolInfo {
+    return this.getPoolInfoList(networkID, v2).find(
       (poolInfo) => poolInfo.address.toLowerCase() === address.toLowerCase()
     );
   }

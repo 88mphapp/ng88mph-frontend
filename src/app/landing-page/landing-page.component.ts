@@ -108,37 +108,106 @@ export class LandingPageComponent implements OnInit {
     }
 
     if (loadGlobal) {
-      const queryString = gql`
-        {
-          dpools {
-            id
-            address
-            totalDeposit
-            totalInterestOwed
-            oneYearInterestRate
-            poolDepositorRewardMintMultiplier
-            historicalInterestPaid
-          }
-          globalStats(id: "0") {
-            xMPHRewardDistributed
-          }
-        }
-      `;
-      request(
-        this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
-        queryString
-      ).then((data: QueryResult) => this.handleData(data, networkID));
+      this.loadChainData(this.constants.CHAIN_ID.MAINNET);
+      this.loadChainData(this.constants.CHAIN_ID.POLYGON);
+      this.loadChainData(this.constants.CHAIN_ID.AVALANCHE);
+      this.loadChainData(this.constants.CHAIN_ID.FANTOM);
+      this.loadV2Data();
     }
+  }
+
+  async loadChainData(networkID: number) {
+    const queryString = gql`
+      {
+        dpools {
+          id
+          address
+          totalDeposit
+          totalInterestOwed
+          oneYearInterestRate
+          poolDepositorRewardMintMultiplier
+          historicalInterestPaid
+        }
+        globalStats(id: "0") {
+          xMPHRewardDistributed
+        }
+      }
+    `;
+    request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
+      (data: QueryResult) => this.handleData(data, networkID)
+    );
+  }
+
+  loadV2Data() {
+    const queryString = gql`
+      {
+        dpools {
+          id
+          address
+          totalActiveDeposit
+          totalInterestPaid
+        }
+        mph(id: "0") {
+          totalHistoricalReward
+        }
+      }
+    `;
+    request(
+      this.constants.GRAPHQL_ENDPOINT_V2[this.constants.CHAIN_ID.MAINNET],
+      queryString
+    ).then((data: QueryResultV2) => {
+      const dpools = data.dpools;
+
+      let totalDepositUSD = new BigNumber(0);
+      let totalInterestUSD = new BigNumber(0);
+
+      Promise.all(
+        dpools.map(async (pool) => {
+          const poolInfo = this.contract.getPoolInfoFromAddress(
+            pool.address,
+            this.constants.CHAIN_ID.MAINNET,
+            true
+          );
+          const stablecoin = poolInfo.stablecoin.toLowerCase();
+          const stablecoinPrice = await this.datas.getAssetPriceUSD(
+            stablecoin,
+            this.constants.CHAIN_ID.MAINNET
+          );
+
+          // update protocol total stats
+          totalDepositUSD = totalDepositUSD.plus(
+            new BigNumber(pool.totalActiveDeposit)
+              .times(stablecoinPrice)
+              .div(1e6)
+          );
+          totalInterestUSD = totalInterestUSD.plus(
+            new BigNumber(pool.totalInterestPaid)
+              .times(stablecoinPrice)
+              .div(1e6)
+          );
+        })
+      ).then(() => {
+        this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
+        this.totalInterestUSD = this.totalInterestUSD.plus(totalInterestUSD);
+      });
+
+      const totalEarningsUSD = new BigNumber(data.mph.totalHistoricalReward)
+        .times(this.datas.daiPriceUSD)
+        .div(1e6);
+      if (!this.totalEarningsUSD.isNaN()) {
+        this.totalEarningsUSD = this.totalEarningsUSD.plus(totalEarningsUSD);
+      }
+    });
   }
 
   async handleData(data: QueryResult, networkID: number) {
     // bail if a chain change has occured
-    if (networkID !== this.wallet.networkID) {
-      return;
-    }
+    // if (networkID !== this.wallet.networkID) {
+    //   return;
+    // }
 
     const dpools = data.dpools;
-    let stablecoinPriceCache = {};
+    // let stablecoinPriceCache = {};
 
     if (dpools) {
       let maxAPR = new BigNumber(0);
@@ -150,95 +219,100 @@ export class LandingPageComponent implements OnInit {
 
       Promise.all(
         dpools.map(async (pool) => {
-          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+          const poolInfo = this.contract.getPoolInfoFromAddress(
+            pool.address,
+            networkID
+          );
 
           if (poolInfo.protocol === 'Cream') {
             return;
           }
 
           const stablecoin = poolInfo.stablecoin.toLowerCase();
-          let stablecoinPrice = stablecoinPriceCache[stablecoin];
-          if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(
-              stablecoin,
-              this.wallet.networkID
-            );
-            stablecoinPriceCache[stablecoin] = stablecoinPrice;
-          }
+          const stablecoinPrice = await this.datas.getAssetPriceUSD(
+            stablecoin,
+            networkID
+          );
 
-          // update all pool list
-          const dpoolObj: DPool = {
-            name: poolInfo.name,
-            protocol: poolInfo.protocol,
-            stablecoin: poolInfo.stablecoin,
-            stablecoinSymbol: poolInfo.stablecoinSymbol,
-            stablecoinDecimals: poolInfo.stablecoinDecimals,
-            iconPath: poolInfo.iconPath,
-            totalDepositToken: new BigNumber(pool.totalDeposit),
-            totalDepositUSD: new BigNumber(pool.totalDeposit).times(
-              stablecoinPrice
-            ),
-            oneYearInterestRate: new BigNumber(pool.oneYearInterestRate),
-            poolDepositorRewardMintMultiplier: new BigNumber(
-              pool.poolDepositorRewardMintMultiplier
-            ),
-            maxAPR: await this.datas.getPoolMaxAPR(pool.address),
-            mphAPR: await this.datas.getPoolRewardAPR(
-              pool.address,
-              new BigNumber(pool.poolDepositorRewardMintMultiplier)
-            ),
-          };
-          allPoolList.push(dpoolObj);
+          if (networkID === this.wallet.networkID) {
+            // update all pool list
+            const dpoolObj: DPool = {
+              name: poolInfo.name,
+              protocol: poolInfo.protocol,
+              stablecoin: poolInfo.stablecoin,
+              stablecoinSymbol: poolInfo.stablecoinSymbol,
+              stablecoinDecimals: poolInfo.stablecoinDecimals,
+              iconPath: poolInfo.iconPath,
+              totalDepositToken: new BigNumber(pool.totalDeposit),
+              totalDepositUSD: new BigNumber(pool.totalDeposit).times(
+                stablecoinPrice
+              ),
+              oneYearInterestRate: new BigNumber(pool.oneYearInterestRate),
+              poolDepositorRewardMintMultiplier: new BigNumber(
+                pool.poolDepositorRewardMintMultiplier
+              ),
+              maxAPR: await this.datas.getPoolMaxAPR(pool.address),
+              mphAPR: await this.datas.getPoolRewardAPR(
+                pool.address,
+                new BigNumber(pool.poolDepositorRewardMintMultiplier)
+              ),
+            };
+            allPoolList.push(dpoolObj);
 
-          // update best pool list
-          const bestPool = bestPoolList[dpoolObj.stablecoinSymbol];
-          if (bestPool && dpoolObj.maxAPR.gt(bestPool.maxAPR)) {
-            bestPoolList[dpoolObj.stablecoinSymbol] = dpoolObj;
-          } else if (!bestPool) {
-            bestPoolList[dpoolObj.stablecoinSymbol] = dpoolObj;
-          }
+            // update best pool list
+            const bestPool = bestPoolList[dpoolObj.stablecoinSymbol];
+            if (bestPool && dpoolObj.maxAPR.gt(bestPool.maxAPR)) {
+              bestPoolList[dpoolObj.stablecoinSymbol] = dpoolObj;
+            } else if (!bestPool) {
+              bestPoolList[dpoolObj.stablecoinSymbol] = dpoolObj;
+            }
 
-          // update max APR
-          if (dpoolObj.maxAPR.gt(maxAPR)) {
-            maxAPR = dpoolObj.maxAPR;
-          }
+            // update max APR
+            if (dpoolObj.maxAPR.gt(maxAPR)) {
+              maxAPR = dpoolObj.maxAPR;
+            }
 
-          // update max rewards APR
-          if (dpoolObj.mphAPR.gt(maxRewardAPR)) {
-            maxRewardAPR = dpoolObj.mphAPR;
+            // update max rewards APR
+            if (dpoolObj.mphAPR.gt(maxRewardAPR)) {
+              maxRewardAPR = dpoolObj.mphAPR;
+            }
           }
 
           // update protocol total stats
           totalDepositUSD = totalDepositUSD.plus(
-            dpoolObj.totalDepositUSD.div(1e6)
+            new BigNumber(pool.totalDeposit).times(stablecoinPrice).div(1e6)
           );
           totalInterestUSD = totalInterestUSD.plus(
             new BigNumber(pool.historicalInterestPaid)
               .plus(pool.totalInterestOwed)
               .times(stablecoinPrice)
+              .div(1e6)
           );
         })
       ).then(() => {
-        allPoolList.sort((a, b) => {
-          return a.name > b.name ? 1 : a.name < b.name ? -1 : 0;
-        });
-        this.maxAPR = maxAPR;
-        this.maxRewardAPR = maxRewardAPR;
-        this.totalDepositUSD = totalDepositUSD;
-        this.totalInterestUSD = totalInterestUSD;
-        this.allPoolList = allPoolList;
-        this.bestPoolList = bestPoolList;
-        this.selectedPool = this.bestPoolList['DAI'];
-        this.updateAPY();
+        if (networkID === this.wallet.networkID) {
+          allPoolList.sort((a, b) => {
+            return a.name > b.name ? 1 : a.name < b.name ? -1 : 0;
+          });
+          this.maxAPR = maxAPR;
+          this.maxRewardAPR = maxRewardAPR;
+          this.allPoolList = allPoolList;
+          this.bestPoolList = bestPoolList;
+          this.selectedPool = this.bestPoolList['DAI'];
+          this.updateAPY();
+        }
+
+        this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
+        this.totalInterestUSD = this.totalInterestUSD.plus(totalInterestUSD);
       });
     }
-    this.totalEarningsUSD = new BigNumber(
+    const totalEarningsUSD = new BigNumber(
       data.globalStats.xMPHRewardDistributed
     )
       .times(this.datas.mphPriceUSD)
       .div(1e6);
-    if (this.totalEarningsUSD.isNaN()) {
-      this.totalEarningsUSD = new BigNumber(0);
+    if (!this.totalEarningsUSD.isNaN()) {
+      this.totalEarningsUSD = this.totalEarningsUSD.plus(totalEarningsUSD);
     }
   }
 
@@ -292,8 +366,12 @@ export class LandingPageComponent implements OnInit {
     const pool = this.contract.getPool(this.selectedPool.name, readonlyWeb3);
     const poolInfo = this.contract.getPoolInfo(this.selectedPool.name);
 
-    const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-      poolInfo.stablecoin,
+    // const stablecoinPrice = await this.helpers.getTokenPriceUSD(
+    //   poolInfo.stablecoin,
+    //   this.wallet.networkID
+    // );
+    const stablecoinPrice = await this.datas.getAssetPriceUSD(
+      this.selectedPool.stablecoin,
       this.wallet.networkID
     );
     const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
@@ -406,6 +484,18 @@ interface QueryResult {
   }[];
   globalStats: {
     xMPHRewardDistributed: number;
+  };
+}
+
+interface QueryResultV2 {
+  dpools: {
+    id: string;
+    address: string;
+    totalActiveDeposit: string;
+    totalInterestPaid: string;
+  }[];
+  mph: {
+    totalHistoricalReward: string;
   };
 }
 

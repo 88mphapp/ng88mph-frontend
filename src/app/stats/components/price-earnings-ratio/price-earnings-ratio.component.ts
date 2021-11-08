@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import { TimeSeriesService } from 'src/app/timeseries.service';
@@ -17,7 +17,6 @@ export class PriceEarningsRatioComponent implements OnInit {
   // constants
   FIRST_INDEX = {
     [this.constants.CHAIN_ID.MAINNET]: 1630972800,
-    [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   PERIOD_NAME: string = 'daily';
@@ -55,19 +54,12 @@ export class PriceEarningsRatioComponent implements OnInit {
     public constants: ConstantsService,
     public contract: ContractService,
     public wallet: WalletService,
-    public timeseries: TimeSeriesService,
-    private zone: NgZone
+    public timeseries: TimeSeriesService
   ) {}
 
   ngOnInit(): void {
     this.resetChart();
     this.drawChart(this.wallet.networkID);
-    this.wallet.chainChangedEvent.subscribe((networkID) => {
-      this.zone.run(() => {
-        this.resetChart();
-        this.drawChart(networkID);
-      });
-    });
   }
 
   resetChart() {
@@ -175,9 +167,9 @@ export class PriceEarningsRatioComponent implements OnInit {
     this.readable = readable;
 
     // bail if a chain change has occured
-    if (networkID !== this.wallet.networkID) {
-      return false;
-    }
+    // if (networkID !== this.wallet.networkID) {
+    //   return false;
+    // }
 
     await this.getPriceData();
 
@@ -306,19 +298,16 @@ export class PriceEarningsRatioComponent implements OnInit {
       this.PERIOD = this.constants.DAY_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1630972800,
-        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
       };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1630800000,
-        [this.constants.CHAIN_ID.RINKEBY]: 1624147200,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1630454400,
-        [this.constants.CHAIN_ID.RINKEBY]: 1622505600,
       };
     }
     this.resetChart();

@@ -209,7 +209,10 @@ export class RewardsComponent implements OnInit {
     const readonlyWeb3 = this.wallet.readonlyWeb3();
 
     const allPools = this.contract.getPoolInfoList();
-    const allPoolsV2 = this.contract.getPoolInfoList(true);
+    const allPoolsV2 = this.contract.getPoolInfoList(
+      this.wallet.networkID,
+      true
+    );
     let protocolFeesUSD = new BigNumber(0);
     let countedStablecoinMap = {};
 

@@ -104,11 +104,12 @@ export class HelpersService {
     days: string,
     blocks: number[],
     timestamps: number[],
-    chainID: number
+    chainID: number,
+    useChainlink: boolean = true
   ): Promise<Array<Array<number>>> {
     let address = tokenAddress.toLowerCase();
 
-    if (chainID === this.constants.CHAIN_ID.MAINNET) {
+    if (chainID === this.constants.CHAIN_ID.MAINNET && useChainlink) {
       if (address === this.constants.AAVE[chainID].toLowerCase()) {
         return await this.getHistoricalChainlinkPricesUSD(
           'AAVE',
@@ -296,7 +297,10 @@ export class HelpersService {
       }
     }
 
-    if (address === this.constants.FUSD[this.constants.CHAIN_ID.FANTOM]) {
+    if (
+      address === this.constants.FUSD[this.constants.CHAIN_ID.FANTOM] ||
+      address === this.constants.CRVHUSD[this.constants.CHAIN_ID.MAINNET]
+    ) {
       let prices: number[][] = [];
       for (let t in timestamps) {
         const timestamp = timestamps[t] * 1000;
@@ -332,9 +336,16 @@ export class HelpersService {
       return this.constants.USDC[this.constants.CHAIN_ID.MAINNET];
     } else if (address === this.constants.USDT[chainID]) {
       return this.constants.USDT[this.constants.CHAIN_ID.MAINNET];
-    } else if (address === this.constants.WBTC[chainID]) {
+    } else if (
+      address === this.constants.WBTC[chainID] ||
+      address === this.constants.CRVOBTC[chainID] ||
+      address === this.constants.CRVHBTC[chainID]
+    ) {
       return this.constants.WBTC[this.constants.CHAIN_ID.MAINNET];
-    } else if (address === this.constants.WETH[chainID]) {
+    } else if (
+      address === this.constants.WETH[chainID] ||
+      address === this.constants.STECRV[chainID]
+    ) {
       return this.constants.WETH[this.constants.CHAIN_ID.MAINNET];
     } else if (address === this.constants.WFTM[chainID]) {
       return this.constants.WFTM[this.constants.CHAIN_ID.MAINNET];
@@ -342,9 +353,9 @@ export class HelpersService {
       return this.constants.WMATIC[this.constants.CHAIN_ID.MAINNET];
     }
 
-    console.log(
-      'Historical price lookup for ' + address + ' has not been set up yet'
-    );
+    // console.log(
+    //   'Historical price lookup for ' + address + ' has not been set up yet'
+    // );
     return address;
   }
 
@@ -352,7 +363,7 @@ export class HelpersService {
     return new BigNumber(number).integerValue().toFixed();
   }
 
-  async httpsGet(apiStr, cacheMaxAge: number = 60) {
+  async httpsGet(apiStr, cacheMaxAge: number = 30) {
     const request = await fetch(apiStr, {
       headers: { 'Cache-Control': `max-age=${cacheMaxAge}` },
     });
@@ -425,6 +436,53 @@ export class HelpersService {
     timestamps: number[],
     chainID: number
   ): Promise<Array<Array<number>>> {
+    // let allPrices: number[][] = [];
+    // let count: number = 0;
+    // while (count < timestamps.length) {
+    //   let limit = timestamps.length - count;
+    //   if (limit > 100) {
+    //     limit = 100;
+    //   }
+    //   let queryString = `query HistoricalChainlinkPricesUSD {`;
+    //   for (let i = count; i < count + limit; i++) {
+    //     queryString += `t${i}: prices(
+    //       block: {
+    //         number: ${blocks[i]}
+    //       }
+    //       where: {
+    //         assetPair: "${symbol}/USD"
+    //       }
+    //       first: 1
+    //       orderBy: timestamp
+    //       orderDirection: desc
+    //     ) {
+    //       price
+    //     }`;
+    //   }
+    //   queryString += `}`;
+    //   const query = gql`
+    //     ${queryString}
+    //   `;
+    //
+    //   const prices: number[][] = await request(
+    //     this.constants.CHAINLINK_GRAPHQL_ENDPOINT[chainID],
+    //     query
+    //   ).then((data: ChainlinkQueryResult) => {
+    //     let prices: number[][] = [];
+    //     for (let t in data) {
+    //       const index = parseInt(t.substring(1));
+    //       const timestamp = timestamps[index] * 1000;
+    //       const price = parseFloat(data[t][0].price) / 1e8;
+    //       prices[index] = [timestamp, price];
+    //     }
+    //     return prices;
+    //   });
+    //   count += limit;
+    //   allPrices = allPrices.concat(prices);
+    //   //return prices;
+    // }
+    // return allPrices;
+
     let queryString = `query HistoricalChainlinkPricesUSD {`;
     for (let i = 0; i < blocks.length; i++) {
       queryString += `t${i}: prices(
