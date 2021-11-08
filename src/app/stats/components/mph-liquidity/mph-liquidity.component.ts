@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import { TimeSeriesService } from 'src/app/timeseries.service';
@@ -15,7 +15,6 @@ import { Chart } from 'chart.js';
 export class MphLiquidityComponent implements OnInit {
   FIRST_INDEX = {
     [this.constants.CHAIN_ID.MAINNET]: 1605744000,
-    [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   PERIOD_NAME: string = 'daily';
@@ -41,19 +40,12 @@ export class MphLiquidityComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService,
     public wallet: WalletService,
-    public timeseries: TimeSeriesService,
-    private zone: NgZone
+    public timeseries: TimeSeriesService
   ) {}
 
   ngOnInit(): void {
     this.resetChart();
-    this.drawChart(this.wallet.networkID);
-    this.wallet.chainChangedEvent.subscribe((networkID) => {
-      this.zone.run(() => {
-        this.resetChart();
-        this.drawChart(networkID);
-      });
-    });
+    this.drawChart();
   }
 
   resetChart() {
@@ -67,10 +59,9 @@ export class MphLiquidityComponent implements OnInit {
     this.bancor = [];
   }
 
-  async drawChart(networkID: number) {
+  async drawChart() {
     // wait for data to load
-    const loaded = await this.loadData(networkID);
-    if (!loaded) return;
+    await this.loadData(this.constants.CHAIN_ID.MAINNET);
 
     // then draw the chart
     this.barChartOptions = {
@@ -131,12 +122,12 @@ export class MphLiquidityComponent implements OnInit {
     ];
   }
 
-  async loadData(networkID: number): Promise<boolean> {
+  async loadData(networkID: number) {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
-      this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET],
+      this.FIRST_INDEX[networkID],
       this.PERIOD,
-      this.constants.CHAIN_ID.MAINNET
+      networkID
     );
 
     // populate timestamps, blocks, and readable arrays
@@ -156,26 +147,19 @@ export class MphLiquidityComponent implements OnInit {
     }
     this.readable = readable;
 
-    // bail if a chain change has occured
-    if (networkID !== this.wallet.networkID) {
-      return false;
-    }
-
-    // load data
-    this.loadUniswapV2();
-    this.loadUniswapV3();
-    this.loadSushiswap();
-    this.loadBancor();
-
-    return true;
+    // load dex data
+    this.loadUniswapV2(networkID);
+    this.loadUniswapV3(networkID);
+    this.loadSushiswap(networkID);
+    this.loadBancor(networkID);
   }
 
-  async loadUniswapV2() {
+  async loadUniswapV2(networkID: number) {
     // buld the query string
     let queryString = `query Uniswap_V2 {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pair(
-        id: "${this.constants.UNISWAP_V2_LP[this.constants.CHAIN_ID.MAINNET]}",
+        id: "${this.constants.UNISWAP_V2_LP[networkID]}",
         block: {
           number: ${this.blocks[i]}
         }
@@ -193,11 +177,11 @@ export class MphLiquidityComponent implements OnInit {
     );
   }
 
-  async loadUniswapV3() {
+  async loadUniswapV3(networkID: number) {
     let queryString = `query Uniswap_V3 {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pool(
-        id: "${this.constants.UNISWAP_V3_LP[this.constants.CHAIN_ID.MAINNET]}",
+        id: "${this.constants.UNISWAP_V3_LP[networkID]}",
         block: {
           number: ${this.blocks[i]}
         }
@@ -214,12 +198,12 @@ export class MphLiquidityComponent implements OnInit {
     );
   }
 
-  async loadSushiswap() {
+  async loadSushiswap(networkID: number) {
     // buld the query string
     let queryString = `query Sushiswap {`;
     for (let i = 0; i < this.blocks.length; i++) {
       queryString += `t${i}: pair(
-        id: "${this.constants.SUSHISWAP_LP[this.constants.CHAIN_ID.MAINNET]}",
+        id: "${this.constants.SUSHISWAP_LP[networkID]}",
         block: {
           number: ${this.blocks[i]}
         }
@@ -237,15 +221,13 @@ export class MphLiquidityComponent implements OnInit {
     );
   }
 
-  async loadBancor() {
+  async loadBancor(networkID: number) {
     const start_date = this.timestamps[0];
     const end_date = this.timestamps[this.timestamps.length - 1];
-    const apiStr = `https://api-v2.bancor.network/history/liquidity-depth/?dlt_type=ethereum&token_dlt_id=${
-      this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
-    }&start_date=${start_date}&end_date=${end_date}&interval=day`;
+    const apiStr = `https://api-v2.bancor.network/history/liquidity-depth/?dlt_type=ethereum&token_dlt_id=${this.constants.MPH_ADDRESS[networkID]}&start_date=${start_date}&end_date=${end_date}&interval=day`;
     const result = await this.helpers.httpsGet(apiStr);
 
-    this.handleBancorData(result.data);
+    this.handleBancorData(result.data, networkID);
   }
 
   handleUniswapV2Data(data: QueryResult): void {
@@ -284,18 +266,18 @@ export class MphLiquidityComponent implements OnInit {
     }
   }
 
-  async handleBancorData(data: Array<BancorNetworkHistory>) {
+  async handleBancorData(data: Array<BancorNetworkHistory>, networkID: number) {
     const days =
       (this.timeseries.getLatestUTCDate() -
-        this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET] +
+        this.FIRST_INDEX[networkID] +
         this.constants.DAY_IN_SEC) /
       this.constants.DAY_IN_SEC;
     let mphPriceData = await this.helpers.getHistoricalTokenPriceUSD(
-      this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET],
+      this.constants.MPH_ADDRESS[networkID],
       `${days}`,
       this.blocks,
       this.timestamps,
-      this.wallet.networkID
+      networkID
     );
     for (let time in this.timestamps) {
       const entry = data.find(
@@ -319,24 +301,21 @@ export class MphLiquidityComponent implements OnInit {
       this.PERIOD = this.constants.DAY_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1605744000,
-        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
       };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1605398400,
-        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1604188800,
-        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
       };
     }
 
     this.resetChart();
-    this.drawChart(this.wallet.networkID);
+    this.drawChart();
   }
 }
 

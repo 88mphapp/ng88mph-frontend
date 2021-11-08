@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import { TimeSeriesService } from 'src/app/timeseries.service';
@@ -28,7 +28,7 @@ export class XmphSupplyDistributionComponent implements OnInit {
 
   // data variables
   labels: string[];
-  datas: number[];
+  data: number[];
   backgroundColors: string[];
   hoverBackgroundColors: string[];
 
@@ -43,32 +43,24 @@ export class XmphSupplyDistributionComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService,
     public wallet: WalletService,
-    public timeseries: TimeSeriesService,
-    private zone: NgZone
+    public timeseries: TimeSeriesService
   ) {}
 
   ngOnInit(): void {
     this.resetChart();
-    this.drawChart(this.wallet.networkID);
-    this.wallet.chainChangedEvent.subscribe((networkID) => {
-      this.zone.run(() => {
-        this.resetChart();
-        this.drawChart(networkID);
-      });
-    });
+    this.drawChart();
   }
 
   resetChart() {
     this.labels = [];
-    this.datas = [];
+    this.data = [];
     this.backgroundColors = [];
     this.hoverBackgroundColors = [];
   }
 
-  async drawChart(networkID: number) {
+  async drawChart() {
     // wait for data to load
-    const loaded = await this.loadData(networkID);
-    if (!loaded) return;
+    await this.loadData(this.constants.CHAIN_ID.MAINNET);
 
     // then draw the chart
     this.pieChartOptions = {
@@ -79,7 +71,7 @@ export class XmphSupplyDistributionComponent implements OnInit {
     this.pieChartLegend = false;
     this.pieChartData = [
       {
-        data: this.datas,
+        data: this.data,
         backgroundColor: this.backgroundColors,
         hoverBackgroundColor: this.hoverBackgroundColors,
         borderWidth: 0,
@@ -87,12 +79,12 @@ export class XmphSupplyDistributionComponent implements OnInit {
     ];
   }
 
-  async loadData(networkID: number): Promise<boolean> {
+  loadData(networkID: number) {
     // generate the query
     let queryString = `query xmphSupplyDistribution {`;
     queryString += `mphholders (
       where: {
-        xmphBalance_gt: "0"
+        xmphBalance_gt: "100"
       }
       orderBy: xmphBalance
       orderDirection: asc
@@ -106,23 +98,10 @@ export class XmphSupplyDistributionComponent implements OnInit {
       ${queryString}
     `;
 
-    // bail if a chain change has occured
-    if (networkID !== this.wallet.networkID) {
-      return false;
-    }
-
-    let requestNetworkID =
-      this.wallet.networkID === this.constants.CHAIN_ID.RINKEBY
-        ? this.wallet.networkID
-        : this.constants.CHAIN_ID.MAINNET;
-
     // run the query
-    request(
-      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[requestNetworkID],
-      query
-    ).then((data: QueryResult) => this.handleData(data));
-
-    return true;
+    request(this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[networkID], query).then(
+      (data: QueryResult) => this.handleData(data)
+    );
   }
 
   handleData(data: QueryResult) {
@@ -131,7 +110,7 @@ export class XmphSupplyDistributionComponent implements OnInit {
     for (let holder in xmphHolders) {
       const user = xmphHolders[holder];
       this.labels[holder] = user.address;
-      this.datas[holder] = parseFloat(user.xmphBalance);
+      this.data[holder] = parseFloat(user.xmphBalance);
       this.backgroundColors[holder] =
         'rgba(' + this.COLORS[parseInt(holder) % this.COLORS.length] + ', 0.5)';
       this.hoverBackgroundColors[holder] =

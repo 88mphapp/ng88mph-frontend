@@ -22,19 +22,14 @@
   </div>
   <div class="card-header">
     <div class="form-group mb-0">
-      <select class="d-none">
-        <option value="daily">Daily</option>
-        <option value="weekly" selected>Weekly</option>
-        <option value="monthly">Monthly</option>
-      </select>
       <select
         [(ngModel)]="PERIOD_NAME"
         name="period"
         (change)="changePeriod()"
         class="custom-select"
       >
-        <option value="daily">Daily</option>
-        <option value="weekly" selected>Weekly</option>
+        <option value="daily" selected>Daily</option>
+        <option value="weekly">Weekly</option>
         <option value="monthly">Monthly</option>
       </select>
     </div>

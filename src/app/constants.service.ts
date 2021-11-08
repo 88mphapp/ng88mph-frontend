@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 export class ConstantsService {
   // NETWORK INFO //
   CHAIN_ID = {
+    V2: 0,
     MAINNET: 1,
     RINKEBY: 4,
     POLYGON: 137,

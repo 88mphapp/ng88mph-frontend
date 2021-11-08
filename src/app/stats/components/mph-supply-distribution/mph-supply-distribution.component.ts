@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import { TimeSeriesService } from 'src/app/timeseries.service';
@@ -16,7 +16,6 @@ export class MphSupplyDistributionComponent implements OnInit {
   // constants
   FIRST_INDEX = {
     [this.constants.CHAIN_ID.MAINNET]: 1605398400,
-    [this.constants.CHAIN_ID.RINKEBY]: 1623196800,
   };
   PERIOD: number = this.constants.WEEK_IN_SEC;
   PERIOD_NAME: string = 'weekly';
@@ -48,19 +47,12 @@ export class MphSupplyDistributionComponent implements OnInit {
     public helpers: HelpersService,
     public constants: ConstantsService,
     public wallet: WalletService,
-    public timeseries: TimeSeriesService,
-    private zone: NgZone
+    public timeseries: TimeSeriesService
   ) {}
 
   ngOnInit(): void {
     this.resetChart();
-    this.drawChart(this.wallet.networkID);
-    this.wallet.chainChangedEvent.subscribe((networkID) => {
-      this.zone.run(() => {
-        this.resetChart();
-        this.drawChart(networkID);
-      });
-    });
+    this.drawChart();
   }
 
   resetChart() {
@@ -80,10 +72,9 @@ export class MphSupplyDistributionComponent implements OnInit {
     this.other = [];
   }
 
-  async drawChart(networkID: number) {
+  async drawChart() {
     // wait for data to load
-    const loaded = await this.loadData(networkID);
-    if (!loaded) return;
+    await this.loadData(this.constants.CHAIN_ID.MAINNET);
 
     // then draw the chart
     this.barChartOptions = {
@@ -179,12 +170,12 @@ export class MphSupplyDistributionComponent implements OnInit {
     ];
   }
 
-  async loadData(networkID: number): Promise<boolean> {
+  async loadData(networkID: number) {
     // wait to fetch timeseries data
     this.timeseriesdata = await this.timeseries.getCustomTimeSeries(
-      this.FIRST_INDEX[this.constants.CHAIN_ID.MAINNET],
+      this.FIRST_INDEX[networkID],
       this.PERIOD,
-      this.constants.CHAIN_ID.MAINNET
+      networkID
     );
 
     // populate timestamps, blocks, and readable arrays
@@ -203,11 +194,6 @@ export class MphSupplyDistributionComponent implements OnInit {
       );
     }
     this.readable = readable;
-
-    // bail if a chain change has occured
-    if (networkID !== this.wallet.networkID) {
-      return false;
-    }
 
     // generate the query for total MPH supply
     let supplyQueryString = `query TotalSupply {`;
@@ -228,14 +214,12 @@ export class MphSupplyDistributionComponent implements OnInit {
 
     // then run the query
     request(
-      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[
-        this.constants.CHAIN_ID.MAINNET
-      ],
+      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[networkID],
       supplyQuery
     ).then((data: QueryResult) => this.handleSupplyData(data));
 
     // fetch list of addresses
-    this.addresses = await this.getAddresses();
+    this.addresses = await this.getAddresses(networkID);
 
     // then generate array of addresses as a string
     let ids = `[`;
@@ -272,18 +256,14 @@ export class MphSupplyDistributionComponent implements OnInit {
 
       // then run the query
       let result = await request(
-        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[
-          this.constants.CHAIN_ID.MAINNET
-        ],
+        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[networkID],
         addressQuery
       ).then((data: QueryResult) => {
         return data;
       });
-      this.handleAddressData(result, limit);
+      this.handleAddressData(result, limit, networkID);
       count += limit;
     }
-
-    return true;
   }
 
   handleSupplyData(data: QueryResult) {
@@ -298,7 +278,7 @@ export class MphSupplyDistributionComponent implements OnInit {
     }
   }
 
-  handleAddressData(data: QueryResult, limit: number) {
+  handleAddressData(data: QueryResult, limit: number, networkID: number) {
     for (let i = 0; i < limit; i++) {
       this.govTreasury.push(0);
       this.devWallet.push(0);
@@ -317,41 +297,27 @@ export class MphSupplyDistributionComponent implements OnInit {
 
         if (holder !== undefined) {
           if (
-            address ===
-            this.constants.GOV_TREASURY[
-              this.constants.CHAIN_ID.MAINNET
-            ].toLowerCase()
+            address === this.constants.GOV_TREASURY[networkID].toLowerCase()
           ) {
             this.govTreasury[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
             );
           } else if (
-            address ===
-            this.constants.DEV_WALLET[
-              this.constants.CHAIN_ID.MAINNET
-            ].toLowerCase()
+            address === this.constants.DEV_WALLET[networkID].toLowerCase()
           ) {
             this.devWallet[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
             );
           } else if (
             address ===
-            this.constants.MERKLE_DISTRIBUTOR[
-              this.constants.CHAIN_ID.MAINNET
-            ].toLowerCase()
+            this.constants.MERKLE_DISTRIBUTOR[networkID].toLowerCase()
           ) {
             this.merkleDistributor[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
             );
           } else if (
-            address ===
-              this.constants.XMPH_ADDRESS[
-                this.constants.CHAIN_ID.MAINNET
-              ].toLowerCase() ||
-            address ===
-              this.constants.V2_REWARDS[
-                this.constants.CHAIN_ID.MAINNET
-              ].toLowerCase()
+            address === this.constants.XMPH_ADDRESS[networkID].toLowerCase() ||
+            address === this.constants.V2_REWARDS[networkID].toLowerCase()
           ) {
             if (this.rewards[parseInt(t.substring(1))] === undefined) {
               this.rewards[parseInt(t.substring(1))] = 0;
@@ -360,19 +326,13 @@ export class MphSupplyDistributionComponent implements OnInit {
               holder.mphBalance
             );
           } else if (
-            address ===
-            this.constants.UNISWAP_V2_LP[
-              this.constants.CHAIN_ID.MAINNET
-            ].toLowerCase()
+            address === this.constants.UNISWAP_V2_LP[networkID].toLowerCase()
           ) {
             this.uniswapv2[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
             );
           } else if (
-            address ===
-            this.constants.UNISWAP_V3_LP[
-              this.constants.CHAIN_ID.MAINNET
-            ].toLowerCase()
+            address === this.constants.UNISWAP_V3_LP[networkID].toLowerCase()
           ) {
             this.uniswapv3[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
@@ -387,10 +347,7 @@ export class MphSupplyDistributionComponent implements OnInit {
               holder.mphBalance
             );
           } else if (
-            address ===
-            this.constants.BANCOR_LP[
-              this.constants.CHAIN_ID.MAINNET
-            ].toLowerCase()
+            address === this.constants.BANCOR_LP[networkID].toLowerCase()
           ) {
             this.bancor[parseInt(t.substring(1))] = parseFloat(
               holder.mphBalance
@@ -406,41 +363,17 @@ export class MphSupplyDistributionComponent implements OnInit {
     }
   }
 
-  getAddresses(): string[] {
+  getAddresses(networkID: number): string[] {
     let addresses: string[] = [];
-    addresses.push(
-      this.constants.GOV_TREASURY[this.constants.CHAIN_ID.MAINNET].toLowerCase()
-    );
-    addresses.push(
-      this.constants.DEV_WALLET[this.constants.CHAIN_ID.MAINNET].toLowerCase()
-    );
-    addresses.push(
-      this.constants.MERKLE_DISTRIBUTOR[
-        this.constants.CHAIN_ID.MAINNET
-      ].toLowerCase()
-    );
-    addresses.push(
-      this.constants.XMPH_ADDRESS[this.constants.CHAIN_ID.MAINNET].toLowerCase()
-    );
-    addresses.push(
-      this.constants.V2_REWARDS[this.constants.CHAIN_ID.MAINNET].toLowerCase()
-    );
-    addresses.push(
-      this.constants.UNISWAP_V2_LP[
-        this.constants.CHAIN_ID.MAINNET
-      ].toLowerCase()
-    );
-    addresses.push(
-      this.constants.UNISWAP_V3_LP[
-        this.constants.CHAIN_ID.MAINNET
-      ].toLowerCase()
-    );
-    addresses.push(
-      this.constants.SUSHISWAP_LP[this.constants.CHAIN_ID.MAINNET].toLowerCase()
-    );
-    addresses.push(
-      this.constants.BANCOR_LP[this.constants.CHAIN_ID.MAINNET].toLowerCase()
-    );
+    addresses.push(this.constants.GOV_TREASURY[networkID].toLowerCase());
+    addresses.push(this.constants.DEV_WALLET[networkID].toLowerCase());
+    addresses.push(this.constants.MERKLE_DISTRIBUTOR[networkID].toLowerCase());
+    addresses.push(this.constants.XMPH_ADDRESS[networkID].toLowerCase());
+    addresses.push(this.constants.V2_REWARDS[networkID].toLowerCase());
+    addresses.push(this.constants.UNISWAP_V2_LP[networkID].toLowerCase());
+    addresses.push(this.constants.UNISWAP_V3_LP[networkID].toLowerCase());
+    addresses.push(this.constants.SUSHISWAP_LP[networkID].toLowerCase());
+    addresses.push(this.constants.BANCOR_LP[networkID].toLowerCase());
     return addresses;
   }
 
@@ -449,24 +382,21 @@ export class MphSupplyDistributionComponent implements OnInit {
       this.PERIOD = this.constants.DAY_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1605744000,
-        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
       };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1605398400,
-        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
       this.FIRST_INDEX = {
         [this.constants.CHAIN_ID.MAINNET]: 1604188800,
-        [this.constants.CHAIN_ID.RINKEBY]: 1624406400,
       };
     }
 
     this.resetChart();
-    this.drawChart(this.wallet.networkID);
+    this.drawChart();
   }
 }
 
