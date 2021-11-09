@@ -50,8 +50,27 @@
                               class="custom-select custom-select-lg"
                               data-toggle="select"
                               id="FromChain"
+                              [(ngModel)]="fromChain"
+                              (change)="wallet.changeChain(fromChain)"
                             >
-                              <option>Chain</option>
+                              <option [ngValue]="constants.CHAIN_ID.MAINNET">
+                                Ethereum
+                              </option>
+                              <option [ngValue]="constants.CHAIN_ID.FANTOM">
+                                Fantom
+                              </option>
+                              <option
+                                [ngValue]="constants.CHAIN_ID.POLYGON"
+                                disabled
+                              >
+                                Polygon (soon)
+                              </option>
+                              <option
+                                [ngValue]="constants.CHAIN_ID.AVALANCHE"
+                                disabled
+                              >
+                                Avalanche (soon)
+                              </option>
                             </select>
                           </div>
                         </div>
@@ -64,8 +83,36 @@
                               class="custom-select custom-select-lg"
                               data-toggle="select"
                               id="ToChain"
+                              [(ngModel)]="toChain"
                             >
-                              <option>Chain</option>
+                              <option
+                                *ngIf="fromChain !== constants.CHAIN_ID.MAINNET"
+                                [ngValue]="constants.CHAIN_ID.MAINNET"
+                              >
+                                Ethereum
+                              </option>
+                              <option
+                                *ngIf="fromChain !== constants.CHAIN_ID.FANTOM"
+                                [ngValue]="constants.CHAIN_ID.FANTOM"
+                              >
+                                Fantom
+                              </option>
+                              <option
+                                *ngIf="fromChain !== constants.CHAIN_ID.POLYGON"
+                                [ngValue]="constants.CHAIN_ID.POLYGON"
+                                disabled
+                              >
+                                Polygon (soon)
+                              </option>
+                              <option
+                                *ngIf="
+                                  fromChain !== constants.CHAIN_ID.AVALANCHE
+                                "
+                                [ngValue]="constants.CHAIN_ID.AVALANCHE"
+                                disabled
+                              >
+                                Avalanche (soon)
+                              </option>
                             </select>
                           </div>
                         </div>
@@ -119,20 +166,22 @@
                             class="form-control form-control-lg"
                             placeholder="0.00"
                             aria-label="bridge-amount"
-                            value="0.00"
+                            [value]="bridgeAmount.toFixed()"
+                            (input)="setBridgeAmount($event.target.value)"
                           />
                           <div class="input-group-append">
                             <button
                               class="btn btn-lg border-gradient"
                               type="button"
                               i18n="@@Max"
+                              (click)="presetBridgeAmount(100)"
                             >
                               Max
                             </button>
                           </div>
                         </div>
                         <small class="form-text text-white"
-                          >0.0000 MPH
+                          >{{ mphBalance.toFormat(4) }} MPH
                           <ng-container i18n="@@available"
                             >available</ng-container
                           ></small
@@ -185,6 +234,7 @@
                 type="button"
                 class="btn btn-lg btn-block btn-bg-gradient mb-3"
                 i18n="@@approve"
+                [disabled]="!canContinue()"
               >
                 Approve
               </button>
