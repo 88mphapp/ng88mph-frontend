@@ -5,6 +5,7 @@ import { ConstantsService } from 'src/app/constants.service';
 import { ContractService } from 'src/app/contract.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
+import { DataService } from 'src/app/data.service';
 import { FundableDeposit } from '../interface';
 
 @Component({
@@ -32,7 +33,8 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     public wallet: WalletService,
     public contract: ContractService,
     public constants: ConstantsService,
-    public helpers: HelpersService
+    public helpers: HelpersService,
+    public datas: DataService
   ) {
     this.resetData();
   }
@@ -42,11 +44,13 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   }
 
   async loadData() {
-    //this.buyYieldTokenAmount = this.deposit.yieldTokensAvailable;
-
-    const stablecoin = this.contract.getPoolStablecoin(this.deposit.pool.name);
+    const web3 = this.wallet.httpsWeb3();
+    const stablecoin = this.contract.getPoolStablecoin(
+      this.deposit.pool.name,
+      web3
+    );
     this.stablecoinPriceUSD = new BigNumber(
-      await this.helpers.getTokenPriceUSD(
+      await this.datas.getAssetPriceUSD(
         this.deposit.pool.stablecoin,
         this.wallet.networkID
       )
@@ -99,7 +103,8 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   }
 
   async updateDetails() {
-    const pool = this.contract.getPool(this.deposit.pool.name);
+    const web3 = this.wallet.httpsWeb3();
+    const pool = this.contract.getPool(this.deposit.pool.name, web3);
     const now = Date.now() / 1e3;
 
     const stablecoinPrecision = Math.pow(
