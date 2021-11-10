@@ -51,47 +51,54 @@ export class LandingPageComponent implements OnInit {
     public datas: DataService,
     private zone: NgZone
   ) {
-    this.resetData(true, true);
+    this.resetData(true, true, true);
   }
 
   ngOnInit(): void {
     this.loadData(
       this.wallet.connected || this.wallet.watching,
       true,
+      true,
       this.wallet.networkID
     );
     this.wallet.connectedEvent.subscribe(() => {
-      this.resetData(true, false);
-      this.loadData(true, false, this.wallet.networkID);
+      this.resetData(true, false, false);
+      this.loadData(true, false, false, this.wallet.networkID);
     });
 
     this.wallet.disconnectedEvent.subscribe(() => {
-      this.resetData(true, false);
-      this.loadData(false, true, this.wallet.networkID);
+      this.resetData(true, false, false);
+      this.loadData(false, false, false, this.wallet.networkID);
     });
 
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.zone.run(() => {
-        this.resetData(true, true);
-        this.loadData(true, true, networkID);
+        this.resetData(true, true, false);
+        this.loadData(true, true, false, networkID);
       });
     });
 
     this.wallet.accountChangedEvent.subscribe((account) => {
       this.zone.run(() => {
-        this.resetData(true, false);
-        this.loadData(true, false, this.wallet.networkID);
+        this.resetData(true, false, false);
+        this.loadData(true, false, false, this.wallet.networkID);
       });
     });
   }
 
-  async loadData(loadUser: boolean, loadGlobal: boolean, networkID: number) {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
+  async loadData(
+    loadUser: boolean,
+    loadGlobal: boolean,
+    loadStats: boolean,
+    networkID: number
+  ) {
+    const web3 = this.wallet.httpsWeb3();
     const userAddress: string = this.wallet.actualAddress.toLowerCase();
 
     if (loadUser && userAddress) {
       const stablecoin = this.contract.getPoolStablecoin(
-        this.selectedPool.name
+        this.selectedPool.name,
+        web3
       );
       const stablecoinPrecision = Math.pow(
         10,
@@ -99,7 +106,7 @@ export class LandingPageComponent implements OnInit {
       );
       stablecoin.methods
         .balanceOf(userAddress)
-        .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
+        .call()
         .then((balance) => {
           this.depositTokenBalance = new BigNumber(balance).div(
             stablecoinPrecision
@@ -108,15 +115,15 @@ export class LandingPageComponent implements OnInit {
     }
 
     if (loadGlobal) {
-      this.loadChainData(this.constants.CHAIN_ID.MAINNET);
-      this.loadChainData(this.constants.CHAIN_ID.POLYGON);
-      this.loadChainData(this.constants.CHAIN_ID.AVALANCHE);
-      this.loadChainData(this.constants.CHAIN_ID.FANTOM);
-      this.loadV2Data();
+      this.loadChainData(loadStats, this.constants.CHAIN_ID.MAINNET);
+      this.loadChainData(loadStats, this.constants.CHAIN_ID.POLYGON);
+      this.loadChainData(loadStats, this.constants.CHAIN_ID.AVALANCHE);
+      this.loadChainData(loadStats, this.constants.CHAIN_ID.FANTOM);
+      this.loadV2Data(loadStats);
     }
   }
 
-  async loadChainData(networkID: number) {
+  async loadChainData(loadStats: boolean, networkID: number) {
     const queryString = gql`
       {
         dpools {
@@ -134,11 +141,13 @@ export class LandingPageComponent implements OnInit {
       }
     `;
     request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
-      (data: QueryResult) => this.handleData(data, networkID)
+      (data: QueryResult) => this.handleData(data, loadStats, networkID)
     );
   }
 
-  loadV2Data() {
+  loadV2Data(loadStats: boolean) {
+    if (!loadStats) return;
+
     const queryString = gql`
       {
         dpools {
@@ -200,14 +209,8 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  async handleData(data: QueryResult, networkID: number) {
-    // bail if a chain change has occured
-    // if (networkID !== this.wallet.networkID) {
-    //   return;
-    // }
-
+  async handleData(data: QueryResult, loadStats: boolean, networkID: number) {
     const dpools = data.dpools;
-    // let stablecoinPriceCache = {};
 
     if (dpools) {
       let maxAPR = new BigNumber(0);
@@ -302,30 +305,32 @@ export class LandingPageComponent implements OnInit {
           this.updateAPY();
         }
 
-        this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
-        this.totalInterestUSD = this.totalInterestUSD.plus(totalInterestUSD);
+        if (loadStats) {
+          this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
+          this.totalInterestUSD = this.totalInterestUSD.plus(totalInterestUSD);
+        }
       });
     }
-    const totalEarningsUSD = new BigNumber(
-      data.globalStats.xMPHRewardDistributed
-    )
-      .times(this.datas.mphPriceUSD)
-      .div(1e6);
-    if (!this.totalEarningsUSD.isNaN()) {
-      this.totalEarningsUSD = this.totalEarningsUSD.plus(totalEarningsUSD);
+
+    if (loadStats) {
+      const reward = new BigNumber(data.globalStats.xMPHRewardDistributed);
+      const totalEarningsUSD = reward.times(this.datas.mphPriceUSD).div(1e6);
+      if (!this.totalEarningsUSD.isNaN()) {
+        this.totalEarningsUSD = this.totalEarningsUSD.plus(totalEarningsUSD);
+      }
     }
   }
 
-  resetData(resetUser: boolean, resetGlobal: boolean): void {
+  resetData(
+    resetUser: boolean,
+    resetGlobal: boolean,
+    resetStats: boolean
+  ): void {
     if (resetUser) {
       this.depositTokenBalance = new BigNumber(0);
     }
 
     if (resetGlobal) {
-      this.totalDepositUSD = new BigNumber(0);
-      this.totalInterestUSD = new BigNumber(0);
-      this.totalEarningsUSD = new BigNumber(0);
-
       const allPoolList = new Array<DPool>(0);
       const poolInfoList = this.contract.getPoolInfoList();
       for (const poolInfo of poolInfoList) {
@@ -359,17 +364,19 @@ export class LandingPageComponent implements OnInit {
       this.maxAPR = new BigNumber(0);
       this.maxRewardAPR = new BigNumber(0);
     }
+
+    if (resetStats) {
+      this.totalDepositUSD = new BigNumber(0);
+      this.totalInterestUSD = new BigNumber(0);
+      this.totalEarningsUSD = new BigNumber(0);
+    }
   }
 
   async updateAPY() {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const pool = this.contract.getPool(this.selectedPool.name, readonlyWeb3);
+    const web3 = this.wallet.httpsWeb3();
+    const pool = this.contract.getPool(this.selectedPool.name, web3);
     const poolInfo = this.contract.getPoolInfo(this.selectedPool.name);
 
-    // const stablecoinPrice = await this.helpers.getTokenPriceUSD(
-    //   poolInfo.stablecoin,
-    //   this.wallet.networkID
-    // );
     const stablecoinPrice = await this.datas.getAssetPriceUSD(
       this.selectedPool.stablecoin,
       this.wallet.networkID
@@ -432,9 +439,7 @@ export class LandingPageComponent implements OnInit {
         this.selectedPool.name
       );
       this.depositTokenBalance = new BigNumber(
-        await stablecoin.methods
-          .balanceOf(userAddress)
-          .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
+        await stablecoin.methods.balanceOf(userAddress).call()
       ).div(stablecoinPrecision);
     }
   }
