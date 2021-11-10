@@ -116,8 +116,8 @@ export class ModalRollOverComponent implements OnInit {
   }
 
   async updateAPY() {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const pool = this.contract.getPool(this.poolInfo.name, readonlyWeb3);
+    const web3 = this.wallet.httpsWeb3();
+    const pool = this.contract.getPool(this.poolInfo.name, web3);
 
     // get deposit amount
     this.depositAmountUSD = new BigNumber(this.depositAmountToken).times(

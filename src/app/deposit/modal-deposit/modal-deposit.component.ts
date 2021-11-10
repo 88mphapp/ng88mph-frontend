@@ -331,16 +331,13 @@ export class ModalDepositComponent implements OnInit {
   }
 
   async updateAPY() {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const pool = this.contract.getPool(
-      this.selectedPoolInfo.name,
-      readonlyWeb3
-    );
+    const web3 = this.wallet.httpsWeb3();
+    const pool = this.contract.getPool(this.selectedPoolInfo.name, web3);
     const feeModelAddress = await pool.methods.feeModel().call();
     const feeModelContract = this.contract.getContract(
       feeModelAddress,
       'IFeeModel',
-      readonlyWeb3
+      web3
     );
 
     const stablecoinPrice = await this.helpers.getTokenPriceUSD(
