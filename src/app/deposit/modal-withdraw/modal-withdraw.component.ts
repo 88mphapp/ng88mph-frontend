@@ -130,13 +130,13 @@ export class ModalWithdrawComponent implements OnInit {
     if (!this.userDeposit.locked) {
       return new BigNumber(0);
     }
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const pool = this.contract.getPool(this.poolInfo.name, readonlyWeb3);
+    const web3 = this.wallet.httpsWeb3();
+    const pool = this.contract.getPool(this.poolInfo.name, web3);
     const feeModelAddress = await pool.methods.feeModel().call();
     const feeModel = this.contract.getContract(
       feeModelAddress,
       'IFeeModel',
-      readonlyWeb3
+      web3
     );
     const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
     const processedWithdrawAmount = this.helpers.processWeb3Number(

@@ -93,7 +93,7 @@ export class DepositComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
-    const readonlyWeb3 = this.wallet.readonlyWeb3(this.wallet.networkID);
+    const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
 
     this.displayGetStarted =
       window.localStorage.getItem('displayEarnGetStarted') != 'false';
@@ -141,7 +141,7 @@ export class DepositComponent implements OnInit {
       for (let zcbPool of this.allZCBPoolList) {
         const zcbContract = this.contract.getZeroCouponBondContract(
           zcbPool.address,
-          readonlyWeb3
+          web3
         );
         const poolInfo = this.contract.getPoolInfoFromAddress(
           await zcbContract.methods.pool().call()
