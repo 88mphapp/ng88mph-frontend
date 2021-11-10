@@ -159,7 +159,7 @@ export class DataService {
     mintMintiplier: BigNumber
   ): Promise<BigNumber> {
     const poolInfo = this.contract.getPoolInfoFromAddress(address);
-    const stablecoinPriceUSD = await this.helpers.getTokenPriceUSD(
+    const stablecoinPriceUSD = await this.getAssetPriceUSD(
       poolInfo.stablecoin,
       this.wallet.networkID
     );
