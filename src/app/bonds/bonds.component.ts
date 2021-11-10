@@ -167,7 +167,7 @@ export class BondsComponent implements OnInit {
     const dpools = data.dpools;
     let stablecoinPriceCache = {};
     const now = Math.floor(Date.now() / 1e3);
-    const readonlyWeb3 = this.wallet.readonlyWeb3(networkID);
+    const web3 = this.wallet.httpsWeb3(networkID);
 
     if (funder) {
       const funderPools: FunderPool[] = [];
@@ -178,13 +178,19 @@ export class BondsComponent implements OnInit {
 
       Promise.all(
         funder.fundings.map(async (funding) => {
-          const lens = this.contract.getNamedContract('DInterestLens');
+          const lens = this.contract.getNamedContract(
+            'DInterestLens',
+            web3,
+            networkID
+          );
           const poolInfo = this.contract.getPoolInfoFromAddress(
-            funding.pool.address
+            funding.pool.address,
+            networkID
           );
           const poolContract = this.contract.getContract(
             funding.pool.address,
-            'DInterest'
+            'DInterest',
+            web3
           );
           const poolFunderRewardMultiplier = new BigNumber(
             funding.pool.poolFunderRewardMultiplier
@@ -209,7 +215,8 @@ export class BondsComponent implements OnInit {
             .then((yieldTokenAddress) => {
               yieldToken = this.contract.getContract(
                 yieldTokenAddress,
-                'FundingMultitoken'
+                'FundingMultitoken',
+                web3
               );
             });
 
@@ -458,13 +465,16 @@ export class BondsComponent implements OnInit {
 
       Promise.all(
         dpools.map(async (pool) => {
-          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+          const poolInfo = this.contract.getPoolInfoFromAddress(
+            pool.address,
+            networkID
+          );
 
           if (poolInfo.protocol === 'Cream') {
             return;
           }
 
-          const poolContract = this.contract.getPool(poolInfo.name);
+          const poolContract = this.contract.getPool(poolInfo.name, web3);
 
           if (!poolInfo) {
             return;
@@ -553,7 +563,7 @@ export class BondsComponent implements OnInit {
                         +deposit.maturationTimestamp - now
                       )
                     )
-                    .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
+                    .call()
                 ).div(stablecoinPrecision);
               } else {
                 bound = new BigNumber(
@@ -566,7 +576,7 @@ export class BondsComponent implements OnInit {
                         +deposit.maturationTimestamp - now
                       )
                     )
-                    .call({}, (await readonlyWeb3.eth.getBlockNumber()) - 1)
+                    .call()
                 ).div(stablecoinPrecision);
               }
               if (
