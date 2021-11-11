@@ -7,7 +7,7 @@
       i18n-ngbTooltip="@@fixed-rateYieldText"
       ngbTooltip="The fixed-rate yield (%) offered on 365-day deposits before accounting for protocol fees. Shorter deposits will receive a higher fixed-rate yield."
     >
-      Fixed-rate yield
+      Fixed-Rate Yield
       <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
   </div>
@@ -35,6 +35,8 @@
                   ? avalancheData
                   : displaySetting === 'fantom'
                   ? fantomData
+                  : displaySetting === 'v2'
+                  ? v2Data
                   : []
               "
               [ngValue]="pool.address"
@@ -51,6 +53,8 @@
                     ? "Avalanche"
                     : pool.networkID === constants.CHAIN_ID.FANTOM
                     ? "Fantom"
+                    : pool.networkID === constants.CHAIN_ID.V2
+                    ? "V2"
                     : ""
                 }}
               </ng-container>

@@ -134,6 +134,8 @@ export class ConstantsService {
       'https://api.thegraph.com/subgraphs/name/dasconnor/avalanche-blocks',
     [this.CHAIN_ID.FANTOM]:
       'https://api.thegraph.com/subgraphs/name/0xfin/fantomblocks',
+    [this.CHAIN_ID.V2]:
+      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
   };
   CHAINLINK_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
