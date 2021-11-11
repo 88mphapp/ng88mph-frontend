@@ -21,7 +21,7 @@ import { Chart } from 'chart.js';
 })
 export class HistoricalAssetTvlComponent implements OnInit {
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1630368000, //1617235200, //1619827200 works, //1622505600 works, //1606179600 doesn't work, //1630368000,
+    [this.constants.CHAIN_ID.MAINNET]: 1630368000,
     [this.constants.CHAIN_ID.POLYGON]: 1633392000,
     [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
     [this.constants.CHAIN_ID.FANTOM]: 1633996800,
@@ -145,11 +145,36 @@ export class HistoricalAssetTvlComponent implements OnInit {
               display: true,
               color: '#242526',
             },
+            scaleLabel: {
+              display: true,
+              labelString: 'Millions (USD)',
+            },
             ticks: {
               min: 0,
+              callback: function (label, index, labels) {
+                const x = label / 1e6;
+                const y =
+                  '$' +
+                  x
+                    .toFixed(0)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return y;
+              },
             },
           },
         ],
+      },
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            const pool = data.datasets[tooltipItem.datasetIndex].label;
+            const value = tooltipItem.yLabel.toFixed(0);
+            const formattedValue =
+              '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return pool + ': ' + formattedValue;
+          },
+        },
       },
     };
     this.barChartLabels = this.dates;
@@ -416,7 +441,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
       dataobj = {
         label: poolInfo.name,
         address: dpools[pool].address,
-        networkID: this.constants.CHAIN_ID.MAINNET,
+        networkID: this.constants.CHAIN_ID.V2,
         data: [],
         dataTVL: [],
         dataUSD: [],
@@ -530,7 +555,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633219200,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
         [this.constants.CHAIN_ID.FANTOM]: 1633824000,
-        [this.constants.CHAIN_ID.V2]: 1606176000,
+        [this.constants.CHAIN_ID.V2]: 1606003200,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
@@ -539,7 +564,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633046400,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633046400,
         [this.constants.CHAIN_ID.FANTOM]: 1633046400,
-        [this.constants.CHAIN_ID.V2]: 1606176000,
+        [this.constants.CHAIN_ID.V2]: 1604188800,
       };
     }
     this.resetChart();
