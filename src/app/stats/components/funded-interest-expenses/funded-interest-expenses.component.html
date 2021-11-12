@@ -80,7 +80,9 @@
     </div>
   </div>
   <div class="card-body">
+    <div *ngIf="loading" class="d-flex justify-content-center">Loading...</div>
     <canvas
+      *ngIf="!loading"
       baseChart
       [datasets]="lineChartData"
       [labels]="lineChartLabels"

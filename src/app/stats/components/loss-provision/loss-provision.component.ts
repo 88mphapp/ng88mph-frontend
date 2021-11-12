@@ -68,6 +68,7 @@ export class LossProvisionComponent implements OnInit {
   // chart data
   dates: string[];
   data: DataObject[];
+  loading: boolean;
 
   // chart variables
   public barChartOptions;
@@ -118,6 +119,7 @@ export class LossProvisionComponent implements OnInit {
     // chart data
     this.dates = [];
     this.data = [];
+    this.loading = true;
   }
 
   async drawChart(loadData: boolean = true) {
@@ -495,6 +497,7 @@ export class LossProvisionComponent implements OnInit {
         this.dates = this.getReadableTimestamps(this.v2Timestamps);
         break;
     }
+    this.loading = false;
     this.drawChart(false);
   }
 

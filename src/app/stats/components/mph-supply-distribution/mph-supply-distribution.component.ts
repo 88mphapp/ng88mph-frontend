@@ -35,6 +35,7 @@ export class MphSupplyDistributionComponent implements OnInit {
   sushiswap: number[];
   bancor: number[];
   other: number[];
+  loading: boolean;
 
   // chart variables
   public barChartOptions;
@@ -70,6 +71,7 @@ export class MphSupplyDistributionComponent implements OnInit {
     this.sushiswap = [];
     this.bancor = [];
     this.other = [];
+    this.loading = true;
   }
 
   async drawChart() {
@@ -96,8 +98,36 @@ export class MphSupplyDistributionComponent implements OnInit {
               display: true,
               color: '#242526',
             },
+            scaleLabel: {
+              display: true,
+              labelString: 'Thousands (MPH)',
+            },
+            ticks: {
+              suggestedMin: 0,
+              callback: function (label, index, labels) {
+                const x = label / 1e3;
+                const y = x
+                  .toFixed(0)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return y;
+              },
+            },
           },
         ],
+      },
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            const index = tooltipItem.datasetIndex;
+            const holder = data.datasets[index].label;
+            const item = tooltipItem.yLabel.toFixed(2);
+            const formattedItem = item
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return holder + ': ' + formattedItem;
+          },
+        },
       },
     };
     this.barChartLabels = this.readable;
@@ -361,6 +391,8 @@ export class MphSupplyDistributionComponent implements OnInit {
         }
       }
     }
+
+    this.loading = false;
   }
 
   getAddresses(networkID: number): string[] {
