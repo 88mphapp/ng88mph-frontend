@@ -68,6 +68,7 @@ export class FundedInterestExpensesComponent implements OnInit {
   // chart data
   dates: string[];
   data: DataObject[];
+  loading: boolean;
 
   // chart variables
   public lineChartOptions;
@@ -118,6 +119,7 @@ export class FundedInterestExpensesComponent implements OnInit {
     // chart data
     this.dates = [];
     this.data = [];
+    this.loading = true;
   }
 
   async drawChart(loadData: boolean = true) {
@@ -651,6 +653,7 @@ export class FundedInterestExpensesComponent implements OnInit {
         this.dates = this.getReadableTimestamps(this.v2Timestamps);
         break;
     }
+    this.loading = false;
     this.drawChart(false);
   }
 
