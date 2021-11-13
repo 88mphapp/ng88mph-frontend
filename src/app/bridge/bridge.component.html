@@ -12,6 +12,7 @@
       </p>
       <div class="row">
         <div class="col-12 col-lg-8">
+          <!--Brdige - step 1-->
           <div class="card">
             <div class="card-header">
               <h4 class="card-header-title" i18n="@@bridgesubTitle">
@@ -33,7 +34,7 @@
                             text-white
                             border-gradient
                           "
-                          i18n="@@farmingStep1"
+                          i18n="@@step1"
                         >
                           1
                         </div>
@@ -134,14 +135,13 @@
                             text-white
                             border-gradient
                           "
-                          i18n="@@farmingStep2"
+                          i18n="@@step2"
                         >
                           2
                         </div>
                       </div>
                     </div>
                     <div class="col ml-n2">
-                      <!-- display if UNI-v2 pool option selected -->
                       <div class="form-group">
                         <label>Amount to bridge </label>
                         <div class="input-group mb-2">
@@ -195,6 +195,12 @@
               <div class="px-0 alert text-warning border-warning">
                 <ul class="mb-0">
                   <li>
+                    <ng-container i18n="@@bridgeEstimatedFee"
+                      >Estimated transfer fee:</ng-container
+                    >
+                    x MPH
+                  </li>
+                  <li>
                     <ng-container i18n="@@bridgeMinAmount"
                       >Minimum bridgeable amount:</ng-container
                     >
@@ -232,11 +238,182 @@
               </div>
               <button
                 type="button"
-                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                class="btn btn-lg btn-block border-gradient mb-3"
                 i18n="@@approve"
                 [disabled]="!canContinue()"
               >
                 Approve
+              </button>
+              <button
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                i18n="@@Transfer"
+                [disabled]="!canContinue()"
+              >
+                Transfer
+              </button>
+            </div>
+          </div>
+          <!--Brdige - step 2-->
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-header-title" i18n="@@bridgeTransactionStatus">
+                Transaction Status
+              </h4>
+            </div>
+            <div class="card-body">
+              <!-- Title -->
+              <h5
+                class="text-uppercase text-center"
+                i18n="@@bridgeAmountTransferred"
+              >
+                Amount transferred
+              </h5>
+              <!-- Heading -->
+              <h2 class="mb-2 glowing text-center">0.0000 MPH</h2>
+              <div class="list-group list-group-flush list-group-activity">
+                <div class="list-group-item pb-0">
+                  <div class="row">
+                    <div class="col-auto">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@step1"
+                        >
+                          1
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="table-responsive">
+                        <table class="table mb-0">
+                          <thead>
+                            <th
+                              i18n="@@bridgeNetwork"
+                              class="border-0 pt-0 pb-1"
+                            >
+                              Network
+                            </th>
+                            <th
+                              i18n="@@bridgeStatus"
+                              class="border-0 pt-0 pb-1 text-right"
+                            >
+                              Status
+                            </th>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="border-0 pt-0">Ethereum</td>
+                              <td class="border-0 text-right pt-0">
+                                <h4
+                                  class="mb-0 glowing d-none"
+                                  i18n="bridgeTransferStatusConfirming"
+                                >
+                                  Confirming
+                                </h4>
+                                <h4
+                                  class="mb-0 text-success"
+                                  i18n="bridgeTransferStatusSuccess"
+                                >
+                                  Success
+                                </h4>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item pt-0">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@step2"
+                        >
+                          2
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="table-responsive">
+                        <table class="table mb-0">
+                          <tbody>
+                            <tr>
+                              <td class="border-0 pt-2">Fantom</td>
+                              <td class="border-0 text-right pt-2">
+                                <h4
+                                  class="mb-0 glowing"
+                                  i18n="bridgeTransferStatusWaitingUserApproval"
+                                >
+                                  Waiting user approval
+                                </h4>
+                                <h4
+                                  class="mb-0 glowing d-none"
+                                  i18n="bridgeTransferStatusConfirming"
+                                >
+                                  Confirming
+                                </h4>
+                                <h4
+                                  class="mb-0 glowing d-none"
+                                  i18n="
+                                    bridgeTransferStatusWaitingUserConvertion
+                                  "
+                                >
+                                  Waiting user convertion
+                                </h4>
+                                <h4
+                                  class="mb-0 text-success d-none"
+                                  i18n="bridgeTransferStatusSuccess"
+                                >
+                                  Success
+                                </h4>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+              </div>
+
+              <div class="alert text-warning border-warning">
+                If it's your first bridge transfer, approve, then convert the
+                bridged MPH to the native MPH of your target chain.
+              </div>
+              <button
+                type="button"
+                class="btn btn-lg btn-block border-gradient mb-3"
+                i18n="@@convert"
+              >
+                Approve
+              </button>
+              <button
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                i18n="@@convert"
+                disabled
+              >
+                Convert
               </button>
             </div>
           </div>
