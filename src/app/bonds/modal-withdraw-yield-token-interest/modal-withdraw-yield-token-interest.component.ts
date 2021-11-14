@@ -110,7 +110,11 @@ export class ModalWithdrawYieldTokenInterestComponent implements OnInit {
   }
 
   private withdraw(dividendToken: string): void {
-    const func = this.fundedDeposit.yieldToken.methods.withdrawDividend(
+    const yieldToken = this.contract.getContract(
+      this.fundedDeposit.yieldTokenAddress,
+      'FundingMultitoken'
+    );
+    const func = yieldToken.methods.withdrawDividend(
       this.fundedDeposit.fundingID,
       dividendToken
     );
