@@ -28,6 +28,7 @@ export interface Funding {
 
 export interface FundedDeposit {
   yieldToken: any;
+  yieldTokenAddress: string;
   fundingID: number;
   stablecoinPrice: number;
   funderAccruedInterest: BigNumber;

@@ -209,15 +209,17 @@ export class BondsComponent implements OnInit {
           }
 
           let yieldToken;
+          let yieldTokenAddress;
           await poolContract.methods
             .fundingMultitoken()
             .call()
-            .then((yieldTokenAddress) => {
+            .then((yieldTokenAddr) => {
               yieldToken = this.contract.getContract(
-                yieldTokenAddress,
+                yieldTokenAddr,
                 'FundingMultitoken',
                 web3
               );
+              yieldTokenAddress = yieldTokenAddr;
             });
 
           const yieldTokenBalance = new BigNumber(
@@ -379,6 +381,7 @@ export class BondsComponent implements OnInit {
           // add the funding to the funderPool
           const fundingObj: FundedDeposit = {
             yieldToken: yieldToken,
+            yieldTokenAddress: yieldTokenAddress,
             fundingID: +funding.nftID,
             stablecoinPrice: stablecoinPrice,
             funderAccruedInterest: funderAccruedInterest,
