@@ -28,7 +28,6 @@ export class MphLiquidityComponent implements OnInit {
   uniswap_v3: number[];
   sushiswap: number[];
   bancor: number[];
-  loading: boolean;
 
   // chart variables
   public barChartOptions;
@@ -58,7 +57,6 @@ export class MphLiquidityComponent implements OnInit {
     this.uniswap_v3 = [];
     this.sushiswap = [];
     this.bancor = [];
-    this.loading = true;
   }
 
   async drawChart() {
@@ -85,37 +83,8 @@ export class MphLiquidityComponent implements OnInit {
               display: true,
               color: '#242526',
             },
-            scaleLabel: {
-              display: true,
-              labelString: 'Millions (USD)',
-            },
-            ticks: {
-              min: 0,
-              callback: function (label, index, labels) {
-                const x = label / 1e6;
-                const y =
-                  '$' +
-                  x
-                    .toFixed(0)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                return y;
-              },
-            },
           },
         ],
-      },
-      tooltips: {
-        callbacks: {
-          label: function (tooltipItem, data) {
-            const index = tooltipItem.datasetIndex;
-            const dexLabel = data.datasets[index].label;
-            const item = tooltipItem.yLabel.toFixed(0);
-            const formattedItem =
-              '$' + item.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            return dexLabel + ': ' + formattedItem;
-          },
-        },
       },
     };
     this.barChartLabels = this.readable;
@@ -179,14 +148,10 @@ export class MphLiquidityComponent implements OnInit {
     this.readable = readable;
 
     // load dex data
-    await Promise.all([
-      this.loadUniswapV2(networkID),
-      this.loadUniswapV3(networkID),
-      this.loadSushiswap(networkID),
-      this.loadBancor(networkID),
-    ]).then(() => {
-      this.loading = false;
-    });
+    this.loadUniswapV2(networkID);
+    this.loadUniswapV3(networkID);
+    this.loadSushiswap(networkID);
+    this.loadBancor(networkID);
   }
 
   async loadUniswapV2(networkID: number) {
@@ -207,7 +172,7 @@ export class MphLiquidityComponent implements OnInit {
       ${queryString}
     `;
 
-    await request(this.constants.UNISWAP_V2_GRAPHQL_ENDPOINT, query).then(
+    request(this.constants.UNISWAP_V2_GRAPHQL_ENDPOINT, query).then(
       (data: QueryResult) => this.handleUniswapV2Data(data)
     );
   }
@@ -228,7 +193,7 @@ export class MphLiquidityComponent implements OnInit {
     const query = gql`
       ${queryString}
     `;
-    await request(this.constants.UNISWAP_V3_GRAPHQL_ENDPOINT, query).then(
+    request(this.constants.UNISWAP_V3_GRAPHQL_ENDPOINT, query).then(
       (data: QueryResult) => this.handleUniswapV3Data(data)
     );
   }
@@ -251,7 +216,7 @@ export class MphLiquidityComponent implements OnInit {
       ${queryString}
     `;
 
-    await request(this.constants.SUSHISWAP_GRAPHQL_ENDPOINT, query).then(
+    request(this.constants.SUSHISWAP_GRAPHQL_ENDPOINT, query).then(
       (data: QueryResult) => this.handleSushiswapData(data)
     );
   }

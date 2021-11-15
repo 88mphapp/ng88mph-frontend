@@ -1,4 +1,4 @@
-<div class="card mb-4 mb-lg-0">
+<div *ngIf="barChartData" class="card mb-4 mb-lg-0">
   <div class="card-header">
     <h4
       class="card-title mb-0"
@@ -40,9 +40,7 @@
     </div>
   </div>
   <div class="card-body">
-    <div *ngIf="loading" class="d-flex justify-content-center">Loading...</div>
     <canvas
-      *ngIf="!loading"
       baseChart
       [datasets]="barChartData"
       [labels]="barChartLabels"

@@ -56,7 +56,6 @@ export class HistoricalStakingRewardsComponent implements OnInit {
   // chart data
   dates: string[];
   data: DataObject[];
-  loading: boolean;
 
   // chart variables
   public barChartOptions;
@@ -108,7 +107,6 @@ export class HistoricalStakingRewardsComponent implements OnInit {
     // chart data
     this.dates = [];
     this.data = [];
-    this.loading = true;
   }
 
   drawChart(loadData: boolean = true) {
@@ -137,20 +135,12 @@ export class HistoricalStakingRewardsComponent implements OnInit {
               display: true,
               color: '#242526',
             },
-            scaleLabel: {
-              display: true,
-              labelString: 'Thousands (USD)',
-            },
             ticks: {
               suggestedMin: 0,
               callback: function (label, index, labels) {
-                const x = label / 1e3;
+                const x = label.toFixed(0);
                 const y =
-                  '$' +
-                  x
-                    .toFixed(0)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                  '$' + x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 return y;
               },
             },
@@ -160,12 +150,10 @@ export class HistoricalStakingRewardsComponent implements OnInit {
       tooltips: {
         callbacks: {
           label: function (tooltipItem, data) {
-            const index = tooltipItem.datasetIndex;
-            const chain = data.datasets[index].label;
             const item = tooltipItem.yLabel.toFixed(0);
             const formattedItem =
               '$' + item.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            return chain + ': ' + formattedItem;
+            return formattedItem;
           },
         },
       },
@@ -448,7 +436,6 @@ export class HistoricalStakingRewardsComponent implements OnInit {
         this.dates = this.getReadableTimestamps(this.v2Timestamps);
         break;
     }
-    this.loading = false;
     this.drawChart(false);
   }
 
