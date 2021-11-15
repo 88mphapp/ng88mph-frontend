@@ -15,8 +15,22 @@ export class BridgeComponent implements OnInit {
   mphBalance: BigNumber;
   bridgeAmount: BigNumber;
 
+  anyswapInfo: any;
   fromChain: number;
   toChain: number;
+
+  // bridge params
+  bridgeFeeRate: BigNumber;
+  bridgeMinimumFee: BigNumber;
+  bridgeMaximumFee: BigNumber;
+
+  bridgeMinimum: BigNumber;
+  bridgeMaximum: BigNumber;
+  bridgeThreshold: BigNumber;
+
+  bridgeAddress: string;
+
+  // converter params
 
   constructor(
     public wallet: WalletService,
@@ -51,7 +65,7 @@ export class BridgeComponent implements OnInit {
     });
   }
 
-  loadData(loadUser: boolean, loadGlobal: boolean) {
+  async loadData(loadUser: boolean, loadGlobal: boolean) {
     const user = this.wallet.actualAddress.toLowerCase();
     const web3 = new Web3(this.constants.RPC[this.fromChain]);
     const mph = this.contract.getNamedContract(
@@ -75,6 +89,12 @@ export class BridgeComponent implements OnInit {
     }
 
     if (loadGlobal) {
+      const apiStr = 'https://bridgeapi.anyswap.exchange/v2/serverInfo/chainid';
+      const request = await fetch(apiStr);
+      const result = await request.json();
+      this.anyswapInfo = result;
+      console.log(this.anyswapInfo);
+      this.updateBridge();
     }
   }
 
@@ -90,9 +110,34 @@ export class BridgeComponent implements OnInit {
         this.wallet.networkID === this.constants.CHAIN_ID.MAINNET
           ? this.constants.CHAIN_ID.FANTOM
           : this.constants.CHAIN_ID.MAINNET;
+
+      this.bridgeFeeRate = new BigNumber(0);
+      this.bridgeMinimumFee = new BigNumber(0);
+      this.bridgeMaximumFee = new BigNumber(0);
+
+      this.bridgeMinimum = new BigNumber(0);
+      this.bridgeMaximum = new BigNumber(0);
+      this.bridgeThreshold = new BigNumber(0);
+
+      this.bridgeAddress = '';
     }
   }
 
+  updateBridge() {
+    this.wallet.changeChain(this.fromChain);
+
+    const anyswap = this.anyswapInfo[`${this.toChain}`].mphv5;
+
+    this.bridgeFeeRate = new BigNumber(anyswap.SrcToken.SwapFeeRate);
+    this.bridgeMinimum = new BigNumber(anyswap.SrcToken.MinimumSwap);
+    this.bridgeMaximum = new BigNumber(anyswap.SrcToken.MaximumSwap);
+    this.bridgeThreshold = new BigNumber(anyswap.SrcToken.BigValueThreshold);
+
+    this.bridgeAddress = anyswap.SrcToken.DepositAddress;
+    console.log(anyswap);
+  }
+
+  // this needs to be fixed.
   setBridgeAmount(amount: string | number): void {
     let bridgeAmount = new BigNumber(amount);
     if (bridgeAmount.isNaN()) {
@@ -106,11 +151,47 @@ export class BridgeComponent implements OnInit {
     this.bridgeAmount = this.mphBalance.times(ratio);
   }
 
-  canContinue(): boolean {
+  bridge() {
+    // const web3 = new Web3(this.constants.RPC_WS[this.fromChain]);
+    const web3 = this.wallet.readonlyWeb3();
+    const mph = this.contract.getNamedContract(
+      'MPHToken',
+      web3,
+      this.fromChain
+    );
+    const bridgeAmount = this.helpers.processWeb3Number(
+      this.bridgeAmount.times(this.constants.PRECISION)
+    );
+    const func = mph.methods.transfer(this.bridgeAddress, bridgeAmount);
+
+    console.log(func);
+
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
+  }
+
+  canBridge(): boolean {
     return (
       this.mphBalance.gte(this.bridgeAmount) &&
+      this.bridgeAmount.gte(this.bridgeMinimum) &&
+      this.bridgeAmount.lte(this.bridgeMaximum) &&
       this.wallet.networkID === this.fromChain &&
       this.fromChain !== this.toChain
     );
+  }
+
+  canContinue(): boolean {
+    return true;
+  }
+
+  canConvert(): boolean {
+    return true;
   }
 }

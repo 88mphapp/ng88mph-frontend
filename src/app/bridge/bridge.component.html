@@ -52,13 +52,16 @@
                               data-toggle="select"
                               id="FromChain"
                               [(ngModel)]="fromChain"
-                              (change)="wallet.changeChain(fromChain)"
+                              (change)="updateBridge()"
                             >
                               <option [ngValue]="constants.CHAIN_ID.MAINNET">
                                 Ethereum
                               </option>
-                              <option [ngValue]="constants.CHAIN_ID.FANTOM">
-                                Fantom
+                              <option
+                                [ngValue]="constants.CHAIN_ID.FANTOM"
+                                disabled
+                              >
+                                Fantom (soon)
                               </option>
                               <option
                                 [ngValue]="constants.CHAIN_ID.POLYGON"
@@ -198,37 +201,46 @@
                     <ng-container i18n="@@bridgeEstimatedFee"
                       >Estimated transfer fee:</ng-container
                     >
-                    x MPH
+                    {{
+                      bridgeAmount.times(bridgeFeeRate).lte(bridgeMinimumFee)
+                        ? bridgeMinimumFee
+                        : bridgeAmount
+                            .times(bridgeFeeRate)
+                            .gte(bridgeMaximumFee)
+                        ? bridgeMaximumFee
+                        : bridgeAmount.times(bridgeFeeRate)
+                    }}
+                    MPH
                   </li>
                   <li>
                     <ng-container i18n="@@bridgeMinAmount"
                       >Minimum bridgeable amount:</ng-container
                     >
-                    x MPH
+                    {{ bridgeMinimum }} MPH
                   </li>
                   <li>
                     <ng-container i18n="@@bridgeMaxAmount"
                       >Maximum bridgeable amount:</ng-container
                     >
-                    x MPH
+                    {{ bridgeMaximum }} MPH
                   </li>
                   <li>
                     <ng-container i18n="@@bridgeEstimatedTimeOfArrival"
                       >Estimated Time of Crosschain Arrival is</ng-container
                     >
-                    x min.
+                    10 - 30 min
                   </li>
                   <li>
                     <ng-container
                       i18n="@@bridgeEstimatedTimeAmountLargerThanPart1"
                       >Crosschain amount larger than</ng-container
                     >
-                    x MPH
+                    {{ bridgeThreshold }} MPH
                     <ng-container
                       i18n="@@bridgeEstimatedTimeAmountLargerThanPart2"
                       >could take up to</ng-container
                     >
-                    x
+                    12
                     <ng-container
                       i18n="@@bridgeEstimatedTimeAmountLargerThanPart3"
                       >hours</ng-container
@@ -238,19 +250,12 @@
               </div>
               <button
                 type="button"
-                class="btn btn-lg btn-block border-gradient mb-3"
-                i18n="@@approve"
-                [disabled]="!canContinue()"
-              >
-                Approve
-              </button>
-              <button
-                type="button"
                 class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                i18n="@@Transfer"
-                [disabled]="!canContinue()"
+                i18n="@@approve"
+                [disabled]="!canBridge()"
+                (click)="bridge()"
               >
-                Transfer
+                Bridge
               </button>
             </div>
           </div>
