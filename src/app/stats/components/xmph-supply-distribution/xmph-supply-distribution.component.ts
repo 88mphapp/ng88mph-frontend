@@ -31,7 +31,6 @@ export class XmphSupplyDistributionComponent implements OnInit {
   data: number[];
   backgroundColors: string[];
   hoverBackgroundColors: string[];
-  loading: boolean;
 
   // chart variables
   public pieChartOptions;
@@ -57,7 +56,6 @@ export class XmphSupplyDistributionComponent implements OnInit {
     this.data = [];
     this.backgroundColors = [];
     this.hoverBackgroundColors = [];
-    this.loading = true;
   }
 
   async drawChart() {
@@ -67,19 +65,6 @@ export class XmphSupplyDistributionComponent implements OnInit {
     // then draw the chart
     this.pieChartOptions = {
       responsive: true,
-      tooltips: {
-        callbacks: {
-          label: function (tooltipItem, data) {
-            const index = tooltipItem.index;
-            const address = data.labels[index];
-            const balance = data.datasets[0].data[index]
-              .toFixed(2)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            return address + ': ' + balance;
-          },
-        },
-      },
     };
     this.pieChartLabels = this.labels;
     this.pieChartType = 'pie';
@@ -131,7 +116,6 @@ export class XmphSupplyDistributionComponent implements OnInit {
       this.hoverBackgroundColors[holder] =
         'rgba(' + this.COLORS[parseInt(holder) % this.COLORS.length] + ', 1)';
     }
-    this.loading = false;
   }
 }
 

@@ -26,7 +26,6 @@ export class FundedInterestExpensesComponent implements OnInit {
     [this.constants.CHAIN_ID.POLYGON]: 1633392000,
     [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
     [this.constants.CHAIN_ID.FANTOM]: 1633996800,
-    [this.constants.CHAIN_ID.V2]: 1606176000,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   PERIOD_NAME: string = 'daily';
@@ -61,14 +60,10 @@ export class FundedInterestExpensesComponent implements OnInit {
   // fantom
   fantomTimestamps: number[];
   fantomData: DataObject[];
-  // v2
-  v2Timestamps: number[];
-  v2Data: DataObject[];
 
   // chart data
   dates: string[];
   data: DataObject[];
-  loading: boolean;
 
   // chart variables
   public lineChartOptions;
@@ -112,14 +107,10 @@ export class FundedInterestExpensesComponent implements OnInit {
     // fantom
     this.fantomTimestamps = [];
     this.fantomData = [];
-    // v2
-    this.v2Timestamps = [];
-    this.v2Data = [];
 
     // chart data
     this.dates = [];
     this.data = [];
-    this.loading = true;
   }
 
   async drawChart(loadData: boolean = true) {
@@ -146,15 +137,8 @@ export class FundedInterestExpensesComponent implements OnInit {
               display: true,
               color: '#242526',
             },
-            scaleLabel: {
-              display: true,
-              labelString: 'Funded Interest Expense (%)',
-            },
             ticks: {
               max: 100,
-              callback: function (label, index, labels) {
-                return label.toFixed(0);
-              },
             },
           },
         ],
@@ -167,13 +151,6 @@ export class FundedInterestExpensesComponent implements OnInit {
         mode: 'nearest',
         intersect: false,
         displayColors: true,
-        callbacks: {
-          label: function (tooltipItem, data) {
-            const pool = data.datasets[tooltipItem.datasetIndex].label;
-            const value = tooltipItem.yLabel.toFixed(2) + '%';
-            return pool + ': ' + value;
-          },
-        },
       },
       elements: {
         point: {
@@ -196,7 +173,6 @@ export class FundedInterestExpensesComponent implements OnInit {
 
   async loadAll() {
     await Promise.all([
-      this.loadDataV2(),
       this.loadData(this.constants.CHAIN_ID.MAINNET),
       this.loadData(this.constants.CHAIN_ID.POLYGON),
       this.loadData(this.constants.CHAIN_ID.AVALANCHE),
@@ -206,7 +182,6 @@ export class FundedInterestExpensesComponent implements OnInit {
       this.padData(this.polygonTimestamps, this.polygonData);
       this.padData(this.avalancheTimestamps, this.avalancheData);
       this.padData(this.fantomTimestamps, this.fantomData);
-      this.padData(this.v2Timestamps, this.v2Data);
       this.focusDataset(this.displaySetting);
     });
   }
@@ -274,73 +249,6 @@ export class FundedInterestExpensesComponent implements OnInit {
     await request(this.constants.GRAPHQL_ENDPOINT[networkID], query).then(
       (data: QueryResult) => this.handleData(data, networkID, blocks)
     );
-  }
-
-  async loadDataV2() {
-    // fetch timestamps and blocks
-    const [timestamps, blocks] = await this.timeseries.getCustomTimeSeries(
-      this.FIRST_INDEX[this.constants.CHAIN_ID.V2],
-      this.PERIOD,
-      this.constants.CHAIN_ID.MAINNET
-    );
-
-    this.v2Timestamps = timestamps;
-
-    // change everything array to largest timestamp array
-    if (timestamps.length > this.everythingTimestamps.length) {
-      this.everythingTimestamps = timestamps;
-    }
-
-    let queryResult;
-    let count: number = 0;
-    while (count < timestamps.length) {
-      let limit = timestamps.length - count;
-      if (limit > 300) {
-        limit = 300;
-      }
-
-      // then generate the query
-      let queryString = `query InterestExpense {`;
-      if (count === 0) {
-        queryString += `dpools {
-          address
-          stablecoin
-        }`;
-      }
-      for (let i = count; i < count + limit; i++) {
-        queryString += `t${i}: dpools(
-          block: {
-            number: ${blocks[i]}
-          }
-        ) {
-          address
-          stablecoin
-          deposits (
-            where: {
-              active: true
-            }
-          ) {
-            interestEarned
-            fundingID
-          }
-        }`;
-      }
-      queryString += `}`;
-      const query = gql`
-        ${queryString}
-      `;
-
-      // run the query
-      const partialResult = await request(
-        this.constants.GRAPHQL_ENDPOINT_V2[this.constants.CHAIN_ID.MAINNET],
-        query
-      ).then((data: QueryResultV2) => {
-        return data;
-      });
-      queryResult = { ...queryResult, ...partialResult };
-      count += limit;
-    }
-    this.handleDataV2(queryResult);
   }
 
   async handleData(data: QueryResult, networkID: number, blocks: number[]) {
@@ -447,103 +355,6 @@ export class FundedInterestExpensesComponent implements OnInit {
     }
   }
 
-  async handleDataV2(data: QueryResultV2) {
-    let result = data;
-    let dpools = result.dpools;
-    let chainData: DataObject[] = [];
-
-    // build empty data structure
-    for (let i in dpools) {
-      let poolInfo = this.contract.getPoolInfoFromAddress(
-        dpools[i].address,
-        this.constants.CHAIN_ID.MAINNET,
-        true
-      );
-      let dataobj: DataObject;
-      dataobj = {
-        label: poolInfo.name,
-        address: dpools[i].address,
-        networkID: this.constants.CHAIN_ID.V2,
-        data: [],
-        interestExpenses: [],
-        fundedExpenses: [],
-        borderColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
-        hoverBorderColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
-        pointBorderColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
-        pointBackgroundColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
-        pointHoverBorderColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
-        pointHoverBackgroundColor:
-          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
-        fill: false,
-      };
-      chainData.push(dataobj);
-    }
-
-    // populate data structure
-    for (let i in result) {
-      if (i !== 'dpools') {
-        // initialize dpool data arrays
-        for (let x in chainData) {
-          if (chainData[x].label) {
-            chainData[x].interestExpenses[parseInt(i.substring(1))] = 0;
-            chainData[x].fundedExpenses[parseInt(i.substring(1))] = 0;
-            chainData[x].data[parseInt(i.substring(1))] = 0;
-          }
-        }
-
-        // populate dpool data arrays
-        for (let p in result[i]) {
-          const pool = result[i][p];
-          const deposits = pool.deposits;
-          const fundings = pool.fundings;
-          const entry = chainData.find((x) => x.address === pool.address);
-
-          let interestOwed: number = 0;
-          let fundedDeficit: number = 0;
-          for (let d in deposits) {
-            const deposit = deposits[d];
-            interestOwed = interestOwed + parseFloat(deposit.interestEarned);
-            if (deposit.fundingID !== '0') {
-              fundedDeficit =
-                fundedDeficit + parseFloat(deposit.interestEarned);
-            }
-          }
-          entry.interestExpenses[parseInt(i.substring(1))] = interestOwed;
-
-          // let fundedDeficit: number = 0;
-          // for (let f in fundings) {
-          //   const funding = fundings[f];
-          //   fundedDeficit = fundedDeficit + parseFloat(funding.fundedDeficitAmount);
-          // }
-          entry.fundedExpenses[parseInt(i.substring(1))] = fundedDeficit;
-
-          let x = (fundedDeficit / interestOwed) * 100;
-          if (isNaN(x)) {
-            x = 0;
-          }
-          entry.data[parseInt(i.substring(1))] = x;
-          // let fundedDeficit = 0;
-          // const fundings = pool.fundings;
-          // for (let funding of fundings) {
-          //   fundedDeficit += parseFloat(funding.fundedDeficitAmount);
-          // }
-          // entry.fundedExpenses[parseInt(i.substring(1))] = fundedDeficit;
-        }
-      }
-    }
-
-    chainData.sort((a, b) => {
-      return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
-    });
-
-    this.v2Data = chainData;
-  }
-
   getReadableTimestamps(timestamps: number[]): string[] {
     let readable: string[] = [];
     for (let i in timestamps) {
@@ -566,7 +377,6 @@ export class FundedInterestExpensesComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633392000,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
         [this.constants.CHAIN_ID.FANTOM]: 1633996800,
-        [this.constants.CHAIN_ID.V2]: 1606176000,
       };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
@@ -575,7 +385,6 @@ export class FundedInterestExpensesComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633219200,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
         [this.constants.CHAIN_ID.FANTOM]: 1633824000,
-        [this.constants.CHAIN_ID.V2]: 1606003200,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
@@ -584,7 +393,6 @@ export class FundedInterestExpensesComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633046400,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633046400,
         [this.constants.CHAIN_ID.FANTOM]: 1633046400,
-        [this.constants.CHAIN_ID.V2]: 1604188800,
       };
     }
     this.resetChart();
@@ -610,7 +418,7 @@ export class FundedInterestExpensesComponent implements OnInit {
         data = this.fantomData;
         break;
       case 'v2':
-        data = this.v2Data;
+        data = [];
         break;
     }
 
@@ -649,11 +457,10 @@ export class FundedInterestExpensesComponent implements OnInit {
         this.dates = this.getReadableTimestamps(this.fantomTimestamps);
         break;
       case 'v2':
-        this.data = this.v2Data;
-        this.dates = this.getReadableTimestamps(this.v2Timestamps);
+        this.data = [];
+        this.dates = [];
         break;
     }
-    this.loading = false;
     this.drawChart(false);
   }
 
@@ -684,16 +491,6 @@ interface QueryResult {
     fundings: {
       fundedDeficitAmount: number;
     };
-  }[];
-}
-interface QueryResultV2 {
-  dpools: {
-    id: string;
-    address: string;
-    deposits: {
-      interestEarned: string;
-      fundingID: string;
-    }[];
   }[];
 }
 
