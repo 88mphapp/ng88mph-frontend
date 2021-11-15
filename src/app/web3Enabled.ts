@@ -266,6 +266,18 @@ export class Web3Enabled {
     return new Web3(this.constants.RPC_WS[this.networkID]);
   }
 
+  httpsWeb3(chainId?: number) {
+    return chainId
+      ? new Web3(this.constants.RPC[chainId])
+      : new Web3(this.constants.RPC[this.networkID]);
+  }
+
+  wssWeb3(chainId?: number) {
+    return chainId
+      ? new Web3(this.constants.RPC_WS[chainId])
+      : new Web3(this.constants.RPC_WS[this.networkID]);
+  }
+
   async estimateGas(func, val, _onError) {
     return Math.floor(
       (await func
