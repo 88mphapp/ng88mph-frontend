@@ -227,6 +227,13 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',
   };
+  FOREIGN_MPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '0x37b9a2d62db25501a366f708399546c02be151d0',
+  };
   MPH_CONVERTER = {
     [this.CHAIN_ID.MAINNET]: '0x5b5e48F5028D46868F3C036a8ea3e7B1cC841a84',
     [this.CHAIN_ID.RINKEBY]: '',
