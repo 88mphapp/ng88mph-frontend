@@ -30,7 +30,17 @@ export class BridgeComponent implements OnInit {
 
   bridgeAddress: string;
 
+  // bridge status
+  bridgeStatus: string;
+  fromStatus: string;
+  toStatus: string;
+  bridgeHash: string;
+
+  conversionStatus: string;
+
   // converter params
+  foreignBalance: BigNumber;
+  foreignAllowance: BigNumber;
 
   constructor(
     public wallet: WalletService,
@@ -63,19 +73,30 @@ export class BridgeComponent implements OnInit {
         this.loadData(true, false);
       });
     });
+    // this.wallet.txConfirmedEvent.subscribe(() => {
+    //   setTimeout(() => {
+    //     this.resetData(true, true);
+    //     this.loadData(true, true);
+    //   }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
+    // });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const user = this.wallet.actualAddress.toLowerCase();
-    const web3 = new Web3(this.constants.RPC[this.fromChain]);
-    const mph = this.contract.getNamedContract(
+    const web3 = new Web3(this.constants.RPC[this.wallet.networkID]);
+    const nativeMPH = this.contract.getNamedContract(
       'MPHToken',
       web3,
-      this.fromChain
+      this.wallet.networkID
+    );
+    const foreignMPH = this.contract.getContract(
+      this.constants.FOREIGN_MPH_ADDRESS[this.wallet.networkID],
+      'ERC20',
+      web3
     );
 
     if (loadUser && user) {
-      mph.methods
+      nativeMPH.methods
         .balanceOf(user)
         .call()
         .then((balance) => {
@@ -86,6 +107,34 @@ export class BridgeComponent implements OnInit {
             this.constants.PRECISION
           );
         });
+
+      if (foreignMPH.options.address) {
+        await foreignMPH.methods
+          .balanceOf(user)
+          .call()
+          .then((balance) => {
+            this.foreignBalance = new BigNumber(balance).div(
+              this.constants.PRECISION
+            );
+            if (this.foreignBalance.gt(0)) {
+              this.fromStatus = 'success';
+              this.toStatus = 'success';
+              this.conversionStatus = 'arrived';
+            }
+          });
+
+        foreignMPH.methods
+          .allowance(user, this.constants.MPH_CONVERTER[this.wallet.networkID])
+          .call()
+          .then((allowance) => {
+            this.foreignAllowance = new BigNumber(allowance).div(
+              this.constants.PRECISION
+            );
+            if (this.foreignAllowance.gte(this.foreignBalance)) {
+              this.conversionStatus = 'approved';
+            }
+          });
+      }
     }
 
     if (loadGlobal) {
@@ -93,7 +142,6 @@ export class BridgeComponent implements OnInit {
       const request = await fetch(apiStr);
       const result = await request.json();
       this.anyswapInfo = result;
-      console.log(this.anyswapInfo);
       this.updateBridge();
     }
   }
@@ -102,6 +150,8 @@ export class BridgeComponent implements OnInit {
     if (resetUser) {
       this.mphBalance = new BigNumber(0);
       this.bridgeAmount = new BigNumber(0);
+      this.foreignBalance = new BigNumber(0);
+      this.foreignAllowance = new BigNumber(0);
     }
 
     if (resetGlobal) {
@@ -111,6 +161,7 @@ export class BridgeComponent implements OnInit {
           ? this.constants.CHAIN_ID.FANTOM
           : this.constants.CHAIN_ID.MAINNET;
 
+      // bridge params
       this.bridgeFeeRate = new BigNumber(0);
       this.bridgeMinimumFee = new BigNumber(0);
       this.bridgeMaximumFee = new BigNumber(0);
@@ -120,11 +171,21 @@ export class BridgeComponent implements OnInit {
       this.bridgeThreshold = new BigNumber(0);
 
       this.bridgeAddress = '';
+
+      // bridge status
+      this.bridgeStatus = '';
+      this.fromStatus = 'none';
+      this.toStatus = 'none';
+      this.bridgeHash = '';
+
+      this.conversionStatus = 'none';
     }
   }
 
   updateBridge() {
-    this.wallet.changeChain(this.fromChain);
+    this.wallet.changeChain(this.fromChain).then(() => {
+      // do nothing
+    });
 
     const anyswap = this.anyswapInfo[`${this.toChain}`].mphv5;
 
@@ -134,7 +195,22 @@ export class BridgeComponent implements OnInit {
     this.bridgeThreshold = new BigNumber(anyswap.SrcToken.BigValueThreshold);
 
     this.bridgeAddress = anyswap.SrcToken.DepositAddress;
-    console.log(anyswap);
+  }
+
+  async checkBridge(hash: string) {
+    const apiStr = `https://bridgeapi.anyswap.exchange/v2/history/details?params=${hash}`;
+
+    // check anyswap API for tx status every 10 seconds
+    const status = setInterval(async () => {
+      const request = await fetch(apiStr);
+      const result = await request.json();
+      if (result.msg === 'Success') {
+        this.bridgeStatus = 'success';
+        this.toStatus = 'success';
+        this.conversionStatus = 'arrived';
+        clearInterval(status);
+      }
+    }, 10000);
   }
 
   // this needs to be fixed.
@@ -152,7 +228,6 @@ export class BridgeComponent implements OnInit {
   }
 
   bridge() {
-    // const web3 = new Web3(this.constants.RPC_WS[this.fromChain]);
     const web3 = this.wallet.readonlyWeb3();
     const mph = this.contract.getNamedContract(
       'MPHToken',
@@ -164,18 +239,120 @@ export class BridgeComponent implements OnInit {
     );
     const func = mph.methods.transfer(this.bridgeAddress, bridgeAmount);
 
-    console.log(func);
+    this.wallet.sendTx(
+      func,
+      (hash) => {
+        this.fromStatus = 'pending';
+        this.bridgeHash = hash;
+      },
+      () => {},
+      () => {
+        this.fromStatus = 'success';
+        this.toStatus = 'pending';
+        this.checkBridge(this.bridgeHash);
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      },
+      true
+    );
+  }
+
+  approveConverter() {
+    const web3 = this.wallet.readonlyWeb3();
+    const user = this.wallet.actualAddress.toLowerCase();
+    const converter = this.constants.MPH_CONVERTER[this.wallet.networkID];
+    const foreignMPH = this.contract.getContract(
+      this.constants.FOREIGN_MPH_ADDRESS[this.wallet.networkID],
+      'ERC20',
+      web3
+    );
+    const approveAmount = this.helpers.processWeb3Number(
+      this.foreignBalance.times(this.constants.PRECISION)
+    );
+
+    this.wallet.approveToken(
+      foreignMPH,
+      converter,
+      approveAmount,
+      () => {
+        this.conversionStatus = 'pending';
+      },
+      () => {},
+      () => {
+        foreignMPH.methods
+          .allowance(user, converter)
+          .call()
+          .then((allowance) => {
+            this.foreignAllowance = new BigNumber(allowance).div(
+              this.constants.PRECISION
+            );
+            this.conversionStatus = 'approved';
+          });
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      },
+      true
+    );
+  }
+
+  convert() {
+    const web3 = this.wallet.readonlyWeb3();
+    const converter = this.contract.getNamedContract(
+      'MPHConverter',
+      web3,
+      this.wallet.networkID
+    );
+    const foreignMPH =
+      this.constants.FOREIGN_MPH_ADDRESS[this.wallet.networkID];
+    const convertAmount = this.helpers.processWeb3Number(
+      this.foreignBalance.times(this.constants.PRECISION)
+    );
+    const func = converter.methods.convertForeignTokenToNative(
+      foreignMPH,
+      convertAmount
+    );
 
     this.wallet.sendTx(
       func,
+      () => {
+        this.conversionStatus = 'pending';
+      },
       () => {},
-      () => {},
-      () => {},
+      () => {
+        this.conversionStatus = 'success';
+      },
       (error) => {
         this.wallet.displayGenericError(error);
       }
     );
   }
+
+  // unconvert() {
+  //   const web3 = this.wallet.readonlyWeb3();
+  //   const converter = this.contract.getNamedContract('MPHConverter', web3, this.wallet.networkID);
+  //
+  //   const foreignMPH = this.constants.FOREIGN_MPH_ADDRESS[this.wallet.networkID];
+  //
+  //   const convertAmount = this.helpers.processWeb3Number(
+  //     new BigNumber(1.25).times(this.constants.PRECISION)
+  //   );
+  //
+  //   const func = converter.methods.convertNativeTokenToForeign(foreignMPH, convertAmount);
+  //
+  //   console.log(func);
+  //
+  //   this.wallet.sendTx(
+  //     func,
+  //     () => {},
+  //     () => {},
+  //     () => {},
+  //     (error) => {
+  //       this.wallet.displayGenericError(error);
+  //     }
+  //   );
+  // }
 
   canBridge(): boolean {
     return (
@@ -183,15 +360,15 @@ export class BridgeComponent implements OnInit {
       this.bridgeAmount.gte(this.bridgeMinimum) &&
       this.bridgeAmount.lte(this.bridgeMaximum) &&
       this.wallet.networkID === this.fromChain &&
-      this.fromChain !== this.toChain
+      this.fromChain !== this.toChain &&
+      this.fromChain === this.constants.CHAIN_ID.MAINNET
     );
   }
 
-  canContinue(): boolean {
-    return true;
-  }
-
   canConvert(): boolean {
-    return true;
+    return (
+      this.foreignBalance.gt(0) &&
+      this.foreignAllowance.gte(this.foreignBalance)
+    );
   }
 }
