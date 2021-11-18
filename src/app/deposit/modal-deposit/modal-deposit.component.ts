@@ -181,12 +181,7 @@ export class ModalDepositComponent implements OnInit {
           id
           MinDepositAmount
           MaxDepositPeriod
-          ${
-            this.wallet.networkID ===
-            (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
-              ? `poolDepositorRewardMintMultiplier`
-              : ''
-          }
+          poolDepositorRewardMintMultiplier
         }
       }
     `;
@@ -199,14 +194,17 @@ export class ModalDepositComponent implements OnInit {
       this.maxDepositPeriodInDays = Math.floor(
         pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
       );
-      if (
-        this.wallet.networkID ===
-        (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
-      ) {
-        this.mphDepositorRewardMintMultiplier = new BigNumber(
-          pool.poolDepositorRewardMintMultiplier
-        );
-      }
+      // if (
+      //   this.wallet.networkID ===
+      //   (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
+      // ) {
+      //   this.mphDepositorRewardMintMultiplier = new BigNumber(
+      //     pool.poolDepositorRewardMintMultiplier
+      //   );
+      // }
+      this.mphDepositorRewardMintMultiplier = new BigNumber(
+        pool.poolDepositorRewardMintMultiplier
+      );
     });
 
     let userAddress: string = this.wallet.actualAddress;

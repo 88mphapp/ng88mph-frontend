@@ -301,7 +301,20 @@ export class LandingPageComponent implements OnInit {
           this.maxRewardAPR = maxRewardAPR;
           this.allPoolList = allPoolList;
           this.bestPoolList = bestPoolList;
-          this.selectedPool = this.bestPoolList['DAI'];
+          switch (networkID) {
+            case this.constants.CHAIN_ID.MAINNET:
+              this.selectedPool = this.bestPoolList['WETH'];
+              break;
+            case this.constants.CHAIN_ID.POLYGON:
+              this.selectedPool = this.bestPoolList['WMATIC'];
+              break;
+            case this.constants.CHAIN_ID.AVALANCHE:
+              this.selectedPool = this.bestPoolList['WAVAX'];
+              break;
+            case this.constants.CHAIN_ID.FANTOM:
+              this.selectedPool = this.bestPoolList['WFTM'];
+              break;
+          }
           this.updateAPY();
         }
 
