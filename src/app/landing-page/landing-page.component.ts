@@ -67,8 +67,8 @@ export class LandingPageComponent implements OnInit {
     });
 
     this.wallet.disconnectedEvent.subscribe(() => {
-      this.resetData(true, false);
-      this.loadData(false, false, this.wallet.networkID);
+      this.resetData(true, false, false);
+      this.loadData(false, false, false, this.wallet.networkID);
     });
 
     this.wallet.chainChangedEvent.subscribe((networkID) => {
