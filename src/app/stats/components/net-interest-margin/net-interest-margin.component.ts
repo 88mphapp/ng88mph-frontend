@@ -26,6 +26,7 @@ export class NetInterestMarginComponent implements OnInit {
     [this.constants.CHAIN_ID.POLYGON]: 1633392000,
     [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
     [this.constants.CHAIN_ID.FANTOM]: 1633996800,
+    [this.constants.CHAIN_ID.V2]: 1606176000,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   PERIOD_NAME: string = 'daily';
@@ -60,10 +61,14 @@ export class NetInterestMarginComponent implements OnInit {
   // fantom
   fantomTimestamps: number[];
   fantomData: DataObject[];
+  // v2
+  v2Timestamps: number[];
+  v2Data: DataObject[];
 
   // chart data
   dates: string[];
   data: DataObject[];
+  loading: boolean;
 
   // chart variables
   public lineChartOptions;
@@ -107,10 +112,14 @@ export class NetInterestMarginComponent implements OnInit {
     // fantom
     this.fantomTimestamps = [];
     this.fantomData = [];
+    // fantom
+    this.v2Timestamps = [];
+    this.v2Data = [];
 
     // chart data
     this.dates = [];
     this.data = [];
+    this.loading = true;
   }
 
   async drawChart(loadData: boolean = true) {
@@ -137,8 +146,15 @@ export class NetInterestMarginComponent implements OnInit {
               display: true,
               color: '#242526',
             },
+            scaleLabel: {
+              display: true,
+              labelString: 'Net Interest Margin (%)',
+            },
             ticks: {
               suggestedMin: 0,
+              callback: function (label, index, labels) {
+                return label.toFixed(0);
+              },
             },
           },
         ],
@@ -154,6 +170,13 @@ export class NetInterestMarginComponent implements OnInit {
         mode: 'nearest',
         intersect: false,
         displayColors: true,
+        callbacks: {
+          label: function (tooltipItem, data) {
+            const pool = data.datasets[tooltipItem.datasetIndex].label;
+            const value = tooltipItem.yLabel.toFixed(2) + '%';
+            return pool + ': ' + value;
+          },
+        },
       },
       elements: {
         point: {
@@ -180,11 +203,13 @@ export class NetInterestMarginComponent implements OnInit {
       this.loadData(this.constants.CHAIN_ID.POLYGON),
       this.loadData(this.constants.CHAIN_ID.AVALANCHE),
       this.loadData(this.constants.CHAIN_ID.FANTOM),
+      this.loadDataV2(),
     ]).then(() => {
       this.padData(this.ethereumTimestamps, this.ethereumData);
       this.padData(this.polygonTimestamps, this.polygonData);
       this.padData(this.avalancheTimestamps, this.avalancheData);
       this.padData(this.fantomTimestamps, this.fantomData);
+      this.padData(this.v2Timestamps, this.v2Data);
       this.focusDataset(this.displaySetting);
     });
   }
@@ -245,6 +270,55 @@ export class NetInterestMarginComponent implements OnInit {
     await request(this.constants.GRAPHQL_ENDPOINT[networkID], query).then(
       (data: QueryResult) => this.handleData(data, networkID, blocks)
     );
+  }
+
+  async loadDataV2() {
+    // fetch timestamps and blocks
+    const [timestamps, blocks] = await this.timeseries.getCustomTimeSeries(
+      this.FIRST_INDEX[this.constants.CHAIN_ID.V2],
+      this.PERIOD,
+      this.constants.CHAIN_ID.MAINNET
+    );
+
+    this.v2Timestamps = timestamps;
+
+    // change everything array to largest timestamp array
+    if (timestamps.length > this.everythingTimestamps.length) {
+      this.everythingTimestamps = timestamps;
+    }
+
+    // generate the query
+    let queryString = `query ExpensesV2 {`;
+    queryString += `dpools {
+        address
+      }`;
+    for (let i = 0; i < blocks.length; i++) {
+      queryString += `t${i}: dpools(
+        block: {
+          number: ${blocks[i]}
+        }
+      ) {
+        address
+        totalActiveDeposit
+        deposits (
+          where: {
+            active: true
+          }
+        ) {
+          interestEarned
+        }
+      }`;
+    }
+    queryString += `}`;
+    const query = gql`
+      ${queryString}
+    `;
+
+    // run the query
+    await request(
+      this.constants.GRAPHQL_ENDPOINT_V2[this.constants.CHAIN_ID.MAINNET],
+      query
+    ).then((data: QueryResultV2) => this.handleDataV2(data, blocks));
   }
 
   async loadEarningsData(networkID: number, blocks: number[]) {
@@ -363,6 +437,82 @@ export class NetInterestMarginComponent implements OnInit {
     await this.loadEarningsData(networkID, blocks);
   }
 
+  async handleDataV2(data: QueryResultV2, blocks: number[]) {
+    let result = data;
+    let dpools = result.dpools;
+    let chainData: DataObject[] = [];
+
+    // build empty data structure
+    for (let i in dpools) {
+      let poolInfo = this.contract.getPoolInfoFromAddress(
+        dpools[i].address,
+        this.constants.CHAIN_ID.MAINNET,
+        true
+      );
+      let dataobj: DataObject;
+      dataobj = {
+        label: poolInfo.name,
+        address: dpools[i].address,
+        networkID: this.constants.CHAIN_ID.V2,
+        data: [],
+        interestEarned: [],
+        interestExpenses: [],
+        totalDeposits: [],
+        borderColor:
+          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
+        hoverBorderColor:
+          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
+        pointBorderColor:
+          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
+        pointBackgroundColor:
+          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
+        pointHoverBorderColor:
+          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
+        pointHoverBackgroundColor:
+          'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 1)',
+        fill: false,
+      };
+      chainData.push(dataobj);
+    }
+
+    for (let i in result) {
+      if (i !== 'dpools') {
+        // initialize the data arrays
+        for (let d in chainData) {
+          if (chainData[d].label) {
+            chainData[d].interestExpenses[parseInt(i.substring(1))] = 0;
+            chainData[d].totalDeposits[parseInt(i.substring(1))] = 0;
+          }
+        }
+
+        // populate deposit and expense arrays
+        for (let p in result[i]) {
+          const pool = result[i][p];
+          const entry = chainData.find((x) => x.address === pool.address);
+
+          const totalDeposit = parseFloat(pool.totalActiveDeposit);
+          entry.totalDeposits[parseInt(i.substring(1))] = totalDeposit;
+
+          let interestExpenses: number = 0;
+          for (let d in pool.deposits) {
+            const deposit = pool.deposits[d];
+            interestExpenses =
+              interestExpenses + parseFloat(deposit.interestEarned);
+          }
+          entry.interestExpenses[parseInt(i.substring(1))] = interestExpenses;
+        }
+      }
+    }
+
+    chainData.sort((a, b) => {
+      return a.label > b.label ? 1 : a.label < b.label ? -1 : 0;
+    });
+
+    this.v2Data = chainData;
+
+    await this.loadEarningsData(this.constants.CHAIN_ID.V2, blocks);
+  }
+
   async handleEarningsData(
     data: QueryResult,
     networkID: number,
@@ -383,6 +533,9 @@ export class NetInterestMarginComponent implements OnInit {
         break;
       case this.constants.CHAIN_ID.FANTOM:
         chainData = this.fantomData;
+        break;
+      case this.constants.CHAIN_ID.V2:
+        chainData = this.v2Data;
         break;
     }
 
@@ -446,6 +599,7 @@ export class NetInterestMarginComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633392000,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
         [this.constants.CHAIN_ID.FANTOM]: 1633996800,
+        [this.constants.CHAIN_ID.V2]: 1606176000,
       };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
@@ -454,6 +608,7 @@ export class NetInterestMarginComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633219200,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
         [this.constants.CHAIN_ID.FANTOM]: 1633824000,
+        [this.constants.CHAIN_ID.V2]: 1606003200,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
@@ -462,6 +617,7 @@ export class NetInterestMarginComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633046400,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633046400,
         [this.constants.CHAIN_ID.FANTOM]: 1633046400,
+        [this.constants.CHAIN_ID.V2]: 1604188800,
       };
     }
     this.resetChart();
@@ -487,7 +643,7 @@ export class NetInterestMarginComponent implements OnInit {
         data = this.fantomData;
         break;
       case 'v2':
-        data = [];
+        data = this.v2Data;
         break;
     }
 
@@ -496,7 +652,7 @@ export class NetInterestMarginComponent implements OnInit {
       this.data = data;
     } else {
       const selectedObj = data.find(
-        (pool) => pool.label === this.SELECTED_ASSET
+        (pool) => pool.address === this.SELECTED_ASSET
       );
       this.data.push(selectedObj);
     }
@@ -526,10 +682,11 @@ export class NetInterestMarginComponent implements OnInit {
         this.dates = this.getReadableTimestamps(this.fantomTimestamps);
         break;
       case 'v2':
-        this.data = [];
-        this.dates = [];
+        this.data = this.v2Data;
+        this.dates = this.getReadableTimestamps(this.v2Timestamps);
         break;
     }
+    this.loading = false;
     this.drawChart(false);
   }
 
@@ -559,6 +716,16 @@ interface QueryResult {
     totalInterestOwed: number;
     totalFeeOwed: number;
     oracleInterestRate: number;
+  }[];
+}
+
+interface QueryResultV2 {
+  dpools: {
+    address: string;
+    totalActiveDeposit: string;
+    deposits: {
+      interestEarned: string;
+    }[];
   }[];
 }
 

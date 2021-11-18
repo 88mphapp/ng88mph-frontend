@@ -36,6 +36,8 @@
                   ? avalancheData
                   : displaySetting === 'fantom'
                   ? fantomData
+                  : displaySetting === 'v2'
+                  ? v2Data
                   : []
               "
               [ngValue]="pool.address"
@@ -52,6 +54,8 @@
                     ? "Avalanche"
                     : pool.networkID === constants.CHAIN_ID.FANTOM
                     ? "Fantom"
+                    : pool.networkID === constants.CHAIN_ID.V2
+                    ? "V2"
                     : ""
                 }}
               </ng-container>
@@ -76,7 +80,9 @@
     </div>
   </div>
   <div class="card-body">
+    <div *ngIf="loading" class="d-flex justify-content-center">Loading...</div>
     <canvas
+      *ngIf="!loading"
       baseChart
       [datasets]="lineChartData"
       [labels]="lineChartLabels"
