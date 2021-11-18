@@ -38,7 +38,8 @@
         i18n="@@homeHeaderTitleMainnet"
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.MAINNET ||
-          wallet.networkID === constants.CHAIN_ID.RINKEBY
+          wallet.networkID === constants.CHAIN_ID.RINKEBY ||
+          wallet.networkID === constants.CHAIN_ID.FANTOM
         "
       >
         Earn up to {{ maxAPR.toFormat(2) }}% fixed APR +
@@ -49,7 +50,8 @@
         i18n="@@homeHeaderSubtitleMainnet"
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.MAINNET ||
-          wallet.networkID === constants.CHAIN_ID.RINKEBY
+          wallet.networkID === constants.CHAIN_ID.RINKEBY ||
+          wallet.networkID === constants.CHAIN_ID.FANTOM
         "
       >
         Deposit crypto or stablecoins to earn a fixed yield rate & get MPH
@@ -61,8 +63,7 @@
         i18n="@@homeHeaderTitlePolygon"
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
-          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
-          wallet.networkID === constants.CHAIN_ID.FANTOM
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE
         "
       >
         Earn up to {{ maxAPR.toFormat(2) }}% fixed APR + upcoming incentives on
@@ -73,8 +74,7 @@
         i18n="@@homeHeaderSubtitlePolygon"
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
-          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
-          wallet.networkID === constants.CHAIN_ID.FANTOM
+          wallet.networkID === constants.CHAIN_ID.AVALANCHE
         "
       >
         Deposit crypto or stablecoins to earn a fixed yield rate. Withdraw any
@@ -269,8 +269,7 @@
                         class="badge badge-soft-success ml-1"
                         *ngIf="
                           wallet.networkID === constants.CHAIN_ID.POLYGON ||
-                          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
-                          wallet.networkID === constants.CHAIN_ID.FANTOM
+                          wallet.networkID === constants.CHAIN_ID.AVALANCHE
                         "
                         >Soon</span
                       >
@@ -400,8 +399,7 @@
                 class="badge badge-soft-success ml-1"
                 *ngIf="
                   wallet.networkID === constants.CHAIN_ID.POLYGON ||
-                  wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
-                  wallet.networkID === constants.CHAIN_ID.FANTOM
+                  wallet.networkID === constants.CHAIN_ID.AVALANCHE
                 "
                 >Soon</span
               >.</ng-container
@@ -756,8 +754,7 @@
               class="badge badge-soft-success ml-1"
               *ngIf="
                 wallet.networkID === constants.CHAIN_ID.POLYGON ||
-                wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
-                wallet.networkID === constants.CHAIN_ID.FANTOM
+                wallet.networkID === constants.CHAIN_ID.AVALANCHE
               "
               >Soon</span
             >.

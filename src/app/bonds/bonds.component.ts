@@ -302,7 +302,8 @@ export class BondsComponent implements OnInit {
           let funderWithdrawableMPH = new BigNumber(0);
           if (
             this.wallet.networkID === this.constants.CHAIN_ID.MAINNET ||
-            this.wallet.networkID === this.constants.CHAIN_ID.RINKEBY
+            this.wallet.networkID === this.constants.CHAIN_ID.RINKEBY ||
+            this.wallet.networkID === this.constants.CHAIN_ID.FANTOM
           ) {
             await yieldToken.methods
               .accumulativeDividendOf(
