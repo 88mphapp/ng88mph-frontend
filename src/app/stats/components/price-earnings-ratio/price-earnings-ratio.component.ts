@@ -41,6 +41,7 @@ export class PriceEarningsRatioComponent implements OnInit {
   data: number[];
   priceData: number[];
   earningsData: number[];
+  loading: boolean;
 
   // chart variables
   public lineChartOptions;
@@ -70,6 +71,7 @@ export class PriceEarningsRatioComponent implements OnInit {
     this.data = [];
     this.priceData = [];
     this.earningsData = [];
+    this.loading = true;
   }
 
   async drawChart(networkID: number) {
@@ -109,6 +111,15 @@ export class PriceEarningsRatioComponent implements OnInit {
         mode: 'nearest',
         intersect: false,
         displayColors: true,
+        callbacks: {
+          label: function (tooltipItem, data) {
+            const value = tooltipItem.yLabel.toFixed(2);
+            const formattedValue = value
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return formattedValue;
+          },
+        },
       },
       elements: {
         point: {
@@ -291,6 +302,8 @@ export class PriceEarningsRatioComponent implements OnInit {
         this.data[t] = ratio;
       }
     }
+
+    this.loading = false;
   }
 
   changePeriod() {

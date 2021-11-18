@@ -26,6 +26,7 @@ export class LossProvisionComponent implements OnInit {
     [this.constants.CHAIN_ID.POLYGON]: 1633392000,
     [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
     [this.constants.CHAIN_ID.FANTOM]: 1633996800,
+    [this.constants.CHAIN_ID.V2]: 1606176000,
   };
   PERIOD: number = this.constants.DAY_IN_SEC;
   PERIOD_NAME: string = 'daily';
@@ -60,10 +61,14 @@ export class LossProvisionComponent implements OnInit {
   // fantom
   fantomTimestamps: number[];
   fantomData: DataObject[];
+  // fantom
+  v2Timestamps: number[];
+  v2Data: DataObject[];
 
   // chart data
   dates: string[];
   data: DataObject[];
+  loading: boolean;
 
   // chart variables
   public barChartOptions;
@@ -107,10 +112,14 @@ export class LossProvisionComponent implements OnInit {
     // fantom
     this.fantomTimestamps = [];
     this.fantomData = [];
+    // fantom
+    this.v2Timestamps = [];
+    this.v2Data = [];
 
     // chart data
     this.dates = [];
     this.data = [];
+    this.loading = true;
   }
 
   async drawChart(loadData: boolean = true) {
@@ -139,8 +148,36 @@ export class LossProvisionComponent implements OnInit {
               display: true,
               color: '#242526',
             },
+            scaleLabel: {
+              display: true,
+              labelString: 'Thousands (USD)',
+            },
+            ticks: {
+              min: 0,
+              callback: function (label, index, labels) {
+                const x = label / 1e3;
+                const y =
+                  '$' +
+                  x
+                    .toFixed(0)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return y;
+              },
+            },
           },
         ],
+      },
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            const pool = data.datasets[tooltipItem.datasetIndex].label;
+            const value = tooltipItem.yLabel.toFixed(0);
+            const formattedValue =
+              '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return pool + ': ' + formattedValue;
+          },
+        },
       },
     };
     this.barChartLabels = this.dates;
@@ -155,11 +192,13 @@ export class LossProvisionComponent implements OnInit {
       this.loadData(this.constants.CHAIN_ID.POLYGON),
       this.loadData(this.constants.CHAIN_ID.AVALANCHE),
       this.loadData(this.constants.CHAIN_ID.FANTOM),
+      this.loadData(this.constants.CHAIN_ID.V2),
     ]).then(() => {
       this.padData(this.ethereumTimestamps, this.ethereumData);
       this.padData(this.polygonTimestamps, this.polygonData);
       this.padData(this.avalancheTimestamps, this.avalancheData);
       this.padData(this.fantomTimestamps, this.fantomData);
+      this.padData(this.v2Timestamps, this.v2Data);
       this.focusDataset(this.displaySetting);
     });
   }
@@ -185,6 +224,9 @@ export class LossProvisionComponent implements OnInit {
         break;
       case this.constants.CHAIN_ID.FANTOM:
         this.fantomTimestamps = timestamps;
+        break;
+      case this.constants.CHAIN_ID.V2:
+        this.v2Timestamps = timestamps;
         break;
     }
 
@@ -237,7 +279,10 @@ export class LossProvisionComponent implements OnInit {
     for (let i in dpools) {
       let poolInfo = this.contract.getPoolInfoFromAddress(
         dpools[i].address,
-        networkID
+        networkID === this.constants.CHAIN_ID.V2
+          ? this.constants.CHAIN_ID.MAINNET
+          : networkID,
+        networkID === this.constants.CHAIN_ID.V2 ? true : false
       );
       let dataobj: DataObject;
       dataobj = {
@@ -301,7 +346,10 @@ export class LossProvisionComponent implements OnInit {
               `${days}`,
               blocks,
               timestamps,
-              networkID
+              networkID === this.constants.CHAIN_ID.V2
+                ? this.constants.CHAIN_ID.MAINNET
+                : networkID,
+              networkID === this.constants.CHAIN_ID.V2 ? false : true
             );
           }
           for (let t in timestamps) {
@@ -333,6 +381,9 @@ export class LossProvisionComponent implements OnInit {
         case this.constants.CHAIN_ID.FANTOM:
           this.fantomData = chainData;
           break;
+        case this.constants.CHAIN_ID.V2:
+          this.v2Data = chainData;
+          break;
       }
     });
   }
@@ -359,6 +410,7 @@ export class LossProvisionComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633392000,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
         [this.constants.CHAIN_ID.FANTOM]: 1633996800,
+        [this.constants.CHAIN_ID.V2]: 1606176000,
       };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
@@ -367,6 +419,7 @@ export class LossProvisionComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633219200,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
         [this.constants.CHAIN_ID.FANTOM]: 1633824000,
+        [this.constants.CHAIN_ID.V2]: 1606003200,
       };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
@@ -375,6 +428,7 @@ export class LossProvisionComponent implements OnInit {
         [this.constants.CHAIN_ID.POLYGON]: 1633046400,
         [this.constants.CHAIN_ID.AVALANCHE]: 1633046400,
         [this.constants.CHAIN_ID.FANTOM]: 1633046400,
+        [this.constants.CHAIN_ID.V2]: 1604188800,
       };
     }
     this.resetChart();
@@ -400,7 +454,7 @@ export class LossProvisionComponent implements OnInit {
         data = this.fantomData;
         break;
       case 'v2':
-        data = [];
+        data = this.v2Data;
         break;
     }
 
@@ -439,10 +493,11 @@ export class LossProvisionComponent implements OnInit {
         this.dates = this.getReadableTimestamps(this.fantomTimestamps);
         break;
       case 'v2':
-        this.data = [];
-        this.dates = [];
+        this.data = this.v2Data;
+        this.dates = this.getReadableTimestamps(this.v2Timestamps);
         break;
     }
+    this.loading = false;
     this.drawChart(false);
   }
 
