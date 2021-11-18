@@ -136,7 +136,7 @@
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group">
-                        <label>Amount to bridge </label>
+                        <label>Amount to Bridge </label>
                         <div class="input-group mb-2">
                           <div class="input-group-prepend">
                             <button
@@ -179,236 +179,96 @@
                             >available</ng-container
                           ></small
                         >
-                      </div>
-                    </div>
-                  </div>
-                  <!-- / .row -->
-                </div>
-              </div>
-              <div
-                class="alert text-danger border-danger text-center"
-                *ngIf="wallet.networkID !== constants.CHAIN_ID.MAINNET"
-              >
-                Bridging from
-                {{ constants.CHAIN_ID_STRING[wallet.networkID] }} not yet
-                supported. Please switch your network to Ethereum.
-              </div>
-              <div
-                class="px-0 alert text-warning border-warning"
-                *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
-              >
-                <ul class="mb-0">
-                  <li>
-                    <ng-container i18n="@@bridgeEstimatedFee"
-                      >Estimated transfer fee:</ng-container
-                    >
-                    {{
-                      bridgeAmount.times(bridgeFeeRate).lte(bridgeMinimumFee)
-                        ? bridgeMinimumFee
-                        : bridgeAmount
-                            .times(bridgeFeeRate)
-                            .gte(bridgeMaximumFee)
-                        ? bridgeMaximumFee
-                        : bridgeAmount.times(bridgeFeeRate)
-                    }}
-                    MPH
-                  </li>
-                  <li>
-                    <ng-container i18n="@@bridgeMinAmount"
-                      >Minimum bridgeable amount:</ng-container
-                    >
-                    {{ bridgeMinimum }} MPH
-                  </li>
-                  <li>
-                    <ng-container i18n="@@bridgeMaxAmount"
-                      >Maximum bridgeable amount:</ng-container
-                    >
-                    {{ bridgeMaximum }} MPH
-                  </li>
-                  <li>
-                    <ng-container i18n="@@bridgeEstimatedTimeOfArrival"
-                      >Estimated Time of Crosschain Arrival is</ng-container
-                    >
-                    10 - 30 min
-                  </li>
-                  <li>
-                    <ng-container
-                      i18n="@@bridgeEstimatedTimeAmountLargerThanPart1"
-                      >Crosschain amount larger than</ng-container
-                    >
-                    {{ bridgeThreshold }} MPH
-                    <ng-container
-                      i18n="@@bridgeEstimatedTimeAmountLargerThanPart2"
-                      >could take up to</ng-container
-                    >
-                    12
-                    <ng-container
-                      i18n="@@bridgeEstimatedTimeAmountLargerThanPart3"
-                      >hours</ng-container
-                    >.
-                  </li>
-                </ul>
-              </div>
-              <button
-                type="button"
-                class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                i18n="@@bridge"
-                [disabled]="!canBridge()"
-                (click)="bridge()"
-              >
-                Bridge
-              </button>
-            </div>
-          </div>
-          <!--Brdige - step 2-->
-          <div class="card">
-            <div class="card-header">
-              <h4 class="card-header-title" i18n="@@bridgeTransactionStatus">
-                Convert Your MPH
-              </h4>
-            </div>
-            <div class="card-body">
-              <!-- Title -->
-              <h5
-                class="text-uppercase text-center"
-                i18n="@@bridgeAmountTransferred"
-              >
-                Amount Bridged
-              </h5>
-              <!-- Heading -->
-              <h2 class="mb-2 glowing text-center">
-                {{ foreignBalance.toFormat(4) }} MPH
-              </h2>
-              <div class="list-group list-group-flush list-group-activity">
-                <div class="list-group-item pb-0">
-                  <div class="row">
-                    <div class="col-auto">
-                      <div class="avatar avatar-sm">
-                        <div
-                          class="
-                            avatar-title
-                            font-size-lg
-                            bg-dark
-                            rounded-circle
-                            text-white
-                            border-gradient
-                          "
-                          i18n="@@step1"
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          i18n="@@bridge"
+                          [disabled]="!canBridge()"
+                          (click)="bridge()"
                         >
-                          1
+                          Bridge
+                        </button>
+                        <div
+                          class="alert text-danger border-danger text-center"
+                          *ngIf="
+                            wallet.networkID !== constants.CHAIN_ID.MAINNET
+                          "
+                        >
+                          Bridging from
+                          {{ constants.CHAIN_ID_STRING[wallet.networkID] }} not
+                          yet supported. Please switch your network to Ethereum.
+                        </div>
+                        <div
+                          class="px-0 alert text-warning border-warning"
+                          *ngIf="
+                            wallet.networkID === constants.CHAIN_ID.MAINNET
+                          "
+                        >
+                          <ul class="mb-0">
+                            <li>
+                              <ng-container i18n="@@bridgeEstimatedFee"
+                                >Estimated transfer fee:</ng-container
+                              >
+                              {{
+                                bridgeAmount
+                                  .times(bridgeFeeRate)
+                                  .lte(bridgeMinimumFee)
+                                  ? bridgeMinimumFee
+                                  : bridgeAmount
+                                      .times(bridgeFeeRate)
+                                      .gte(bridgeMaximumFee)
+                                  ? bridgeMaximumFee
+                                  : bridgeAmount.times(bridgeFeeRate)
+                              }}
+                              MPH
+                            </li>
+                            <li>
+                              <ng-container i18n="@@bridgeMinAmount"
+                                >Minimum bridgeable amount:</ng-container
+                              >
+                              {{ bridgeMinimum }} MPH
+                            </li>
+                            <li>
+                              <ng-container i18n="@@bridgeMaxAmount"
+                                >Maximum bridgeable amount:</ng-container
+                              >
+                              {{ bridgeMaximum }} MPH
+                            </li>
+                            <li>
+                              <ng-container
+                                i18n="@@bridgeEstimatedTimeOfArrival"
+                                >Estimated Time of Crosschain Arrival
+                                is</ng-container
+                              >
+                              10 - 30 min
+                            </li>
+                            <li>
+                              <ng-container
+                                i18n="
+                                  @@bridgeEstimatedTimeAmountLargerThanPart1"
+                                >Crosschain amount larger than</ng-container
+                              >
+                              {{ bridgeThreshold }} MPH
+                              <ng-container
+                                i18n="
+                                  @@bridgeEstimatedTimeAmountLargerThanPart2"
+                                >could take up to</ng-container
+                              >
+                              12
+                              <ng-container
+                                i18n="
+                                  @@bridgeEstimatedTimeAmountLargerThanPart3"
+                                >hours</ng-container
+                              >.
+                            </li>
+                          </ul>
                         </div>
                       </div>
                     </div>
-                    <div class="col ml-n2">
-                      <div class="table-responsive">
-                        <table class="table mb-0">
-                          <thead>
-                            <th
-                              i18n="@@bridgeNetwork"
-                              class="border-0 pt-0 pb-1"
-                            >
-                              Network
-                            </th>
-                            <th
-                              i18n="@@bridgeStatus"
-                              class="border-0 pt-0 pb-1 text-right"
-                            >
-                              Status
-                            </th>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td class="border-0 pt-0">Source Chain</td>
-                              <td class="border-0 text-right pt-0">
-                                <h4
-                                  class="mb-0 text-white"
-                                  i18n="bridgeTransferStatusConfirming"
-                                  *ngIf="fromStatus === 'none'"
-                                >
-                                  Awaiting bridge transaction
-                                </h4>
-                                <h4
-                                  class="mb-0 text-warning"
-                                  i18n="bridgeTransferStatusConfirming"
-                                  *ngIf="fromStatus === 'pending'"
-                                >
-                                  Confirming bridge transaction
-                                </h4>
-                                <h4
-                                  class="mb-0 text-success"
-                                  i18n="bridgeTransferStatusSuccess"
-                                  *ngIf="fromStatus === 'success'"
-                                >
-                                  Success
-                                </h4>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
                   </div>
                   <!-- / .row -->
                 </div>
-                <div class="list-group-item pt-0">
-                  <div class="row">
-                    <div class="col-auto text-center">
-                      <div class="avatar avatar-sm">
-                        <div
-                          class="
-                            avatar-title
-                            font-size-lg
-                            bg-dark
-                            rounded-circle
-                            text-white
-                            border-gradient
-                          "
-                          i18n="@@step2"
-                        >
-                          2
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col ml-n2">
-                      <div class="table-responsive">
-                        <table class="table mb-0">
-                          <tbody>
-                            <tr>
-                              <td class="border-0 pt-2">Destination Chain</td>
-                              <td class="border-0 text-right pt-2">
-                                <h4
-                                  class="mb-0 text-white"
-                                  i18n="
-                                    bridgeTransferStatusWaitingEthereumConfirmation
-                                  "
-                                  *ngIf="toStatus === 'none'"
-                                >
-                                  Awaiting source-chain confirmation
-                                </h4>
-                                <h4
-                                  class="mb-0 text-warning"
-                                  i18n="bridgeTransferStatusWaitingUserApproval"
-                                  *ngIf="toStatus === 'pending'"
-                                >
-                                  Awaiting cross-chain arrival
-                                </h4>
-                                <h4
-                                  class="mb-0 text-success"
-                                  i18n="bridgeTransferStatusSuccess"
-                                  *ngIf="toStatus === 'success'"
-                                >
-                                  Success
-                                </h4>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- / .row -->
-                </div>
-                <div class="list-group-item pt-0">
+                <div class="list-group-item">
                   <div class="row">
                     <div class="col-auto text-center">
                       <div class="avatar avatar-sm">
@@ -428,118 +288,154 @@
                       </div>
                     </div>
                     <div class="col ml-n2">
-                      <div class="table-responsive">
-                        <table class="table mb-0">
-                          <tbody>
-                            <tr>
-                              <td class="border-0 pt-2">Conversion</td>
-                              <td class="border-0 text-right pt-2">
-                                <h4
-                                  class="mb-0 text-white"
-                                  i18n="
-                                    bridgeTransferStatusWaitingCrossChainConfirmation
-                                  "
-                                  *ngIf="foreignBalance.eq(0)"
-                                >
-                                  Awaiting cross-chain confirmation
-                                </h4>
-                                <h4
-                                  class="mb-0 text-white"
-                                  i18n="
-                                    bridgeTransferStatusWaitingEthereumConfirmation
-                                  "
-                                  *ngIf="
-                                    conversionStatus === 'arrived' &&
-                                    foreignAllowance.lt(foreignBalance)
-                                  "
-                                >
-                                  Approve
-                                </h4>
-                                <h4
-                                  class="mb-0 text-warning"
-                                  i18n="bridgeTransferStatusWaitingUserApproval"
-                                  *ngIf="
-                                    conversionStatus === 'pending' &&
-                                    foreignAllowance.lt(foreignBalance)
-                                  "
-                                >
-                                  Awaiting Approval
-                                </h4>
-                                <h4
-                                  class="mb-0 text-white"
-                                  i18n="bridgeTransferStatusConfirming"
-                                  *ngIf="
-                                    conversionStatus === 'approved' &&
-                                    foreignBalance.gt(0) &&
-                                    foreignAllowance.gte(foreignBalance)
-                                  "
-                                >
-                                  Convert
-                                </h4>
-                                <h4
-                                  class="mb-0 text-warning"
-                                  i18n="
-                                    bridgeTransferStatusWaitingUserConvertion
-                                  "
-                                  *ngIf="
-                                    conversionStatus === 'pending' &&
-                                    foreignAllowance.gte(foreignBalance)
-                                  "
-                                >
-                                  Awaiting Converstion
-                                </h4>
-                                <h4
-                                  class="mb-0 text-success"
-                                  i18n="bridgeTransferStatusSuccess"
-                                  *ngIf="conversionStatus === 'success'"
-                                >
-                                  Success
-                                </h4>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                      <div class="form-group">
+                        <label>Bridge Status</label>
+                      </div>
+                      <div>
+                        <span> From Chain: </span>
+                        <span *ngIf="fromStatus === 'none'" class="text-muted">
+                          Awaiting bridge transaction
+                        </span>
+                        <span
+                          *ngIf="fromStatus === 'pending'"
+                          class="text-warning"
+                        >
+                          Confirming bridge transaction
+                        </span>
+                        <span
+                          *ngIf="fromStatus === 'success'"
+                          class="text-success"
+                        >
+                          Success!
+                        </span>
+                      </div>
+                      <div>
+                        <span> To Chain: </span>
+                        <span *ngIf="toStatus === 'none'" class="text-muted">
+                          Awaiting source-chain confirmation
+                        </span>
+                        <span
+                          *ngIf="toStatus === 'pending'"
+                          class="text-warning"
+                        >
+                          Awaiting cross-chain arrival
+                        </span>
+                        <span
+                          *ngIf="toStatus === 'success'"
+                          class="text-success"
+                        >
+                          Success!
+                        </span>
                       </div>
                     </div>
                   </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@step4"
+                        >
+                          4
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group">
+                        <label>Amount to Convert</label>
+                        <div class="input-group mb-2">
+                          <div class="input-group-prepend">
+                            <button
+                              class="btn btn-lg btn-dark"
+                              type="button"
+                              disabled
+                            >
+                              <div class="avatar avatar-xxs">
+                                <img
+                                  src="./assets/img/token-icons/mph-logo-24.svg"
+                                  width="24"
+                                  alt="..."
+                                  class="avatar-img rounded-circle"
+                                />
+                              </div>
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="0.00"
+                            aria-label="convert-amount"
+                            [value]="convertAmount.toFixed()"
+                            (input)="setConvertAmount($event.target.value)"
+                          />
+                          <div class="input-group-append">
+                            <button
+                              class="btn btn-lg border-gradient"
+                              type="button"
+                              i18n="@@Max"
+                              (click)="presetConvertAmount(100)"
+                            >
+                              Max
+                            </button>
+                          </div>
+                        </div>
+                        <small class="form-text text-white"
+                          >{{ convertAmount.toFormat(4) }} foreign MPH
+                          <ng-container i18n="@@available"
+                            >available</ng-container
+                          ></small
+                        >
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          i18n="@@approve"
+                          *ngIf="foreignBalance.eq(0)"
+                          [disabled]="true"
+                        >
+                          Don't see your bridged MPH? Switch to the network you
+                          bridged to.
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          i18n="@@approve"
+                          (click)="approveConverter()"
+                          *ngIf="
+                            convertAmount.gt(foreignAllowance) &&
+                            foreignBalance.gt(0)
+                          "
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          i18n="@@convert"
+                          *ngIf="
+                            convertAmount.lte(foreignAllowance) &&
+                            foreignBalance.gt(0)
+                          "
+                          (click)="convert()"
+                          [disabled]="!canConvert()"
+                        >
+                          Convert
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
                 </div>
               </div>
-
-              <!-- <div class="alert text-warning border-warning">
-                If it's your first bridge transfer, approve, then convert the
-                bridged MPH to the native MPH of your target chain.
-              </div> -->
-              <div class="alert text-warning border-warning text-center">
-                Don't see your bridged MPH? Switch to the network you bridged
-                your MPH to.
-              </div>
-              <button
-                type="button"
-                class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                i18n="@@approve"
-                (click)="approveConverter()"
-                *ngIf="foreignBalance.gt(foreignAllowance)"
-              >
-                Approve
-              </button>
-              <button
-                type="button"
-                class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                i18n="@@convert"
-                *ngIf="foreignBalance.lte(foreignAllowance)"
-                (click)="convert()"
-                [disabled]="!canConvert()"
-              >
-                Convert
-              </button>
-              <!-- <button
-                type="button"
-                class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                i18n="@@convert"
-                (click)="unconvert()"
-              >
-                Un-Convert
-              </button> -->
             </div>
           </div>
         </div>
