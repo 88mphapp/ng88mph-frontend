@@ -13,7 +13,10 @@ import Web3 from 'web3';
 })
 export class BridgeComponent implements OnInit {
   mphBalance: BigNumber;
+  foreignBalance: BigNumber;
+  foreignAllowance: BigNumber;
   bridgeAmount: BigNumber;
+  convertAmount: BigNumber;
 
   anyswapInfo: any;
   fromChain: number;
@@ -23,24 +26,15 @@ export class BridgeComponent implements OnInit {
   bridgeFeeRate: BigNumber;
   bridgeMinimumFee: BigNumber;
   bridgeMaximumFee: BigNumber;
-
   bridgeMinimum: BigNumber;
   bridgeMaximum: BigNumber;
   bridgeThreshold: BigNumber;
-
   bridgeAddress: string;
 
   // bridge status
-  bridgeStatus: string;
   fromStatus: string;
   toStatus: string;
   bridgeHash: string;
-
-  conversionStatus: string;
-
-  // converter params
-  foreignBalance: BigNumber;
-  foreignAllowance: BigNumber;
 
   constructor(
     public wallet: WalletService,
@@ -73,12 +67,12 @@ export class BridgeComponent implements OnInit {
         this.loadData(true, false);
       });
     });
-    // this.wallet.txConfirmedEvent.subscribe(() => {
-    //   setTimeout(() => {
-    //     this.resetData(true, true);
-    //     this.loadData(true, true);
-    //   }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
-    // });
+    this.wallet.txConfirmedEvent.subscribe(() => {
+      setTimeout(() => {
+        this.resetData(true, true);
+        this.loadData(true, true);
+      }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
+    });
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
@@ -116,11 +110,9 @@ export class BridgeComponent implements OnInit {
             this.foreignBalance = new BigNumber(balance).div(
               this.constants.PRECISION
             );
-            if (this.foreignBalance.gt(0)) {
-              this.fromStatus = 'success';
-              this.toStatus = 'success';
-              this.conversionStatus = 'arrived';
-            }
+            this.convertAmount = new BigNumber(balance).div(
+              this.constants.PRECISION
+            );
           });
 
         foreignMPH.methods
@@ -130,9 +122,6 @@ export class BridgeComponent implements OnInit {
             this.foreignAllowance = new BigNumber(allowance).div(
               this.constants.PRECISION
             );
-            if (this.foreignAllowance.gte(this.foreignBalance)) {
-              this.conversionStatus = 'approved';
-            }
           });
       }
     }
@@ -149,9 +138,10 @@ export class BridgeComponent implements OnInit {
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
       this.mphBalance = new BigNumber(0);
-      this.bridgeAmount = new BigNumber(0);
       this.foreignBalance = new BigNumber(0);
       this.foreignAllowance = new BigNumber(0);
+      this.bridgeAmount = new BigNumber(0);
+      this.convertAmount = new BigNumber(0);
     }
 
     if (resetGlobal) {
@@ -173,12 +163,9 @@ export class BridgeComponent implements OnInit {
       this.bridgeAddress = '';
 
       // bridge status
-      this.bridgeStatus = '';
       this.fromStatus = 'none';
       this.toStatus = 'none';
       this.bridgeHash = '';
-
-      this.conversionStatus = 'none';
     }
   }
 
@@ -205,15 +192,15 @@ export class BridgeComponent implements OnInit {
       const request = await fetch(apiStr);
       const result = await request.json();
       if (result.msg === 'Success') {
-        this.bridgeStatus = 'success';
         this.toStatus = 'success';
-        this.conversionStatus = 'arrived';
         clearInterval(status);
+        this.wallet.changeChain(this.toChain).then(() => {
+          // do nothing
+        });
       }
     }, 10000);
   }
 
-  // this needs to be fixed.
   setBridgeAmount(amount: string | number): void {
     let bridgeAmount = new BigNumber(amount);
     if (bridgeAmount.isNaN()) {
@@ -225,6 +212,19 @@ export class BridgeComponent implements OnInit {
   presetBridgeAmount(percent: string | number): void {
     const ratio = new BigNumber(percent).div(100);
     this.bridgeAmount = this.mphBalance.times(ratio);
+  }
+
+  setConvertAmount(amount: string | number): void {
+    let convertAmount = new BigNumber(amount);
+    if (convertAmount.isNaN()) {
+      convertAmount = new BigNumber(0);
+    }
+    this.convertAmount = convertAmount;
+  }
+
+  presetConvertAmount(percent: string | number): void {
+    const ratio = new BigNumber(percent).div(100);
+    this.convertAmount = this.foreignBalance.times(ratio);
   }
 
   bridge() {
@@ -275,25 +275,12 @@ export class BridgeComponent implements OnInit {
       foreignMPH,
       converter,
       approveAmount,
-      () => {
-        this.conversionStatus = 'pending';
-      },
       () => {},
-      () => {
-        foreignMPH.methods
-          .allowance(user, converter)
-          .call()
-          .then((allowance) => {
-            this.foreignAllowance = new BigNumber(allowance).div(
-              this.constants.PRECISION
-            );
-            this.conversionStatus = 'approved';
-          });
-      },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
-      },
-      true
+      }
     );
   }
 
@@ -307,7 +294,7 @@ export class BridgeComponent implements OnInit {
     const foreignMPH =
       this.constants.FOREIGN_MPH_ADDRESS[this.wallet.networkID];
     const convertAmount = this.helpers.processWeb3Number(
-      this.foreignBalance.times(this.constants.PRECISION)
+      this.convertAmount.times(this.constants.PRECISION)
     );
     const func = converter.methods.convertForeignTokenToNative(
       foreignMPH,
@@ -316,13 +303,9 @@ export class BridgeComponent implements OnInit {
 
     this.wallet.sendTx(
       func,
-      () => {
-        this.conversionStatus = 'pending';
-      },
       () => {},
-      () => {
-        this.conversionStatus = 'success';
-      },
+      () => {},
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }
@@ -367,8 +350,7 @@ export class BridgeComponent implements OnInit {
 
   canConvert(): boolean {
     return (
-      this.foreignBalance.gt(0) &&
-      this.foreignAllowance.gte(this.foreignBalance)
+      this.convertAmount.gt(0) && this.foreignAllowance.gte(this.convertAmount)
     );
   }
 }
