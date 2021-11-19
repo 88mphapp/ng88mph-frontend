@@ -202,8 +202,11 @@
                           "
                         >
                           Bridging from
-                          {{ constants.CHAIN_ID_STRING[wallet.networkID] }} not
-                          yet supported. Please switch your network to Ethereum.
+                          <span class="text-capitalize">{{
+                            constants.CHAIN_ID_STRING[wallet.networkID]
+                          }}</span>
+                          not yet supported. Please switch your network to
+                          Ethereum.
                         </div>
                         <div
                           class="px-0 alert text-warning border-warning"
@@ -391,8 +394,8 @@
                             *ngIf="toStatus === 'success'"
                             class="text-success"
                           >
-                            Success! Last steps, switch to the destination
-                            chain's network and convert your MPH 👇.
+                            Success. Almost there! Switch to the network you
+                            bridged to in order to convert your MPH 👇.
                           </span>
                         </div>
                       </div>
