@@ -150,12 +150,22 @@ export class LossProvisionComponent implements OnInit {
             },
             scaleLabel: {
               display: true,
-              labelString: 'Thousands (USD)',
+              labelString:
+                this.displaySetting === 'all' ||
+                this.displaySetting === 'ethereum' ||
+                this.displaySetting === 'v2'
+                  ? 'Thousands (USD)'
+                  : '(USD)',
             },
             ticks: {
               min: 0,
-              callback: function (label, index, labels) {
-                const x = label / 1e3;
+              callback: (label, index, labels) => {
+                const x =
+                  this.displaySetting === 'all' ||
+                  this.displaySetting === 'ethereum' ||
+                  this.displaySetting === 'v2'
+                    ? label / 1e3
+                    : label;
                 const y =
                   '$' +
                   x
