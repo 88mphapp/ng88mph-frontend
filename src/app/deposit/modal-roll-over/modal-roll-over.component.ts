@@ -108,7 +108,13 @@ export class ModalRollOverComponent implements OnInit {
     this.mphRewardAmountToken = new BigNumber(0);
     this.mphRewardAmountUSD = new BigNumber(0);
     this.mphRewardAPR = new BigNumber(0);
-    this.depositMaturation = new Date(Date.now()).toLocaleString('en-US', {
+    this.depositMaturation = new Date(
+      Date.now() +
+        this.depositTimeInDays
+          .times(this.constants.DAY_IN_SEC)
+          .times(1e3)
+          .toNumber()
+    ).toLocaleString('en-US', {
       month: 'long',
       day: 'numeric',
       year: 'numeric',
@@ -185,6 +191,17 @@ export class ModalRollOverComponent implements OnInit {
     if (this.depositTimeInDays.isNaN()) {
       this.depositTimeInDays = new BigNumber(0);
     }
+    this.depositMaturation = new Date(
+      Date.now() +
+        this.depositTimeInDays
+          .times(this.constants.DAY_IN_SEC)
+          .times(1e3)
+          .toNumber()
+    ).toLocaleString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
     this.updateAPY();
   }
 
