@@ -149,12 +149,22 @@ export class HistoricalAssetTvlComponent implements OnInit {
             },
             scaleLabel: {
               display: true,
-              labelString: 'Millions (USD)',
+              labelString:
+                this.displaySetting === 'all' ||
+                this.displaySetting === 'ethereum' ||
+                this.displaySetting === 'v2'
+                  ? 'Millions (USD)'
+                  : 'Thousands (USD)',
             },
             ticks: {
               min: 0,
-              callback: function (label, index, labels) {
-                const x = label / 1e6;
+              callback: (label, index, labels) => {
+                const x =
+                  this.displaySetting === 'all' ||
+                  this.displaySetting === 'ethereum' ||
+                  this.displaySetting === 'v2'
+                    ? label / 1e6
+                    : label / 1e3;
                 const y =
                   '$' +
                   x
