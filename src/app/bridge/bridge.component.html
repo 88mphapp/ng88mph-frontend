@@ -1,0 +1,562 @@
+<div class="container mt-4 mb-6">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="title-bg-gradient display-2" i18n="@@BridgeHeader">
+        MPH Bridge
+      </h1>
+      <p class="text-white font-weight-bold mb-5 lead">
+        <ng-container i18n="@@bridgeDesc"
+          >Do more with your MPH by bridging it on our multichains
+          ecosystem</ng-container
+        >
+      </p>
+      <div class="row">
+        <div class="col-12 col-lg-8">
+          <!--Brdige - step 1-->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-header-title h4 mb-0" i18n="@@bridgesubTitle">
+                Bridge your MPH in 4 steps
+              </h2>
+            </div>
+            <div class="card-body">
+              <div class="list-group list-group-flush list-group-activity">
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@step1"
+                        >
+                          1
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-row">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label
+                              class="font-weight-bold"
+                              for="FromChain"
+                              i18n="@@selectFromChain"
+                              >From Chain</label
+                            >
+                            <select
+                              class="custom-select custom-select-lg"
+                              data-toggle="select"
+                              id="FromChain"
+                              [(ngModel)]="fromChain"
+                              (change)="updateBridge()"
+                            >
+                              <option [ngValue]="constants.CHAIN_ID.MAINNET">
+                                Ethereum
+                              </option>
+                              <option
+                                [ngValue]="constants.CHAIN_ID.FANTOM"
+                                disabled
+                              >
+                                Fantom (soon)
+                              </option>
+                              <option
+                                [ngValue]="constants.CHAIN_ID.POLYGON"
+                                disabled
+                              >
+                                Polygon (soon)
+                              </option>
+                              <option
+                                [ngValue]="constants.CHAIN_ID.AVALANCHE"
+                                disabled
+                              >
+                                Avalanche (soon)
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label
+                              class="font-weight-bold"
+                              for="ToChain"
+                              i18n="@@selectToChain"
+                              >To Chain</label
+                            >
+                            <select
+                              class="custom-select custom-select-lg"
+                              data-toggle="select"
+                              id="ToChain"
+                              [(ngModel)]="toChain"
+                            >
+                              <option [ngValue]="constants.CHAIN_ID.MAINNET">
+                                Ethereum
+                              </option>
+                              <option [ngValue]="constants.CHAIN_ID.FANTOM">
+                                Fantom
+                              </option>
+                              <option
+                                [ngValue]="constants.CHAIN_ID.POLYGON"
+                                disabled
+                              >
+                                Polygon (soon)
+                              </option>
+                              <option
+                                [ngValue]="constants.CHAIN_ID.AVALANCHE"
+                                disabled
+                              >
+                                Avalanche (soon)
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@step2"
+                        >
+                          2
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group">
+                        <label class="font-weight-bold">Amount to Bridge</label>
+                        <div class="input-group mb-2">
+                          <div class="input-group-prepend">
+                            <button
+                              class="btn btn-lg btn-dark"
+                              type="button"
+                              disabled
+                            >
+                              <div class="avatar avatar-xxs">
+                                <img
+                                  src="./assets/img/token-icons/mph-logo-24.svg"
+                                  width="24"
+                                  alt="..."
+                                  class="avatar-img rounded-circle"
+                                />
+                              </div>
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="0.00"
+                            aria-label="bridge-amount"
+                            [value]="bridgeAmount.toFixed()"
+                            (input)="setBridgeAmount($event.target.value)"
+                          />
+                          <div class="input-group-append">
+                            <button
+                              class="btn btn-lg border-gradient"
+                              type="button"
+                              i18n="@@Max"
+                              (click)="presetBridgeAmount(100)"
+                            >
+                              Max
+                            </button>
+                          </div>
+                        </div>
+                        <small class="form-text text-white"
+                          >{{ mphBalance.toFormat(4) }} MPH
+                          <ng-container i18n="@@available"
+                            >available</ng-container
+                          ></small
+                        >
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          i18n="@@bridge"
+                          [disabled]="!canBridge()"
+                          (click)="bridge()"
+                        >
+                          Bridge
+                        </button>
+                        <div
+                          class="alert text-danger border-danger text-center"
+                          role="alert"
+                          *ngIf="
+                            wallet.networkID !== constants.CHAIN_ID.MAINNET
+                          "
+                        >
+                          Bridging from
+                          <span class="text-capitalize">{{
+                            constants.CHAIN_ID_STRING[wallet.networkID]
+                          }}</span>
+                          not yet supported. Please switch your network to
+                          Ethereum.
+                        </div>
+                        <div
+                          class="px-0 alert text-warning border-warning"
+                          *ngIf="
+                            wallet.networkID === constants.CHAIN_ID.MAINNET
+                          "
+                          role="alert"
+                        >
+                          <ul class="mb-0">
+                            <li>
+                              <ng-container i18n="@@bridgeEstimatedFee"
+                                >Estimated transfer fee:</ng-container
+                              >
+                              {{
+                                bridgeAmount
+                                  .times(bridgeFeeRate)
+                                  .lte(bridgeMinimumFee)
+                                  ? bridgeMinimumFee
+                                  : bridgeAmount
+                                      .times(bridgeFeeRate)
+                                      .gte(bridgeMaximumFee)
+                                  ? bridgeMaximumFee
+                                  : bridgeAmount.times(bridgeFeeRate)
+                              }}
+                              MPH
+                            </li>
+                            <li>
+                              <ng-container i18n="@@bridgeMinAmount"
+                                >Minimum bridgeable amount:</ng-container
+                              >
+                              {{ bridgeMinimum }} MPH
+                            </li>
+                            <li>
+                              <ng-container i18n="@@bridgeMaxAmount"
+                                >Maximum bridgeable amount:</ng-container
+                              >
+                              {{ bridgeMaximum }} MPH
+                            </li>
+                            <li>
+                              <ng-container
+                                i18n="@@bridgeEstimatedTimeOfArrival"
+                                >Estimated Time of Crosschain Arrival
+                                is</ng-container
+                              >
+                              10 - 30 min
+                            </li>
+                            <li>
+                              <ng-container
+                                i18n="
+                                  @@bridgeEstimatedTimeAmountLargerThanPart1"
+                                >Crosschain amount larger than</ng-container
+                              >
+                              {{ bridgeThreshold }} MPH
+                              <ng-container
+                                i18n="
+                                  @@bridgeEstimatedTimeAmountLargerThanPart2"
+                                >could take up to</ng-container
+                              >
+                              12
+                              <ng-container
+                                i18n="
+                                  @@bridgeEstimatedTimeAmountLargerThanPart3"
+                                >hours</ng-container
+                              >.
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@step3"
+                        >
+                          3
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group">
+                        <span class="d-block mb-2 font-weight-bold"
+                          >Bridge Status</span
+                        >
+                        <div>
+                          <span>From Chain:</span>
+                          <span
+                            *ngIf="fromStatus === 'none'"
+                            class="text-secondary"
+                          >
+                            Awaiting bridge transaction (Use Bridge button 👆)
+                          </span>
+                          <div
+                            class="
+                              spinner-grow
+                              mx-1
+                              spinner-grow-sm
+                              text-warning
+                            "
+                            role="status"
+                            *ngIf="fromStatus === 'pending'"
+                          ></div>
+                          <span
+                            *ngIf="fromStatus === 'pending'"
+                            class="text-warning"
+                          >
+                            Confirming bridge transaction
+                          </span>
+                          <svg
+                            class="bd-placeholder-img rounded mx-1"
+                            width="20"
+                            height="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                            preserveAspectRatio="xMidYMid slice"
+                            focusable="false"
+                            role="img"
+                            *ngIf="fromStatus === 'success'"
+                          >
+                            <rect
+                              fill="#00d97e"
+                              width="100%"
+                              height="100%"
+                            ></rect>
+                          </svg>
+                          <span
+                            *ngIf="fromStatus === 'success'"
+                            class="text-success"
+                          >
+                            Success!
+                          </span>
+                        </div>
+                        <div>
+                          <span>To Chain:</span>
+                          <span
+                            *ngIf="toStatus === 'none'"
+                            class="text-secondary"
+                          >
+                            Awaiting source-chain confirmation
+                          </span>
+                          <div
+                            class="
+                              spinner-grow
+                              mx-1
+                              spinner-grow-sm
+                              text-warning
+                            "
+                            role="status"
+                            *ngIf="toStatus === 'pending'"
+                          ></div>
+                          <span
+                            *ngIf="toStatus === 'pending'"
+                            class="text-warning"
+                          >
+                            Awaiting cross-chain arrival
+                          </span>
+                          <svg
+                            class="bd-placeholder-img rounded mx-1"
+                            width="20"
+                            height="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                            preserveAspectRatio="xMidYMid slice"
+                            focusable="false"
+                            role="img"
+                            *ngIf="toStatus === 'success'"
+                          >
+                            <rect
+                              fill="#00d97e"
+                              width="100%"
+                              height="100%"
+                            ></rect>
+                          </svg>
+                          <span
+                            *ngIf="toStatus === 'success'"
+                            class="text-success"
+                          >
+                            Success. Almost there! Switch to the network you
+                            bridged to in order to convert your MPH 👇.
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@step4"
+                        >
+                          4
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group">
+                        <label class="font-weight-bold"
+                          >Amount to Convert</label
+                        >
+                        <div class="input-group mb-2">
+                          <div class="input-group-prepend">
+                            <button
+                              class="btn btn-lg btn-dark"
+                              type="button"
+                              disabled
+                            >
+                              <div class="avatar avatar-xxs">
+                                <img
+                                  src="./assets/img/token-icons/mph-logo-24.svg"
+                                  width="24"
+                                  alt="..."
+                                  class="avatar-img rounded-circle"
+                                />
+                              </div>
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            class="form-control form-control-lg"
+                            placeholder="0.00"
+                            aria-label="convert-amount"
+                            [value]="convertAmount.toFixed()"
+                            (input)="setConvertAmount($event.target.value)"
+                          />
+                          <div class="input-group-append">
+                            <button
+                              class="btn btn-lg border-gradient"
+                              type="button"
+                              i18n="@@Max"
+                              (click)="presetConvertAmount(100)"
+                            >
+                              Max
+                            </button>
+                          </div>
+                        </div>
+                        <small class="form-text text-white"
+                          >{{ convertAmount.toFormat(4) }} foreign MPH
+                          <ng-container i18n="@@available"
+                            >available</ng-container
+                          ></small
+                        >
+                        <div
+                          class="alert text-danger border-danger text-center"
+                          role="alert"
+                          *ngIf="foreignBalance.eq(0)"
+                        >
+                          Don't see your bridged MPH? Switch to the network you
+                          bridged to.
+                        </div>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          i18n="@@approve"
+                          (click)="approveConverter()"
+                          *ngIf="
+                            convertAmount.gt(foreignAllowance) &&
+                            foreignBalance.gt(0)
+                          "
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          i18n="@@convert"
+                          *ngIf="
+                            convertAmount.lte(foreignAllowance) &&
+                            foreignBalance.gt(0)
+                          "
+                          (click)="convert()"
+                          [disabled]="!canConvert()"
+                        >
+                          Convert
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-header-title" i18n="@@thingsYouCanDo">
+                Things you can do
+              </h4>
+            </div>
+            <div class="card-body p-0">
+              <div class="list-group list-group-flush">
+                <a
+                  href="/stake"
+                  class="list-group-item list-group-item-action px-4"
+                >
+                  <h4 class="mb-1" i18n="@@stakeMPHForXMPH">
+                    Stake MPH for xMPH
+                  </h4>
+                  <small class="text-muted">
+                    <ng-container i18n="@@stakingMPHText"
+                      >By staking your MPH, you are eligible to collect two
+                      kinds of rewards distributed as MPH.</ng-container
+                    >
+                  </small>
+                  <small class="text-primary ml-2" i18n="@@learnMore"
+                    >Learn more</small
+                  >
+                </a>
+                <a
+                  href="/farm"
+                  class="list-group-item list-group-item-action px-4"
+                >
+                  <h4 class="mb-1" i18n="@@farmYourYield">
+                    Provide liquidity & boost your yield
+                  </h4>
+                  <small class="text-muted" i18n="@@provideLiquidityText2"
+                    >Provide liquidity on our trading pools, and get rewarded by
+                    doing so from trading fees and liquidity mining.</small
+                  >
+                  <small class="text-primary ml-2" i18n="@@learnMore"
+                    >Learn more</small
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
