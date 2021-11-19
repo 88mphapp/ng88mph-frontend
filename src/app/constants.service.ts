@@ -202,14 +202,14 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
-    [this.CHAIN_ID.FANTOM]: '',
+    [this.CHAIN_ID.FANTOM]: '0x916e78f904B5e854DB0578646AA182C0AAbED8C8',
   };
   DEV_WALLET = {
     [this.CHAIN_ID.MAINNET]: '0xfecBad5D60725EB6fd10f8936e02fa203fd27E4b',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
-    [this.CHAIN_ID.FANTOM]: '',
+    [this.CHAIN_ID.FANTOM]: '0xfecBad5D60725EB6fd10f8936e02fa203fd27E4b',
   };
   MERKLE_DISTRIBUTOR = {
     [this.CHAIN_ID.MAINNET]: '0x8c5ddBB0fd86B6480D81A1a5872a63812099C043',
@@ -231,6 +231,20 @@ export class ConstantsService {
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',
+  };
+  FOREIGN_MPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '0x37b9a2d62db25501a366f708399546c02be151d0',
+  };
+  MPH_CONVERTER = {
+    [this.CHAIN_ID.MAINNET]: '0x5b5e48F5028D46868F3C036a8ea3e7B1cC841a84',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '0x9040849418DDaB42554ce4F525F2AAaDc4f5521b',
   };
   V2_REWARDS = {
     [this.CHAIN_ID.MAINNET]: '0x98df8D9E56b51e4Ea8AA9b57F8A5Df7A044234e1',
