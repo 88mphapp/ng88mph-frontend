@@ -75,7 +75,10 @@
               {{ xMPHBalance.times(pricePerFullShare).toFormat(4) }}
               <ng-container i18n="@@mph">MPH</ng-container>
             </span>
-            <span class="badge badge-xl badge-soft-success mt-n2 ml-1">
+            <span
+              class="badge badge-xl badge-soft-success mt-n2 ml-1"
+              *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+            >
               +{{
                 xMPHBalance
                   .times(pricePerFullShare)
@@ -307,7 +310,7 @@
                         </h4>
                       </td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
                       <td
                         class="px-0 py-2 text-white border-0 small"
                         i18n="@@stkAAVEAccumulated"
@@ -329,7 +332,7 @@
                         </h4>
                       </td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
                       <td
                         class="px-0 py-2 text-white border-0 small"
                         i18n="@@compAccumulated"
@@ -351,7 +354,7 @@
                         </h4>
                       </td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET">
                       <td
                         class="px-0 py-2 text-white border-0 small"
                         i18n="@@farmAccumulated"
@@ -370,6 +373,50 @@
                       >
                         <h4 class="mb-1 glowing">
                           {{ farmRewardsToken.toFormat(4) }}
+                        </h4>
+                      </td>
+                    </tr>
+                    <tr *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="@@geistAccumulated"
+                      >
+                        <span
+                          placement="top"
+                          ngbTooltip="88mph's participation in Geist markets gives rewards in GEIST token."
+                          i18n-ngbTooltip="@@geistAccumulatedText"
+                        >
+                          $GEIST accumulated
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-1 glowing">
+                          {{ geistRewards.toFormat(4) }}
+                        </h4>
+                      </td>
+                    </tr>
+                    <tr *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM">
+                      <td
+                        class="px-0 py-2 text-white border-0 small"
+                        i18n="@@screamAccumulated"
+                      >
+                        <span
+                          placement="top"
+                          ngbTooltip="88mph's participation in Scream markets gives rewards in SCREAM token."
+                          i18n-ngbTooltip="@@screamAccumulatedText"
+                        >
+                          $SCREAM accumulated
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-1 glowing">
+                          {{ screamRewards.toFormat(4) }}
                         </h4>
                       </td>
                     </tr>
@@ -399,7 +446,6 @@
                 ngbTooltip="88mph Protocol revenues are distributed to MPH stakers on a bi-weekly basis via a buy-back mechansim. 88mph governance decides the percentage of revenues distributed, by default, it's 100%."
                 i18n-ngbTooltip="@@nextDistributionText"
               >
-                <!-- Next distribution on {{ distributionEndTime }} -->
                 <ng-container i18n="@@nextDistributionOn"
                   >Next distribution in</ng-container
                 >

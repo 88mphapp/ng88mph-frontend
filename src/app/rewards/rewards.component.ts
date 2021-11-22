@@ -15,29 +15,35 @@ import { request, gql } from 'graphql-request';
   styleUrls: ['./rewards.component.css'],
 })
 export class RewardsComponent implements OnInit {
+  // user
   stakeAmount: BigNumber;
   xMPHBalance: BigNumber;
   stakedMPHBalance: BigNumber;
   unstakedMPHBalance: BigNumber;
   tokenAllowance: BigNumber;
-
   mphPriceUSD: BigNumber;
   xMPHPriceUSD: BigNumber;
   xMPHTotalSupply: BigNumber;
   pricePerFullShare: BigNumber;
   yearlyROI: BigNumber;
-
-  distributionEndTime: string;
   daysToNextDistribution: number;
   protocolFeesUSD: BigNumber;
-  compRewardsToken: BigNumber;
-  compRewardsUSD: BigNumber;
-  farmRewardsToken: BigNumber;
-  farmRewardsUSD: BigNumber;
-  stkaaveRewardsToken: BigNumber;
-  stkaaveRewardsUSD: BigNumber;
   totalRewardsUSD: BigNumber;
   maxAPY: BigNumber;
+
+  // reward tokens
+  compRewardsToken: BigNumber; // Ethereum
+  stkaaveRewardsToken: BigNumber; // Ethereum
+  farmRewardsToken: BigNumber; // Ethereum
+  screamRewards: BigNumber; // Fantom
+  geistRewards: BigNumber; // Fantom
+
+  // reward tokens USD
+  compRewardsUSD: BigNumber; // Ethereum
+  stkaaveRewardsUSD: BigNumber; // Ethereum
+  farmRewardsUSD: BigNumber; // Ethereum
+  screamRewardsUSD: BigNumber; // Fantom
+  geistRewardsUSD: BigNumber; // Fantom
 
   constructor(
     private modalService: NgbModal,
@@ -51,130 +57,31 @@ export class RewardsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData(this.wallet.connected || this.wallet.watching, true);
+    this.loadData(
+      this.wallet.connected || this.wallet.watching,
+      true,
+      this.wallet.networkID
+    );
 
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, false);
-      this.loadData(true, false);
+      this.loadData(true, false, this.wallet.networkID);
     });
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, false);
     });
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.resetData(true, true);
-      this.loadData(true, true);
+      this.loadData(true, true, networkID);
     });
     this.wallet.accountChangedEvent.subscribe((account) => {
       this.resetData(true, false);
-      this.loadData(true, false);
+      this.loadData(true, false, this.wallet.networkID);
     });
     this.wallet.txConfirmedEvent.subscribe(() => {
       this.resetData(true, true);
-      this.loadData(true, true);
+      this.loadData(true, true, this.wallet.networkID);
     });
-  }
-
-  async loadData(loadUser: boolean, loadGlobal: boolean) {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
-    let address = this.wallet.actualAddress.toLowerCase();
-
-    if (loadUser && address) {
-      const queryString = gql`
-        {
-          mphholder (
-            id: "${address}"
-          ) {
-            id
-            mphBalance
-            xmphBalance
-            mphStaked
-          }
-        }
-      `;
-      request(
-        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
-        queryString
-      ).then((data: QueryResult) => {
-        this.stakedMPHBalance = new BigNumber(data.mphholder.mphStaked);
-        this.unstakedMPHBalance = new BigNumber(data.mphholder.mphBalance);
-        this.xMPHBalance = new BigNumber(data.mphholder.xmphBalance);
-
-        this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
-      });
-
-      mph.methods
-        .allowance(address, this.constants.XMPH_ADDRESS[this.wallet.networkID])
-        .call()
-        .then((allowance) => {
-          this.tokenAllowance = new BigNumber(allowance).div(
-            this.constants.PRECISION
-          );
-        });
-    }
-
-    if (loadGlobal) {
-      this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
-
-      const queryString = gql`
-        {
-          xMPH(id: "0") {
-            totalSupply
-            pricePerFullShare
-            currentUnlockEndTimestamp
-            lastRewardTimestamp
-            lastRewardAmount
-          }
-        }
-      `;
-      request(
-        this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
-        queryString
-      ).then((data: QueryResult) => {
-        this.pricePerFullShare = new BigNumber(data.xMPH.pricePerFullShare);
-        this.xMPHPriceUSD = this.pricePerFullShare.times(this.mphPriceUSD);
-        this.xMPHTotalSupply = new BigNumber(data.xMPH.totalSupply);
-        this.distributionEndTime = new Date(
-          parseInt(data.xMPH.currentUnlockEndTimestamp) * 1e3
-        ).toLocaleString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-        });
-        const daysToNextDistribution: number = Math.ceil(
-          (parseInt(data.xMPH.currentUnlockEndTimestamp) - Date.now() / 1e3) /
-            this.constants.DAY_IN_SEC
-        );
-        daysToNextDistribution > 0
-          ? (this.daysToNextDistribution = daysToNextDistribution)
-          : (this.daysToNextDistribution = 0);
-
-        const rewardsEndDate = new BigNumber(
-          data.xMPH.currentUnlockEndTimestamp
-        );
-        const rewardsStartDate = new BigNumber(data.xMPH.lastRewardTimestamp);
-        const rewardsAmount = new BigNumber(data.xMPH.lastRewardAmount);
-        const rewardPerSecond = rewardsAmount
-          .div(rewardsEndDate.minus(rewardsStartDate))
-          .times(this.mphPriceUSD);
-        let secondROI = rewardPerSecond
-          .div(this.xMPHTotalSupply.times(this.xMPHPriceUSD))
-          .times(100);
-        if (secondROI.isNaN()) {
-          secondROI = new BigNumber(0);
-        }
-        this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
-      });
-
-      // load reward accumulation stats -- only available on mainnet
-      if (this.wallet.networkID == this.constants.CHAIN_ID.MAINNET) {
-        this.loadRewardAccumulationStats();
-      }
-
-      this.maxAPY = await this.datas.getMaxAPY();
-    }
   }
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
@@ -193,30 +100,202 @@ export class RewardsComponent implements OnInit {
       this.xMPHPriceUSD = new BigNumber(0);
       this.yearlyROI = new BigNumber(0);
       this.protocolFeesUSD = new BigNumber(0);
-      this.compRewardsToken = new BigNumber(0);
-      this.compRewardsUSD = new BigNumber(0);
-      this.farmRewardsToken = new BigNumber(0);
-      this.farmRewardsUSD = new BigNumber(0);
-      this.stkaaveRewardsToken = new BigNumber(0);
-      this.stkaaveRewardsUSD = new BigNumber(0);
       this.totalRewardsUSD = new BigNumber(0);
       this.maxAPY = new BigNumber(0);
       this.daysToNextDistribution = 0;
+
+      // reward tokens
+      this.compRewardsToken = new BigNumber(0); // Ethereum
+      this.stkaaveRewardsToken = new BigNumber(0); // Ethereum
+      this.farmRewardsToken = new BigNumber(0); // Ethereum
+      this.screamRewards = new BigNumber(0); // Fantom
+      this.geistRewards = new BigNumber(0); // Fantom
+
+      // reward tokens USD
+      this.compRewardsUSD = new BigNumber(0); // Ethereum
+      this.stkaaveRewardsUSD = new BigNumber(0); // Ethereum
+      this.farmRewardsUSD = new BigNumber(0); // Ethereum
+      this.screamRewardsUSD = new BigNumber(0); // Fantom
+      this.geistRewardsUSD = new BigNumber(0); // Fantom
     }
   }
 
-  async loadRewardAccumulationStats() {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
+  async loadData(loadUser: boolean, loadGlobal: boolean, networkID: number) {
+    const web3 = this.wallet.httpsWeb3();
+    const mph = this.contract.getNamedContract('MPHToken', web3);
+    const xmph = this.contract.getNamedContract('xMPH', web3);
+    const user = this.wallet.actualAddress.toLowerCase();
 
-    const allPools = this.contract.getPoolInfoList();
-    const allPoolsV2 = this.contract.getPoolInfoList(
-      this.wallet.networkID,
-      true
-    );
-    let protocolFeesUSD = new BigNumber(0);
+    if (loadUser && user) {
+      mph.methods
+        .balanceOf(user)
+        .call()
+        .then((balance) => {
+          this.unstakedMPHBalance = new BigNumber(balance).div(
+            this.constants.PRECISION
+          );
+          this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
+        });
+
+      mph.methods
+        .allowance(user, this.constants.XMPH_ADDRESS[this.wallet.networkID])
+        .call()
+        .then((allowance) => {
+          this.tokenAllowance = new BigNumber(allowance).div(
+            this.constants.PRECISION
+          );
+        });
+
+      xmph.methods
+        .balanceOf(user)
+        .call()
+        .then((balance) => {
+          this.xMPHBalance = new BigNumber(balance).div(
+            this.constants.PRECISION
+          );
+        });
+
+      if (networkID === this.constants.CHAIN_ID.MAINNET) {
+        const queryString = gql`
+          {
+            mphholder (
+              id: "${user}"
+            ) {
+              mphStaked
+            }
+          }
+        `;
+        request(
+          this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[networkID],
+          queryString
+        ).then((data: QueryResult) => {
+          this.stakedMPHBalance = new BigNumber(data.mphholder.mphStaked);
+        });
+      }
+    }
+
+    if (loadGlobal) {
+      this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
+
+      xmph.methods
+        .getPricePerFullShare()
+        .call()
+        .then((result) => {
+          this.pricePerFullShare = new BigNumber(result).div(
+            this.constants.PRECISION
+          );
+          this.xMPHPriceUSD = this.pricePerFullShare.times(this.mphPriceUSD);
+        });
+
+      xmph.methods
+        .totalSupply()
+        .call()
+        .then((result) => {
+          this.xMPHTotalSupply = new BigNumber(result).div(
+            this.constants.PRECISION
+          );
+        });
+
+      let rewardsStartDate: BigNumber;
+      await xmph.methods
+        .lastRewardTimestamp()
+        .call()
+        .then((result) => {
+          rewardsStartDate = new BigNumber(result);
+        });
+
+      let rewardsEndDate: BigNumber;
+      await xmph.methods
+        .currentUnlockEndTimestamp()
+        .call()
+        .then((result) => {
+          const daysToNextDistribution: number = Math.ceil(
+            (parseInt(result) - Date.now() / 1e3) / this.constants.DAY_IN_SEC
+          );
+          daysToNextDistribution > 0
+            ? (this.daysToNextDistribution = daysToNextDistribution)
+            : (this.daysToNextDistribution = 0);
+          rewardsEndDate = new BigNumber(result);
+        });
+
+      let rewardsAmount: BigNumber;
+      await xmph.methods
+        .lastRewardAmount()
+        .call()
+        .then((result) => {
+          rewardsAmount = new BigNumber(result).div(this.constants.PRECISION);
+        });
+
+      let rewardPerSecond = rewardsAmount
+        .div(rewardsEndDate.minus(rewardsStartDate))
+        .times(this.mphPriceUSD);
+      if (rewardPerSecond.isNaN()) {
+        rewardPerSecond = new BigNumber(0);
+      }
+
+      let secondROI = rewardPerSecond
+        .div(this.xMPHTotalSupply.times(this.xMPHPriceUSD))
+        .times(100);
+      if (secondROI.isNaN()) {
+        secondROI = new BigNumber(0);
+      }
+
+      this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+      this.loadRewardAccumulationStatsNew(networkID);
+      this.maxAPY = await this.datas.getMaxAPY();
+    }
+  }
+
+  loadRewardAccumulationStatsNew(networkID: number) {
+    if (networkID !== this.wallet.networkID) {
+      return;
+    }
+
+    switch (networkID) {
+      case this.constants.CHAIN_ID.MAINNET:
+        this.getProtocolFees(networkID);
+        this.getAaveRewards(networkID);
+        this.getCompoundRewards(networkID);
+        this.getHarvestRewards(networkID);
+        // @dev bprotocol rewards need implemented
+        // @dev cream rewards need implemented
+        break;
+      case this.constants.CHAIN_ID.POLYGON:
+        console.log('Polygon rewards not yet implemented');
+        break;
+      case this.constants.CHAIN_ID.AVALANCHE:
+        console.log('Avalanche rewards not yet implemented');
+        break;
+      case this.constants.CHAIN_ID.FANTOM:
+        this.getProtocolFees(networkID);
+        this.getGeistRewards(networkID);
+        this.getScreamRewards(networkID);
+        break;
+    }
+  }
+
+  async getProtocolFees(networkID: number) {
+    const web3 = this.wallet.httpsWeb3(networkID);
+    const allPools = this.contract.getPoolInfoList(networkID);
+
     let countedStablecoinMap = {};
+    let protocolFeesUSD = new BigNumber(0);
 
-    // compute protocol fees for v3
+    // @notice on non-Ethereum chains, the fee beneficiary is the gov treasury address
+    let dumper: string;
+    switch (networkID) {
+      case this.constants.CHAIN_ID.MAINNET:
+        dumper = this.constants.DUMPER_V3;
+        break;
+      case this.constants.CHAIN_ID.POLYGON:
+        break;
+      case this.constants.CHAIN_ID.AVALANCHE:
+        break;
+      case this.constants.CHAIN_ID.FANTOM:
+        dumper = this.constants.GOV_TREASURY[networkID];
+        break;
+    }
+
     Promise.all(
       allPools.map(async (poolInfo) => {
         if (countedStablecoinMap[poolInfo.stablecoinSymbol]) {
@@ -226,16 +305,14 @@ export class RewardsComponent implements OnInit {
         const poolStablecoin = this.contract.getContract(
           poolInfo.stablecoin,
           'ERC20',
-          readonlyWeb3
+          web3
         );
         const poolFeesToken = new BigNumber(
-          await poolStablecoin.methods
-            .balanceOf(this.constants.DUMPER_V3)
-            .call()
+          await poolStablecoin.methods.balanceOf(dumper).call()
         ).div(Math.pow(10, poolInfo.stablecoinDecimals));
-        const stablecoinPrice = await this.helpers.getTokenPriceUSD(
+        const stablecoinPrice = await this.datas.getAssetPriceUSD(
           poolInfo.stablecoin,
-          this.wallet.networkID
+          networkID
         );
         protocolFeesUSD = protocolFeesUSD.plus(
           poolFeesToken.times(stablecoinPrice)
@@ -245,223 +322,368 @@ export class RewardsComponent implements OnInit {
       this.protocolFeesUSD = this.protocolFeesUSD.plus(protocolFeesUSD);
       this.totalRewardsUSD = this.totalRewardsUSD.plus(protocolFeesUSD);
     });
+  }
 
-    // compute stkAAVE rewards
-    // @notice 1 AAVE = 1 stkAAVE, so price will be the same
-    const aavePools = allPools.filter(
-      (poolInfo) => poolInfo.protocol === 'Aave'
-    );
+  async getAaveRewards(networkID: number) {
+    const web3 = this.wallet.httpsWeb3(networkID);
     const aaveDataProvider = this.contract.getNamedContract(
       'AaveProtocolDataProvider',
-      readonlyWeb3
+      web3,
+      networkID
     );
     const stkaaveController = this.contract.getNamedContract(
       'StakedAaveController',
-      readonlyWeb3
+      web3,
+      networkID
     );
     const stkaaveToken = this.contract.getERC20(
-      this.constants.STKAAVE[this.wallet.networkID],
-      readonlyWeb3
+      this.constants.STKAAVE[networkID],
+      web3
     );
 
-    let aTokens: Array<string> = [];
+    let aTokens: string[] = [];
     const aTokenData = await aaveDataProvider.methods.getAllATokens().call();
     for (let token in aTokenData) {
       aTokens.push(aTokenData[token].tokenAddress);
     }
 
+    const allPools = this.contract.getPoolInfoList(networkID);
+    const aavePools = allPools.filter(
+      (poolInfo) => poolInfo.protocol === 'Aave'
+    );
+
     let stkaaveRewardsToken = new BigNumber(0);
     Promise.all(
       aavePools.map(async (poolInfo) => {
-        const rewardUnclaimed = new BigNumber(
-          await stkaaveController.methods
-            .getRewardsBalance(aTokens, poolInfo.moneyMarket)
-            .call()
-        ).div(this.constants.PRECISION);
-        const rewardClaimed = new BigNumber(
-          await stkaaveToken.methods.balanceOf(poolInfo.moneyMarket).call()
-        ).div(this.constants.PRECISION);
-        stkaaveRewardsToken = stkaaveRewardsToken
-          .plus(rewardUnclaimed)
-          .plus(rewardClaimed);
+        // unclaimed rewards
+        await stkaaveController.methods
+          .getRewardsBalance(aTokens, poolInfo.moneyMarket)
+          .call()
+          .then((result) => {
+            const rewardUnclaimed = new BigNumber(result).div(
+              this.constants.PRECISION
+            );
+            stkaaveRewardsToken = stkaaveRewardsToken.plus(rewardUnclaimed);
+          });
+
+        // claimed rewards
+        await stkaaveToken.methods
+          .balanceOf(poolInfo.moneyMarket)
+          .call()
+          .then((result) => {
+            const rewardClaimed = new BigNumber(result).div(
+              this.constants.PRECISION
+            );
+            stkaaveRewardsToken = stkaaveRewardsToken.plus(rewardClaimed);
+          });
       })
     ).then(async () => {
-      const rewardInDumper = new BigNumber(
-        await stkaaveToken.methods.balanceOf(this.constants.DUMPER_V3).call()
-      ).div(this.constants.PRECISION);
-      stkaaveRewardsToken = stkaaveRewardsToken.plus(rewardInDumper);
+      // reward in dumper
+      await stkaaveToken.methods
+        .balanceOf(this.constants.DUMPER_V3)
+        .call()
+        .then((result) => {
+          const rewardInDumper = new BigNumber(result).div(
+            this.constants.PRECISION
+          );
+          stkaaveRewardsToken = stkaaveRewardsToken.plus(rewardInDumper);
+        });
 
+      const stkaavePriceUSD = await this.datas.getAssetPriceUSD(
+        this.constants.AAVE[networkID],
+        networkID
+      );
       this.stkaaveRewardsToken = stkaaveRewardsToken;
-      const stkaavePriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.AAVE[this.wallet.networkID],
-        this.wallet.networkID
-      );
       this.stkaaveRewardsUSD = stkaaveRewardsToken.times(stkaavePriceUSD);
-      this.totalRewardsUSD = this.totalRewardsUSD.plus(
-        stkaaveRewardsToken.times(stkaavePriceUSD)
-      );
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(this.stkaaveRewardsUSD);
     });
+  }
 
-    // compute COMP rewards for v3
+  async getCompoundRewards(networkID: number) {
+    const web3 = this.wallet.httpsWeb3(networkID);
+    const compoundLens = this.contract.getNamedContract(
+      'CompoundLens',
+      web3,
+      networkID
+    );
+    const compToken = this.contract.getERC20(
+      this.constants.COMP[networkID],
+      web3
+    );
+
+    const allPoolsV2 = this.contract.getPoolInfoList(networkID, true);
+    const allPoolsV3 = this.contract.getPoolInfoList(networkID);
+    const allPools = allPoolsV2.concat(allPoolsV3);
     const compoundPools = allPools.filter(
       (poolInfo) => poolInfo.protocol === 'Compound'
     );
-    const compoundLens = this.contract.getNamedContract(
-      'CompoundLens',
-      readonlyWeb3
-    );
-    const compToken = this.contract.getERC20(
-      this.constants.COMP[this.wallet.networkID],
-      readonlyWeb3
-    );
-    let compRewardsToken = new BigNumber(0);
+
+    let compRewardsToken: BigNumber = new BigNumber(0);
     Promise.all(
       compoundPools.map(async (poolInfo) => {
-        const rewardUnclaimed = new BigNumber(
-          (
-            await compoundLens.methods
-              .getCompBalanceMetadataExt(
-                this.constants.COMP[this.wallet.networkID],
-                this.constants.COMPOUND_COMPTROLLER,
-                poolInfo.moneyMarket
-              )
-              .call()
-          ).allocated
-        ).div(this.constants.PRECISION);
-        const rewardClaimed = new BigNumber(
-          await compToken.methods.balanceOf(poolInfo.moneyMarket).call()
-        ).div(this.constants.PRECISION);
-        compRewardsToken = compRewardsToken
-          .plus(rewardUnclaimed)
-          .plus(rewardClaimed);
+        // unclaimed rewards
+        await compoundLens.methods
+          .getCompBalanceMetadataExt(
+            this.constants.COMP[networkID],
+            this.constants.COMPOUND_COMPTROLLER,
+            poolInfo.moneyMarket
+          )
+          .call()
+          .then((result) => {
+            const rewardUnclaimed = new BigNumber(result.allocated).div(
+              this.constants.PRECISION
+            );
+            compRewardsToken = compRewardsToken.plus(rewardUnclaimed);
+          });
+
+        // claimed rewards
+        await compToken.methods
+          .balanceOf(poolInfo.moneyMarket)
+          .call()
+          .then((result) => {
+            const rewardClaimed = new BigNumber(result).div(
+              this.constants.PRECISION
+            );
+            compRewardsToken = compRewardsToken.plus(rewardClaimed);
+          });
       })
     ).then(async () => {
-      const rewardInDumper = new BigNumber(
-        await compToken.methods.balanceOf(this.constants.DUMPER_V3).call()
-      ).div(this.constants.PRECISION);
-      compRewardsToken = compRewardsToken.plus(rewardInDumper);
+      // reward in dumper
+      await compToken.methods
+        .balanceOf(this.constants.DUMPER_V3)
+        .call()
+        .then((result) => {
+          const rewardInDumper = new BigNumber(result).div(
+            this.constants.PRECISION
+          );
+          compRewardsToken = compRewardsToken.plus(rewardInDumper);
+        });
 
+      const compPriceUSD = await this.datas.getAssetPriceUSD(
+        this.constants.COMP[networkID],
+        networkID
+      );
       this.compRewardsToken = this.compRewardsToken.plus(compRewardsToken);
-      const compPriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.COMP[this.wallet.networkID],
-        this.wallet.networkID
-      );
       this.compRewardsUSD = compRewardsToken.times(compPriceUSD);
-      this.totalRewardsUSD = this.totalRewardsUSD.plus(
-        compRewardsToken.times(compPriceUSD)
-      );
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(this.compRewardsUSD);
     });
+  }
 
-    // compute COMP rewards for v2
-    const compoundPoolsV2 = allPoolsV2.filter(
-      (poolInfo) => poolInfo.protocol === 'Compound'
+  async getHarvestRewards(networkID: number) {
+    const web3 = this.wallet.httpsWeb3(networkID);
+    const farmToken = this.contract.getERC20(
+      this.constants.FARM[networkID],
+      web3
     );
-    let compRewardsTokenV2 = new BigNumber(0);
-    Promise.all(
-      compoundPoolsV2.map(async (poolInfo) => {
-        const rewardUnclaimed = new BigNumber(
-          (
-            await compoundLens.methods
-              .getCompBalanceMetadataExt(
-                this.constants.COMP[this.wallet.networkID],
-                this.constants.COMPOUND_COMPTROLLER,
-                poolInfo.moneyMarket
-              )
-              .call()
-          ).allocated
-        ).div(this.constants.PRECISION);
-        const rewardClaimed = new BigNumber(
-          await compToken.methods.balanceOf(poolInfo.moneyMarket).call()
-        ).div(this.constants.PRECISION);
-        compRewardsTokenV2 = compRewardsTokenV2
-          .plus(rewardUnclaimed)
-          .plus(rewardClaimed);
-      })
-    ).then(async () => {
-      const rewardInDumper = new BigNumber(
-        await compToken.methods.balanceOf(this.constants.DUMPER_V2).call()
-      ).div(this.constants.PRECISION);
-      compRewardsTokenV2 = compRewardsTokenV2.plus(rewardInDumper);
 
-      this.compRewardsToken = this.compRewardsToken.plus(compRewardsTokenV2);
-      const compPriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.COMP[this.wallet.networkID],
-        this.wallet.networkID
-      );
-      this.compRewardsUSD = compRewardsTokenV2.times(compPriceUSD);
-      this.totalRewardsUSD = this.totalRewardsUSD.plus(
-        compRewardsTokenV2.times(compPriceUSD)
-      );
-    });
-
-    // compute FARM rewards for v3
+    const allPoolsV2 = this.contract.getPoolInfoList(networkID, true);
+    const allPoolsV3 = this.contract.getPoolInfoList(networkID);
+    const allPools = allPoolsV2.concat(allPoolsV3);
     const harvestPools = allPools.filter(
       (poolInfo) => poolInfo.protocol === 'Harvest'
     );
-    const farmToken = this.contract.getERC20(
-      this.constants.FARM[this.wallet.networkID],
-      readonlyWeb3
-    );
-    let farmRewardsToken = new BigNumber(0);
+
+    let farmRewardsToken: BigNumber = new BigNumber(0);
     Promise.all(
       harvestPools.map(async (poolInfo) => {
-        const stakingPool = this.contract.getRewards(
+        // unclaimed rewards
+        const stakingPool = this.contract.getContract(
           poolInfo.stakingPool,
-          readonlyWeb3
+          'Rewards',
+          web3
         );
-        const rewardUnclaimed = new BigNumber(
-          await stakingPool.methods.earned(poolInfo.moneyMarket).call()
-        ).div(this.constants.PRECISION);
-        farmRewardsToken = farmRewardsToken.plus(rewardUnclaimed);
+        await stakingPool.methods
+          .earned(poolInfo.moneyMarket)
+          .call()
+          .then((result) => {
+            const rewardUnclaimed = new BigNumber(result).div(
+              this.constants.PRECISION
+            );
+            farmRewardsToken = farmRewardsToken.plus(rewardUnclaimed);
+          });
+
+        // claimed rewards
+        await farmToken.methods
+          .balanceOf(poolInfo.moneyMarket)
+          .call()
+          .then((result) => {
+            const rewardClaimed = new BigNumber(result).div(
+              this.constants.PRECISION
+            );
+            farmRewardsToken = farmRewardsToken.plus(rewardClaimed);
+          });
       })
     ).then(async () => {
-      const rewardInDumper = new BigNumber(
-        await farmToken.methods.balanceOf(this.constants.DUMPER_V3).call()
-      ).div(this.constants.PRECISION);
-      farmRewardsToken = farmRewardsToken.plus(rewardInDumper);
+      // reward in dumper
+      await farmToken.methods
+        .balanceOf(this.constants.DUMPER_V3)
+        .call()
+        .then((result) => {
+          const rewardInDumper = new BigNumber(result).div(
+            this.constants.PRECISION
+          );
+          farmRewardsToken = farmRewardsToken.plus(rewardInDumper);
+        });
 
+      const farmPriceUSD = await this.datas.getAssetPriceUSD(
+        this.constants.FARM[networkID],
+        networkID
+      );
       this.farmRewardsToken = this.farmRewardsToken.plus(farmRewardsToken);
-      const farmPriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.FARM[this.wallet.networkID],
-        this.wallet.networkID
-      );
       this.farmRewardsUSD = farmRewardsToken.times(farmPriceUSD);
-      this.totalRewardsUSD = this.totalRewardsUSD.plus(
-        farmRewardsToken.times(farmPriceUSD)
-      );
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(this.farmRewardsUSD);
     });
+  }
 
-    // compute FARM rewards for v2
-    const harvestPoolsV2 = allPoolsV2.filter(
-      (poolInfo) => poolInfo.protocol === 'Harvest'
+  async getGeistRewards(networkID: number) {
+    const web3 = this.wallet.httpsWeb3(networkID);
+    const geistDataProvider = this.contract.getNamedContract(
+      'GeistProtocolDataProvider',
+      web3,
+      networkID
     );
-    let farmRewardsTokenV2 = new BigNumber(0);
+    const geistController = this.contract.getNamedContract(
+      'GeistController',
+      web3,
+      networkID
+    );
+    const geistVest = this.contract.getNamedContract(
+      'GeistVest',
+      web3,
+      networkID
+    );
+    const geistToken = this.contract.getERC20(
+      this.constants.GEIST[networkID],
+      web3
+    );
+
+    let gTokens: string[] = [];
+    const gTokensData = await geistDataProvider.methods.getAllATokens().call();
+    for (let token in gTokensData) {
+      gTokens.push(gTokensData[token].tokenAddress);
+    }
+
+    const allPools = this.contract.getPoolInfoList(networkID);
+    const geistPools = allPools.filter(
+      (poolInfo) => poolInfo.protocol === 'Geist'
+    );
+
+    let geistRewards: BigNumber = new BigNumber(0);
     Promise.all(
-      harvestPoolsV2.map(async (poolInfo) => {
-        const stakingPool = this.contract.getRewards(
-          poolInfo.stakingPool,
-          readonlyWeb3
-        );
-        const rewardUnclaimed = new BigNumber(
-          await stakingPool.methods.earned(poolInfo.moneyMarket).call()
-        ).div(this.constants.PRECISION);
-        farmRewardsTokenV2 = farmRewardsTokenV2.plus(rewardUnclaimed);
+      geistPools.map(async (poolInfo) => {
+        // unclaimed rewards
+        await geistController.methods
+          .claimableReward(poolInfo.moneyMarket, gTokens)
+          .call()
+          .then((result) => {
+            for (let x in result) {
+              const rewardUnclaimed = new BigNumber(result[x]).div(
+                this.constants.PRECISION
+              );
+              geistRewards = geistRewards.plus(rewardUnclaimed);
+            }
+          });
       })
     ).then(async () => {
-      const rewardInDumper = new BigNumber(
-        await farmToken.methods.balanceOf(this.constants.DUMPER_V2).call()
-      ).div(this.constants.PRECISION);
-      farmRewardsTokenV2 = farmRewardsTokenV2.plus(rewardInDumper);
+      // vesting rewards
+      // @dev this needs to be confirmed
+      await geistVest.methods
+        .totalBalance(this.constants.GOV_TREASURY[networkID])
+        .call()
+        .then((result) => {
+          const rewardVesting = new BigNumber(result).div(
+            this.constants.PRECISION
+          );
+          geistRewards = geistRewards.plus(rewardVesting);
+        });
 
-      this.farmRewardsToken = this.farmRewardsToken.plus(farmRewardsTokenV2);
-      const farmPriceUSD = await this.helpers.getTokenPriceUSD(
-        this.constants.FARM[this.wallet.networkID],
-        this.wallet.networkID
+      // claimed rewards
+      await geistToken.methods
+        .balanceOf(this.constants.GOV_TREASURY[networkID])
+        .call()
+        .then((result) => {
+          const rewardClaimed = new BigNumber(result).div(
+            this.constants.PRECISION
+          );
+          geistRewards = geistRewards.plus(rewardClaimed);
+        });
+
+      const geistPriceUSD = await this.datas.getAssetPriceUSD(
+        this.constants.GEIST[networkID],
+        networkID
       );
-      this.farmRewardsUSD = farmRewardsTokenV2.times(farmPriceUSD);
-      this.totalRewardsUSD = this.totalRewardsUSD.plus(
-        farmRewardsTokenV2.times(farmPriceUSD)
+      this.geistRewards = geistRewards;
+      this.geistRewardsUSD = geistRewards.times(geistPriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(this.geistRewardsUSD);
+    });
+  }
+
+  async getScreamRewards(networkID: number) {
+    const web3 = this.wallet.httpsWeb3(networkID);
+    const screamLens = this.contract.getNamedContract(
+      'ScreamLens',
+      web3,
+      networkID
+    );
+    const screamToken = this.contract.getERC20(
+      this.constants.SCREAM[networkID],
+      web3
+    );
+
+    const allPools = this.contract.getPoolInfoList(networkID);
+    const screamPools = allPools.filter(
+      (poolInfo) => poolInfo.protocol === 'Scream'
+    );
+
+    let screamRewards: BigNumber = new BigNumber(0);
+    Promise.all(
+      screamPools.map(async (poolInfo) => {
+        // unclaimed rewards
+        // @dev needs to be checked, currently returns 0 for all pools
+        await screamLens.methods
+          .getCompBalanceMetadataExt(
+            this.constants.SCREAM[networkID],
+            this.constants.SCREAM_COMPTROLLER,
+            poolInfo.moneyMarket
+          )
+          .call()
+          .then((result) => {
+            const rewardUnclaimed = new BigNumber(result.allocated).div(
+              this.constants.PRECISION
+            );
+            screamRewards = screamRewards.plus(rewardUnclaimed);
+          });
+
+        // claimed rewards
+        await screamToken.methods
+          .balanceOf(poolInfo.moneyMarket)
+          .call()
+          .then((result) => {
+            const rewardClaimed = new BigNumber(result).div(
+              this.constants.PRECISION
+            );
+            screamRewards = screamRewards.plus(rewardClaimed);
+          });
+      })
+    ).then(async () => {
+      // reward in dumper
+      await screamToken.methods
+        .balanceOf(this.constants.GOV_TREASURY[networkID])
+        .call()
+        .then((result) => {
+          const rewardInDumper = new BigNumber(result).div(
+            this.constants.PRECISION
+          );
+          screamRewards = screamRewards.plus(rewardInDumper);
+        });
+
+      const screamPriceUSD = await this.datas.getAssetPriceUSD(
+        this.constants.SCREAM[networkID],
+        networkID
       );
+      this.screamRewards = screamRewards;
+      this.screamRewardsUSD = screamRewards.times(screamPriceUSD);
+      this.totalRewardsUSD = this.totalRewardsUSD.plus(this.screamRewardsUSD);
     });
   }
 
@@ -482,8 +704,9 @@ export class RewardsComponent implements OnInit {
   }
 
   stake() {
-    const mph = this.contract.getNamedContract('MPHToken');
-    const xmph = this.contract.getNamedContract('xMPH');
+    const web3 = this.wallet.readonlyWeb3();
+    const mph = this.contract.getNamedContract('MPHToken', web3);
+    const xmph = this.contract.getNamedContract('xMPH', web3);
     const stakeAmount = this.helpers.processWeb3Number(
       this.stakeAmount.times(this.constants.PRECISION)
     );
@@ -504,9 +727,9 @@ export class RewardsComponent implements OnInit {
   }
 
   approve() {
-    const readonlyWeb3 = this.wallet.readonlyWeb3();
-    const mph = this.contract.getNamedContract('MPHToken', readonlyWeb3);
-    const xmph = this.contract.getNamedContract('xMPH', readonlyWeb3);
+    const web3 = this.wallet.readonlyWeb3();
+    const mph = this.contract.getNamedContract('MPHToken', web3);
+    const xmph = this.contract.getNamedContract('xMPH', web3);
     const userAddress: string = this.wallet.actualAddress;
     const stakeAmount = this.helpers.processWeb3Number(
       this.stakeAmount.times(this.constants.PRECISION)
