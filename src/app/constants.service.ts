@@ -230,7 +230,7 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: '0x59EE65726f0b886Ec924271B51A3c1e78F52d1FB',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
-    [this.CHAIN_ID.FANTOM]: '',
+    [this.CHAIN_ID.FANTOM]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
   };
   FOREIGN_MPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '',
@@ -256,6 +256,7 @@ export class ConstantsService {
 
   // EXTERNAL CONTRACTS //
   COMPOUND_COMPTROLLER = '0x3d9819210a31b4961b30ef54be2aed79b9c9cd3b';
+  SCREAM_COMPTROLLER = '0x37517C5D880c5c282437a3Da4d627B4457C10BEB';
   SUSHI_MASTERCHEF = '0xc2edad668740f1aa35e4d8f227fb8e17dca888cd';
   SUSHI_MPH_ONSEN_ID = 92;
   BANCOR_LP_STATS = '0x9712Bb50DC6Efb8a3d7D12cEA500a50967d2d471';
@@ -376,6 +377,13 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '0xad84341756bf337f5a0164515b1f6f993d194e1f',
   };
+  GEIST = {
+    [this.CHAIN_ID.MAINNET]: '',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '0xd8321aa83fb0a4ecd6348d4577431310a6e0814d',
+  };
   GUSD = {
     [this.CHAIN_ID.MAINNET]: '0x056fd409e1d7a124bd7017459dfea2f387b6d5cd',
     [this.CHAIN_ID.RINKEBY]: '',
@@ -403,6 +411,13 @@ export class ConstantsService {
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',
+  };
+  SCREAM = {
+    [this.CHAIN_ID.MAINNET]: '',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '0xe0654c8e6fd4d733349ac7e09f6f23da256bf475',
   };
   SNX = {
     [this.CHAIN_ID.MAINNET]: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',

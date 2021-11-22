@@ -94,7 +94,14 @@ export class HelpersService {
     }
 
     // console.log("no chainlink price feed for: " + address);
-    const apiStr = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=0`;
+    let chain: string = 'ethereum';
+    if (
+      chainID === this.constants.CHAIN_ID.FANTOM &&
+      address !== this.constants.MPH_ADDRESS[this.constants.CHAIN_ID.MAINNET]
+    ) {
+      chain = 'fantom';
+    }
+    const apiStr = `https://api.coingecko.com/api/v3/coins/${chain}/contract/${address}/market_chart/?vs_currency=usd&days=0`;
     const rawResult = await this.httpsGet(apiStr, 300);
     return rawResult.prices[0][1];
   }
