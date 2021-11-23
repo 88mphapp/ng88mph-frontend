@@ -488,6 +488,7 @@
                 <a
                   href="/farm"
                   class="list-group-item list-group-item-action px-4"
+                  *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
                 >
                   <h4 class="mb-1" i18n="@@farmYourYield">
                     Provide liquidity & boost your yield

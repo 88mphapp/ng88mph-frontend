@@ -77,7 +77,11 @@
           Farm
         </a>
       </li>
-      <li class="nav-item" ngbNavItem="/bridge">
+      <li
+        class="nav-item"
+        ngbNavItem="/bridge"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+      >
         <a
           class="nav-link text-white"
           routerLink="bridge"
