@@ -20,14 +20,14 @@ export class SyncWarningComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadData(this.wallet.networkID);
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.resetData();
-      this.loadData();
+      this.loadData(networkID);
     });
   }
 
-  loadData() {
+  loadData(networkID: number) {
     const queryString = gql`
       {
         _meta {
@@ -40,10 +40,14 @@ export class SyncWarningComponent implements OnInit {
     request(
       this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
       queryString
-    ).then((data) => this.handleData(data));
+    ).then((data) => this.handleData(data, networkID));
   }
 
-  async handleData(queryResult: QueryResult) {
+  async handleData(queryResult: QueryResult, networkID: number) {
+    if (networkID !== this.wallet.networkID) {
+      return;
+    }
+
     this.syncBlockNumber = queryResult._meta.block.number;
     const readonlyWeb3 = this.wallet.readonlyWeb3();
     this.latestBlockNumber = await readonlyWeb3.eth.getBlockNumber();
