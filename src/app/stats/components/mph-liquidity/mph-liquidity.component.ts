@@ -257,12 +257,23 @@ export class MphLiquidityComponent implements OnInit {
   }
 
   async loadBancor(networkID: number) {
-    const start_date = this.timestamps[0];
-    const end_date = this.timestamps[this.timestamps.length - 1];
-    const apiStr = `https://api-v2.bancor.network/history/liquidity-depth/?dlt_type=ethereum&token_dlt_id=${this.constants.MPH_ADDRESS[networkID]}&start_date=${start_date}&end_date=${end_date}&interval=day`;
-    const result = await this.helpers.httpsGet(apiStr);
+    let data = [];
+    let bookmark = 0;
 
-    this.handleBancorData(result.data, networkID);
+    while (bookmark < this.timestamps.length) {
+      const start_date = this.timestamps[bookmark];
+      const end_date =
+        this.timestamps.length - bookmark > 360
+          ? this.timestamps[bookmark + 360 - 1]
+          : this.timestamps[this.timestamps.length - 1];
+
+      const apiStr = `https://api-v2.bancor.network/history/liquidity-depth/?dlt_type=ethereum&token_dlt_id=${this.constants.MPH_ADDRESS[networkID]}&start_date=${start_date}&end_date=${end_date}&interval=day`;
+      const result = await this.helpers.httpsGet(apiStr);
+      data = data.concat(result.data);
+      bookmark += 360;
+    }
+
+    this.handleBancorData(data, networkID);
   }
 
   handleUniswapV2Data(data: QueryResult): void {
