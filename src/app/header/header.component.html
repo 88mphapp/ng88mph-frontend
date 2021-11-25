@@ -80,7 +80,10 @@
       <li
         class="nav-item"
         ngbNavItem="/bridge"
-        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+        *ngIf="
+          wallet.networkID === constants.CHAIN_ID.MAINNET ||
+          wallet.networkID === constants.CHAIN_ID.FANTOM
+        "
       >
         <a
           class="nav-link text-white"
