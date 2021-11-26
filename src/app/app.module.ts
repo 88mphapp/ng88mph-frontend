@@ -43,6 +43,8 @@ import { PriceEarningsRatioComponent } from './stats/components/price-earnings-r
 import { XmphSupplyDistributionComponent } from './stats/components/xmph-supply-distribution/xmph-supply-distribution.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CacheInterceptor } from './cache-interceptor';
 
 @NgModule({
   declarations: [
@@ -95,7 +97,9 @@ import { MatSortModule } from '@angular/material/sort';
     MatTableModule,
     MatSortModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
