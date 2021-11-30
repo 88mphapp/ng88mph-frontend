@@ -828,12 +828,8 @@ export class BondsComponent implements OnInit {
   async getCurrentMarketRate(pool: DPool, poolInfo: PoolInfo) {
     const web3 = this.wallet.httpsWeb3();
 
-    // console.log(pool);
-
     switch (pool.protocol) {
-      // @dev on multiple chains
       case 'Aave':
-        // @dev this returns APR, may need to convert to APY
         const aaveDataProvider = this.contract.getNamedContract(
           'AaveProtocolDataProvider',
           web3
@@ -842,9 +838,13 @@ export class BondsComponent implements OnInit {
           .getReserveData(pool.stablecoin)
           .call()
           .then((result) => {
-            const marketRate = new BigNumber(result.liquidityRate)
-              .div(1e27)
-              .times(100);
+            const apr = new BigNumber(result.liquidityRate).div(1e27);
+            const apy =
+              Math.pow(
+                apr.div(this.constants.YEAR_IN_SEC).plus(1).toNumber(),
+                this.constants.YEAR_IN_SEC
+              ) - 1;
+            const marketRate = new BigNumber(apy).times(100);
             pool.marketRate = marketRate;
           });
         break;
@@ -865,29 +865,95 @@ export class BondsComponent implements OnInit {
               .supplyRatePerBlock()
               .call()
               .then((result) => {
-                console.log(result);
                 const marketRate = new BigNumber(
                   (Math.pow((result / 1e18) * 6570 + 1, 365) - 1) * 100
                 );
-                console.log(marketRate);
                 pool.marketRate = marketRate;
               });
           });
         break;
       case 'Harvest':
-        console.log('harvest protocol');
+        // @dev https://github.com/harvest-finance/harvest-api/blob/master/docs/api.md
+        // does not currently work, CORS error
+
+        // const tokenSymbol = poolInfo.stablecoinSymbol;
+        // const apiStr = `https://api.harvest.finance/apy/${tokenSymbol}?key=fc8ad696-7905-4daa-a552-129ede248e33`;
+        // const xxx = await this.helpers.httpsGet(apiStr);
+        // console.log(xxx);
         break;
       case 'Cream':
-        console.log('cream protocol');
+        // @dev https://compound.finance/docs
+        // @dev uses blocks per day (6570) to calculat markete rate APY
+        const creamMarket = this.contract.getContract(
+          poolInfo.moneyMarket,
+          'CompoundMoneyMarket',
+          web3
+        );
+        creamMarket.methods
+          .cToken()
+          .call()
+          .then(async (result) => {
+            const cToken = this.contract.getContract(result, 'CERC20', web3);
+            cToken.methods
+              .supplyRatePerBlock()
+              .call()
+              .then((result) => {
+                const marketRate = new BigNumber(
+                  (Math.pow((result / 1e18) * 6570 + 1, 365) - 1) * 100
+                );
+                pool.marketRate = marketRate;
+              });
+          });
         break;
       case 'B.Protocol':
-        console.log('b.protocol protocol');
+        // @dev https://compound.finance/docs
+        // @dev uses blocks per day (6570) to calculat markete rate APY
+        const bprotocolMarket = this.contract.getContract(
+          poolInfo.moneyMarket,
+          'BProtocolMoneyMarket',
+          web3
+        );
+        bprotocolMarket.methods
+          .bToken()
+          .call()
+          .then(async (result) => {
+            const cToken = this.contract.getContract(result, 'CERC20', web3);
+            cToken.methods
+              .supplyRatePerBlock()
+              .call()
+              .then((result) => {
+                const marketRate = new BigNumber(
+                  (Math.pow((result / 1e18) * 6570 + 1, 365) - 1) * 100
+                );
+                pool.marketRate = marketRate;
+              });
+          });
         break;
       case 'Benqi':
-        console.log('benqi protocol');
+        // @dev https://compound.finance/docs
+        // @dev uses seconds per day (86400) to calculate market rate APY
+        const benqiMarket = this.contract.getContract(
+          poolInfo.moneyMarket,
+          'CompoundMoneyMarket',
+          web3
+        );
+        benqiMarket.methods
+          .cToken()
+          .call()
+          .then(async (result) => {
+            const cToken = this.contract.getContract(result, 'QIERC20', web3);
+            cToken.methods
+              .supplyRatePerTimestamp()
+              .call()
+              .then((result) => {
+                const marketRate = new BigNumber(
+                  (Math.pow((result / 1e18) * 86400 + 1, 365) - 1) * 100
+                );
+                pool.marketRate = marketRate;
+              });
+          });
         break;
       case 'Geist':
-        // @dev this returns APR, may need to convert to APY
         const geistDataProvider = this.contract.getNamedContract(
           'GeistProtocolDataProvider',
           web3
@@ -896,9 +962,13 @@ export class BondsComponent implements OnInit {
           .getReserveData(pool.stablecoin)
           .call()
           .then((result) => {
-            const marketRate = new BigNumber(result.liquidityRate)
-              .div(1e27)
-              .times(100);
+            const apr = new BigNumber(result.liquidityRate).div(1e27);
+            const apy =
+              Math.pow(
+                apr.div(this.constants.YEAR_IN_SEC).plus(1).toNumber(),
+                this.constants.YEAR_IN_SEC
+              ) - 1;
+            const marketRate = new BigNumber(apy).times(100);
             pool.marketRate = marketRate;
           });
         break;
