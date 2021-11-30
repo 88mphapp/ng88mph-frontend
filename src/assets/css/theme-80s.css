@@ -16658,11 +16658,6 @@ th.mat-header-cell {
   border-bottom-style: none;
 }
 
-.mat-table-row:hover {
-  color: #fff;
-  background-color: #1c1d1f;
-}
-
 tr.mat-header-row {
   height: auto;
 }
