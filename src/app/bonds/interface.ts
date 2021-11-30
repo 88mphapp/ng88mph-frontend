@@ -79,4 +79,8 @@ export interface DPool {
   maxEstimatedMPHRewardsAPR: BigNumber;
   surplus: BigNumber;
   isExpanded: boolean;
+  emaRate: BigNumber;
+  marketRate: BigNumber;
+  floatingRatePrediction: BigNumber;
+  useMarketRate: boolean;
 }

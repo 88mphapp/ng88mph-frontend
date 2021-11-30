@@ -27,10 +27,12 @@
     "DInterestLens": "0x1BBeA3Fa282dc0199E7dCea34E152FA955fd3c21"
   },
   "137": {
-    "DInterestLens": "0x162083f8096f54d68c6a5f8E86adB400FfC4b201"
+    "DInterestLens": "0x162083f8096f54d68c6a5f8E86adB400FfC4b201",
+    "AaveProtocolDataProvider": "0x7551b5D2763519d4e37e8B81929D336De671d46d"
   },
   "43114": {
-    "DInterestLens": "0x162083f8096f54d68c6a5f8E86adB400FfC4b201"
+    "DInterestLens": "0x162083f8096f54d68c6a5f8E86adB400FfC4b201",
+    "AaveProtocolDataProvider": "0x65285E9dfab318f57051ab2b139ccCf232945451"
   },
   "250": {
     "MPHMinter": "0xf6402B18F9494D54FcC0ee75460Bd791C9DA354c",

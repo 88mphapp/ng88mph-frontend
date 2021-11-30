@@ -520,7 +520,23 @@ export class BondsComponent implements OnInit {
             maxEstimatedMPHRewardsAPR: new BigNumber(0),
             surplus: new BigNumber(pool.surplus),
             isExpanded: false,
+            emaRate: this.helpers
+              .parseInterestRate(
+                new BigNumber(pool.oracleInterestRate),
+                this.constants.YEAR_IN_SEC
+              )
+              .times(100),
+            marketRate: new BigNumber(0),
+            // marketRate: await this.getCurrentMarketRate(poolInfo.stablecoin),
+            floatingRatePrediction: this.helpers
+              .parseInterestRate(
+                new BigNumber(pool.oracleInterestRate),
+                this.constants.YEAR_IN_SEC
+              )
+              .times(100),
+            useMarketRate: false,
           };
+          this.getCurrentMarketRate(dpoolObj, poolInfo);
 
           if (dpoolObj.surplus.lt(0)) {
             let poolFundableDeposits: FundableDeposit[] = [];
@@ -742,17 +758,31 @@ export class BondsComponent implements OnInit {
     }
   }
 
+  // @dev which estimated interst calculation is most accurate?
   getEstimatedROI(deposit: FundableDeposit) {
     const now = Date.now() / 1e3;
     const debtToFund = deposit.yieldTokensAvailableUSD;
+
+    // @dev this returns a slightly smaller amount
+    // @dev likely because the returned rate compounds for less time
+    // const estimatedInterest = deposit.unfundedDepositAmountUSD
+    //   .plus(debtToFund)
+    //   .times(
+    //     this.helpers.parseInterestRate(
+    //       deposit.pool.oracleInterestRate,
+    //       deposit.maturationTimestamp - now
+    //     )
+    //   );
+
+    // @dev this returns a slightly larger amount
+    // @dev likely because the returned rate compounds for more time
     const estimatedInterest = deposit.unfundedDepositAmountUSD
       .plus(debtToFund)
-      .times(
-        this.helpers.parseInterestRate(
-          deposit.pool.oracleInterestRate,
-          deposit.maturationTimestamp - now
-        )
-      );
+      .times(deposit.pool.floatingRatePrediction)
+      .div(100)
+      .times(deposit.maturationTimestamp - now)
+      .div(this.constants.YEAR_IN_SEC);
+
     const estimatedProfit = estimatedInterest.minus(debtToFund);
     const estimatedAPR = estimatedProfit.div(debtToFund).times(100);
     deposit.estimatedAPR = estimatedAPR;
@@ -764,21 +794,158 @@ export class BondsComponent implements OnInit {
     const mphFunderRewardMultiplier = new BigNumber(
       deposit.pool.poolFunderRewardMultiplier
     );
+
+    // @dev this returns a slightly smaller amount
+    // @dev likely because the returned rate compounds for less time
+    // const estimatedInterestToken = deposit.unfundedDepositAmount
+    //   .plus(deposit.yieldTokensAvailableToken)
+    //   .times(Math.pow(10, deposit.pool.stablecoinDecimals))
+    //   .times(
+    //     this.helpers.parseInterestRate(
+    //       deposit.pool.oracleInterestRate,
+    //       deposit.maturationTimestamp - now
+    //     )
+    //   );
+
+    // @dev this returns a slightly larger amount
+    // @dev likely because the returned rate compounds for more time
     const estimatedInterestToken = deposit.unfundedDepositAmount
       .plus(deposit.yieldTokensAvailableToken)
       .times(Math.pow(10, deposit.pool.stablecoinDecimals))
-      .times(
-        this.helpers.parseInterestRate(
-          deposit.pool.oracleInterestRate,
-          deposit.maturationTimestamp - now
-        )
-      );
+      .times(deposit.pool.floatingRatePrediction)
+      .div(100)
+      .times(deposit.maturationTimestamp - now)
+      .div(this.constants.YEAR_IN_SEC);
+
     const mphReward = estimatedInterestToken
       .times(mphFunderRewardMultiplier)
       .div(Math.pow(10, deposit.pool.stablecoinDecimals));
     const mphRewardUSD = mphReward.times(this.mphPriceUSD);
     const mphRewardAPR = mphRewardUSD.div(debtToFund).times(100);
     deposit.mphRewardsAPR = mphRewardAPR;
+  }
+
+  async getCurrentMarketRate(pool: DPool, poolInfo: PoolInfo) {
+    const web3 = this.wallet.httpsWeb3();
+
+    // console.log(pool);
+
+    switch (pool.protocol) {
+      // @dev on multiple chains
+      case 'Aave':
+        // @dev this returns APR, may need to convert to APY
+        const aaveDataProvider = this.contract.getNamedContract(
+          'AaveProtocolDataProvider',
+          web3
+        );
+        aaveDataProvider.methods
+          .getReserveData(pool.stablecoin)
+          .call()
+          .then((result) => {
+            const marketRate = new BigNumber(result.liquidityRate)
+              .div(1e27)
+              .times(100);
+            pool.marketRate = marketRate;
+          });
+        break;
+      case 'Compound':
+        // @dev https://compound.finance/docs
+        // @dev uses blocks per day (6570) to calculat markete rate APY
+        const compoundMarket = this.contract.getContract(
+          poolInfo.moneyMarket,
+          'CompoundMoneyMarket',
+          web3
+        );
+        compoundMarket.methods
+          .cToken()
+          .call()
+          .then(async (result) => {
+            const cToken = this.contract.getContract(result, 'CERC20', web3);
+            cToken.methods
+              .supplyRatePerBlock()
+              .call()
+              .then((result) => {
+                console.log(result);
+                const marketRate = new BigNumber(
+                  (Math.pow((result / 1e18) * 6570 + 1, 365) - 1) * 100
+                );
+                console.log(marketRate);
+                pool.marketRate = marketRate;
+              });
+          });
+        break;
+      case 'Harvest':
+        console.log('harvest protocol');
+        break;
+      case 'Cream':
+        console.log('cream protocol');
+        break;
+      case 'B.Protocol':
+        console.log('b.protocol protocol');
+        break;
+      case 'Benqi':
+        console.log('benqi protocol');
+        break;
+      case 'Geist':
+        // @dev this returns APR, may need to convert to APY
+        const geistDataProvider = this.contract.getNamedContract(
+          'GeistProtocolDataProvider',
+          web3
+        );
+        geistDataProvider.methods
+          .getReserveData(pool.stablecoin)
+          .call()
+          .then((result) => {
+            const marketRate = new BigNumber(result.liquidityRate)
+              .div(1e27)
+              .times(100);
+            pool.marketRate = marketRate;
+          });
+        break;
+      case 'Scream':
+        // @dev https://compound.finance/docs
+        // @dev uses seconds per day (86400) to calculate market rate APY
+        const screamMarket = this.contract.getContract(
+          poolInfo.moneyMarket,
+          'CompoundMoneyMarket',
+          web3
+        );
+        screamMarket.methods
+          .cToken()
+          .call()
+          .then(async (result) => {
+            const cToken = this.contract.getContract(result, 'CERC20', web3);
+            cToken.methods
+              .supplyRatePerBlock()
+              .call()
+              .then((result) => {
+                const marketRate = new BigNumber(
+                  (Math.pow((result / 1e18) * 86400 + 1, 365) - 1) * 100
+                );
+                pool.marketRate = marketRate;
+              });
+          });
+        break;
+    }
+  }
+
+  updatePoolFloatingRatePrediction(pool: DPool, rate: any) {
+    pool.floatingRatePrediction = new BigNumber(rate);
+    for (let deposit in pool.poolFundableDeposits) {
+      const fundableDeposit = pool.poolFundableDeposits[deposit];
+      this.getEstimatedROI(fundableDeposit);
+      this.getEstimatedRewardsAPR(fundableDeposit);
+    }
+  }
+
+  mytest(pool: DPool) {
+    pool.useMarketRate = !pool.useMarketRate;
+
+    pool.floatingRatePrediction = pool.useMarketRate
+      ? pool.marketRate
+      : pool.emaRate;
+
+    this.updatePoolFloatingRatePrediction(pool, pool.floatingRatePrediction);
   }
 
   debtAvailable(): boolean {
