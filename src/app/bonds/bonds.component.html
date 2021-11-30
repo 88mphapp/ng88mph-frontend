@@ -702,57 +702,87 @@
 
               <ng-container matColumnDef="expandedDetail">
                 <td mat-cell *matCellDef="let pool" [attr.colspan]="5">
-                  <div class="">
-                    <span>
-                      Your Floating Rate Prediction:
-                      {{ pool.floatingRatePrediction.toFixed(2) }}
-                    </span>
-                    <span>
-                      Use Market Rate:
-                      <input type="checkbox" (change)="mytest(pool)" />
-                    </span>
+                  <div class="row mb-3">
+                    <div class="col-12 d-flex justify-content-between">
+                      <span
+                        class="h4 mb-0"
+                        placement="bottom"
+                        i18n-ngbTooltip="@@AvgFloatingRatePrediction"
+                        ngbTooltip="Use the slide below to see how your average floating rate
+                      prediction for {{ pool.stablecoinSymbol }} on {{
+                          pool.protocol
+                        }} until the YT reaches its maturity date could impact your ROI. 'For eg. an average of 10% for the floating yield rate of {{
+                          pool.stablecoinSymbol
+                        }} over the next x days impacts my ROI by x%.'"
+                      >
+                        Your avg. floating rate prediction:
+                        <span class="h4 mb-0 font-weight-bold glowing"
+                          >{{ pool.floatingRatePrediction.toFixed(2) }}%
+                          APY</span
+                        >
+                      </span>
+                      <span
+                        class="h4 mb-0 ml-3"
+                        placement="bottom"
+                        i18n-ngbTooltip="@@CurrentFloatingRate"
+                        ngbTooltip="Check this box to know the current floating rate for {{
+                          pool.stablecoinSymbol
+                        }} on {{
+                          pool.protocol
+                        }} and how it could impact your ROI if it stays at that rate until the YT reaches its maturity date."
+                      >
+                        Use current floating rate:
+                        <input
+                          class="ml-1"
+                          type="checkbox"
+                          (change)="mytest(pool)"
+                        />
+                      </span>
+                    </div>
                   </div>
-                  <input
-                    type="range"
-                    class="custom-range align-items-center"
-                    min="0"
-                    max="{{
-                      pool.useMarketRate
-                        ? pool.marketRate.times(2).toFixed(2)
-                        : pool.emaRate.times(2).toFixed(2)
-                    }}"
-                    step="0.01"
-                    [value]="pool.floatingRatePrediction"
-                    (input)="
-                      updatePoolFloatingRatePrediction(
-                        pool,
-                        $event.target.value
-                      )
-                    "
-                  />
-                  <div class="row justify-content-between text-white px-4 mb-4">
+                  <div class="row">
+                    <div class="col-12">
+                      <input
+                        type="range"
+                        class="custom-range align-items-center"
+                        min="0"
+                        max="{{
+                          pool.useMarketRate
+                            ? pool.marketRate.times(2).toFixed(2)
+                            : pool.emaRate.times(2).toFixed(2)
+                        }}"
+                        step="0.01"
+                        [value]="pool.floatingRatePrediction"
+                        (input)="
+                          updatePoolFloatingRatePrediction(
+                            pool,
+                            $event.target.value
+                          )
+                        "
+                      />
+                    </div>
+                  </div>
+                  <div class="row justify-content-between text-white px-2 mb-3">
                     <div class="col">
                       <small>0%</small>
                     </div>
                     <div class="col text-center">
                       <small *ngIf="!pool.useMarketRate"
                         >{{ pool.emaRate.toFixed(2) }}% <br />
-                        (Current
-                        <a
-                          href="https://docs.88mph.app/main-products/floating-rate-interest-bond"
-                          target="_blank"
-                          >30d EMA floating-rate APY</a
-                        >)</small
-                      >
+                        <span
+                          placement="top"
+                          i18n-ngbTooltip="@@Current30dEMA"
+                          ngbTooltip="Current 30-day exponential moving average (EMA) of the floating yield rate of {{
+                            pool.stablecoinSymbol
+                          }} on {{ pool.protocol }}."
+                        >
+                          (Current 30d EMA floating rate)
+                        </span>
+                      </small>
                       <small *ngIf="pool.useMarketRate"
                         >{{ pool.marketRate.toFixed(2) }}% <br />
-                        (Current
-                        <a
-                          href="https://docs.88mph.app/main-products/floating-rate-interest-bond"
-                          target="_blank"
-                          >30d EMA floating-rate APY</a
-                        >)</small
-                      >
+                        (Current floating rate)
+                      </small>
                     </div>
                     <div class="col text-right">
                       <small *ngIf="!pool.useMarketRate"
