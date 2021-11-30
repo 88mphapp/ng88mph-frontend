@@ -319,7 +319,12 @@
             </ng-container>
 
             <ng-container matColumnDef="expandedDetail">
-              <td mat-cell *matCellDef="let pool" [attr.colspan]="7">
+              <td
+                class="bg-light"
+                mat-cell
+                *matCellDef="let pool"
+                [attr.colspan]="7"
+              >
                 <table
                   class="table table-hover table-sm table-nowrap card-table"
                   mat-table
@@ -701,7 +706,12 @@
               </ng-container>
 
               <ng-container matColumnDef="expandedDetail">
-                <td mat-cell *matCellDef="let pool" [attr.colspan]="5">
+                <td
+                  class="bg-light"
+                  mat-cell
+                  *matCellDef="let pool"
+                  [attr.colspan]="5"
+                >
                   <div class="row mb-3">
                     <div class="col-12 d-flex justify-content-between">
                       <span
