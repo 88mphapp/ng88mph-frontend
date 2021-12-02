@@ -1,0 +1,104 @@
+<div class="table-responsive mb-0" style="max-height: 400px">
+  <div class="text-center">
+    <div class="alert text-warning border-warning text-center m-4" role="alert">
+      <h3>
+        New Deposits Last
+        <select
+          [(ngModel)]="displayIndex"
+          data-toggle="select"
+          class="custom-select"
+        >
+          <option value="{{ index + 7 * constants.DAY_IN_SEC }}">0</option>
+          <option value="{{ index + 6 * constants.DAY_IN_SEC }}">1</option>
+          <option value="{{ index + 5 * constants.DAY_IN_SEC }}">2</option>
+          <option value="{{ index + 4 * constants.DAY_IN_SEC }}">3</option>
+          <option value="{{ index + 3 * constants.DAY_IN_SEC }}">4</option>
+          <option value="{{ index + 2 * constants.DAY_IN_SEC }}">5</option>
+          <option value="{{ index + 1 * constants.DAY_IN_SEC }}">6</option>
+          <option value="{{ index + 0 * constants.DAY_IN_SEC }}">7</option>
+        </select>
+        Days
+      </h3>
+      <small>
+        Since {{ timestampToDateString(this.displayIndex, true) }}
+      </small>
+    </div>
+  </div>
+  <mat-table
+    class="table table-sm table-nowrap"
+    mat-table
+    matSort
+    matSortActive="asset"
+    matSortDirection="desc"
+    matSortDisableClear
+    [dataSource]="allDeposits"
+    (matSortChange)="sortBy($event)"
+  >
+    <ng-container matColumnDef="asset">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Asset</th>
+      <td mat-cell *matCellDef="let deposit">
+        <div class="d-flex align-items-center">
+          <div class="avatar avatar-xs">
+            <img
+              class="avatar-img rounded-circle mr-3"
+              src="{{ deposit.iconPath }}"
+              alt="..."
+            />
+          </div>
+          <div class="ml-3">
+            <h4 class="font-weight-normal mb-1">
+              {{ deposit.stablecoinSymbol }}
+            </h4>
+
+            <small class="text-muted">{{ deposit.protocol }}</small>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="depositAmount">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Amount</th>
+      <td mat-cell *matCellDef="let deposit">
+        <h4 class="mb-1 glowing">
+          {{ deposit.depositAmount.toFormat(2) }}
+        </h4>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="apr">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Interest Rate</th>
+      <td mat-cell *matCellDef="let deposit">
+        <h4 class="mb-1 glowing">{{ deposit.apr.toFormat(2) }}%</h4>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="maturation">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Maturity Date</th>
+      <td mat-cell *matCellDef="let deposit">
+        <h4 class="mb-1 glowing">
+          {{ timestampToDateString(deposit.maturationTimestamp) }}
+        </h4>
+      </td>
+    </ng-container>
+
+    <tr
+      mat-header-row
+      *matHeaderRowDef="
+        ['asset', 'depositAmount', 'apr', 'maturation'];
+        sticky: true
+      "
+      style="background-color: #161522"
+    ></tr>
+    <tr
+      class="mat-table-row"
+      mat-row
+      *matRowDef="
+        let deposit;
+        columns: ['asset', 'depositAmount', 'apr', 'maturation']
+      "
+      [hidden]="displayIndex > deposit.depositTimestamp"
+    >
+      test
+    </tr>
+  </mat-table>
+</div>

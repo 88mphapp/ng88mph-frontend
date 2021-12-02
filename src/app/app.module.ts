@@ -45,6 +45,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CacheInterceptor } from './cache-interceptor';
+import { DepositFeedComponent } from './header/deposit-feed/deposit-feed.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { CacheInterceptor } from './cache-interceptor';
     HistoricalStakingRewardsComponent,
     PriceEarningsRatioComponent,
     XmphSupplyDistributionComponent,
+    DepositFeedComponent,
   ],
   imports: [
     BrowserModule,
