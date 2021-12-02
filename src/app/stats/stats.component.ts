@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConstantsService } from '../constants.service';
+import { ContractService } from '../contract.service';
+import { WalletService } from '../wallet.service';
 import { DataService } from '../data.service';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
@@ -14,34 +16,52 @@ export class StatsComponent implements OnInit {
   totalDepositEthereum: BigNumber;
   totalInterestEarnedEthereum: BigNumber;
   totalRewardEthereum: BigNumber;
+  mphTotalSupplyEthereum: BigNumber;
+  mphCirculatingSupplyEthereum: BigNumber;
+  mphStakedEthereum: BigNumber;
 
   totalDepositPolygon: BigNumber;
   totalInterestEarnedPolygon: BigNumber;
   totalRewardPolygon: BigNumber;
+  mphTotalSupplyPolygon: BigNumber;
+  mphCirculatingSupplyPolygon: BigNumber;
+  mphStakedPolygon: BigNumber;
 
   totalDepositAvalanche: BigNumber;
   totalInterestEarnedAvalanche: BigNumber;
   totalRewardAvalanche: BigNumber;
+  mphTotalSupplyAvalanche: BigNumber;
+  mphCirculatingSupplyAvalanche: BigNumber;
+  mphStakedAvalanche: BigNumber;
 
   totalDepositFantom: BigNumber;
   totalInterestEarnedFantom: BigNumber;
   totalRewardFantom: BigNumber;
+  mphTotalSupplyFantom: BigNumber;
+  mphCirculatingSupplyFantom: BigNumber;
+  mphStakedFantom: BigNumber;
 
   totalDepositV2: BigNumber;
   totalInterestEarnedV2: BigNumber;
   totalRewardV2: BigNumber;
 
-  // mph
+  // all stats
   mphTotalSupply: BigNumber;
   mphCirculatingSupply: BigNumber;
-  mphStakedPercentage: BigNumber;
+  mphStaked: BigNumber;
+
   mphTotalHistoricalReward: BigNumber;
   daiTotalHistoricalReward: BigNumber;
 
   // settings
   displaySetting: string;
 
-  constructor(public constants: ConstantsService, public datas: DataService) {
+  constructor(
+    public constants: ConstantsService,
+    public contract: ContractService,
+    public wallet: WalletService,
+    public datas: DataService
+  ) {
     this.resetData();
   }
 
@@ -56,6 +76,9 @@ export class StatsComponent implements OnInit {
     this.loadData(this.constants.CHAIN_ID.FANTOM);
     this.loadV2(this.constants.CHAIN_ID.MAINNET);
     this.loadMPH(this.constants.CHAIN_ID.MAINNET);
+    // this.loadMPH(this.constants.CHAIN_ID.POLYGON);
+    // this.loadMPH(this.constants.CHAIN_ID.AVALANCHE);
+    this.loadMPH(this.constants.CHAIN_ID.FANTOM);
   }
 
   loadData(networkID: number) {
@@ -213,53 +236,86 @@ export class StatsComponent implements OnInit {
     );
   }
 
-  loadMPH(networkID: number) {
-    const mphQueryString = gql`
-      {
-        mph (id: "0") {
-          totalSupply
-        }
-        mphholders (
-          where: {
-            id_in: [
-              "${this.constants.XMPH_ADDRESS[networkID].toLowerCase()}",
-              "${this.constants.GOV_TREASURY[networkID].toLowerCase()}",
-              "${this.constants.DEV_WALLET[networkID].toLowerCase()}",
-              "${this.constants.MERKLE_DISTRIBUTOR[networkID].toLowerCase()}",
-            ]
-          }
-        ) {
-          address
-          mphBalance
-        }
-      }
-    `;
-    request(
-      this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[networkID],
-      mphQueryString
-    ).then((data: QueryResult) => {
-      const mph = data.mph;
-      const mphholders = data.mphholders;
+  async loadMPH(networkID: number) {
+    const web3 = this.wallet.httpsWeb3(networkID);
+    const mph = this.contract.getNamedContract('MPHToken', web3, networkID);
 
-      this.mphTotalSupply = new BigNumber(mph.totalSupply);
-      this.mphStakedPercentage = new BigNumber(
-        mphholders.find(
-          (holder) =>
-            holder.address ===
-            this.constants.XMPH_ADDRESS[networkID].toLowerCase()
-        ).mphBalance
-      )
-        .div(this.mphTotalSupply)
-        .times(100);
+    let mphTotalSupply: BigNumber = new BigNumber(0);
+    await mph.methods
+      .totalSupply()
+      .call()
+      .then((result) => {
+        mphTotalSupply = new BigNumber(result).div(this.constants.PRECISION);
+        this.mphTotalSupply = this.mphTotalSupply.plus(mphTotalSupply);
+        this.mphCirculatingSupply =
+          this.mphCirculatingSupply.plus(mphTotalSupply);
+      });
 
-      let circulatingSupply = this.mphTotalSupply;
-      for (let h in mphholders) {
-        const holder = mphholders[h];
-        const mphBalance = new BigNumber(holder.mphBalance);
-        circulatingSupply = circulatingSupply.minus(mphBalance);
-      }
-      this.mphCirculatingSupply = circulatingSupply;
-    });
+    let mphCirculatingSupply: BigNumber = mphTotalSupply;
+    if (this.constants.GOV_TREASURY[networkID] !== '') {
+      await mph.methods
+        .balanceOf(this.constants.GOV_TREASURY[networkID])
+        .call()
+        .then((result) => {
+          const balance = new BigNumber(result).div(this.constants.PRECISION);
+          mphCirculatingSupply = mphCirculatingSupply.minus(balance);
+          this.mphCirculatingSupply = this.mphCirculatingSupply.minus(balance);
+        });
+    }
+    if (this.constants.DEV_WALLET[networkID] !== '') {
+      await mph.methods
+        .balanceOf(this.constants.DEV_WALLET[networkID])
+        .call()
+        .then((result) => {
+          const balance = new BigNumber(result).div(this.constants.PRECISION);
+          mphCirculatingSupply = mphCirculatingSupply.minus(balance);
+          this.mphCirculatingSupply = this.mphCirculatingSupply.minus(balance);
+        });
+    }
+    if (this.constants.MERKLE_DISTRIBUTOR[networkID] !== '') {
+      await mph.methods
+        .balanceOf(this.constants.MERKLE_DISTRIBUTOR[networkID])
+        .call()
+        .then((result) => {
+          const balance = new BigNumber(result).div(this.constants.PRECISION);
+          mphCirculatingSupply = mphCirculatingSupply.minus(balance);
+          this.mphCirculatingSupply = this.mphCirculatingSupply.minus(balance);
+        });
+    }
+
+    let mphStaked: BigNumber = new BigNumber(0);
+    await mph.methods
+      .balanceOf(this.constants.XMPH_ADDRESS[networkID])
+      .call()
+      .then((result) => {
+        mphStaked = new BigNumber(result).div(this.constants.PRECISION);
+        mphCirculatingSupply = mphCirculatingSupply.minus(mphStaked);
+        this.mphStaked = this.mphStaked.plus(mphStaked);
+        this.mphCirculatingSupply = this.mphCirculatingSupply.minus(mphStaked);
+      });
+
+    switch (networkID) {
+      case this.constants.CHAIN_ID.MAINNET:
+        this.mphTotalSupplyEthereum = mphTotalSupply;
+        this.mphCirculatingSupplyEthereum = mphCirculatingSupply;
+        this.mphStakedEthereum = mphStaked;
+        break;
+      case this.constants.CHAIN_ID.POLYGON:
+        this.mphTotalSupplyPolygon = mphTotalSupply;
+        this.mphCirculatingSupplyPolygon = mphCirculatingSupply;
+        this.mphStakedPolygon = mphStaked;
+        break;
+      case this.constants.CHAIN_ID.AVALANCHE:
+        this.mphTotalSupplyAvalanche = mphTotalSupply;
+        this.mphCirculatingSupplyAvalanche = mphCirculatingSupply;
+        this.mphStakedAvalanche = mphStaked;
+        break;
+      case this.constants.CHAIN_ID.FANTOM:
+        this.mphTotalSupplyFantom = mphTotalSupply;
+        this.mphCirculatingSupplyFantom = mphCirculatingSupply;
+        this.mphStakedFantom = mphStaked;
+        break;
+    }
   }
 
   resetData(): void {
@@ -267,27 +323,40 @@ export class StatsComponent implements OnInit {
     this.totalDepositEthereum = new BigNumber(0);
     this.totalInterestEarnedEthereum = new BigNumber(0);
     this.totalRewardEthereum = new BigNumber(0);
+    this.mphTotalSupplyEthereum = new BigNumber(0);
+    this.mphCirculatingSupplyEthereum = new BigNumber(0);
+    this.mphStakedEthereum = new BigNumber(0);
 
     this.totalDepositPolygon = new BigNumber(0);
     this.totalInterestEarnedPolygon = new BigNumber(0);
     this.totalRewardPolygon = new BigNumber(0);
+    this.mphTotalSupplyPolygon = new BigNumber(0);
+    this.mphCirculatingSupplyPolygon = new BigNumber(0);
+    this.mphStakedPolygon = new BigNumber(0);
 
     this.totalDepositAvalanche = new BigNumber(0);
     this.totalInterestEarnedAvalanche = new BigNumber(0);
     this.totalRewardAvalanche = new BigNumber(0);
+    this.mphTotalSupplyAvalanche = new BigNumber(0);
+    this.mphCirculatingSupplyAvalanche = new BigNumber(0);
+    this.mphStakedAvalanche = new BigNumber(0);
 
     this.totalDepositFantom = new BigNumber(0);
     this.totalInterestEarnedFantom = new BigNumber(0);
     this.totalRewardFantom = new BigNumber(0);
+    this.mphTotalSupplyFantom = new BigNumber(0);
+    this.mphCirculatingSupplyFantom = new BigNumber(0);
+    this.mphStakedFantom = new BigNumber(0);
 
     this.totalDepositV2 = new BigNumber(0);
     this.totalInterestEarnedV2 = new BigNumber(0);
     this.totalRewardV2 = new BigNumber(0);
 
-    // mph
+    // all stats
     this.mphTotalSupply = new BigNumber(0);
     this.mphCirculatingSupply = new BigNumber(0);
-    this.mphStakedPercentage = new BigNumber(0);
+    this.mphStaked = new BigNumber(0);
+
     this.mphTotalHistoricalReward = new BigNumber(0);
     this.daiTotalHistoricalReward = new BigNumber(0);
 
@@ -308,13 +377,6 @@ interface QueryResult {
   globalStats: {
     xMPHRewardDistributed: string;
   };
-  mph: {
-    totalSupply: string;
-  };
-  mphholders: {
-    address: string;
-    mphBalance: string;
-  }[];
 }
 
 interface QueryResultV2 {
