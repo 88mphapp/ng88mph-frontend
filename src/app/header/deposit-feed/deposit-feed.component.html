@@ -28,33 +28,38 @@
   <!-- List group -->
 
   <div class="list-group list-group-flush list-group-activity my-n3">
-    <div class="list-group-item" *ngFor="let deposit of allDeposits">
-      <div class="row">
-        <div class="col-auto">
-          <!-- Avatar -->
-          <div class="avatar avatar-sm avatar-online">
-            <img
-              class="avatar-img rounded-circle"
-              src="{{ deposit.iconPath }}"
-              alt="{{ deposit.stablecoinSymbol }} icon"
-            />
+    <ng-container *ngFor="let deposit of allDeposits">
+      <div
+        class="list-group-item"
+        *ngIf="deposit.depositTimestamp >= displayIndex"
+      >
+        <div class="row">
+          <div class="col-auto">
+            <!-- Avatar -->
+            <div class="avatar avatar-sm avatar-online">
+              <img
+                class="avatar-img rounded-circle"
+                src="{{ deposit.iconPath }}"
+                alt="{{ deposit.stablecoinSymbol }} icon"
+              />
+            </div>
+          </div>
+          <div class="col ms-n2">
+            <!-- Heading -->
+            <h5 class="mb-1">
+              {{ deposit.depositAmount.toFormat(2) }}
+              {{ deposit.stablecoinSymbol }} deposited on {{ deposit.protocol }}
+            </h5>
+
+            <!-- Text -->
+            <p class="small text-secondary mb-0">
+              Earning {{ deposit.apr.toFormat(2) }}% fixed APR until
+              {{ timestampToDateString(deposit.maturationTimestamp) }}
+            </p>
           </div>
         </div>
-        <div class="col ms-n2">
-          <!-- Heading -->
-          <h5 class="mb-1">
-            {{ deposit.depositAmount.toFormat(2) }}
-            {{ deposit.stablecoinSymbol }} deposited on {{ deposit.protocol }}
-          </h5>
-
-          <!-- Text -->
-          <p class="small text-secondary mb-0">
-            Earning {{ deposit.apr.toFormat(2) }}% fixed APR until
-            {{ timestampToDateString(deposit.maturationTimestamp) }}
-          </p>
-        </div>
+        <!-- / .row -->
       </div>
-      <!-- / .row -->
-    </div>
+    </ng-container>
   </div>
 </div>
