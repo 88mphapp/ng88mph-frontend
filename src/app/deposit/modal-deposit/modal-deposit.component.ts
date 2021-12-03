@@ -194,14 +194,6 @@ export class ModalDepositComponent implements OnInit {
       this.maxDepositPeriodInDays = Math.floor(
         pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
       );
-      // if (
-      //   this.wallet.networkID ===
-      //   (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
-      // ) {
-      //   this.mphDepositorRewardMintMultiplier = new BigNumber(
-      //     pool.poolDepositorRewardMintMultiplier
-      //   );
-      // }
       this.mphDepositorRewardMintMultiplier = new BigNumber(
         pool.poolDepositorRewardMintMultiplier
       );
@@ -420,11 +412,19 @@ export class ModalDepositComponent implements OnInit {
       () => {},
       () => {},
       async () => {
-        this.tokenAllowance = new BigNumber(
-          await stablecoin.methods
-            .allowance(userAddress, this.selectedPoolInfo.address)
-            .call()
-        ).div(stablecoinPrecision);
+        const web3 = this.wallet.httpsWeb3();
+        const stablecoin = this.contract.getPoolStablecoin(
+          this.selectedPoolInfo.name,
+          web3
+        );
+        await stablecoin.methods
+          .allowance(userAddress, this.selectedPoolInfo.address)
+          .call()
+          .then((result) => {
+            this.tokenAllowance = new BigNumber(result).div(
+              stablecoinPrecision
+            );
+          });
       },
       (error) => {
         this.wallet.displayGenericError(error);
