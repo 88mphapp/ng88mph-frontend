@@ -1008,7 +1008,7 @@ export class BondsComponent implements OnInit {
     }
   }
 
-  mytest(pool: DPool) {
+  updatePoolFloatingRateType(pool: DPool) {
     pool.useMarketRate = !pool.useMarketRate;
 
     pool.floatingRatePrediction = pool.useMarketRate
