@@ -18,13 +18,13 @@ export class ModalBuyYieldTokenComponent implements OnInit {
 
   buyYieldTokenAmount: BigNumber;
   stablecoinBalance: BigNumber;
+  stablecoinAllowance: BigNumber;
   stablecoinPriceUSD: BigNumber;
   youPay: BigNumber;
   earnYieldOn: BigNumber;
   mphRewards: BigNumber;
   mphRewardsAPR: BigNumber;
   totalEarned: BigNumber;
-  mphPriceUSD: BigNumber;
   bound: BigNumber;
   ratio: BigNumber;
 
@@ -67,10 +67,14 @@ export class ModalBuyYieldTokenComponent implements OnInit {
           stablecoinPrecision
         );
       });
-
-    this.helpers.getMPHPriceUSD().then((price) => {
-      this.mphPriceUSD = price;
-    });
+    stablecoin.methods
+      .allowance(this.wallet.userAddress, this.deposit.pool.address)
+      .call()
+      .then((allowance) => {
+        this.stablecoinAllowance = new BigNumber(allowance).div(
+          stablecoinPrecision
+        );
+      });
 
     await this.updateDetails();
     this.setBuyYieldTokenAmount(
@@ -89,7 +93,6 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     this.mphRewards = new BigNumber(0);
     this.mphRewardsAPR = new BigNumber(0);
     this.totalEarned = new BigNumber(0);
-    this.mphPriceUSD = new BigNumber(0);
     this.bound = new BigNumber(0);
     this.ratio = new BigNumber(0);
   }
@@ -150,12 +153,50 @@ export class ModalBuyYieldTokenComponent implements OnInit {
       this.deposit.pool.poolFunderRewardMultiplier
     );
     this.mphRewardsAPR = this.mphRewards
-      .times(this.mphPriceUSD)
+      .times(this.datas.mphPriceUSD)
       .div(fundAmount.times(this.stablecoinPriceUSD))
       .times(100);
     this.totalEarned = estimatedInterestEarned
       .times(this.stablecoinPriceUSD)
-      .plus(this.mphRewards.times(this.mphPriceUSD));
+      .plus(this.mphRewards.times(this.datas.mphPriceUSD));
+  }
+
+  approve() {
+    const userAddress: string = this.wallet.actualAddress;
+    const stablecoin = this.contract.getPoolStablecoin(this.deposit.pool.name);
+    const stablecoinPrecision = Math.pow(
+      10,
+      this.deposit.pool.stablecoinDecimals
+    );
+    const youPay = this.helpers.processWeb3Number(
+      this.youPay.times(stablecoinPrecision)
+    );
+    this.wallet.approveToken(
+      stablecoin,
+      this.deposit.pool.address,
+      youPay,
+      () => {},
+      () => {},
+      async () => {
+        const web3 = this.wallet.httpsWeb3();
+        const stablecoin = this.contract.getPoolStablecoin(
+          this.deposit.pool.name,
+          web3
+        );
+        await stablecoin.methods
+          .allowance(userAddress, this.deposit.pool.address)
+          .call()
+          .then((result) => {
+            this.stablecoinAllowance = new BigNumber(result).div(
+              stablecoinPrecision
+            );
+          });
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      },
+      true
+    );
   }
 
   async buyYieldTokens() {
