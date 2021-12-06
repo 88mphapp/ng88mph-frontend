@@ -167,7 +167,7 @@
                           {{ mphRewards.toFormat(4) }} MPH
                         </span>
                         <span class="h5 text-muted">
-                          ${{ mphRewards.times(mphPriceUSD).toFormat(2) }}
+                          ${{ mphRewards.times(datas.mphPriceUSD).toFormat(2) }}
                         </span>
                       </td>
                     </tr>
@@ -219,9 +219,35 @@
               <button
                 class="btn btn-lg btn-bg-gradient btn-block"
                 type="button"
+                i18n="@@buyYieldBtn"
+                *ngIf="youPay.lte(0)"
+                [disabled]="true"
+              >
+                Enter an Amount
+              </button>
+              <button
+                class="btn btn-lg btn-bg-gradient btn-block"
+                type="button"
+                i18n="@@buyYieldBtn"
+                *ngIf="
+                  youPay.dp(18).lte(stablecoinBalance) &&
+                  youPay.gt(0) &&
+                  youPay.dp(18).gt(stablecoinAllowance)
+                "
+                (click)="approve()"
+              >
+                Approve
+              </button>
+              <button
+                class="btn btn-lg btn-bg-gradient btn-block"
+                type="button"
                 (click)="buyYieldTokens()"
                 i18n="@@buyYieldBtn"
-                *ngIf="youPay.dp(18).lte(stablecoinBalance)"
+                *ngIf="
+                  youPay.dp(18).lte(stablecoinBalance) &&
+                  youPay.gt(0) &&
+                  youPay.dp(18).lte(stablecoinAllowance)
+                "
               >
                 Buy
               </button>
