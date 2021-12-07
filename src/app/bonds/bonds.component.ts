@@ -34,7 +34,6 @@ export class BondsComponent implements OnInit {
   selectedAsset: string;
   selectedProtocol: string;
   mphPriceUSD: BigNumber;
-  selectedPool: DPool;
   loading: boolean;
   now: number;
 
@@ -1025,6 +1024,47 @@ export class BondsComponent implements OnInit {
         return true;
       }
     }
+    return false;
+  }
+
+  displayError(): boolean {
+    const protocolPool = this.allPoolList.find(
+      (pool) => pool.protocol === this.selectedProtocol && pool.surplus.lt(0)
+    );
+    if (
+      this.selectedProtocol !== 'all' &&
+      this.selectedAsset === 'all' &&
+      !protocolPool
+    ) {
+      return true;
+    }
+
+    const assetPool = this.allPoolList.find(
+      (pool) =>
+        pool.stablecoinSymbol === this.selectedAsset && pool.surplus.lt(0)
+    );
+    if (
+      this.selectedProtocol === 'all' &&
+      this.selectedAsset !== 'all' &&
+      !assetPool
+    ) {
+      return true;
+    }
+
+    const pool = this.allPoolList.find(
+      (pool) =>
+        pool.protocol === this.selectedProtocol &&
+        pool.stablecoinSymbol === this.selectedAsset &&
+        pool.surplus.lt(0)
+    );
+    if (
+      this.selectedProtocol !== 'all' &&
+      this.selectedAsset !== 'all' &&
+      !pool
+    ) {
+      return true;
+    }
+
     return false;
   }
 
