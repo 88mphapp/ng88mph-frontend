@@ -21,7 +21,6 @@ export class RewardsComponent implements OnInit {
   stakedMPHBalance: BigNumber;
   unstakedMPHBalance: BigNumber;
   tokenAllowance: BigNumber;
-  mphPriceUSD: BigNumber;
   xMPHPriceUSD: BigNumber;
   xMPHTotalSupply: BigNumber;
   pricePerFullShare: BigNumber;
@@ -96,7 +95,6 @@ export class RewardsComponent implements OnInit {
     if (resetGlobal) {
       this.xMPHTotalSupply = new BigNumber(0);
       this.pricePerFullShare = new BigNumber(0);
-      this.mphPriceUSD = new BigNumber(0);
       this.xMPHPriceUSD = new BigNumber(0);
       this.yearlyROI = new BigNumber(0);
       this.protocolFeesUSD = new BigNumber(0);
@@ -121,132 +119,140 @@ export class RewardsComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean, networkID: number) {
-    const web3 = this.wallet.httpsWeb3();
-    const mph = this.contract.getNamedContract('MPHToken', web3);
-    const xmph = this.contract.getNamedContract('xMPH', web3);
-    const user = this.wallet.actualAddress.toLowerCase();
+    // @notice wait 1 second (configurable) before loading data
+    // @dev timeout prevents bug when loading page from non-ethereum chain
+    await setTimeout(async () => {
+      if (networkID !== this.wallet.networkID) {
+        return;
+      }
 
-    if (loadUser && user) {
-      mph.methods
-        .balanceOf(user)
-        .call()
-        .then((balance) => {
-          this.unstakedMPHBalance = new BigNumber(balance).div(
-            this.constants.PRECISION
-          );
-          this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
-        });
+      const web3 = this.wallet.httpsWeb3(networkID);
+      const mph = this.contract.getNamedContract('MPHToken', web3);
+      const xmph = this.contract.getNamedContract('xMPH', web3);
+      const user = this.wallet.actualAddress.toLowerCase();
 
-      mph.methods
-        .allowance(user, this.constants.XMPH_ADDRESS[this.wallet.networkID])
-        .call()
-        .then((allowance) => {
-          this.tokenAllowance = new BigNumber(allowance).div(
-            this.constants.PRECISION
-          );
-        });
+      if (loadUser && user) {
+        mph.methods
+          .balanceOf(user)
+          .call()
+          .then((balance) => {
+            this.unstakedMPHBalance = new BigNumber(balance).div(
+              this.constants.PRECISION
+            );
+            this.setStakeAmount(this.unstakedMPHBalance.toFixed(18));
+          });
 
-      xmph.methods
-        .balanceOf(user)
-        .call()
-        .then((balance) => {
-          this.xMPHBalance = new BigNumber(balance).div(
-            this.constants.PRECISION
-          );
-        });
+        mph.methods
+          .allowance(user, this.constants.XMPH_ADDRESS[networkID])
+          .call()
+          .then((allowance) => {
+            this.tokenAllowance = new BigNumber(allowance).div(
+              this.constants.PRECISION
+            );
+          });
 
-      if (networkID === this.constants.CHAIN_ID.MAINNET) {
-        const queryString = gql`
-          {
-            mphholder (
-              id: "${user}"
-            ) {
-              mphStaked
+        xmph.methods
+          .balanceOf(user)
+          .call()
+          .then((balance) => {
+            this.xMPHBalance = new BigNumber(balance).div(
+              this.constants.PRECISION
+            );
+          });
+
+        if (networkID === this.constants.CHAIN_ID.MAINNET) {
+          const queryString = gql`
+            {
+              mphholder (
+                id: "${user}"
+              ) {
+                mphStaked
+              }
             }
-          }
-        `;
-        request(
-          this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[networkID],
-          queryString
-        ).then((data: QueryResult) => {
-          this.stakedMPHBalance = new BigNumber(data.mphholder.mphStaked);
-        });
-      }
-    }
-
-    if (loadGlobal) {
-      this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
-
-      xmph.methods
-        .getPricePerFullShare()
-        .call()
-        .then((result) => {
-          this.pricePerFullShare = new BigNumber(result).div(
-            this.constants.PRECISION
-          );
-          this.xMPHPriceUSD = this.pricePerFullShare.times(this.mphPriceUSD);
-        });
-
-      xmph.methods
-        .totalSupply()
-        .call()
-        .then((result) => {
-          this.xMPHTotalSupply = new BigNumber(result).div(
-            this.constants.PRECISION
-          );
-        });
-
-      let rewardsStartDate: BigNumber;
-      await xmph.methods
-        .lastRewardTimestamp()
-        .call()
-        .then((result) => {
-          rewardsStartDate = new BigNumber(result);
-        });
-
-      let rewardsEndDate: BigNumber;
-      await xmph.methods
-        .currentUnlockEndTimestamp()
-        .call()
-        .then((result) => {
-          const daysToNextDistribution: number = Math.ceil(
-            (parseInt(result) - Date.now() / 1e3) / this.constants.DAY_IN_SEC
-          );
-          daysToNextDistribution > 0
-            ? (this.daysToNextDistribution = daysToNextDistribution)
-            : (this.daysToNextDistribution = 0);
-          rewardsEndDate = new BigNumber(result);
-        });
-
-      let rewardsAmount: BigNumber;
-      await xmph.methods
-        .lastRewardAmount()
-        .call()
-        .then((result) => {
-          rewardsAmount = new BigNumber(result).div(this.constants.PRECISION);
-        });
-
-      let rewardPerSecond = rewardsAmount
-        .div(rewardsEndDate.minus(rewardsStartDate))
-        .times(this.mphPriceUSD);
-      if (rewardPerSecond.isNaN()) {
-        rewardPerSecond = new BigNumber(0);
+          `;
+          request(
+            this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[networkID],
+            queryString
+          ).then((data: QueryResult) => {
+            this.stakedMPHBalance = new BigNumber(data.mphholder.mphStaked);
+          });
+        }
       }
 
-      let secondROI = rewardPerSecond
-        .div(this.xMPHTotalSupply.times(this.xMPHPriceUSD))
-        .times(100);
-      if (secondROI.isNaN()) {
-        secondROI = new BigNumber(0);
-      }
+      if (loadGlobal) {
+        xmph.methods
+          .getPricePerFullShare()
+          .call()
+          .then((result) => {
+            this.pricePerFullShare = new BigNumber(result).div(
+              this.constants.PRECISION
+            );
+            this.xMPHPriceUSD = this.pricePerFullShare.times(
+              this.datas.mphPriceUSD
+            );
+          });
 
-      this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
-      this.loadRewardAccumulationStatsNew(networkID);
-      this.maxAPY = await this.datas.getMaxAPY();
-    }
+        xmph.methods
+          .totalSupply()
+          .call()
+          .then((result) => {
+            this.xMPHTotalSupply = new BigNumber(result).div(
+              this.constants.PRECISION
+            );
+          });
+
+        let rewardsStartDate: BigNumber;
+        await xmph.methods
+          .lastRewardTimestamp()
+          .call()
+          .then((result) => {
+            rewardsStartDate = new BigNumber(result);
+          });
+
+        let rewardsEndDate: BigNumber;
+        await xmph.methods
+          .currentUnlockEndTimestamp()
+          .call()
+          .then((result) => {
+            const daysToNextDistribution: number = Math.ceil(
+              (parseInt(result) - Date.now() / 1e3) / this.constants.DAY_IN_SEC
+            );
+            daysToNextDistribution > 0
+              ? (this.daysToNextDistribution = daysToNextDistribution)
+              : (this.daysToNextDistribution = 0);
+            rewardsEndDate = new BigNumber(result);
+          });
+
+        let rewardsAmount: BigNumber;
+        await xmph.methods
+          .lastRewardAmount()
+          .call()
+          .then((result) => {
+            rewardsAmount = new BigNumber(result).div(this.constants.PRECISION);
+          });
+
+        let rewardPerSecond = rewardsAmount
+          .div(rewardsEndDate.minus(rewardsStartDate))
+          .times(this.datas.mphPriceUSD);
+        if (rewardPerSecond.isNaN()) {
+          rewardPerSecond = new BigNumber(0);
+        }
+
+        let secondROI = rewardPerSecond
+          .div(this.xMPHTotalSupply.times(this.xMPHPriceUSD))
+          .times(100);
+        if (secondROI.isNaN()) {
+          secondROI = new BigNumber(0);
+        }
+
+        this.yearlyROI = secondROI.times(this.constants.YEAR_IN_SEC);
+        this.loadRewardAccumulationStats(networkID);
+        this.maxAPY = await this.datas.getMaxAPY();
+      }
+    }, 1000);
   }
 
-  loadRewardAccumulationStatsNew(networkID: number) {
+  loadRewardAccumulationStats(networkID: number) {
     if (networkID !== this.wallet.networkID) {
       return;
     }
