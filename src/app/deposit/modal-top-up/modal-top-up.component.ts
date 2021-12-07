@@ -67,6 +67,13 @@ export class ModalTopUpComponent implements OnInit {
     this.depositTokenBalance = new BigNumber(
       await stablecoin.methods.balanceOf(address).call()
     ).div(stablecoinPrecision);
+    this.depositMaturation = new Date(
+      this.userDeposit.maturationTimestamp * 1e3
+    ).toLocaleString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
 
     this.updateAPY();
   }
