@@ -102,32 +102,19 @@ export class DepositComponent implements OnInit {
 
     if (loadUser && userID) {
       // load xMPH balance for 'get started' section
-      if (
-        this.wallet.networkID ===
-        (this.constants.CHAIN_ID.MAINNET || this.constants.CHAIN_ID.RINKEBY)
-      ) {
-        const mphQueryString = gql`
-          {
-            mphholder (
-              id: "${userID}"
-            ) {
-              xmphBalance
+      // @dev need to check if xmph has a non-null address, otherwise it will throw an error
+      const xmph = this.contract.getNamedContract('xMPH', web3);
+      if (xmph.options.address) {
+        xmph.methods
+          .balanceOf(userID)
+          .call()
+          .then((result) => {
+            const balance = new BigNumber(result).div(this.constants.PRECISION);
+            if (balance.gt(0)) {
+              this.stakedMPH = true;
+              this.stepsCompleted += 1;
             }
-          }
-        `;
-        request(
-          this.constants.MPH_TOKEN_GRAPHQL_ENDPOINT[this.wallet.networkID],
-          mphQueryString
-        ).then((data: MPHHolderQueryResult) => {
-          const holder = data.mphholder;
-          const xMPHBalance: BigNumber = new BigNumber(
-            holder ? holder.xmphBalance : 0
-          );
-          if (xMPHBalance.gt(0)) {
-            this.stakedMPH = true;
-            this.stepsCompleted += 1;
-          }
-        });
+          });
       }
 
       // load Zero Coupon Bond / Preset Maturity data
