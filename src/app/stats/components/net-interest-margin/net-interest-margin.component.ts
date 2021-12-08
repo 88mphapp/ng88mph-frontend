@@ -153,7 +153,18 @@ export class NetInterestMarginComponent implements OnInit {
             ticks: {
               suggestedMin: 0,
               callback: function (label, index, labels) {
-                return label.toFixed(0);
+                const size = Math.abs(labels[labels.length - 2]);
+                if (size < 0.001) {
+                  return label.toFixed(4);
+                } else if (size < 0.01) {
+                  return label.toFixed(3);
+                } else if (size < 0.1) {
+                  return label.toFixed(2);
+                } else if (size < 1) {
+                  return label.toFixed(1);
+                } else {
+                  return label.toFixed(0);
+                }
               },
             },
           },
@@ -173,7 +184,7 @@ export class NetInterestMarginComponent implements OnInit {
         callbacks: {
           label: function (tooltipItem, data) {
             const pool = data.datasets[tooltipItem.datasetIndex].label;
-            const value = tooltipItem.yLabel.toFixed(2) + '%';
+            const value = tooltipItem.yLabel.toFixed(4) + '%';
             return pool + ': ' + value;
           },
         },
