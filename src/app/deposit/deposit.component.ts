@@ -245,7 +245,6 @@ export class DepositComponent implements OnInit {
     if (networkID !== this.wallet.networkID) return;
 
     const { user, dpools } = data;
-    let stablecoinPriceCache = {};
 
     if (dpools) {
       let allPoolList = new Array<DPool>(0);
@@ -261,14 +260,10 @@ export class DepositComponent implements OnInit {
           }
 
           const stablecoin = poolInfo.stablecoin.toLowerCase();
-          let stablecoinPrice = stablecoinPriceCache[stablecoin];
-          if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(
-              stablecoin,
-              networkID
-            );
-            stablecoinPriceCache[stablecoin] = stablecoinPrice;
-          }
+          const stablecoinPrice = await this.datas.getAssetPriceUSD(
+            stablecoin,
+            networkID
+          );
 
           // get MPH APR
           const mphDepositorRewardMintMultiplier = new BigNumber(
@@ -359,16 +354,13 @@ export class DepositComponent implements OnInit {
           }
           const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
           const stablecoin = poolInfo.stablecoin.toLowerCase();
-          let stablecoinPrice = stablecoinPriceCache[stablecoin];
+          const stablecoinPrice = await this.datas.getAssetPriceUSD(
+            stablecoin,
+            networkID
+          );
+
           let totalUserDepositsToken = new BigNumber(0);
           let totalUserDepositsUSD = new BigNumber(0);
-          if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(
-              stablecoin,
-              networkID
-            );
-            stablecoinPriceCache[stablecoin] = stablecoinPrice;
-          }
           const userPoolDeposits: Array<UserDeposit> = [];
           for (const deposit of pool.deposits) {
             // compute interest
@@ -572,16 +564,11 @@ export class DepositComponent implements OnInit {
       let totalInterestUSD = new BigNumber(0);
       Promise.all(
         user.totalDepositByPool.map(async (totalDepositEntity) => {
-          let stablecoinPrice =
-            stablecoinPriceCache[totalDepositEntity.pool.stablecoin];
-          if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(
-              totalDepositEntity.pool.stablecoin,
-              networkID
-            );
-            stablecoinPriceCache[totalDepositEntity.pool.stablecoin] =
-              stablecoinPrice;
-          }
+          const stablecoin = totalDepositEntity.pool.stablecoin;
+          const stablecoinPrice = await this.datas.getAssetPriceUSD(
+            stablecoin,
+            networkID
+          );
 
           const poolInfo = this.contract.getPoolInfoFromAddress(
             totalDepositEntity.pool.address
