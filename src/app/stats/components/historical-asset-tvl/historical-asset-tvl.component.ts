@@ -149,28 +149,52 @@ export class HistoricalAssetTvlComponent implements OnInit {
             },
             scaleLabel: {
               display: true,
-              labelString:
-                this.displaySetting === 'all' ||
-                this.displaySetting === 'ethereum' ||
-                this.displaySetting === 'v2'
-                  ? 'Millions (USD)'
-                  : 'Thousands (USD)',
+              labelString: 'USD',
             },
             ticks: {
               min: 0,
               callback: (label, index, labels) => {
-                const x =
-                  this.displaySetting === 'all' ||
-                  this.displaySetting === 'ethereum' ||
-                  this.displaySetting === 'v2'
-                    ? label / 1e6
-                    : label / 1e3;
-                const y =
-                  '$' +
-                  x
-                    .toFixed(0)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                const size = Math.abs(labels[labels.length - 2]);
+                let x;
+                if (size < 1) {
+                  x = label.toFixed(1).toString();
+                } else if (size < 1e3) {
+                  x = label.toFixed(0).toString();
+                } else if (size < 1e6) {
+                  if (
+                    this.barChartOptions.scales.yAxes[0].scaleLabel
+                      .labelString !== 'Thousands (USD)'
+                  ) {
+                    const newOptions = { ...this.barChartOptions };
+                    newOptions.scales.yAxes[0].scaleLabel.labelString =
+                      'Thousands (USD)';
+                    this.barChartOptions = newOptions;
+                  }
+                  x = (label / 1e3).toFixed(0).toString();
+                } else if (size < 1e9) {
+                  if (
+                    this.barChartOptions.scales.yAxes[0].scaleLabel
+                      .labelString !== 'Millions (USD)'
+                  ) {
+                    const newOptions = { ...this.barChartOptions };
+                    newOptions.scales.yAxes[0].scaleLabel.labelString =
+                      'Millions (USD)';
+                    this.barChartOptions = newOptions;
+                  }
+                  x = (label / 1e6).toFixed(0).toString();
+                } else {
+                  if (
+                    this.barChartOptions.scales.yAxes[0].scaleLabel
+                      .labelString !== 'Billions (USD)'
+                  ) {
+                    const newOptions = { ...this.barChartOptions };
+                    newOptions.scales.yAxes[0].scaleLabel.labelString =
+                      'Billions (USD)';
+                    this.barChartOptions = newOptions;
+                  }
+                  x = (label / 1e9).toFixed(0).toString();
+                }
+                const y = '$' + x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 return y;
               },
             },
@@ -181,7 +205,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
         callbacks: {
           label: function (tooltipItem, data) {
             const pool = data.datasets[tooltipItem.datasetIndex].label;
-            const value = tooltipItem.yLabel.toFixed(0);
+            const value = tooltipItem.yLabel.toFixed(2);
             const formattedValue =
               '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             return pool + ': ' + formattedValue;
