@@ -64,10 +64,14 @@ export class DepositComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData(this.wallet.connected || this.wallet.watching, true);
+    this.loadData(
+      this.wallet.connected || this.wallet.watching,
+      true,
+      this.wallet.networkID
+    );
     this.wallet.connectedEvent.subscribe(() => {
       this.resetData(true, true);
-      this.loadData(true, true);
+      this.loadData(true, true, this.wallet.networkID);
     });
     this.wallet.disconnectedEvent.subscribe(() => {
       this.resetData(true, true);
@@ -75,25 +79,25 @@ export class DepositComponent implements OnInit {
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.zone.run(() => {
         this.resetData(true, true);
-        this.loadData(true, true);
+        this.loadData(true, true, networkID);
       });
     });
     this.wallet.accountChangedEvent.subscribe((account) => {
       this.zone.run(() => {
         this.resetData(true, true);
-        this.loadData(true, true);
+        this.loadData(true, true, this.wallet.networkID);
       });
     });
     this.wallet.txConfirmedEvent.subscribe(() => {
       setTimeout(() => {
         this.resetData(true, true);
-        this.loadData(true, true);
+        this.loadData(true, true, this.wallet.networkID);
       }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
     });
   }
 
-  async loadData(loadUser: boolean, loadGlobal: boolean) {
-    const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
+  async loadData(loadUser: boolean, loadGlobal: boolean, networkID: number) {
+    const web3 = this.wallet.httpsWeb3(networkID);
 
     this.displayGetStarted =
       window.localStorage.getItem('displayEarnGetStarted') != 'false';
@@ -232,13 +236,14 @@ export class DepositComponent implements OnInit {
         }
       }
     `;
-    request(
-      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
-      queryString
-    ).then((data: QueryResult) => this.handleData(data));
+    request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
+      (data: QueryResult) => this.handleData(data, networkID)
+    );
   }
 
-  async handleData(data: QueryResult) {
+  async handleData(data: QueryResult, networkID: number) {
+    if (networkID !== this.wallet.networkID) return;
+
     const { user, dpools } = data;
     let stablecoinPriceCache = {};
 
@@ -260,7 +265,7 @@ export class DepositComponent implements OnInit {
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(
               stablecoin,
-              this.wallet.networkID
+              networkID
             );
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
           }
@@ -360,7 +365,7 @@ export class DepositComponent implements OnInit {
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(
               stablecoin,
-              this.wallet.networkID
+              networkID
             );
             stablecoinPriceCache[stablecoin] = stablecoinPrice;
           }
@@ -572,7 +577,7 @@ export class DepositComponent implements OnInit {
           if (!stablecoinPrice) {
             stablecoinPrice = await this.helpers.getTokenPriceUSD(
               totalDepositEntity.pool.stablecoin,
-              this.wallet.networkID
+              networkID
             );
             stablecoinPriceCache[totalDepositEntity.pool.stablecoin] =
               stablecoinPrice;
