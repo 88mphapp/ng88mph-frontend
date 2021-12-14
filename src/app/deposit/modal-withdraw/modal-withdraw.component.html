@@ -108,9 +108,7 @@
                       >
                         <span class="h4 text-muted">
                           {{
-                            applyWithdrawRatio(
-                              userDeposit.amountToken
-                            ).toFormat(4)
+                            applyWithdrawRatio(userDeposit.amount).toFormat(4)
                           }}
                           {{ poolInfo.stablecoinSymbol }}
                         </span>
@@ -135,16 +133,14 @@
                       >
                         <span class="h4 text-muted">
                           {{
-                            applyWithdrawRatio(
-                              userDeposit.interestEarnedToken
-                            ).toFormat(4)
+                            applyWithdrawRatio(userDeposit.interest).toFormat(4)
                           }}
                           {{ poolInfo.stablecoinSymbol }}
                         </span>
                         <span class="h5 mb-1 glowing">
                           ${{
                             applyWithdrawRatio(
-                              userDeposit.interestEarnedUSD
+                              userDeposit.interestUSD
                             ).toFormat(2)
                           }}
                         </span>

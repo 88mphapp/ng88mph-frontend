@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
-import { DPool } from 'src/app/bonds/interface';
 import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
@@ -18,7 +17,6 @@ export class ModalRollOverComponent implements OnInit {
   @Input() userDeposit: UserDeposit;
   @Input() poolInfo: PoolInfo;
   @Input() mphDepositorRewardMintMultiplier: BigNumber;
-  @Input() dpool: DPool;
 
   depositAmountToken: BigNumber;
   depositAmountUSD: BigNumber;
@@ -61,8 +59,8 @@ export class ModalRollOverComponent implements OnInit {
   }
 
   loadData() {
-    this.depositAmountToken = this.userDeposit.amountToken.plus(
-      this.userDeposit.interestEarnedToken
+    this.depositAmountToken = this.userDeposit.amount.plus(
+      this.userDeposit.interest
     );
 
     const queryString = gql`

@@ -5,7 +5,7 @@ import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 import { ContractService, PoolInfo } from '../../contract.service';
-import { DPool, UserPool, UserDeposit } from '../types';
+import { UserPool, UserDeposit } from '../types';
 
 @Component({
   selector: 'app-modal-top-up',
@@ -68,7 +68,7 @@ export class ModalTopUpComponent implements OnInit {
       await stablecoin.methods.balanceOf(address).call()
     ).div(stablecoinPrecision);
     this.depositMaturation = new Date(
-      this.userDeposit.maturationTimestamp * 1e3
+      this.userDeposit.maturation * 1e3
     ).toLocaleString('en-US', {
       month: 'long',
       day: 'numeric',
@@ -117,11 +117,11 @@ export class ModalTopUpComponent implements OnInit {
     );
     const currentTimestamp = Math.floor(Date.now() / 1e3);
     let depositTime: string;
-    if (currentTimestamp >= this.userDeposit.maturationTimestamp) {
+    if (currentTimestamp >= this.userDeposit.maturation) {
       depositTime = '0';
     } else {
       depositTime = this.helpers.processWeb3Number(
-        this.userDeposit.maturationTimestamp - currentTimestamp
+        this.userDeposit.maturation - currentTimestamp
       );
     }
     const rawInterestAmountToken = new BigNumber(
