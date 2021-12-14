@@ -722,6 +722,22 @@ export class DepositComponent implements OnInit {
   timestampToDateString(timestampSec: number): string {
     return new Date(timestampSec * 1e3).toLocaleDateString();
   }
+
+  displayError() {
+    const pool = this.allPoolList.find(
+      (pool) =>
+        pool.protocol === this.selectedProtocol &&
+        pool.stablecoinSymbol === this.selectedAsset
+    );
+    if (
+      this.selectedProtocol !== 'all' &&
+      this.selectedAsset !== 'all' &&
+      !pool
+    ) {
+      return true;
+    }
+    return false;
+  }
 }
 
 interface GlobalQueryResult {
