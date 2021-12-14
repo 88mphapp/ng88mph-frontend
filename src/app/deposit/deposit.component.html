@@ -715,7 +715,10 @@
             ></tr>
           </table>
           <h2 class="glowing text-center py-4 mb-0" *ngIf="displayError()">
-            <ng-container> No fixed rate available. </ng-container>
+            <ng-container>
+              No fixed rate available for {{ selectedAsset }} via
+              {{ selectedProtocol }}.
+            </ng-container>
           </h2>
         </div>
       </div>
