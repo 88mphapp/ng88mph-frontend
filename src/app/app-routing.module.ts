@@ -3,6 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { BondsComponent } from './bonds/bonds.component';
 import { FundingComponent } from './funding/funding.component';
+import { DisclaimerComponent } from './disclaimer/disclaimer.component';
+import { TosContentComponent } from './tos-content/tos-content.component';
 import { BridgeComponent } from './bridge/bridge.component';
 import { DepositComponent } from './deposit/deposit.component';
 import { FarmingComponent } from './farming/farming.component';
@@ -38,6 +40,14 @@ const routes: Routes = [
   {
     path: 'funding',
     component: FundingComponent,
+  },
+  {
+    path: 'disclaimer',
+    component: DisclaimerComponent,
+  },
+  {
+    path: 'tos',
+    component: TosContentComponent,
   },
   {
     path: 'bridge',

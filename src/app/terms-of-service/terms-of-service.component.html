@@ -16,87 +16,72 @@
         </div>
       </div>
       <div class="row justify-content-center">
-        <div class="col-12 col-lg-8 pt-0 pr-lg-5">
-          <h1 class="display-4 text-center" i18n="@@termsOfServiceHeader">
-            Acknowledge disclaimer
+        <div class="col-12 col-lg-6 pt-0 pr-lg-5">
+          <h1 class="display-4 text-center" i18n="@@AknowledgetermsHeader">
+            Acknowledge Terms
           </h1>
+          <p class="text-center">
+            By using 88mph.app, you agree to the
+            <a
+              href="https://88mph.app/disclaimer"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Disclaimer</a
+            >
+            and
+            <a
+              href="https://88mph.app/tos"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Terms of services</a
+            >.
+          </p>
+          <p class="text-center">You agree, represent, and warrant that:</p>
           <div class="card mb-6">
             <div class="card-body">
-              <p class="text-muted" i18n="@@termsOfServiceText1">
-                The Platform only serves as an introducing platform and
-                facilitator between investors and third party protocols and/or
-                platforms. The Platform does not make any profits in relation to
-                such introducing activity and the Platform shall under no
-                circumstances be considered as a party to any relationship
-                created between Users, investors and/or third party protocols or
-                platforms and any such relations are entered into at the User’s
-                sole liability and risk.
-              </p>
-              <p class="text-muted" i18n="@@termsOfServiceText2">
-                The Platform does not have any power over any crypto assets
-                and/or deposits of Users and does not provide any advice,
-                investment advice, execution only or custody services. In
-                addition, the Platform does not buy or sell any financial
-                instruments or provide any banking, portfolio management,
-                trustee, manager of collective assets, fund management or
-                securities firm services. In particular, the Platform does not
-                manage any assets or financial instruments and/or issues or
-                holds any securities or financial instruments whatsoever.
-              </p>
-              <p class="text-muted" i18n="@@termsOfServiceText3">
-                Moreover, the Platform does not act as a financial market
-                infrastructure, in particular a stock exchange, multilateral
-                trading facility (MTF), central counterparty, central securities
-                depository or a payment system. In particular, the Platform does
-                not allow for any simultaneous exchange of bids between several
-                participants on the Platform. The Platform shall not be
-                considered as an organized trading facility (système organisé de
-                négociation / SON) given that it does not allow (a) for
-                multilateral trading in securities or other financial
-                instruments or the conclusion of contracts based on
-                discretionary rules; (b) multilateral trading in financial
-                instruments other than securities whose purpose is the exchange
-                of bids or the conclusion of contracts based on
-                non-discretionary rules or (c) bilateral trading in securities
-                or other financial instruments whose purpose is the exchange of
-                bids. Indeed, the Platform does not intervene as party or
-                counterparty at the level of any transactions on securities or
-                financial instruments, whether simultaneous or not. For these
-                reasons, it does not qualify as SON under Swiss regulation.
-                Trading is deemed to be multilateral if it collects / gathers
-                the interests of multiple participants in the acquisition and
-                sale of securities or other financial instruments within the
-                trading facility with a view to concluding a contract.
-              </p>
-              <p class="text-muted" i18n="@@termsOfServiceText4">
-                No funds transit via the Platform. The Platform does not perform
-                any financial intermediary activities on a professional basis
-                and does not perform any KYC (know your client) verifications on
-                Users.
-              </p>
-              <p class="text-muted" i18n="@@termsOfServiceText5">
-                The Platform, Services, MPH Tokens and related materials, any
-                payment processing and other tasks are provided on an "as is",
-                "with all faults" and "as available" basis. Users expressly
-                agree that their use is at their sole risk. To the fullest
-                extent permitted by applicable law, the Platform makes no
-                representations or warranties of any kind, express or implied,
-                as to the operation of the Platform, Services, MPH Tokens and
-                related materials, any payment processing or other tasks, and
-                disclaims any and all representations or warranties of any kind,
-                express or implied, including without limitation: (a) any
-                implied warranties of merchantability, fitness for a particular
-                purpose, title, or non-infringement; (b) any warranty that the
-                Platform, related materials, the payment processing or other
-                tasks will meet Users’ requirements, will always be available,
-                accessible, uninterrupted, timely, secure, operate without
-                error, or will contain any particular features or functionality;
-                (c) any warranty that the information, content, materials, or
-                submissions included on the Platform will be as represented by
-                Users that the tasks are lawful, or that Users will perform as
-                promised or to Users’ satisfaction; or (d) any implied warranty
-                arising from course of dealing or usage of trade.
-              </p>
+              <ul class="d-block p-5 bg-dark">
+                <li>
+                  You are not a person or a company who is a resident of, or is
+                  located, incorporated or has a registered agent in the United
+                  States nor in a Restricted Country listed in our
+                  <a
+                    href="https://88mph.app/tos"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >terms of services</a
+                  >.
+                </li>
+                <li>
+                  You will not in the future access this site or use 88mph.app
+                  while located within the United States or within a Restricted
+                  Country listed in our
+                  <a
+                    href="https://88mph.app/tos"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >terms of services</a
+                  >.
+                </li>
+                <li>
+                  You are not using, and will not in the future use a VPN to
+                  mask your physical location from a restricted country.
+                </li>
+                <li>
+                  You are lawfully permitted to access this site and use 88mph
+                  under the laws of the jurisdiction in which you reside and are
+                  located.
+                </li>
+                <li>
+                  You understand the risks associated with the use of 88mph.app,
+                  listed in the
+                  <a
+                    href="https://docs.88mph.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >documentation</a
+                  >.
+                </li>
+              </ul>
               <div class="form-check text-center mb-3">
                 <input
                   [(ngModel)]="acceptedTerms"
@@ -106,20 +91,37 @@
                 />
                 <label class="form-check-label" for="termsOfServiceCheck">
                   <ng-container i18n="@@termsOfServiceCheck"
-                    >By using 88mph, you agree to 88mph's
-                    disclaimer.</ng-container
+                    >By visiting and using 88mph, you agree to these
+                    terms.</ng-container
                   >
                 </label>
               </div>
 
-              <button
-                class="btn btn-lg btn-block btn-bg-gradient"
-                (click)="acceptTerms()"
-                [disabled]="!acceptedTerms"
-                i18n="@@accept"
-              >
-                Accept
-              </button>
+              <div class="row">
+                <div class="col-6">
+                  <button
+                    class="btn btn-lg btn-block btn-dark"
+                    type="button"
+                    name="button"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    (click)="activeModal.close(false)"
+                    i18n="@@cancel"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button
+                    class="btn btn-lg btn-block btn-bg-gradient"
+                    (click)="acceptTerms()"
+                    [disabled]="!acceptedTerms"
+                    i18n="@@accept"
+                  >
+                    I agree
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
