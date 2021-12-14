@@ -14,9 +14,15 @@ import {
   PoolInfo,
   ZeroCouponBondInfo,
 } from '../contract.service';
-import { DPool, UserPool, UserDeposit, UserZCBPool, Vest } from './types';
+import {
+  AllPool,
+  GlobalPool,
+  UserPool,
+  UserDeposit,
+  Vest,
+  UserZCBPool,
+} from './types';
 import { HelpersService } from '../helpers.service';
-import { Timer } from '../timer';
 import { ConstantsService } from '../constants.service';
 import { DataService } from '../data.service';
 import { ModalWithdrawZCBComponent } from './modal-withdraw-zcb/modal-withdraw-zcb.component';
@@ -30,25 +36,31 @@ import { ModalNftComponent } from './modal-nft/modal-nft.component';
 export class DepositComponent implements OnInit {
   DECIMALS = 2;
 
-  totalDepositUSD: BigNumber;
-  totalInterestUSD: BigNumber;
-  totalMPHEarned: BigNumber;
-  allPoolList: DPool[];
-  allAssetList: string[];
-  allProtocolList: string[];
-  allZCBPoolList: ZeroCouponBondInfo[];
-  userPools: UserPool[];
-  userVests: Vest[];
-  userZCBPools: UserZCBPool[];
-  selectedAsset: string;
-  selectedProtocol: string;
-
-  // variables for get started section
-  stepsCompleted: number;
+  // get started
   hasDeposit: boolean;
   claimedMPH: boolean;
   stakedMPH: boolean;
+  stepsCompleted: number;
   displayGetStarted: boolean;
+
+  // user
+  userVestList: Vest[];
+  userPoolList: UserPool[];
+  userTotalDepositUSD: BigNumber;
+  userTotalInterestUSD: BigNumber;
+  userTotalClaimableReward: BigNumber;
+  userZCBPools: UserZCBPool[];
+
+  // global
+  globalPoolList: GlobalPool[];
+  allZCBPoolList: ZeroCouponBondInfo[];
+
+  // all
+  allPoolList: AllPool[];
+  allAssetList: string[];
+  allProtocolList: string[];
+  selectedAsset: string;
+  selectedProtocol: string;
 
   constructor(
     private modalService: NgbModal,
@@ -60,570 +72,485 @@ export class DepositComponent implements OnInit {
     private router: Router,
     private zone: NgZone
   ) {
-    this.resetData(true, true);
+    this.resetData(true, true, true);
   }
 
   ngOnInit(): void {
     this.loadData(
       this.wallet.connected || this.wallet.watching,
       true,
+      true,
       this.wallet.networkID
     );
     this.wallet.connectedEvent.subscribe(() => {
-      this.resetData(true, true);
-      this.loadData(true, true, this.wallet.networkID);
+      this.resetData(true, false, false);
+      this.loadData(true, false, false, this.wallet.networkID);
     });
     this.wallet.disconnectedEvent.subscribe(() => {
-      this.resetData(true, true);
+      this.resetData(true, false, true);
+      this.loadData(false, false, true, this.wallet.networkID);
     });
     this.wallet.chainChangedEvent.subscribe((networkID) => {
       this.zone.run(() => {
-        this.resetData(true, true);
-        this.loadData(true, true, networkID);
+        this.resetData(true, true, true);
+        this.loadData(
+          this.wallet.connected || this.wallet.watching,
+          true,
+          true,
+          networkID
+        );
       });
     });
     this.wallet.accountChangedEvent.subscribe((account) => {
       this.zone.run(() => {
-        this.resetData(true, true);
-        this.loadData(true, true, this.wallet.networkID);
+        this.resetData(true, false, true);
+        this.loadData(true, false, true, this.wallet.networkID);
       });
     });
     this.wallet.txConfirmedEvent.subscribe(() => {
       setTimeout(() => {
-        this.resetData(true, true);
-        this.loadData(true, true, this.wallet.networkID);
+        this.resetData(true, false, false);
+        this.loadData(true, false, false, this.wallet.networkID);
       }, this.constants.TX_CONFIRMATION_REFRESH_WAIT_TIME);
     });
   }
 
-  async loadData(loadUser: boolean, loadGlobal: boolean, networkID: number) {
-    const web3 = this.wallet.httpsWeb3(networkID);
+  resetData(
+    resetUser: boolean,
+    resetGlobal: boolean,
+    resetPools: boolean
+  ): void {
+    if (resetUser) {
+      this.userVestList = [];
+      this.userPoolList = [];
+      this.userTotalDepositUSD = new BigNumber(0);
+      this.userTotalInterestUSD = new BigNumber(0);
+      this.userTotalClaimableReward = new BigNumber(0);
+      this.hasDeposit = false;
+      this.claimedMPH = false;
+      this.stakedMPH = false;
+      this.stepsCompleted = 0;
+      this.userZCBPools = [];
+    }
 
+    if (resetGlobal) {
+      this.globalPoolList = [];
+      this.allZCBPoolList = [];
+    }
+
+    if (resetPools) {
+      this.allPoolList = [];
+      this.allAssetList = [];
+      this.allProtocolList = [];
+      this.selectedAsset = 'all';
+      this.selectedProtocol = 'best';
+    }
+  }
+
+  async loadData(
+    loadUser: boolean,
+    loadGlobal: boolean,
+    loadPools: boolean,
+    networkID: number
+  ) {
     this.displayGetStarted =
       window.localStorage.getItem('displayEarnGetStarted') != 'false';
 
-    let userID = this.wallet.actualAddress.toLowerCase();
+    await Promise.all([
+      loadPools ? this.loadPoolData(networkID) : null,
+      loadGlobal ? this.loadGlobalData(networkID) : null,
+      loadUser ? this.loadUserData(networkID) : null,
+    ]).then(() => {
+      if (networkID !== this.wallet.networkID) return;
 
-    if (loadUser && userID) {
-      // load xMPH balance for 'get started' section
-      // @dev need to check if xmph has a non-null address, otherwise it will throw an error
-      const xmph = this.contract.getNamedContract('xMPH', web3);
-      if (xmph.options.address) {
-        xmph.methods
-          .balanceOf(userID)
-          .call()
-          .then((result) => {
-            const balance = new BigNumber(result).div(this.constants.PRECISION);
-            if (balance.gt(0)) {
-              this.stakedMPH = true;
-              this.stepsCompleted += 1;
-            }
-          });
+      // merge global data
+      for (let globalPool of this.globalPoolList) {
+        const allPool = this.allPoolList.find(
+          (allPool) => allPool.address === globalPool.address
+        );
+        allPool.mphDepositorRewardMintMultiplier =
+          globalPool.mphDepositorRewardMintMultiplier;
+        allPool.maxAPR = globalPool.maxAPR;
+        allPool.mphAPR = globalPool.mphAPR;
+        allPool.isBest = globalPool.isBest;
       }
 
-      // load Zero Coupon Bond / Preset Maturity data
-      const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
-      const zcbPoolList = zcbPoolNameList.map((poolName) =>
-        this.contract.getZeroCouponBondPool(poolName)
-      );
-      this.allZCBPoolList = zcbPoolList.concat.apply([], zcbPoolList);
-      const userZCBPools = [];
-      let totalDepositUSD = new BigNumber(0);
-      for (let zcbPool of this.allZCBPoolList) {
-        const zcbContract = this.contract.getZeroCouponBondContract(
-          zcbPool.address,
-          web3
+      // merge user data
+      for (let userPool of this.userPoolList) {
+        const allPool = this.allPoolList.find(
+          (allPool) => allPool.address === userPool.address
         );
-        const poolInfo = this.contract.getPoolInfoFromAddress(
-          await zcbContract.methods.pool().call()
-        );
-        const userBalance = new BigNumber(
-          await zcbContract.methods.balanceOf(userID).call()
-        ).div(Math.pow(10, poolInfo.stablecoinDecimals));
+        allPool.userDeposits = userPool.userDeposits;
+        allPool.userTotalDeposit = userPool.userTotalDeposit;
+        allPool.userTotalDepositUSD = userPool.userTotalDepositUSD;
+      }
 
-        if (userBalance.gt(this.constants.DUST_THRESHOLD)) {
-          const zcbPriceUSD = new BigNumber(
-            await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo)
+      this.allPoolList = [
+        ...this.allPoolList.sort((a, b) => {
+          return (
+            b.userTotalDepositUSD.toNumber() - a.userTotalDepositUSD.toNumber()
           );
-          const userBalanceUSD = userBalance.times(zcbPriceUSD);
-          const maturationTimestamp = await zcbContract.methods
-            .maturationTimestamp()
-            .call();
-          const maturationDate = new Date(
-            maturationTimestamp * 1e3
-          ).toLocaleString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          });
-          let userZCB: UserZCBPool = {
-            zcbPoolInfo: zcbPool,
-            poolInfo: poolInfo,
-            amountToken: userBalance,
-            amountUSD: userBalanceUSD,
-            maturation: maturationDate,
-            locked: +maturationTimestamp >= Date.now() / 1e3,
-          };
-          userZCBPools.push(userZCB);
-          totalDepositUSD = totalDepositUSD.plus(userBalanceUSD);
+        }),
+      ];
+    });
+  }
+
+  loadPoolData(networkID: number) {
+    let allPoolList: AllPool[] = [];
+    let allAssetList: string[] = [];
+    let allProtocolList: string[] = [];
+
+    const dpools = this.contract.getPoolInfoList(networkID);
+    Promise.all(
+      dpools.map((poolInfo) => {
+        if (poolInfo.protocol === 'Cream') return;
+
+        const poolObj: AllPool = {
+          // general
+          name: poolInfo.name,
+          address: poolInfo.address,
+          protocol: poolInfo.protocol,
+          stablecoin: poolInfo.stablecoin,
+          stablecoinSymbol: poolInfo.stablecoinSymbol,
+          iconPath: poolInfo.iconPath,
+          poolInfo: poolInfo,
+          isExpanded: false,
+
+          // global
+          mphDepositorRewardMintMultiplier: new BigNumber(0),
+          maxAPR: new BigNumber(0),
+          mphAPR: new BigNumber(0),
+          isBest: false,
+
+          // user
+          userDeposits: [],
+          userTotalDeposit: new BigNumber(0),
+          userTotalDepositUSD: new BigNumber(0),
+        };
+        allPoolList.push(poolObj);
+
+        if (!allAssetList.includes(poolInfo.stablecoinSymbol)) {
+          allAssetList.push(poolInfo.stablecoinSymbol);
+        }
+        if (!allProtocolList.includes(poolInfo.protocol)) {
+          allProtocolList.push(poolInfo.protocol);
+        }
+      })
+    ).then(() => {
+      allPoolList.sort((a, b) => {
+        return a.stablecoinSymbol > b.stablecoinSymbol ? 1 : -1;
+      });
+      this.allPoolList = allPoolList;
+
+      allAssetList.sort((a, b) => {
+        return a > b ? 1 : a < b ? -1 : 0;
+      });
+      this.allAssetList = allAssetList;
+
+      allProtocolList.sort((a, b) => {
+        return a > b ? 1 : a < b ? -1 : 0;
+      });
+      this.allProtocolList = allProtocolList;
+    });
+  }
+
+  async loadGlobalData(networkID: number) {
+    const queryString = gql`
+      {
+        dpools {
+          address
+          poolDepositorRewardMintMultiplier
         }
       }
-      this.userZCBPools = userZCBPools;
-      this.totalDepositUSD = totalDepositUSD;
+    `;
+    await request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
+      (data: GlobalQueryResult) => this.handleGlobalData(data, networkID)
+    );
+  }
+
+  async loadUserData(networkID: number) {
+    const userID = this.wallet.actualAddress.toLowerCase();
+    if (!userID) return;
+
+    // load xMPH balance for 'get started' section
+    const web3 = this.wallet.httpsWeb3(networkID);
+    const xmph = this.contract.getNamedContract('xMPH', web3);
+    if (xmph.options.address) {
+      xmph.methods
+        .balanceOf(userID)
+        .call()
+        .then((result) => {
+          const balance = new BigNumber(result).div(this.constants.PRECISION);
+          if (balance.gt(0)) {
+            this.stakedMPH = true;
+            this.stepsCompleted += 1;
+          }
+        });
     }
 
     const queryString = gql`
       {
-        ${
-          loadUser
-            ? `user(id: "${userID}") {
-              address
+        user (id: "${userID}") {
+          address
           pools {
-            id
             address
-            deposits(where: { user: "${userID}", amount_gt: "${this.constants.DUST_THRESHOLD}" }, orderBy: nftID) {
+            deposits (where: { user: "${userID}" }) {
               nftID
-              virtualTokenTotalSupply
-              maturationTimestamp
-              depositTimestamp
-              interestRate
-              feeRate
               amount
+              interestRate
+              depositTimestamp
+              maturationTimestamp
+              virtualTokenTotalSupply
               vest {
-                nftID
                 owner
+                nftID
+                vestAmountPerStablecoinPerSecond
+                totalExpectedMPHAmount
                 lastUpdateTimestamp
                 accumulatedAmount
                 withdrawnAmount
-                vestAmountPerStablecoinPerSecond
-                totalExpectedMPHAmount
               }
             }
           }
-          deposits {
-            maturationTimestamp
-            virtualTokenTotalSupply
-            interestRate
-            vest {
-              nftID
-              withdrawnAmount
-              accumulatedAmount
-              totalExpectedMPHAmount
-              lastUpdateTimestamp
-              vestAmountPerStablecoinPerSecond
-            }
-          }
-          totalDepositByPool {
-            pool {
-              address
-              stablecoin
-            }
-            totalDeposit
-            totalInterestOwed
-          }
-        }`
-            : ''
-        }
-        ${
-          loadGlobal
-            ? `dpools {
-          id
-          address
-          totalDeposit
-          poolDepositorRewardMintMultiplier
-        }`
-            : ''
         }
       }
     `;
-    request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
-      (data: QueryResult) => this.handleData(data, networkID)
+    await request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
+      (data: UserQueryResult) => this.handleUserData(data, networkID)
     );
   }
 
-  async handleData(data: QueryResult, networkID: number) {
+  async handleGlobalData(data: GlobalQueryResult, networkID: number) {
     if (networkID !== this.wallet.networkID) return;
 
-    const { user, dpools } = data;
+    let globalPoolList: GlobalPool[] = [];
+    const dpools = data.dpools;
+    await Promise.all(
+      dpools.map(async (pool) => {
+        const poolInfo = this.contract.getPoolInfoFromAddress(
+          pool.address,
+          networkID
+        );
+        if (poolInfo.protocol === 'Cream') return;
 
-    if (dpools) {
-      let allPoolList = new Array<DPool>(0);
-      let allAssetList = new Array<string>(0);
-      let allProtocolList = new Array<string>(0);
+        // get MPH APR
+        const stablecoinPrice = await this.datas.getAssetPriceUSD(
+          poolInfo.stablecoin,
+          networkID
+        );
+        const mphDepositorRewardMintMultiplier = new BigNumber(
+          pool.poolDepositorRewardMintMultiplier
+        );
+        const mphAPR = mphDepositorRewardMintMultiplier
+          .times(this.datas.mphPriceUSD)
+          .times(this.constants.YEAR_IN_SEC)
+          .div(stablecoinPrice)
+          .times(100);
 
-      await Promise.all(
-        dpools.map(async (pool) => {
-          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
+        // create the poolObj
+        const poolObj: GlobalPool = {
+          address: poolInfo.address,
+          stablecoin: poolInfo.stablecoin,
+          mphDepositorRewardMintMultiplier: mphDepositorRewardMintMultiplier,
+          maxAPR: await this.datas.getPoolMaxAPR(poolInfo.address),
+          mphAPR: mphAPR,
+          isBest: false,
+        };
 
-          if (poolInfo.protocol === 'Cream') {
-            return;
+        // update best pool
+        const sameAssetPools = globalPoolList.filter(
+          (x) => x.stablecoin === poolObj.stablecoin
+        );
+        if (sameAssetPools.length === 0) {
+          poolObj.isBest = true;
+        } else {
+          const bestPool = sameAssetPools.find((x) => x.isBest === true);
+          if (poolObj.maxAPR.gt(bestPool.maxAPR)) {
+            bestPool.isBest = false;
+            poolObj.isBest = true;
           }
+        }
 
-          const stablecoin = poolInfo.stablecoin.toLowerCase();
-          const stablecoinPrice = await this.datas.getAssetPriceUSD(
-            stablecoin,
-            networkID
-          );
+        globalPoolList.push(poolObj);
+      })
+    ).then(() => {
+      this.globalPoolList = globalPoolList;
+    });
+  }
 
-          // get MPH APR
-          const mphDepositorRewardMintMultiplier = new BigNumber(
-            pool.poolDepositorRewardMintMultiplier
-          );
-          const mphAPY = mphDepositorRewardMintMultiplier
-            .times(this.datas.mphPriceUSD)
-            .times(this.constants.YEAR_IN_SEC)
-            .div(stablecoinPrice)
-            .times(100);
+  async handleUserData(data: UserQueryResult, networkID: number) {
+    if (networkID !== this.wallet.networkID) return;
 
-          // creat the DPool object
-          const dpoolObj: DPool = {
-            name: poolInfo.name,
-            protocol: poolInfo.protocol,
-            stablecoin: poolInfo.stablecoin,
-            stablecoinSymbol: poolInfo.stablecoinSymbol,
-            iconPath: poolInfo.iconPath,
-            totalDepositToken: new BigNumber(pool.totalDeposit),
-            totalDepositUSD: new BigNumber(pool.totalDeposit).times(
-              stablecoinPrice
-            ),
-            maxAPY: await this.datas.getPoolMaxAPR(poolInfo.address),
-            mphAPY: mphAPY,
-            mphDepositorRewardMintMultiplier: mphDepositorRewardMintMultiplier,
-            totalUserDepositsToken: new BigNumber(0),
-            totalUserDepositsUSD: new BigNumber(0),
-            userDeposits: [],
-            poolInfo: poolInfo,
-            isExpanded: false,
-            isBest: false,
-          };
+    const user = data.user;
+    if (!user) return;
 
-          // determine if best pool for asset
-          const sameAsset: Array<DPool> = allPoolList.filter(
-            (pool) => pool.stablecoin === poolInfo.stablecoin
-          );
-          if (sameAsset.length === 0) {
-            dpoolObj.isBest = true;
-          } else {
-            const bestPool = sameAsset.find((pool) => pool.isBest === true);
-            if (dpoolObj.maxAPY.gt(bestPool.maxAPY)) {
-              bestPool.isBest = false;
-              dpoolObj.isBest = true;
-            }
-          }
+    let userVestList: Vest[] = [];
+    let userPoolList: UserPool[] = [];
+    let userTotalDepositUSD: BigNumber = new BigNumber(0);
+    let userTotalInterestUSD: BigNumber = new BigNumber(0);
+    let userTotalClaimableReward: BigNumber = new BigNumber(0);
 
-          allPoolList.push(dpoolObj);
+    Promise.all(
+      user.pools.map(async (pool) => {
+        const poolInfo = this.contract.getPoolInfoFromAddress(
+          pool.address,
+          networkID
+        );
+        const stablecoinPrice = await this.datas.getAssetPriceUSD(
+          poolInfo.stablecoin,
+          networkID
+        );
 
-          if (!allAssetList.includes(poolInfo.stablecoinSymbol)) {
-            allAssetList.push(poolInfo.stablecoinSymbol);
-          }
-          if (!allProtocolList.includes(poolInfo.protocol)) {
-            allProtocolList.push(poolInfo.protocol);
-          }
-        })
-      ).then(() => {
-        allPoolList.sort((a, b) => {
-          return a.stablecoinSymbol > b.stablecoinSymbol
-            ? 1
-            : a.stablecoinSymbol < b.stablecoinSymbol
-            ? -1
-            : 0;
-        });
-        allAssetList.sort((a, b) => {
-          return a > b ? 1 : a < b ? -1 : 0;
-        });
-        allProtocolList.sort((a, b) => {
-          return a > b ? 1 : a < b ? -1 : 0;
-        });
-        this.allPoolList = allPoolList;
-        this.allAssetList = allAssetList;
-        this.allProtocolList = allProtocolList;
-      });
-    }
+        let userDepositList: UserDeposit[] = [];
+        let userPoolDeposit: BigNumber = new BigNumber(0);
+        let userPoolInterest: BigNumber = new BigNumber(0);
 
-    if (user) {
-      let totalMPHEarned = new BigNumber(0);
+        Promise.all(
+          pool.deposits.map((deposit) => {
+            const vest = deposit.vest;
+            const amount = new BigNumber(deposit.amount); // @dev should virtualTokenTotalSupply/(interestRate + 1) be used?
+            const interest = amount.times(deposit.interestRate);
+            const interestAPR = interest
+              .div(amount)
+              .div(
+                parseInt(deposit.maturationTimestamp) -
+                  parseInt(deposit.depositTimestamp)
+              )
+              .times(this.constants.YEAR_IN_SEC)
+              .times(100);
 
-      // process user deposit list
-      const userPools: UserPool[] = [];
-      Promise.all(
-        user.pools.map(async (pool) => {
-          if (pool.deposits.length == 0) return;
-          if (!this.hasDeposit) {
-            this.hasDeposit = true;
-            this.stepsCompleted += 1;
-          }
-          const poolInfo = this.contract.getPoolInfoFromAddress(pool.address);
-          const stablecoin = poolInfo.stablecoin.toLowerCase();
-          const stablecoinPrice = await this.datas.getAssetPriceUSD(
-            stablecoin,
-            networkID
-          );
+            let reward = new BigNumber(0);
+            let rewardAPR = new BigNumber(0);
+            let claimableReward = new BigNumber(0);
+            let vestObj: Vest;
 
-          let totalUserDepositsToken = new BigNumber(0);
-          let totalUserDepositsUSD = new BigNumber(0);
-          const userPoolDeposits: Array<UserDeposit> = [];
-          for (const deposit of pool.deposits) {
-            // compute interest
-            const depositAmount = new BigNumber(
-              deposit.virtualTokenTotalSupply
-            ).div(new BigNumber(deposit.interestRate).plus(1));
-            const interestEarnedToken = new BigNumber(
-              deposit.interestRate
-            ).times(depositAmount);
-            const interestEarnedUSD =
-              interestEarnedToken.times(stablecoinPrice);
+            if (vest) {
+              // @dev chains without rewards won't have a vest
+              if (vest.owner === user.address) {
+                // @dev vest hasn't been transferred
+                // calculate reward for deposit
+                reward = new BigNumber(vest.totalExpectedMPHAmount);
+                rewardAPR = reward
+                  .times(this.datas.mphPriceUSD)
+                  .div(amount.times(stablecoinPrice))
+                  .div(
+                    parseInt(deposit.maturationTimestamp) -
+                      parseInt(deposit.depositTimestamp)
+                  )
+                  .times(this.constants.YEAR_IN_SEC)
+                  .times(100);
 
-            // compute MPH APR
-            let realMPHReward = new BigNumber(0);
-            if (deposit.vest) {
-              if (deposit.vest.owner !== user.address) {
-                // vest NFT transferred to another account
-                // reward is zero
-                realMPHReward = new BigNumber(0);
-              } else {
-                // reward is given to deposit owner
-                realMPHReward = new BigNumber(
-                  deposit.vest.totalExpectedMPHAmount
+                // create vest object for list
+                vestObj = {
+                  nftID: parseInt(vest.nftID),
+                  vestAmountPerStablecoinPerSecond: new BigNumber(
+                    vest.vestAmountPerStablecoinPerSecond
+                  ),
+                  totalExpectedMPHAmount: new BigNumber(
+                    vest.totalExpectedMPHAmount
+                  ),
+                  lastUpdateTimestamp: parseInt(vest.lastUpdateTimestamp),
+                  accumulatedAmount: new BigNumber(vest.accumulatedAmount),
+                  withdrawnAmount: new BigNumber(vest.withdrawnAmount),
+                };
+                userVestList.push(vestObj);
+
+                // calculate total claimable MPH
+                const currentTimestamp = Math.min(
+                  Math.floor(Date.now() / 1e3),
+                  parseFloat(deposit.maturationTimestamp)
                 );
+                claimableReward = claimableReward
+                  .plus(vest.accumulatedAmount)
+                  .minus(vest.withdrawnAmount);
+                if (currentTimestamp >= parseInt(vest.lastUpdateTimestamp)) {
+                  // @dev add reward since last update
+                  claimableReward = claimableReward.plus(
+                    amount
+                      .times(
+                        currentTimestamp - parseInt(vest.lastUpdateTimestamp)
+                      )
+                      .times(vest.vestAmountPerStablecoinPerSecond)
+                  );
+                }
+                userTotalClaimableReward =
+                  userTotalClaimableReward.plus(claimableReward);
+
+                // update steps completed
+                if (vestObj.withdrawnAmount.gt(0) && !this.claimedMPH) {
+                  this.claimedMPH = true;
+                  this.stepsCompleted += 1;
+                }
               }
-              if (
-                new BigNumber(deposit.vest.withdrawnAmount).gt(0) &&
-                !this.claimedMPH
-              ) {
-                this.claimedMPH = true;
+            }
+
+            if (amount.gt(this.constants.DUST_THRESHOLD)) {
+              // add amount and interest to totals
+              userPoolDeposit = userPoolDeposit.plus(amount);
+              userPoolInterest = userPoolInterest.plus(interest);
+
+              // create the deposit object
+              const depositObj: UserDeposit = {
+                nftID: parseInt(deposit.nftID),
+                amount: amount,
+                amountUSD: amount.times(stablecoinPrice),
+
+                interest: interest,
+                interestUSD: interest.times(stablecoinPrice),
+                interestAPR: interestAPR,
+
+                reward: reward,
+                rewardUSD: reward.times(this.datas.mphPriceUSD),
+                rewardAPR: rewardAPR,
+
+                virtualTokenTotalSupply: new BigNumber(
+                  deposit.virtualTokenTotalSupply
+                ),
+                depositLength:
+                  parseInt(deposit.maturationTimestamp) -
+                  parseInt(deposit.depositTimestamp),
+                maturation: parseInt(deposit.maturationTimestamp),
+                locked:
+                  parseInt(deposit.maturationTimestamp) >= Date.now() / 1e3,
+                vest: vestObj,
+              };
+              userDepositList.push(depositObj);
+
+              // update steps completed
+              if (!this.hasDeposit) {
+                this.hasDeposit = true;
                 this.stepsCompleted += 1;
               }
             }
-            const mphAPY = realMPHReward
-              .times(this.datas.mphPriceUSD)
-              .div(depositAmount)
-              .div(stablecoinPrice)
-              .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
-              .times(this.constants.YEAR_IN_SEC)
-              .times(100);
-            totalMPHEarned = totalMPHEarned.plus(realMPHReward);
+          })
+        ).then(() => {
+          // get user total deposit
+          const userPoolDepositUSD = userPoolDeposit.times(stablecoinPrice);
+          userTotalDepositUSD = userTotalDepositUSD.plus(userPoolDepositUSD);
 
-            let vest: Vest;
-            let claimableMPH;
-            if (deposit.vest) {
-              vest = {
-                nftID: +deposit.vest.nftID,
-                lastUpdateTimestamp: +deposit.vest.lastUpdateTimestamp,
-                accumulatedAmount: new BigNumber(
-                  deposit.vest.accumulatedAmount
-                ),
-                withdrawnAmount: new BigNumber(deposit.vest.withdrawnAmount),
-                vestAmountPerStablecoinPerSecond: new BigNumber(
-                  deposit.vest.vestAmountPerStablecoinPerSecond
-                ),
-                totalExpectedMPHAmount: new BigNumber(
-                  deposit.vest.totalExpectedMPHAmount
-                ),
-              };
+          // get user total interest
+          const userPoolInterestUSD = userPoolInterest.times(stablecoinPrice);
+          userTotalInterestUSD = userTotalInterestUSD.plus(userPoolInterestUSD);
 
-              // manually calculate claimableMPH
-              const currentTimestamp = Math.min(
-                Math.floor(Date.now() / 1e3),
-                parseFloat(deposit.maturationTimestamp)
-              );
-              if (currentTimestamp < vest.lastUpdateTimestamp) {
-                claimableMPH = vest.accumulatedAmount.minus(
-                  vest.withdrawnAmount
-                );
-              } else {
-                claimableMPH = vest.accumulatedAmount
-                  .plus(
-                    depositAmount
-                      .times(currentTimestamp - vest.lastUpdateTimestamp)
-                      .times(vest.vestAmountPerStablecoinPerSecond)
-                  )
-                  .minus(vest.withdrawnAmount);
-              }
-            }
-
-            const userPoolDeposit: UserDeposit = {
-              nftID: +deposit.nftID,
-              locked: +deposit.maturationTimestamp >= Date.now() / 1e3,
-              amountToken: new BigNumber(depositAmount),
-              amountUSD: new BigNumber(depositAmount).times(stablecoinPrice),
-              apy: interestEarnedToken
-                .div(depositAmount)
-                .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
-                .times(this.constants.YEAR_IN_SEC)
-                .times(100),
-              countdownTimer: new Timer(+deposit.maturationTimestamp, 'down'),
-              interestEarnedToken,
-              interestEarnedUSD,
-              realMPHReward: realMPHReward,
-              mphAPY: mphAPY,
-              virtualTokenTotalSupply: new BigNumber(
-                deposit.virtualTokenTotalSupply
-              ),
-              vest: vest,
-              depositLength:
-                +deposit.maturationTimestamp - +deposit.depositTimestamp,
-              interestRate: interestEarnedToken
-                .div(depositAmount)
-                .div(+deposit.maturationTimestamp - +deposit.depositTimestamp)
-                .times(this.constants.YEAR_IN_SEC)
-                .times(100),
-              maturationTimestamp: +deposit.maturationTimestamp,
+          // create the user pool object
+          if (userPoolDeposit.gt(this.constants.DUST_THRESHOLD)) {
+            const poolObj: UserPool = {
+              address: poolInfo.address,
+              userDeposits: userDepositList,
+              userTotalDeposit: userPoolDeposit,
+              userTotalDepositUSD: userPoolDepositUSD,
             };
-            userPoolDeposit.countdownTimer.start();
-            userPoolDeposits.push(userPoolDeposit);
-            totalUserDepositsToken = totalUserDepositsToken.plus(
-              new BigNumber(depositAmount)
-            );
-            totalUserDepositsUSD = totalUserDepositsUSD.plus(
-              new BigNumber(depositAmount).times(stablecoinPrice)
-            );
+            userPoolList.push(poolObj);
           }
-
-          // sort pool deposits by maturation timestamp
-          userPoolDeposits.sort((a, b) => {
-            return a.maturationTimestamp - b.maturationTimestamp;
-          });
-
-          const userPool: UserPool = {
-            poolInfo: poolInfo,
-            deposits: userPoolDeposits,
-            totalUserDepositsToken: totalUserDepositsToken,
-            totalUserDepositsUSD: totalUserDepositsUSD,
-          };
-          userPools.push(userPool);
-
-          const activePool = this.allPoolList.find(
-            (pool) => pool.name === poolInfo.name
-          );
-          activePool.userDeposits = userPoolDeposits;
-        })
-      ).then(() => {
-        this.userPools = userPools;
-      });
-
-      // compute total claimable MPH rewards
-      let totalClaimableMPH = new BigNumber(0);
-      let userVests: Vest[] = [];
-      Promise.all(
-        user.deposits.map((deposit) => {
-          const vest = deposit.vest;
-
-          if (vest) {
-            // add the vest to list of user vests
-            const vestObj: Vest = {
-              nftID: parseInt(vest.nftID),
-              lastUpdateTimestamp: parseFloat(vest.lastUpdateTimestamp),
-              accumulatedAmount: new BigNumber(vest.accumulatedAmount),
-              withdrawnAmount: new BigNumber(vest.withdrawnAmount),
-              vestAmountPerStablecoinPerSecond: new BigNumber(
-                vest.vestAmountPerStablecoinPerSecond
-              ),
-              totalExpectedMPHAmount: new BigNumber(
-                vest.totalExpectedMPHAmount
-              ),
-            };
-            userVests.push(vestObj);
-
-            // calculate the claimable amount of MPH
-            const depositAmount = new BigNumber(
-              deposit.virtualTokenTotalSupply
-            ).div(new BigNumber(deposit.interestRate).plus(1));
-            const currentTimestamp = Math.min(
-              Math.floor(Date.now() / 1e3),
-              parseFloat(deposit.maturationTimestamp)
-            );
-
-            let claimableMPH;
-
-            if (currentTimestamp < parseFloat(vest.lastUpdateTimestamp)) {
-              claimableMPH = new BigNumber(vest.accumulatedAmount).minus(
-                vest.withdrawnAmount
-              );
-            } else {
-              claimableMPH = new BigNumber(vest.accumulatedAmount)
-                .plus(
-                  depositAmount
-                    .times(
-                      currentTimestamp - parseFloat(vest.lastUpdateTimestamp)
-                    )
-                    .times(vest.vestAmountPerStablecoinPerSecond)
-                )
-                .minus(vest.withdrawnAmount);
-            }
-
-            totalClaimableMPH = totalClaimableMPH.plus(claimableMPH);
-          }
-        })
-      ).then(() => {
-        this.userVests = userVests;
-        this.totalMPHEarned = totalClaimableMPH;
-      });
-
-      // compute total deposit & interest in USD
-      let totalDepositUSD = new BigNumber(0);
-      let totalInterestUSD = new BigNumber(0);
-      Promise.all(
-        user.totalDepositByPool.map(async (totalDepositEntity) => {
-          const stablecoin = totalDepositEntity.pool.stablecoin;
-          const stablecoinPrice = await this.datas.getAssetPriceUSD(
-            stablecoin,
-            networkID
-          );
-
-          const poolInfo = this.contract.getPoolInfoFromAddress(
-            totalDepositEntity.pool.address
-          );
-          const activePool = this.allPoolList.find(
-            (pool) => pool.name === poolInfo.name
-          );
-          const poolDeposit = new BigNumber(totalDepositEntity.totalDeposit);
-          const poolDepositUSD = new BigNumber(
-            totalDepositEntity.totalDeposit
-          ).times(stablecoinPrice);
-          const poolInterestUSD = new BigNumber(
-            totalDepositEntity.totalInterestOwed
-          ).times(stablecoinPrice);
-          totalDepositUSD = totalDepositUSD.plus(poolDepositUSD);
-          totalInterestUSD = totalInterestUSD.plus(poolInterestUSD);
-          activePool.totalUserDepositsToken = poolDeposit;
-          activePool.totalUserDepositsUSD = poolDepositUSD;
-        })
-      ).then(() => {
-        this.totalDepositUSD = this.totalDepositUSD.plus(totalDepositUSD);
-        this.totalInterestUSD = totalInterestUSD;
-        this.allPoolList = [
-          ...this.allPoolList.sort(
-            (a, b) =>
-              b.totalUserDepositsUSD.toNumber() -
-              a.totalUserDepositsUSD.toNumber()
-          ),
-        ];
-      });
-    }
-  }
-
-  resetData(resetUser: boolean, resetGlobal: boolean): void {
-    if (resetUser) {
-      this.totalDepositUSD = new BigNumber(0);
-      this.totalInterestUSD = new BigNumber(0);
-      this.totalMPHEarned = new BigNumber(0);
-      this.userPools = [];
-      this.userVests = [];
-      this.userZCBPools = [];
-      this.stepsCompleted = 0;
-      this.hasDeposit = false;
-      this.claimedMPH = false;
-      this.stakedMPH = false;
-    }
-
-    if (resetGlobal) {
-      this.allPoolList = [];
-      this.allAssetList = [];
-      this.allProtocolList = [];
-      this.allZCBPoolList = [];
-      this.selectedAsset = 'all';
-      this.selectedProtocol = 'best';
-    }
+        });
+      })
+    ).then(() => {
+      this.userVestList = userVestList;
+      this.userPoolList = userPoolList;
+      this.userTotalDepositUSD = userTotalDepositUSD;
+      this.userTotalInterestUSD = userTotalInterestUSD;
+      this.userTotalClaimableReward = userTotalClaimableReward.dp(18);
+    });
   }
 
   async getZeroCouponBondPriceUSD(
@@ -673,7 +600,7 @@ export class DepositComponent implements OnInit {
     });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
-    const dpool: DPool = this.allPoolList.find(
+    const dpool: AllPool = this.allPoolList.find(
       (pool) => pool.name === poolInfo.name
     );
     modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
@@ -687,7 +614,7 @@ export class DepositComponent implements OnInit {
     });
     modalRef.componentInstance.userDeposit = userDeposit;
     modalRef.componentInstance.poolInfo = poolInfo;
-    const dpool: DPool = this.allPoolList.find(
+    const dpool: AllPool = this.allPoolList.find(
       (pool) => pool.name === poolInfo.name
     );
     modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
@@ -703,9 +630,9 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.poolInfo = poolInfo;
   }
 
-  userHasDeposit(poolName: string): boolean {
-    const userPool = this.userPools.find(
-      (userPool) => userPool.poolInfo.name === poolName
+  userHasDeposit(poolAddress: string): boolean {
+    const userPool = this.userPoolList.find(
+      (userPool) => userPool.address === poolAddress
     );
     return userPool ? true : false;
   }
@@ -715,7 +642,7 @@ export class DepositComponent implements OnInit {
   }
 
   claimAllRewards() {
-    const userVests = this.userVests;
+    const userVests = this.userVestList;
     const vestContract = this.contract.getNamedContract('Vesting02');
     let vestIdList = new Array<number>(0);
 
@@ -777,7 +704,7 @@ export class DepositComponent implements OnInit {
     }
   }
 
-  sortByDeposits(pool: DPool, event: any) {
+  sortByDeposits(pool: AllPool, event: any) {
     pool.userDeposits =
       event.direction === 'asc'
         ? [
@@ -797,63 +724,88 @@ export class DepositComponent implements OnInit {
   }
 }
 
-interface MPHHolderQueryResult {
-  mphholder: {
-    xmphBalance: string;
-  };
-}
-
-interface QueryResult {
-  user: {
-    address: string;
-    pools: {
-      id: string;
-      address: string;
-      deposits: {
-        nftID: string;
-        virtualTokenTotalSupply: string;
-        maturationTimestamp: string;
-        depositTimestamp: string;
-        interestRate: string;
-        feeRate: string;
-        amount: string;
-        vest: {
-          owner: string;
-          nftID: string;
-          lastUpdateTimestamp: string;
-          accumulatedAmount: string;
-          withdrawnAmount: string;
-          vestAmountPerStablecoinPerSecond: string;
-          totalExpectedMPHAmount: string;
-        };
-      }[];
-    }[];
-    deposits: {
-      maturationTimestamp: string;
-      virtualTokenTotalSupply: string;
-      interestRate: string;
-      vest: {
-        nftID: string;
-        withdrawnAmount: string;
-        accumulatedAmount: string;
-        totalExpectedMPHAmount: string;
-        lastUpdateTimestamp: string;
-        vestAmountPerStablecoinPerSecond: string;
-      };
-    }[];
-    totalDepositByPool: {
-      pool: {
-        address: string;
-        stablecoin: string;
-      };
-      totalDeposit: string;
-      totalInterestOwed: string;
-    }[];
-  };
+interface GlobalQueryResult {
   dpools: {
-    id: string;
     address: string;
-    totalDeposit: string;
     poolDepositorRewardMintMultiplier: string;
   }[];
 }
+
+interface UserQueryResult {
+  user: {
+    address: string;
+    pools: {
+      address: string;
+      deposits: {
+        nftID: string;
+        amount: string;
+        interestRate: string;
+        depositTimestamp: string;
+        maturationTimestamp: string;
+        virtualTokenTotalSupply: string;
+        vest: {
+          owner: string;
+          nftID: string;
+          vestAmountPerStablecoinPerSecond: string;
+          totalExpectedMPHAmount: string;
+          lastUpdateTimestamp: string;
+          accumulatedAmount: string;
+          withdrawnAmount: string;
+        };
+      }[];
+    }[];
+  };
+}
+
+// @dev ZCBs are not yet implemented, so this has been preserved here
+
+// load Zero Coupon Bond / Preset Maturity data
+// const zcbPoolNameList = this.contract.getZeroCouponBondPoolNameList();
+// const zcbPoolList = zcbPoolNameList.map((poolName) =>
+//   this.contract.getZeroCouponBondPool(poolName)
+// );
+// this.allZCBPoolList = zcbPoolList.concat.apply([], zcbPoolList);
+// const userZCBPools = [];
+// let totalDepositUSD = new BigNumber(0);
+// for (let zcbPool of this.allZCBPoolList) {
+//   const zcbContract = this.contract.getZeroCouponBondContract(
+//     zcbPool.address,
+//     web3
+//   );
+//   const poolInfo = this.contract.getPoolInfoFromAddress(
+//     await zcbContract.methods.pool().call()
+//   );
+//   const userBalance = new BigNumber(
+//     await zcbContract.methods.balanceOf(userID).call()
+//   ).div(Math.pow(10, poolInfo.stablecoinDecimals));
+//
+//   if (userBalance.gt(this.constants.DUST_THRESHOLD)) {
+//     const zcbPriceUSD = new BigNumber(
+//       await this.getZeroCouponBondPriceUSD(zcbPool, poolInfo)
+//     );
+//     const userBalanceUSD = userBalance.times(zcbPriceUSD);
+//     const maturationTimestamp = await zcbContract.methods
+//       .maturationTimestamp()
+//       .call();
+//     const maturationDate = new Date(
+//       maturationTimestamp * 1e3
+//     ).toLocaleString('en-US', {
+//       month: 'long',
+//       day: 'numeric',
+//       year: 'numeric',
+//     });
+//     let userZCB: UserZCBPool = {
+//       zcbPoolInfo: zcbPool,
+//       poolInfo: poolInfo,
+//       amountToken: userBalance,
+//       amountUSD: userBalanceUSD,
+//       maturation: maturationDate,
+//       locked: +maturationTimestamp >= Date.now() / 1e3,
+//     };
+//     userZCBPools.push(userZCB);
+//     totalDepositUSD = totalDepositUSD.plus(userBalanceUSD);
+//   }
+// }
+// this.userZCBPools = userZCBPools;
+// this.totalDepositUSD = totalDepositUSD;
+// }
