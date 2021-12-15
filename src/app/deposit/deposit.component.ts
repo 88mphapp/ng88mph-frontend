@@ -731,6 +731,7 @@ export class DepositComponent implements OnInit {
     );
     if (
       this.selectedProtocol !== 'all' &&
+      this.selectedProtocol !== 'best' &&
       this.selectedAsset !== 'all' &&
       !pool
     ) {
