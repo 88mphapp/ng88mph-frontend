@@ -11,6 +11,7 @@ import { WalletService } from '../wallet.service';
 export class SyncWarningComponent implements OnInit {
   syncBlockNumber: number;
   latestBlockNumber: number;
+  displayDetails: boolean;
 
   constructor(
     public constants: ConstantsService,
@@ -56,6 +57,7 @@ export class SyncWarningComponent implements OnInit {
   resetData(): void {
     this.syncBlockNumber = 0;
     this.latestBlockNumber = 0;
+    this.displayDetails = false;
   }
 
   shouldDisplay(): boolean {
@@ -63,6 +65,10 @@ export class SyncWarningComponent implements OnInit {
       this.latestBlockNumber >=
       this.syncBlockNumber + this.constants.SUBGRAPH_SYNC_WARNING_THRESHOLD
     );
+  }
+
+  shouldDisplayDetails() {
+    this.displayDetails = !this.displayDetails;
   }
 }
 
