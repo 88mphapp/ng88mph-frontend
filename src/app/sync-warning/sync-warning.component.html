@@ -9,14 +9,31 @@
       border-left-0 border-right-0
     "
   >
-    <ng-container i18n="@@syncWarning1"
-      >88mph has only synced to block</ng-container
-    >
-    {{ syncBlockNumber }}
-    <ng-container i18n="@@syncWarning2">(out of</ng-container>
-    {{ latestBlockNumber }}).
-    <ng-container i18n="@@syncWarning3"
-      >If your data aren't updated yet, check back in a minute.</ng-container
-    >
+    <ng-container> Don't see your data? Check back in a minute. </ng-container>
+    <ng-container>
+      <button
+        type="button"
+        class="dz-button text-info p-0"
+        (click)="shouldDisplayDetails()"
+      >
+        Learn more.
+      </button>
+    </ng-container>
+    <ng-container *ngIf="displayDetails">
+      <div>
+        <br />
+        88mph uses an API, called a subgraph ( thegraph.com ), to display data
+        on our site. Occasionally, our subgraph hasn't yet indexed data from the
+        most recent transactions on a blockchain. After a few minutes, the
+        subgraph will index the most recent transactions and your data will be
+        displayed as expected. If you have questions or concerns, please reach
+        out in the #support channel of our Discord.
+      </div>
+      <div>
+        <br />
+        88mph's subgraph has only synced to block {{ syncBlockNumber }} out of
+        {{ latestBlockNumber }}
+      </div>
+    </ng-container>
   </div>
 </ng-container>
