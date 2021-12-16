@@ -35,9 +35,9 @@ export class ModalWithdrawComponent implements OnInit {
   }
 
   async loadData() {
-    if (this.userDeposit.amountToken.gt(0)) {
+    if (this.userDeposit.amount.gt(0)) {
       this.stablecoinPriceUSD = this.userDeposit.amountUSD.div(
-        this.userDeposit.amountToken
+        this.userDeposit.amount
       );
     } else {
       this.stablecoinPriceUSD = new BigNumber(
@@ -101,7 +101,7 @@ export class ModalWithdrawComponent implements OnInit {
 
   get maxWithdrawAmountToken(): BigNumber {
     if (this.userDeposit.locked) {
-      return this.userDeposit.amountToken;
+      return this.userDeposit.amount;
     } else {
       return this.userDeposit.virtualTokenTotalSupply;
     }
@@ -157,9 +157,9 @@ export class ModalWithdrawComponent implements OnInit {
   get totalWithdrawAmount(): BigNumber {
     const interestAmountToken = this.userDeposit.locked
       ? 0
-      : this.userDeposit.interestEarnedToken;
+      : this.userDeposit.interest;
     return this.applyWithdrawRatio(
-      this.userDeposit.amountToken.plus(interestAmountToken)
+      this.userDeposit.amount.plus(interestAmountToken)
     ).minus(this.earlyWithdrawFee);
   }
 }
