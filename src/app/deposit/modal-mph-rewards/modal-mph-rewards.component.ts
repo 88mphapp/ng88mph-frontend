@@ -55,11 +55,11 @@ export class ModalMphRewardsComponent implements OnInit {
 
     // compute currently withdrawable amount
     const vest = this.userDeposit.vest;
-    const depositAmount = this.userDeposit.amountToken;
+    const depositAmount = this.userDeposit.amount;
     let currentWithdrawableAmount;
     const currentTimestamp = Math.min(
       Math.floor(Date.now() / 1e3),
-      this.userDeposit.maturationTimestamp
+      this.userDeposit.maturation
     );
     if (currentTimestamp < vest.lastUpdateTimestamp) {
       currentWithdrawableAmount = vest.accumulatedAmount.minus(
