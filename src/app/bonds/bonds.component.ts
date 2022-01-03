@@ -338,6 +338,12 @@ export class BondsComponent implements OnInit {
             mphEarned = mphEarned.plus(funderAccruedMPH);
           }
 
+          const currentROI = yieldEarned
+            .times(stablecoinPrice)
+            .minus(yieldTokenBalanceUSD)
+            .div(yieldTokenBalanceUSD)
+            .times(100);
+
           if (
             funderAccruedInterest.eq(0) &&
             funderWithdrawableInterest.eq(0) &&
@@ -372,6 +378,7 @@ export class BondsComponent implements OnInit {
               userTotalRefundedAmountUSD: new BigNumber(0),
               userTotalMPHRewardsEarned: new BigNumber(0),
               userTotalMPHRewardsEarnedUSD: new BigNumber(0),
+              userTotalCurrentROI: new BigNumber(0),
               isExpanded: false,
             };
             funderPools.push(funderPool);
@@ -397,6 +404,7 @@ export class BondsComponent implements OnInit {
             refundedAmountUSD: refundedAmount.times(stablecoinPrice),
             mphRewardsEarned: mphEarned,
             mphRewardsEarnedUSD: mphEarned.times(this.mphPriceUSD),
+            currentROI: currentROI,
           };
           pool.fundings.push(fundingObj);
 
@@ -432,6 +440,10 @@ export class BondsComponent implements OnInit {
             pool.userTotalMPHRewardsEarnedUSD.plus(
               mphEarned.times(this.mphPriceUSD)
             );
+          pool.userTotalCurrentROI = pool.userTotalYieldEarnedUSD
+            .minus(pool.userTotalYieldTokenBalanceUSD)
+            .div(pool.userTotalYieldTokenBalanceUSD)
+            .times(100);
 
           // update user totals
           totalYieldTokenBalanceUSD =

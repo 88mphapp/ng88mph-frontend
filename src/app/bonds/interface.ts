@@ -15,6 +15,7 @@ export interface FunderPool {
   userTotalRefundedAmountUSD: BigNumber;
   userTotalMPHRewardsEarned: BigNumber;
   userTotalMPHRewardsEarnedUSD: BigNumber;
+  userTotalCurrentROI: BigNumber;
   isExpanded: boolean;
 }
 
@@ -44,6 +45,7 @@ export interface FundedDeposit {
   refundedAmountUSD: BigNumber;
   mphRewardsEarned: BigNumber;
   mphRewardsEarnedUSD: BigNumber;
+  currentROI: BigNumber;
 }
 
 export interface FundableDeposit {
