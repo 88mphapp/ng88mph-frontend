@@ -29,7 +29,7 @@ export class TimeSeriesService {
     networkID: number = this.wallet.networkID
   ) {
     let timeStamps: number[] = [];
-    let blocks: number[] = [];
+    let allBlocks: number[] = [];
     let data: number[][] = [];
 
     let startTime: number = customStart;
@@ -98,44 +98,54 @@ export class TimeSeriesService {
       }
     }
 
-    // generate a query string
-    let queryString = `query GetBlocks {`;
-    for (let i = 0; i < timeStamps.length; i++) {
-      queryString += `t${i}: blocks(
-        first: 1,
-        orderBy: timestamp,
-        orderDirection: asc,
-        where: {
-          timestamp_gt: ${timeStamps[i]},
-          timestamp_lt: ${timeStamps[i] + 600}
-        }
-      ) {
-        id
-        number
-        timestamp
-      }`;
-    }
-    queryString += `}`;
-    const blocksQuery = gql`
-      ${queryString}
-    `;
+    let count: number = 0;
+    while (count < timeStamps.length) {
+      let limit = timeStamps.length - count;
+      if (limit > 100) {
+        limit = 100;
+      }
 
-    // run the query and create array of blocks
-    await request(
-      this.constants.BLOCKS_GRAPHQL_ENDPOINT[networkID],
-      blocksQuery
-    ).then((data) => {
-      for (let block in data) {
-        blocks.push(parseInt(data[block][0].number));
+      let queryString = `query GetBlocks {`;
+      for (let i = count; i < count + limit; i++) {
+        queryString += `t${i}: blocks(
+          first: 1,
+          orderBy: timestamp,
+          orderDirection: asc,
+          where: {
+            timestamp_gt: ${timeStamps[i]},
+            timestamp_lt: ${timeStamps[i] + 600}
+          }
+        ) {
+          id
+          number
+          timestamp
+        }`;
+      }
+      queryString += `}`;
+      const blocksQuery = gql`
+        ${queryString}
+      `;
+
+      const blocks: number[] = await request(
+        this.constants.BLOCKS_GRAPHQL_ENDPOINT[networkID],
+        blocksQuery
+      ).then((data) => {
+        let blocks: number[] = [];
+        for (let block in data) {
+          blocks.push(parseInt(data[block][0].number));
+        }
         blocks.sort(function (a, b) {
           return a - b;
         });
-      }
-    });
+        return blocks;
+      });
 
-    // return data
+      count += limit;
+      allBlocks = allBlocks.concat(blocks);
+    }
+
     data.push(timeStamps);
-    data.push(blocks);
+    data.push(allBlocks);
     return data;
   }
 }
