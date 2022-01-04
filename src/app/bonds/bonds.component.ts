@@ -340,6 +340,7 @@ export class BondsComponent implements OnInit {
 
           const currentROI = yieldEarned
             .times(stablecoinPrice)
+            .plus(mphEarned.times(this.mphPriceUSD))
             .minus(yieldTokenBalanceUSD)
             .div(yieldTokenBalanceUSD)
             .times(100);
@@ -441,6 +442,7 @@ export class BondsComponent implements OnInit {
               mphEarned.times(this.mphPriceUSD)
             );
           pool.userTotalCurrentROI = pool.userTotalYieldEarnedUSD
+            .plus(pool.userTotalMPHRewardsEarnedUSD)
             .minus(pool.userTotalYieldTokenBalanceUSD)
             .div(pool.userTotalYieldTokenBalanceUSD)
             .times(100);
