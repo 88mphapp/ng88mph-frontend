@@ -1,0 +1,7 @@
+{
+  "/api/*": {
+    "target": "https://api.harvest.finance/",
+    "secure": true,
+    "logLevel": "debug"
+  }
+}
