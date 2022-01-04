@@ -885,12 +885,11 @@ export class BondsComponent implements OnInit {
         break;
       case 'Harvest':
         // @dev https://github.com/harvest-finance/harvest-api/blob/master/docs/api.md
-        // does not currently work, CORS error
-
-        // const tokenSymbol = poolInfo.stablecoinSymbol;
-        // const apiStr = `https://api.harvest.finance/apy/${tokenSymbol}?key=fc8ad696-7905-4daa-a552-129ede248e33`;
-        // const xxx = await this.helpers.httpsGet(apiStr);
-        // console.log(xxx);
+        const tokenSymbol = poolInfo.stablecoinSymbol;
+        const apiStr = `https://api.harvest.finance/apy/${tokenSymbol}?key=fc8ad696-7905-4daa-a552-129ede248e33`;
+        const result = await this.helpers.httpsGet(apiStr);
+        const marketRate = new BigNumber(result);
+        pool.marketRate = marketRate;
         break;
       case 'Cream':
         // @dev https://compound.finance/docs
