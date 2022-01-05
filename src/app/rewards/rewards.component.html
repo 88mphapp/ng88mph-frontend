@@ -63,11 +63,11 @@
             <!-- Title -->
             <h5
               class="text-uppercase"
-              i18n="@@valueInMph"
               placement="top"
               ngbTooltip="1 xMPH = {{ pricePerFullShare.toFormat(4) }} MPH"
+              i18n-ngbTooltip="@@valueInMphHelpText"
             >
-              Value in MPH
+              <ng-container i18n="@@valueInMph">Value in MPH</ng-container>
               <i class="fe fe-info ml-1 align-bottom"></i>
             </h5>
             <!-- Heading -->
