@@ -96,11 +96,14 @@ export class BondsComponent implements OnInit {
             totalSupply
             principalPerToken
             totalRefundEarned
+            fundedDeficitAmount
             pool {
               address
               poolFunderRewardMultiplier
             }
             deposit {
+              nftID
+              amount
               maturationTimestamp
               interestRate
               feeRate
@@ -230,6 +233,8 @@ export class BondsComponent implements OnInit {
           const yieldTokenPercentage = yieldTokenBalance.div(
             funding.totalSupply
           );
+          console.log('deposit ID: ' + funding.deposit.nftID);
+          console.log('YT percentage: ' + yieldTokenPercentage.toString());
           const maturity = new BigNumber(funding.deposit.maturationTimestamp);
 
           // calculate amount of deposit earning yield
@@ -237,15 +242,39 @@ export class BondsComponent implements OnInit {
             funding.principalPerToken
           );
 
+          console.log('earn yield on: ' + earnYieldOn.toString());
+
+          console.log('deposit amount: ' + funding.deposit.amount);
+          console.log('funded deficit amount: ' + funding.fundedDeficitAmount);
+
           // calculate USD value of yield tokens
           const interestRate = new BigNumber(funding.deposit.interestRate);
           const feeRate = new BigNumber(funding.deposit.feeRate);
           const fundedDepositAmount = earnYieldOn.div(
             interestRate.plus(feeRate).plus(1)
           );
-          const yieldTokenBalanceUSD = earnYieldOn
+          console.log(
+            'funded deposit amount: ' + fundedDepositAmount.toString()
+          );
+          const yieldTokenBalanceUSD2 = earnYieldOn
             .minus(fundedDepositAmount)
             .times(stablecoinPrice);
+
+          // @dev this is an inaccurate implementation, specifically for funders who purchase <100% of a Deposit's YTs
+          // @dev our subgraph needs to be updated to track exact amount paid by each funder
+          const yieldTokenBalanceUSD = new BigNumber(
+            funding.fundedDeficitAmount
+          )
+            .times(yieldTokenPercentage)
+            .times(stablecoinPrice);
+          console.log(
+            'yield token balance: ' + yieldTokenBalanceUSD.toString()
+          );
+          console.log(
+            'yield token balance 2: ' + yieldTokenBalanceUSD2.toString()
+          );
+
+          console.log(stablecoinPrice.toString());
 
           // calculate amount of yield earned
           let yieldEarned = new BigNumber(0);
@@ -332,7 +361,34 @@ export class BondsComponent implements OnInit {
                 );
               });
 
-            funderAccruedMPH = funderAccruedInterest.times(
+            // @dev MPH rewards are only applicable to interest earned before the maturity date
+            // https://github.com/88mphapp/88mph-contracts/blob/948e5812afe923800ae63f4f737c51b9f37ddf4b/contracts/DInterest.sol#L1310
+            const fundingObj = await poolContract.methods
+              .getFunding(funding.nftID)
+              .call();
+            console.log(fundingObj);
+
+            const now = Date.now() / 1e3;
+            const maturationTimstamp = parseInt(
+              funding.deposit.maturationTimestamp
+            );
+            const lastPayoutTimestamp = parseInt(
+              fundingObj.lastInterestPayoutTimestamp
+            );
+
+            let effectiveAccruedInterest = funderAccruedInterest;
+            if (
+              now > maturationTimstamp &&
+              lastPayoutTimestamp < maturationTimstamp
+            ) {
+              effectiveAccruedInterest = funderAccruedInterest
+                .times(
+                  parseInt(funding.deposit.maturationTimestamp) -
+                    parseInt(fundingObj.lastInterestPayoutTimestamp)
+                )
+                .div(now - parseInt(fundingObj.lastInterestPayoutTimestamp));
+            }
+            funderAccruedMPH = effectiveAccruedInterest.times(
               funding.pool.poolFunderRewardMultiplier
             );
             mphEarned = mphEarned.plus(funderAccruedMPH);
@@ -341,6 +397,7 @@ export class BondsComponent implements OnInit {
           const currentROI = yieldEarned
             .times(stablecoinPrice)
             .plus(mphEarned.times(this.mphPriceUSD))
+            .plus(refundedAmount.times(stablecoinPrice))
             .minus(yieldTokenBalanceUSD)
             .div(yieldTokenBalanceUSD)
             .times(100);
@@ -405,6 +462,7 @@ export class BondsComponent implements OnInit {
             refundedAmountUSD: refundedAmount.times(stablecoinPrice),
             mphRewardsEarned: mphEarned,
             mphRewardsEarnedUSD: mphEarned.times(this.mphPriceUSD),
+            principalPerToken: new BigNumber(funding.principalPerToken),
             currentROI: currentROI,
           };
           pool.fundings.push(fundingObj);
@@ -443,6 +501,7 @@ export class BondsComponent implements OnInit {
             );
           pool.userTotalCurrentROI = pool.userTotalYieldEarnedUSD
             .plus(pool.userTotalMPHRewardsEarnedUSD)
+            .plus(pool.userTotalRefundedAmountUSD)
             .minus(pool.userTotalYieldTokenBalanceUSD)
             .div(pool.userTotalYieldTokenBalanceUSD)
             .times(100);
@@ -1218,11 +1277,14 @@ interface QueryResult {
       totalSupply: string;
       principalPerToken: string;
       totalRefundEarned: string;
+      fundedDeficitAmount: string;
       pool: {
         address: string;
         poolFunderRewardMultiplier: string;
       };
       deposit: {
+        nftID: string;
+        amount: string;
         maturationTimestamp: string;
         interestRate: string;
         feeRate: string;

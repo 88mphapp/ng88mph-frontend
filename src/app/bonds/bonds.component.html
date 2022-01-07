@@ -366,20 +366,54 @@
                       <small class="text-muted d-block">
                         {{ timestampToDateString(funding.maturationTimestamp) }}
                       </small>
-                      <span
-                        class="badge mb-1 badge-soft-danger"
-                        *ngIf="funding.maturationTimestamp > now"
-                        i18n="@@depositLocked"
-                      >
-                        Locked
-                      </span>
-                      <span
-                        class="badge mb-1 badge-soft-success"
-                        *ngIf="funding.maturationTimestamp <= now"
-                        i18n="@@depositUnlocked"
-                      >
-                        Unlocked
-                      </span>
+                      <ng-container *ngIf="funding.maturationTimestamp > now">
+                        <span
+                          class="badge mb-1 badge-soft-danger"
+                          *ngIf="
+                            funding.principalPerToken.gte(
+                              constants.DUST_THRESHOLD
+                            )
+                          "
+                          ngbTooltip="This deposit is active and is currently earning interest."
+                        >
+                          Active
+                        </span>
+                        <span
+                          class="badge mb-1 badge-soft-warning"
+                          *ngIf="
+                            funding.principalPerToken.lt(
+                              constants.DUST_THRESHOLD
+                            )
+                          "
+                          ngbTooltip="This deposit has been withdrawn early and is no longer earning interest. Use the 'Claim' button to withdraw your investment."
+                        >
+                          Withdrawn Early
+                        </span>
+                      </ng-container>
+                      <ng-container *ngIf="funding.maturationTimestamp <= now">
+                        <span
+                          class="badge mb-1 badge-soft-success"
+                          *ngIf="
+                            funding.principalPerToken.lt(
+                              constants.DUST_THRESHOLD
+                            )
+                          "
+                          ngbTooltip="This deposit has been withdrawn and is no longer earning interest. Use the 'Claim' button to withdraw your investment."
+                        >
+                          Withdrawn
+                        </span>
+                        <span
+                          class="badge mb-1 badge-soft-warning"
+                          *ngIf="
+                            funding.principalPerToken.gte(
+                              constants.DUST_THRESHOLD
+                            )
+                          "
+                          ngbTooltip="This deposit has matured but has not yet been fully withdrawn. You will continue to receive interest until the deposit is fully withdrawn."
+                        >
+                          Mature
+                        </span>
+                      </ng-container>
                     </td>
                   </ng-container>
 

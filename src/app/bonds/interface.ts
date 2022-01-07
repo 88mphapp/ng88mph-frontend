@@ -45,6 +45,7 @@ export interface FundedDeposit {
   refundedAmountUSD: BigNumber;
   mphRewardsEarned: BigNumber;
   mphRewardsEarnedUSD: BigNumber;
+  principalPerToken: BigNumber;
   currentROI: BigNumber;
 }
 
