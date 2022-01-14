@@ -76,6 +76,7 @@ export interface DPool {
   poolFundableDeposits: FundableDeposit[];
   totalYieldTokensAvailable: BigNumber;
   totalYieldTokensAvailableUSD: BigNumber;
+  totalYieldTokensAvailableToken: BigNumber;
   totalEarnYieldOn: BigNumber;
   totalEarnYieldOnUSD: BigNumber;
   maxEstimatedAPR: BigNumber;

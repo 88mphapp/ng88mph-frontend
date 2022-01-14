@@ -15,7 +15,7 @@
         </div>
         <div class="col">
           <h1 class="mb-0 h3" i18n="@@modalYieldTokensPretitle">
-            Buy yield tokens
+            Buy Yield Tokens
           </h1>
         </div>
       </div>
@@ -29,107 +29,205 @@
                     class="header-pretitle mb-2"
                     i18n="@@modalYieldTokensAvailable"
                   >
-                    Yield tokens available
+                    Debt Available
                   </h6>
                   <h4 class="mb-1 glowing display-4">
-                    {{ deposit.yieldTokensAvailable.toFormat(4) }}
-                    {{ deposit.pool.name }} YT
+                    {{ debtAvailable.toFormat(6) }}
+                    {{ pool.stablecoinSymbol }}
                   </h4>
                   <div class="text-muted small">
-                    Total value: ${{
-                      bound.times(stablecoinPriceUSD).toFormat(4)
-                    }}
+                    ${{ debtAvailable.times(stablecoinPriceUSD).toFormat(2) }}
                   </div>
                 </div>
               </div>
               <div class="form-group mb-4">
-                <label i18n="@@modalYieldTokensToBuy"
-                  >Amount of yield tokens to buy</label
-                >
+                <label> Amount of Debt to Fund </label>
                 <div class="input-group">
                   <input
                     type="text"
                     class="form-control form-control-lg"
                     placeholder="0.00"
-                    aria-label=""
-                    aria-describedby=""
-                    [value]="
-                      buyYieldTokenAmount
-                        .dp(deposit.pool.stablecoinDecimals)
-                        .toFixed()
-                    "
-                    (input)="setBuyYieldTokenAmount($event.target.value)"
+                    [value]="fundAmount.toFixed()"
+                    (input)="setFundAmount($event.target.value)"
                   />
-                  <div class="input-group-append">
-                    <button
-                      class="btn btn-lg border-gradient"
-                      type="button"
-                      (click)="
-                        setBuyYieldTokenAmount(
-                          deposit.yieldTokensAvailable
-                            .times(ratio)
-                            .toFixed(deposit.pool.stablecoinDecimals)
-                        )
-                      "
-                      i18n="@@yieldTokenAmount"
-                    >
-                      Max
-                    </button>
-                  </div>
                 </div>
-                <small class="form-text text-muted">
-                  <ng-container i18n="@@modalYieldTokensCost"
-                    >Cost:</ng-container
-                  >
-                  {{ youPay.toFormat(4) }} {{ deposit.pool.stablecoinSymbol }} /
-                  {{ stablecoinBalance.toFormat(4) }}
-                  {{ deposit.pool.stablecoinSymbol }}
-                  <ng-container i18n="@@modalYieldTokensBalance"
-                    >available in your balance</ng-container
-                  ></small
+                <button
+                  class="btn btn-sm btn-dark mr-2 mt-1"
+                  type="button"
+                  (click)="presetFundAmount(25)"
                 >
+                  25%
+                </button>
+                <button
+                  class="btn btn-sm btn-dark mr-2 mt-1"
+                  type="button"
+                  (click)="presetFundAmount(50)"
+                >
+                  50%
+                </button>
+                <button
+                  class="btn btn-sm btn-dark mr-2 mt-1"
+                  type="button"
+                  (click)="presetFundAmount(75)"
+                >
+                  75%
+                </button>
+                <button
+                  class="btn btn-sm btn-dark mr-2 mt-1"
+                  type="button"
+                  (click)="presetFundAmount(100)"
+                >
+                  100%
+                </button>
+                <button
+                  class="btn btn-sm btn-dark mr-2 mt-1"
+                  type="button"
+                  (click)="
+                    setFundAmount(
+                      stablecoinBalance.gte(debtAvailable)
+                        ? debtAvailable
+                        : stablecoinBalance
+                    )
+                  "
+                >
+                  Max
+                </button>
+                <span>
+                  <small class="text-muted">
+                    {{ stablecoinBalance.toFormat(4) }}
+                    {{ deposit.pool.stablecoinSymbol }}
+                    available
+                  </small>
+                </span>
               </div>
 
               <div class="table-responsive pl-0 pr-3">
                 <table class="table">
                   <tbody>
-                    <tr>
+                    <tr style="border-top: 1px dotted white">
+                      <td
+                        class="px-0 pt-3 text-white border-0 small"
+                        colspan="2"
+                      >
+                        <div class="d-flex justify-content-between">
+                          <!-- <span
+                            class="text-white"
+                            placement="bottom"
+                            i18n-ngbTooltip="@@AvgFloatingRatePrediction"
+                            ngbTooltip="Use the slide below to see how your average floating rate
+                          prediction for {{ pool.stablecoinSymbol }} on {{
+                              pool.protocol
+                            }} until the YT reaches its maturity date could impact your ROI. 'For eg. an average of 10% for the floating yield rate of {{
+                              pool.stablecoinSymbol
+                            }} over the next x days impacts my ROI by x%.'"
+                          > -->
+                          <span class="text-white">
+                            Floating Rate Prediction:
+                            <span class="text-white">
+                              {{ pool.floatingRatePrediction.toFixed(2) }}% APY
+                            </span>
+                          </span>
+                          <!-- <span
+                            class="text-white"
+                            i18n-ngbTooltip="@@CurrentFloatingRate"
+                            ngbTooltip="Check this box to know the current floating rate for {{
+                              pool.stablecoinSymbol
+                            }} on {{
+                              pool.protocol
+                            }} and how it could impact your ROI if it stays at that rate until the YT reaches its maturity date."
+                          > -->
+                          <span class="text-white">
+                            Use Current Floating Rate:
+                            <input
+                              class="ml-1"
+                              type="checkbox"
+                              (change)="updatePoolFloatingRateType()"
+                              [checked]="pool.useMarketRate"
+                            />
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          class="custom-range align-items-center"
+                          min="0"
+                          max="{{
+                            pool.useMarketRate
+                              ? pool.marketRate.times(2).toFixed(2)
+                              : pool.emaRate.times(2).toFixed(2)
+                          }}"
+                          step="0.01"
+                          [value]="pool.floatingRatePrediction"
+                          (input)="
+                            updatePoolFloatingRatePrediction(
+                              $event.target.value
+                            )
+                          "
+                        />
+                        <div class="row justify-content-between text-white">
+                          <div class="col">
+                            <small>0%</small>
+                          </div>
+                          <div class="col text-center">
+                            <small *ngIf="!pool.useMarketRate"
+                              >{{ pool.emaRate.toFixed(2) }}%
+                              <!-- <br />
+                              <span
+                                placement="top"
+                                i18n-ngbTooltip="@@Current30dEMA"
+                                ngbTooltip="Current 30-day exponential moving average (EMA) of the floating yield rate of {{
+                                  pool.stablecoinSymbol
+                                }} on {{ pool.protocol }}."
+                              >
+                                (Current 30d EMA floating rate)
+                              </span> -->
+                            </small>
+                            <small *ngIf="pool.useMarketRate">
+                              {{ pool.marketRate.toFixed(2) }}%
+                              <!-- <br/>
+                              (Current floating rate) -->
+                            </small>
+                          </div>
+                          <div class="col text-right">
+                            <small *ngIf="!pool.useMarketRate">
+                              {{ pool.emaRate.times(2).toFixed(2) }}%
+                            </small>
+                            <small *ngIf="pool.useMarketRate">
+                              {{ pool.marketRate.times(2).toFixed(2) }}%
+                            </small>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr style="border-top: 1px dotted white">
                       <td
                         class="px-0 py-2 text-white border-0 small"
                         i18n="@@modalYieldTokensYouPay"
                       >
-                        You pay
+                        You Pay
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <span class="h4 mb-1 glowing">
-                          {{ youPay.toFormat(4) }}
+                          {{ fundAmount.toFormat(6) }}
                           {{ deposit.pool.stablecoinSymbol }}
                         </span>
                         <span class="h5 text-muted">
-                          ${{ youPay.times(stablecoinPriceUSD).toFormat(2) }}
+                          ${{
+                            fundAmount.times(stablecoinPriceUSD).toFormat(2)
+                          }}
                         </span>
                       </td>
                     </tr>
                     <tr>
-                      <td
-                        class="px-0 py-2 text-white border-0 small"
-                        i18n="@@modalYieldTokensYouEarn"
-                      >
-                        You earn floating-rate yield on
-                        <i
-                          class="fe fe-info ml-1 align-bottom"
-                          placement="top"
-                          ngbTooltip="The yield payment to yield token holders is automatically triggered whenever part or all of the corresponding deposit is withdrawn, and it is also possible to manually trigger it by hitting the 'Make accrued interest claimable' button in the Claim Modal (Modal accessible from the main Yield page after YT purchase)."
-                          i18n-ngbTooltip="@@modalYieldTokensYouEarnText"
-                        ></i>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        You Earn Yield On
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <span class="h4 mb-1 glowing">
-                          {{ earnYieldOn.toFormat(4) }}
+                          {{ earnYieldOn.toFormat(6) }}
                           {{ deposit.pool.stablecoinSymbol }}
                         </span>
                         <span class="h5 text-muted">
@@ -140,76 +238,73 @@
                       </td>
                     </tr>
                     <tr>
-                      <td
-                        class="px-0 py-2 text-white border-0 small"
-                        i18n="@@modalYieldTokensRewards"
-                      >
-                        MPH rewards
-                        <span
-                          class="badge badge-soft-success ml-1"
-                          *ngIf="
-                            wallet.networkID === constants.CHAIN_ID.POLYGON ||
-                            wallet.networkID === constants.CHAIN_ID.AVALANCHE
-                          "
-                          >Soon</span
-                        >
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Est. Yield Earned At Maturity
                         <i
                           class="fe fe-info ml-1 align-bottom"
-                          placement="top"
-                          i18n-ngbTooltip="@@modalYieldTokensRewardsText"
-                          ngbTooltip="When a user buys yield tokens, they will receive newly-minted MPH tokens as the underlying deposit earns interest; similar to vesting. You can claim your MPH rewards whenever you want from the Claim Modal accessible via the main Yield page. We invite you to stake your MPH for xMPH, allowing you to earn protocol revenues via our bi-weekly buy-back mechanism, and voting rights."
-                        ></i>
+                          ngbTooltip="The *estimated* amount yield earned at maturity based on your floating rate prediction. Your realized yield earned may vary."
+                        >
+                        </i>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <span class="h4 mb-1 glowing">
-                          {{ mphRewards.toFormat(4) }} MPH
+                          {{ estimatedYield.toFixed(6) }}
+                          {{ deposit.pool.stablecoinSymbol }}
                         </span>
                         <span class="h5 text-muted">
-                          ${{ mphRewards.times(datas.mphPriceUSD).toFormat(2) }}
+                          ${{
+                            estimatedYield.times(stablecoinPriceUSD).toFixed(2)
+                          }}
                         </span>
                       </td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="pool.poolFunderRewardMultiplier.gt(0)">
+                      <!-- <tr> -->
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Est. MPH Reward at Maturity
+                      </td>
                       <td
-                        class="px-0 py-2 text-white border-0 small"
-                        i18n="@@modalYieldTokensAPR"
+                        class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        MPH APR
-                        <i
-                          class="fe fe-info ml-1 align-bottom"
-                          placement="top"
-                          i18n-ngbTooltip="@@modalYieldTokensAPRText"
-                          ngbTooltip="MPH APR varies based on the USD value of MPH. The APY is just a representation on how these MPH rewards would be during a 1-year period"
-                        ></i>
+                        <span class="h4 mb-1 glowing">
+                          {{ estimatedReward.toFixed(6) }}
+                          MPH
+                        </span>
+                        <span class="h5 text-muted">
+                          ${{
+                            estimatedReward.times(datas.mphPriceUSD).toFixed(2)
+                          }}
+                        </span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="pool.poolFunderRewardMultiplier.gt(0)">
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Est. MPH APR
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <h4 class="mb-1 glowing">
-                          +{{ mphRewardsAPR.toFormat(2) }}%
+                          {{ estimatedRewardAPR.toFormat(2) }}%
                         </h4>
                       </td>
                     </tr>
-                    <tr style="border-top: 1px dotted white">
-                      <td
-                        class="px-0 py-2 text-white border-0 small"
-                        i18n="@@modalYieldTokensTotalEarned"
-                      >
-                        Total earned at maturity (incl. MPH)
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        Est. ROI
                         <i
                           class="fe fe-info ml-1 align-bottom"
-                          placement="top"
-                          ngbTooltip="Estimated floating-rate yield earned + MPH tokens"
-                          i18n-ngbTooltip="@@modalYieldTokensTotalEarnedText"
-                        ></i>
+                          ngbTooltip="The *estimated* return on investment (ROI) at maturity based on your floating rate prediction. Your realized ROI at maturity may vary."
+                        >
+                        </i>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
                         <h4 class="mb-1 glowing">
-                          ${{ totalEarned.toFormat(2) }}
+                          {{ estimatedROI.toFormat(2) }}%
                         </h4>
                       </td>
                     </tr>
@@ -220,7 +315,7 @@
                 class="btn btn-lg btn-bg-gradient btn-block"
                 type="button"
                 i18n="@@buyYieldBtn"
-                *ngIf="youPay.lte(0)"
+                *ngIf="fundAmount.lte(0)"
                 [disabled]="true"
               >
                 Enter an Amount
@@ -230,9 +325,9 @@
                 type="button"
                 i18n="@@buyYieldBtn"
                 *ngIf="
-                  youPay.dp(18).lte(stablecoinBalance) &&
-                  youPay.gt(0) &&
-                  youPay.dp(18).gt(stablecoinAllowance)
+                  fundAmount.lte(stablecoinBalance) &&
+                  fundAmount.gt(0) &&
+                  fundAmount.gt(stablecoinAllowance)
                 "
                 (click)="approve()"
               >
@@ -244,9 +339,10 @@
                 (click)="buyYieldTokens()"
                 i18n="@@buyYieldBtn"
                 *ngIf="
-                  youPay.dp(18).lte(stablecoinBalance) &&
-                  youPay.gt(0) &&
-                  youPay.dp(18).lte(stablecoinAllowance)
+                  fundAmount.gt(0) &&
+                  fundAmount.lte(stablecoinBalance) &&
+                  fundAmount.lte(stablecoinAllowance) &&
+                  fundAmount.lte(debtAvailable)
                 "
               >
                 Buy
@@ -256,9 +352,18 @@
                 type="button"
                 [disabled]="true"
                 i18n="@@buyYieldBtn"
-                *ngIf="youPay.dp(18).gt(stablecoinBalance)"
+                *ngIf="fundAmount.gt(stablecoinBalance)"
               >
                 Not Enough {{ deposit.pool.stablecoinSymbol }} Available
+              </button>
+              <button
+                class="btn btn-lg btn-bg-gradient btn-block"
+                type="button"
+                [disabled]="true"
+                i18n="@@buyYieldBtn"
+                *ngIf="fundAmount.gt(debtAvailable)"
+              >
+                Fund Amount Exceeds Available Debt
               </button>
             </div>
           </div>

@@ -586,6 +586,7 @@ export class BondsComponent implements OnInit {
             poolFundableDeposits: [],
             totalYieldTokensAvailable: new BigNumber(0),
             totalYieldTokensAvailableUSD: new BigNumber(0),
+            totalYieldTokensAvailableToken: new BigNumber(0),
             totalEarnYieldOn: new BigNumber(0),
             totalEarnYieldOnUSD: new BigNumber(0),
             maxEstimatedAPR: new BigNumber(0),
@@ -700,6 +701,10 @@ export class BondsComponent implements OnInit {
                   dpoolObj.totalYieldTokensAvailableUSD.plus(
                     fundableDeposit.yieldTokensAvailableUSD
                   );
+                dpoolObj.totalYieldTokensAvailableToken =
+                  dpoolObj.totalYieldTokensAvailableToken.plus(
+                    fundableDeposit.yieldTokensAvailableToken
+                  );
                 dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn
                   .plus(fundableDeposit.unfundedDepositAmount)
                   .plus(fundableDeposit.yieldTokensAvailableToken);
@@ -749,6 +754,10 @@ export class BondsComponent implements OnInit {
                 dpoolObj.totalYieldTokensAvailableUSD =
                   dpoolObj.totalYieldTokensAvailableUSD.plus(
                     fundableDeposit.yieldTokensAvailableUSD
+                  );
+                dpoolObj.totalYieldTokensAvailableToken =
+                  dpoolObj.totalYieldTokensAvailableToken.plus(
+                    fundableDeposit.yieldTokensAvailableToken
                   );
                 dpoolObj.totalEarnYieldOn = dpoolObj.totalEarnYieldOn
                   .plus(fundableDeposit.unfundedDepositAmount)
@@ -1144,11 +1153,12 @@ export class BondsComponent implements OnInit {
     return new Date(timestampSec * 1e3).toLocaleDateString();
   }
 
-  buyYieldTokens(deposit: FundableDeposit) {
+  buyYieldTokens(deposit: FundableDeposit, pool: DPool) {
     const modalRef = this.modalService.open(ModalBuyYieldTokenComponent, {
       windowClass: 'fullscreen',
     });
     modalRef.componentInstance.deposit = deposit;
+    modalRef.componentInstance.pool = pool;
   }
 
   openWithdrawYieldTokenInterestModal(
