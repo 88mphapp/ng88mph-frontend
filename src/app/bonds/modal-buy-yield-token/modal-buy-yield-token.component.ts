@@ -6,7 +6,7 @@ import { ContractService } from 'src/app/contract.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 import { DataService } from 'src/app/data.service';
-import { FundableDeposit } from '../interface';
+import { FundableDeposit, DPool } from '../interface';
 
 @Component({
   selector: 'app-modal-buy-yield-token',
@@ -15,18 +15,18 @@ import { FundableDeposit } from '../interface';
 })
 export class ModalBuyYieldTokenComponent implements OnInit {
   @Input() public deposit: FundableDeposit;
+  @Input() public pool: DPool;
 
-  buyYieldTokenAmount: BigNumber;
   stablecoinBalance: BigNumber;
   stablecoinAllowance: BigNumber;
   stablecoinPriceUSD: BigNumber;
-  youPay: BigNumber;
   earnYieldOn: BigNumber;
-  mphRewards: BigNumber;
-  mphRewardsAPR: BigNumber;
-  totalEarned: BigNumber;
-  bound: BigNumber;
-  ratio: BigNumber;
+  fundAmount: BigNumber;
+  debtAvailable: BigNumber;
+  estimatedYield: BigNumber;
+  estimatedReward: BigNumber;
+  estimatedROI: BigNumber;
+  estimatedRewardAPR: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -35,30 +35,27 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     public constants: ConstantsService,
     public helpers: HelpersService,
     public datas: DataService
-  ) {
-    this.resetData();
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.resetData();
     this.loadData();
   }
 
   async loadData() {
+    const now = Date.now() / 1e3;
     const web3 = this.wallet.httpsWeb3();
+    const pool = this.contract.getPool(this.deposit.pool.name, web3);
     const stablecoin = this.contract.getPoolStablecoin(
       this.deposit.pool.name,
       web3
-    );
-    this.stablecoinPriceUSD = new BigNumber(
-      await this.datas.getAssetPriceUSD(
-        this.deposit.pool.stablecoin,
-        this.wallet.networkID
-      )
     );
     const stablecoinPrecision = Math.pow(
       10,
       this.deposit.pool.stablecoinDecimals
     );
+
+    // fetch user balance and allowance
     stablecoin.methods
       .balanceOf(this.wallet.userAddress)
       .call()
@@ -76,89 +73,110 @@ export class ModalBuyYieldTokenComponent implements OnInit {
         );
       });
 
-    await this.updateDetails();
-    this.setBuyYieldTokenAmount(
-      this.deposit.yieldTokensAvailable
-        .times(this.ratio)
-        .toFixed(this.deposit.pool.stablecoinDecimals)
+    // fetch stablecoin USD price
+    this.stablecoinPriceUSD = new BigNumber(
+      await this.datas.getAssetPriceUSD(
+        this.deposit.pool.stablecoin,
+        this.wallet.networkID
+      )
     );
+
+    // fetch amount of debt available
+    pool.methods
+      .calculateInterestAmount(
+        this.helpers.processWeb3Number(
+          this.deposit.unfundedDepositAmount.times(stablecoinPrecision)
+        ),
+        this.helpers.processWeb3Number(this.deposit.maturationTimestamp - now)
+      )
+      .call()
+      .then((bound) => {
+        this.debtAvailable = new BigNumber(bound).div(stablecoinPrecision);
+        this.setFundAmount(
+          this.stablecoinBalance.gte(this.debtAvailable)
+            ? this.debtAvailable
+            : this.stablecoinBalance
+        );
+      });
   }
 
   resetData(): void {
-    this.buyYieldTokenAmount = new BigNumber(0);
     this.stablecoinBalance = new BigNumber(0);
     this.stablecoinPriceUSD = new BigNumber(0);
-    this.youPay = new BigNumber(0);
     this.earnYieldOn = new BigNumber(0);
-    this.mphRewards = new BigNumber(0);
-    this.mphRewardsAPR = new BigNumber(0);
-    this.totalEarned = new BigNumber(0);
-    this.bound = new BigNumber(0);
-    this.ratio = new BigNumber(0);
+    this.fundAmount = new BigNumber(0);
+    this.debtAvailable = new BigNumber(0);
+    this.estimatedYield = new BigNumber(0);
+    this.estimatedReward = new BigNumber(0);
+    this.estimatedROI = new BigNumber(0);
+    this.estimatedRewardAPR = new BigNumber(0);
   }
 
-  setBuyYieldTokenAmount(amount: number | string) {
-    this.buyYieldTokenAmount = new BigNumber(amount);
-    if (this.buyYieldTokenAmount.isNaN()) {
-      this.buyYieldTokenAmount = new BigNumber(0);
+  setFundAmount(amount: number | string | BigNumber) {
+    this.fundAmount = new BigNumber(amount);
+    if (this.fundAmount.isNaN()) {
+      this.fundAmount = new BigNumber(0);
     }
     this.updateDetails();
   }
 
-  async updateDetails() {
-    const web3 = this.wallet.httpsWeb3();
-    const pool = this.contract.getPool(this.deposit.pool.name, web3);
-    const now = Date.now() / 1e3;
+  presetFundAmount(percent: number) {
+    const ratio = new BigNumber(percent).div(100);
+    this.fundAmount = this.debtAvailable.times(ratio);
+    this.updateDetails();
+  }
 
-    const stablecoinPrecision = Math.pow(
-      10,
-      this.deposit.pool.stablecoinDecimals
-    );
-    this.bound = new BigNumber(
-      await pool.methods
-        .calculateInterestAmount(
-          this.helpers.processWeb3Number(
-            this.deposit.unfundedDepositAmount.times(stablecoinPrecision)
-          ),
-          this.helpers.processWeb3Number(this.deposit.maturationTimestamp - now)
-        )
-        .call()
-    ).div(stablecoinPrecision);
-
-    const ratio = this.stablecoinBalance.div(this.bound);
-    ratio.gte(1) ? (this.ratio = new BigNumber(1)) : (this.ratio = ratio);
-
-    const fundPercent = this.buyYieldTokenAmount.div(
-      this.deposit.yieldTokensAvailable
-    );
-
-    let fundAmount = fundPercent.times(this.bound);
-    if (fundAmount.gt(this.bound)) {
-      fundAmount = this.bound;
+  updateDetails() {
+    let ratio = this.fundAmount.div(this.debtAvailable);
+    if (ratio.gte(1)) {
+      ratio = new BigNumber(1);
     }
 
-    this.youPay = fundAmount;
-    this.earnYieldOn = fundPercent
-      .times(this.deposit.unfundedDepositAmount)
-      .plus(fundAmount);
+    this.earnYieldOn = this.deposit.unfundedDepositAmount
+      .times(ratio)
+      .plus(this.fundAmount);
 
+    // estimate yield earned at maturity
     const depositLength = this.deposit.maturationTimestamp - Date.now() / 1e3;
-    const estimatedInterestEarned = this.earnYieldOn.times(
-      this.helpers.parseInterestRate(
-        this.deposit.pool.oracleInterestRate,
-        depositLength
-      )
-    );
-    this.mphRewards = estimatedInterestEarned.times(
-      this.deposit.pool.poolFunderRewardMultiplier
-    );
-    this.mphRewardsAPR = this.mphRewards
-      .times(this.datas.mphPriceUSD)
-      .div(fundAmount.times(this.stablecoinPriceUSD))
+    this.estimatedYield = this.earnYieldOn
+      .times(this.pool.floatingRatePrediction)
+      .div(100)
+      .times(depositLength)
+      .div(this.constants.YEAR_IN_SEC);
+    this.estimatedROI = this.estimatedYield
+      .minus(this.fundAmount)
+      .div(this.fundAmount)
       .times(100);
-    this.totalEarned = estimatedInterestEarned
-      .times(this.stablecoinPriceUSD)
-      .plus(this.mphRewards.times(this.datas.mphPriceUSD));
+    if (this.estimatedROI.isNaN()) {
+      this.estimatedROI = new BigNumber(0);
+    }
+
+    // estimate reward at maturity
+    if (this.deposit.pool.poolFunderRewardMultiplier.gt(0)) {
+      this.estimatedReward = this.estimatedYield.times(
+        this.deposit.pool.poolFunderRewardMultiplier
+      );
+      this.estimatedRewardAPR = this.estimatedReward
+        .times(this.datas.mphPriceUSD)
+        .div(this.fundAmount.times(this.stablecoinPriceUSD))
+        .times(100);
+      if (this.estimatedRewardAPR.isNaN()) {
+        this.estimatedRewardAPR = new BigNumber(0);
+      }
+    }
+  }
+
+  updatePoolFloatingRatePrediction(rate: any) {
+    this.pool.floatingRatePrediction = new BigNumber(rate);
+    this.updateDetails();
+  }
+
+  updatePoolFloatingRateType() {
+    this.pool.useMarketRate = !this.pool.useMarketRate;
+    this.pool.floatingRatePrediction = this.pool.useMarketRate
+      ? this.pool.marketRate
+      : this.pool.emaRate;
+    this.updateDetails();
   }
 
   approve() {
@@ -168,13 +186,13 @@ export class ModalBuyYieldTokenComponent implements OnInit {
       10,
       this.deposit.pool.stablecoinDecimals
     );
-    const youPay = this.helpers.processWeb3Number(
-      this.youPay.times(stablecoinPrecision)
+    const fundAmount = this.helpers.processWeb3Number(
+      this.fundAmount.times(stablecoinPrecision)
     );
     this.wallet.approveToken(
       stablecoin,
       this.deposit.pool.address,
-      youPay,
+      fundAmount,
       () => {},
       () => {},
       async () => {
@@ -208,7 +226,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
       this.deposit.pool.stablecoinDecimals
     );
     const actualFundAmount = this.helpers.processWeb3Number(
-      this.youPay.times(stablecoinPrecision)
+      this.fundAmount.times(stablecoinPrecision)
     );
     const func = pool.methods.fund(depositID, actualFundAmount);
 
