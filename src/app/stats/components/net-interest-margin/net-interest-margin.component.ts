@@ -299,37 +299,58 @@ export class NetInterestMarginComponent implements OnInit {
     }
 
     // generate the query
-    let queryString = `query ExpensesV2 {`;
-    queryString += `dpools {
-        address
-      }`;
-    for (let i = 0; i < blocks.length; i++) {
-      queryString += `t${i}: dpools(
-        block: {
-          number: ${blocks[i]}
-        }
-      ) {
-        address
-        totalActiveDeposit
-        deposits (
-          where: {
-            active: true
+    let allData: QueryResultV2;
+    let count: number = 0;
+
+    while (count < this.v2Timestamps.length) {
+      let limit = this.v2Timestamps.length - count;
+      if (limit > 300) {
+        limit = 300;
+      }
+
+      let queryString = `query ExpensesV2 {`;
+      if (count === 0) {
+        queryString += `dpools {
+          address
+        }`;
+      }
+      for (let i = count; i < count + limit; i++) {
+        queryString += `t${i}: dpools(
+          block: {
+            number: ${blocks[i]}
           }
         ) {
-          interestEarned
-        }
-      }`;
-    }
-    queryString += `}`;
-    const query = gql`
-      ${queryString}
-    `;
+          address
+          totalActiveDeposit
+          deposits (
+            where: {
+              active: true
+            }
+          ) {
+            interestEarned
+          }
+        }`;
+      }
+      queryString += `}`;
+      const query = gql`
+        ${queryString}
+      `;
 
-    // run the query
-    await request(
-      this.constants.GRAPHQL_ENDPOINT_V2[this.constants.CHAIN_ID.MAINNET],
-      query
-    ).then((data: QueryResultV2) => this.handleDataV2(data, blocks));
+      // run the query
+      const data: QueryResultV2 = await request(
+        this.constants.GRAPHQL_ENDPOINT_V2[this.constants.CHAIN_ID.MAINNET],
+        query
+      ).then((data: QueryResultV2) => {
+        return data;
+      });
+      count += limit;
+      allData = {
+        ...allData,
+        ...data,
+      };
+    }
+
+    await this.handleDataV2(allData, blocks);
   }
 
   async loadEarningsData(networkID: number, blocks: number[]) {
