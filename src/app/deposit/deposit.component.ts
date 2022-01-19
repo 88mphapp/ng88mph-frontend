@@ -428,8 +428,24 @@ export class DepositComponent implements OnInit {
               // @dev chains without rewards won't have a vest
               if (vest.owner === user.address) {
                 // @dev vest hasn't been transferred
+
                 // calculate reward for deposit
-                reward = new BigNumber(vest.totalExpectedMPHAmount);
+                reward = reward.plus(vest.accumulatedAmount);
+                if (
+                  parseInt(deposit.maturationTimestamp) >
+                  parseInt(vest.lastUpdateTimestamp)
+                ) {
+                  const unvestedReward = amount
+                    .times(vest.vestAmountPerStablecoinPerSecond)
+                    .times(
+                      parseInt(deposit.maturationTimestamp) -
+                        parseInt(vest.lastUpdateTimestamp)
+                    );
+                  reward = reward.plus(unvestedReward);
+                }
+                // @dev the below isn't correct for deposits withdrawn early, so we manually calculate above
+                // reward = new BigNumber(vest.totalExpectedMPHAmount);
+
                 rewardAPR = reward
                   .times(this.datas.mphPriceUSD)
                   .div(amount.times(stablecoinPrice))
@@ -446,9 +462,7 @@ export class DepositComponent implements OnInit {
                   vestAmountPerStablecoinPerSecond: new BigNumber(
                     vest.vestAmountPerStablecoinPerSecond
                   ),
-                  totalExpectedMPHAmount: new BigNumber(
-                    vest.totalExpectedMPHAmount
-                  ),
+                  totalExpectedMPHAmount: reward,
                   lastUpdateTimestamp: parseInt(vest.lastUpdateTimestamp),
                   accumulatedAmount: new BigNumber(vest.accumulatedAmount),
                   withdrawnAmount: new BigNumber(vest.withdrawnAmount),
