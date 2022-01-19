@@ -24,7 +24,7 @@ export class ModalNftComponent implements OnInit {
 
   nftStorageClient: NFTStorage;
   web3StorageClient: Web3Storage;
-  openseaURL: string;
+  nftPlatformURL: string;
 
   name: string;
   description: string;
@@ -77,15 +77,24 @@ export class ModalNftComponent implements OnInit {
     // Auto-resize the textarea
     autosize(document.querySelector('textarea'));
   }
-
   async loadNFTData(nftAddress: string) {
-    this.openseaURL = `https://${
+    this.nftPlatformURL = `https://${
       this.wallet.networkID == this.constants.CHAIN_ID.MAINNET ? '' : ''
     }${
       this.wallet.networkID == this.constants.CHAIN_ID.RINKEBY
         ? 'testnets.'
         : ''
-    }opensea.io/assets/${
+    }${
+      this.wallet.networkID == this.constants.CHAIN_ID.RINKEBY ||
+      this.wallet.networkID == this.constants.CHAIN_ID.MAINNET ||
+      this.wallet.networkID == this.constants.CHAIN_ID.POLYGON
+        ? 'opensea.io/assets/'
+        : ''
+    }${
+      this.wallet.networkID == this.constants.CHAIN_ID.FANTOM
+        ? 'paintswap.finance/marketplace/assets/'
+        : ''
+    }${
       this.wallet.networkID == this.constants.CHAIN_ID.POLYGON ? 'matic/' : ''
     }${nftAddress}/${this.userDeposit.nftID}`;
 
