@@ -79,6 +79,20 @@
       </li>
       <li
         class="nav-item"
+        ngbNavItem="/gauge"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+      >
+        <a
+          class="nav-link text-white"
+          routerLink="gauge"
+          i18n="@@gauge"
+          ngbNavLink
+        >
+          Gauge
+        </a>
+      </li>
+      <li
+        class="nav-item"
         ngbNavItem="/bridge"
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.MAINNET ||
@@ -543,22 +557,6 @@
           Unsupported Network
         </button>
       </ng-template>
-      <a
-        *ngIf="
-          wallet.networkID === constants.CHAIN_ID.POLYGON ||
-          wallet.networkID === constants.CHAIN_ID.MAINNET ||
-          wallet.networkID === constants.CHAIN_ID.RINKEBY
-        "
-        class="btn btn-block btn-dark mr-1 mb-3"
-        href="https://www.blocknative.com/gas-estimator"
-        target="_blank"
-        ><img
-          src="./assets/img/local_gas_station_white_24dp.svg"
-          class="mx-1 icon-logo"
-          alt="MPH logo"
-          width="24px"
-        />{{ gasPrice.toFormat(0) }}
-      </a>
       <button
         class="btn btn-block btn-dark mr-1 mb-3"
         type="button"
@@ -915,22 +913,6 @@
         Wrong Network
       </button>
     </ng-template>
-    <a
-      *ngIf="
-        wallet.networkID === constants.CHAIN_ID.POLYGON ||
-        wallet.networkID === constants.CHAIN_ID.MAINNET ||
-        wallet.networkID === constants.CHAIN_ID.RINKEBY
-      "
-      class="btn btn-sm btn-dark mr-3 d-none d-lg-flex"
-      href="https://www.blocknative.com/gas-estimator"
-      target="_blank"
-      ><img
-        src="./assets/img/local_gas_station_white_24dp.svg"
-        class="mx-1 icon-logo"
-        alt="MPH logo"
-        width="20px"
-      />{{ gasPrice.toFormat(0) }}
-    </a>
     <button
       class="btn btn-sm btn-dark mr-1 d-none d-lg-flex align-items-center"
       type="button"
