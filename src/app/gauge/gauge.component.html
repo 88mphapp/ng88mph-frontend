@@ -1,0 +1,816 @@
+<div class="container mt-4 mb-6">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="title-bg-gradient display-2" i18n="@@stakeMPHForXMPH">
+        Gauge weight vote
+      </h1>
+      <p class="text-white font-weight-bold mb-5 lead">
+        <ng-container i18n="@@rewardsPageText"
+          >You can vote for gauge weight with your veMPH tokens (MPH
+          vote-locked). Gauge weights are used to determine how much MPH does
+          each fixed rate pool get and your veMPH balance influences your MPH
+          APR when you deposit in 88mph fixed rate pools.
+        </ng-container>
+        <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
+          <ng-container i18n="@@learnMore">Learn more</ng-container>
+          <i class="fe fe-external-link"></i>
+        </a>
+      </p>
+      <!--desktop user's data-->
+      <div class="card-deck d-none d-lg-flex my-5">
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase" i18n="@@">MPH balance</h5>
+
+            <!-- Heading -->
+            <h2 class="mb-2 glowing">0.0000</h2>
+            <h5 class="mb-3 text-white">$0.0000</h5>
+            <!-- Button -->
+            <button
+              *ngIf="xMPHBalance.gt(0)"
+              type="button"
+              class="btn btn-sm btn-bg-gradient"
+              (click)="openUnstakeModal()"
+              [disabled]="!canUnstake() || wallet.watching"
+            >
+              <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+              <ng-container i18n="@@unstake">Unstake</ng-container>
+            </button>
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 i18n="@@">veMPH BALANCE</h5>
+
+            <!-- Heading -->
+            <h2 class="mb-2 glowing">0.0000</h2>
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase" i18n="@@">MPH locked</h5>
+
+            <!-- Heading -->
+            <h2 class="mb-2 glowing">0.0000</h2>
+            <time class="h5 mb-3 text-white"
+              >Time left: 1,300D:07H:49M:10S</time
+            >
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase" i18n="@@">MPH unlocked</h5>
+
+            <!-- Heading -->
+            <h2 class="mb-2 glowing">0.0000</h2>
+            <h5 class="mb-3 text-white">$0.0000</h5>
+            <!-- Button -->
+            <button type="button" class="btn btn-sm btn-bg-gradient">
+              <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+              <ng-container i18n="@@">Claim</ng-container>
+            </button>
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <!-- Title -->
+            <h5 class="text-uppercase" i18n="@@">MPH rewards</h5>
+
+            <!-- Heading -->
+            <span class="h2 mb-2 glowing"> 0.0000 </span>
+            <span
+              class="
+                badge badge-xl badge-soft-success
+                mt-n2
+                ml-1
+                ng-star-inserted
+              "
+              >0.00% APR</span
+            >
+            <h5 class="mb-3 text-white">$0.0000</h5>
+            <!-- Button -->
+            <button type="button" class="btn btn-sm btn-bg-gradient">
+              <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+              <ng-container i18n="@@">Claim</ng-container>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!--mobile user's data-->
+      <div class="row d-lg-none my-5">
+        <div class="col-6">
+          <!-- Title -->
+          <h5 class="text-uppercase" i18n="@@">MPH balance</h5>
+          <!-- Heading -->
+          <h2 class="mb-2 glowing">0.0000</h2>
+          <!-- Title -->
+          <h5 class="text-uppercase" i18n="@@valueInMph">veMPH balance</h5>
+          <!-- Heading -->
+          <span class="h2 mb-0 glowing"> 0.0000 </span>
+        </div>
+        <div class="col-6">
+          <!-- Title -->
+          <h5 class="text-uppercase">MPH locked</h5>
+          <!-- Heading -->
+          <h2 class="mb-2 glowing">0.00</h2>
+          <!-- Title -->
+          <h5 class="text-uppercase">MPH unlocked</h5>
+          <!-- Heading -->
+          <h2 class="mb-2 glowing">0.00</h2>
+          <!-- Button -->
+          <button type="button" class="btn btn-sm btn-bg-gradient">
+            <i class="fe fe-arrow-down mr-2 align-bottom"></i>
+            <ng-container i18n="@@">Claim</ng-container>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-lg-8">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between">
+              <h4 class="card-header-title" i18n="@@">Gauge weight voting</h4>
+              <time class="small"
+                ><span class="d-none d-lg-inline-block">Time left:</span>
+                02D:07H:49M:10S</time
+              >
+            </div>
+
+            <div class="card-body">
+              <div class="list-group list-group-flush list-group-activity mb-4">
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@"
+                        >
+                          1
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group mb-2">
+                        <label
+                          >MPH amount to lock in order to vote for gauge
+                          weights</label
+                        >
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            placeholder="0.00"
+                            aria-label=""
+                            aria-describedby=""
+                            class="form-control form-control-lg"
+                          />
+                        </div>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-dark mr-2">
+                        25%</button
+                      ><button type="button" class="btn btn-sm btn-dark mr-2">
+                        50%</button
+                      ><button type="button" class="btn btn-sm btn-dark mr-2">
+                        75%</button
+                      ><button type="button" class="btn btn-sm btn-dark mr-2">
+                        100%
+                      </button>
+                      <div class="row mt-2 mb-4">
+                        <div class="col">
+                          <small class="form-text text-white mb-0"
+                            >0.0000 MPH available
+                          </small>
+                        </div>
+                      </div>
+                      <div class="form-row mb-0">
+                        <div class="col-12">
+                          <div class="form-group mb-2 mt-3">
+                            <label>Lock duration</label>
+                            <div class="input-group align-items-center d-flex">
+                              <input
+                                type="tel"
+                                placeholder="0.00"
+                                aria-label=""
+                                aria-describedby=""
+                                id="lock-period"
+                                data-mask="#,##0"
+                                data-mask-reverse="true"
+                                class="
+                                  form-control form-control-lg
+                                  pr-1
+                                  mr-4 mr-md-2
+                                  rounded
+                                  mb-3 mb-lg-0
+                                "
+                              />
+                              <input
+                                type="range"
+                                min="1"
+                                max="365"
+                                step="1"
+                                class="custom-range"
+                              />
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-2"
+                          >
+                            1 week</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-2"
+                          >
+                            1 month</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-2"
+                          >
+                            6 months</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-2"
+                          >
+                            1 year</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-2"
+                          >
+                            2 years</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-2"
+                          >
+                            3 years</button
+                          ><button
+                            type="button"
+                            class="btn btn-sm btn-dark mr-2"
+                          >
+                            4 years
+                          </button>
+                          <div class="row">
+                            <div class="col">
+                              <small class="form-text text-muted my-2"
+                                >Min: 7 days | Max: 1460 days</small
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                      >
+                        Lock
+                      </button>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@"
+                        >
+                          2
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group">
+                        <label for="" i18n="@@">Select a gauge</label>
+                        <select
+                          class="custom-select custom-select-lg"
+                          data-toggle="select"
+                          id=""
+                        >
+                          <option>Gauge</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+                <div class="list-group-item">
+                  <div class="row">
+                    <div class="col-auto text-center">
+                      <div class="avatar avatar-sm">
+                        <div
+                          class="
+                            avatar-title
+                            font-size-lg
+                            bg-dark
+                            rounded-circle
+                            text-white
+                            border-gradient
+                          "
+                          i18n="@@"
+                        >
+                          3
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n2">
+                      <div class="form-group mb-2">
+                        <label>Vote weight</label>
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            placeholder="1% (of your voting power)"
+                            aria-label=""
+                            aria-describedby=""
+                            class="form-control form-control-lg"
+                          />
+                        </div>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-dark mr-2">
+                        25%</button
+                      ><button type="button" class="btn btn-sm btn-dark mr-2">
+                        50%</button
+                      ><button type="button" class="btn btn-sm btn-dark mr-2">
+                        75%</button
+                      ><button type="button" class="btn btn-sm btn-dark mr-2">
+                        100%
+                      </button>
+                      <div class="row mt-2 mb-1">
+                        <div class="col">
+                          <small class="form-text text-white mb-0"
+                            >0.00 veMPH — (1 %) of your voting power will be
+                            allocated to this gauge
+                          </small>
+                        </div>
+                      </div>
+                      <div class="row mt-2">
+                        <div class="col">
+                          <small class="form-text text-muted mb-0"
+                            >Vote weight % used: 0.00% | 0.0000 veMPH available
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                  <button
+                    type="button"
+                    class="btn btn-block btn-lg btn-bg-gradient"
+                  >
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
+                    <ng-container i18n="@@">Vote</ng-container>
+                  </button>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <button
+                    type="button"
+                    class="btn btn-block btn-lg border-gradient"
+                  >
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
+                    <ng-container i18n="@@">Reset vote</ng-container>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card mb-6">
+            <div class="card-header">
+              <h4 class="card-header-title" i18n="@@">Gauges weight</h4>
+              <a
+                class="d-inline-block ml-auto text-primary small"
+                href="https://docs.88mph.app"
+                i18n="@@help"
+                >Help</a
+              >
+            </div>
+            <div class="card-header">
+              <div class="row">
+                <div class="col-12">
+                  <ul class="nav nav-tabs border-0" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <a
+                        class="nav-link text-center active"
+                        id="myweight-tab"
+                        data-toggle="tab"
+                        href="#myweight"
+                        role="tab"
+                        aria-controls="home"
+                        aria-selected="true"
+                      >
+                        My weight
+                      </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <a
+                        class="nav-link text-center"
+                        id="protocolweight-tab"
+                        data-toggle="tab"
+                        href="#protocolweight"
+                        role="tab"
+                        aria-controls="home"
+                        aria-selected="true"
+                      >
+                        Protocol weight
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body p-0">
+              <div class="tab-content" id="myTabContent">
+                <div
+                  class="tab-pane fade show active"
+                  id="myweight"
+                  role="tabpanel"
+                  aria-labelledby="myweight-tab"
+                >
+                  <div
+                    class="
+                      chart chart-appended
+                      d-flex
+                      justify-content-center
+                      align-items-center
+                    "
+                  >
+                    <span>Chart</span>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">
+                            <a
+                              href="#"
+                              class="text-muted list-sort"
+                              data-sort=""
+                              >Gauge</a
+                            >
+                          </th>
+                          <th scope="col">
+                            <a
+                              href="#"
+                              class="text-muted list-sort"
+                              data-sort=""
+                              >Weight</a
+                            >
+                          </th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody class="list">
+                        <tr>
+                          <th scope="row" class="tables-row">aWBTC</th>
+                          <td class="">25%</td>
+                          <td class="">
+                            <button class="btn btn-sm border-gradient">
+                              Reset
+                            </button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tables-row">aWBTC</th>
+                          <td class="">25%</td>
+                          <td class="">
+                            <button class="btn btn-sm border-gradient">
+                              Reset
+                            </button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tables-row">aWBTC</th>
+                          <td class="">25%</td>
+                          <td class="">
+                            <button class="btn btn-sm border-gradient">
+                              Reset
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div
+                  class="tab-pane fade"
+                  id="protocolweight"
+                  role="tabpanel"
+                  aria-labelledby="protocolweight-tab"
+                >
+                  <div
+                    class="
+                      chart chart-appended
+                      d-flex
+                      justify-content-center
+                      align-items-center
+                    "
+                  >
+                    <span>Chart</span>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                      <thead>
+                        <tr>
+                          <th scope="col">
+                            <a
+                              href="#"
+                              class="text-muted list-sort"
+                              data-sort=""
+                              >Gauge</a
+                            >
+                          </th>
+                          <th scope="col">
+                            <a
+                              href="#"
+                              class="text-muted list-sort"
+                              data-sort=""
+                              >Weight</a
+                            >
+                          </th>
+                          <th scope="col">
+                            <a
+                              href="#"
+                              class="text-muted list-sort"
+                              data-sort=""
+                              >Future MPH APR</a
+                            >
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="list">
+                        <tr>
+                          <th scope="row" class="tables-row">aWBTC</th>
+                          <td class="">25%</td>
+                          <td class="">
+                            <h5 class="mb-1 glowing">5.20% to 8.00%</h5>
+                            <span class="text-secondary small"
+                              >Curr. 0.20% to 2.00%</span
+                            >
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tables-row">aWBTC</th>
+                          <td class="">25%</td>
+                          <td class="">
+                            <h5 class="mb-1 glowing">5.20% to 8.00%</h5>
+                            <span class="text-secondary small"
+                              >Curr. 0.20% to 2.00%</span
+                            >
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tables-row">aWBTC</th>
+                          <td class="">25%</td>
+                          <td class="">
+                            <h5 class="mb-1 glowing">5.20% to 8.00%</h5>
+                            <span class="text-secondary small"
+                              >Curr. 0.20% to 2.00%</span
+                            >
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tables-row">aWBTC</th>
+                          <td class="">25%</td>
+                          <td class="">
+                            <h5 class="mb-1 glowing">5.20% to 8.00%</h5>
+                            <span class="text-secondary small"
+                              >Curr. 0.20% to 2.00%</span
+                            >
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <small
+                class="mb-0"
+                placement="top"
+                ngbTooltip=""
+                i18n-ngbTooltip="@@"
+              >
+                <ng-container i18n="@@"
+                  >Next distribution taking effect in</ng-container
+                >
+                02D:07H:49M:10S
+              </small>
+            </div>
+          </div>
+          <div class="card mb-6">
+            <div class="card-header">
+              <h4 class="card-header-title" i18n="@@lockMphForVeMph">
+                veMPH stats
+              </h4>
+              <a
+                class="d-inline-block ml-auto text-primary small"
+                href="https://docs.88mph.app"
+                i18n="@@help"
+                >Help</a
+              >
+            </div>
+            <div class="card-body pr-0">
+              <div class="table-responsive py-2 pr-4">
+                <table class="table mb-0">
+                  <tbody>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip=""
+                        >
+                          Total veMPH:
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">0.00</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip=""
+                        >
+                          Total MPH vote-locked
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">0.00</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip=""
+                        >
+                          % of circ. MPH Locked
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">0.00</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip=""
+                        >
+                          % of tot. MPH Locked
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">0.00</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip=""
+                        >
+                          Avg lock time
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">3.64 years</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip=""
+                        >
+                          Avg. lock time (years)
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">3.64</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip=""
+                        >
+                          Est. yield per month
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">$587,745.04</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip="Annual Percentage Rate. Assumes 4 veMPH = 1 MPH (i.e. 1 MPH locked 4 years)"
+                        >
+                          veMPH holder APR
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">0.00%</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span
+                          i18n-ngbTooltip="@@"
+                          placement="top"
+                          ngbTooltip=""
+                        >
+                          Yearly earnings per 1 veMPH
+                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">$0.00</h4>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer">
+              <small
+                class="mb-0"
+                placement="top"
+                ngbTooltip="88mph Protocol revenues are distributed to MPH stakers on a bi-weekly basis via a buy-back mechansim. 88mph governance decides the percentage of revenues distributed, by default, it's 100%."
+                i18n-ngbTooltip="@@nextDistributionText"
+              >
+                <ng-container i18n="@@nextDistributionOn"
+                  >Next earnings distribution in</ng-container
+                >
+                02D:07H:49M:10S
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

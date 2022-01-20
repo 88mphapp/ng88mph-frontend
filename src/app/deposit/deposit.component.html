@@ -425,7 +425,7 @@
                   style="border-radius: 14px"
                   placement="top"
                   i18n-ngbTooltip="@@depositsCustomMaturityText"
-                  ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)"
+                  ngbTooltip="Deposits with custom maturity get rewarded with MPH tokens that can be locked for veMPH to influence gauge weight votes, boost your MPH APR, and receive protocol revenues"
                 >
                   <div class="avatar avatar-xxs">
                     <img
@@ -435,7 +435,7 @@
                       class="avatar-img rounded-circle"
                     />
                   </div>
-                  +{{ pool.mphAPR.toFormat(DECIMALS) }}%
+                  +{{ pool.mphAPR.toFormat(DECIMALS) }}% → 0.00%
                 </span>
               </td>
               <td mat-footer-cell *matFooterCellDef>
