@@ -24,19 +24,19 @@
             <h5 class="text-uppercase" i18n="@@">MPH balance</h5>
 
             <!-- Heading -->
-            <h2 class="mb-2 glowing">0.0000</h2>
-            <h5 class="mb-3 text-white">$0.0000</h5>
+            <h2 class="mb-2 glowing">{{ mphBalance.toFormat(4) }}</h2>
+            <!-- <h5 class="mb-3 text-white">
+              ${{ mphBalance.times(datas.mphPriceUSD).toFormat(4) }}
+            </h5> -->
             <!-- Button -->
-            <button
-              *ngIf="xMPHBalance.gt(0)"
+            <!-- <button
               type="button"
               class="btn btn-sm btn-bg-gradient"
               (click)="openUnstakeModal()"
-              [disabled]="!canUnstake() || wallet.watching"
             >
               <i class="fe fe-arrow-down mr-2 align-bottom"></i>
               <ng-container i18n="@@unstake">Unstake</ng-container>
-            </button>
+            </button> -->
           </div>
         </div>
         <div class="card mb-5 mb-lg-0">
@@ -45,7 +45,7 @@
             <h5 i18n="@@">veMPH BALANCE</h5>
 
             <!-- Heading -->
-            <h2 class="mb-2 glowing">0.0000</h2>
+            <h2 class="mb-2 glowing">{{ veBalance.toFormat(4) }}</h2>
           </div>
         </div>
         <div class="card mb-5 mb-lg-0">
@@ -54,10 +54,12 @@
             <h5 class="text-uppercase" i18n="@@">MPH locked</h5>
 
             <!-- Heading -->
-            <h2 class="mb-2 glowing">0.0000</h2>
-            <time class="h5 mb-3 text-white"
-              >Time left: 1,300D:07H:49M:10S</time
-            >
+            <h2 class="mb-2 glowing">{{ mphLocked.toFormat(4) }}</h2>
+            <div class="h5 mb-3 text-white" *ngIf="mphLocked.gt(0)">
+              Locked Until:
+              <br />
+              {{ timestampToDateString(lockEnd) }}
+            </div>
           </div>
         </div>
         <div class="card mb-5 mb-lg-0">
@@ -66,10 +68,14 @@
             <h5 class="text-uppercase" i18n="@@">MPH unlocked</h5>
 
             <!-- Heading -->
-            <h2 class="mb-2 glowing">0.0000</h2>
-            <h5 class="mb-3 text-white">$0.0000</h5>
+            <h2 class="mb-2 glowing">{{ mphUnlocked.toFormat(4) }}</h2>
+            <!-- <h5 class="mb-3 text-white">${{ mphUnlocked.times(datas.mphPriceUSD).toFormat(4) }}</h5> -->
             <!-- Button -->
-            <button type="button" class="btn btn-sm btn-bg-gradient">
+            <button
+              type="button"
+              class="btn btn-sm btn-bg-gradient"
+              *ngIf="mphUnlocked.gt(0)"
+            >
               <i class="fe fe-arrow-down mr-2 align-bottom"></i>
               <ng-container i18n="@@">Claim</ng-container>
             </button>
@@ -106,23 +112,27 @@
           <!-- Title -->
           <h5 class="text-uppercase" i18n="@@">MPH balance</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">0.0000</h2>
+          <h2 class="mb-2 glowing">{{ mphBalance.toFormat(2) }}</h2>
           <!-- Title -->
           <h5 class="text-uppercase" i18n="@@valueInMph">veMPH balance</h5>
           <!-- Heading -->
-          <span class="h2 mb-0 glowing"> 0.0000 </span>
+          <span class="h2 mb-0 glowing">{{ veBalance.toFormat(2) }}</span>
         </div>
         <div class="col-6">
           <!-- Title -->
           <h5 class="text-uppercase">MPH locked</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">0.00</h2>
+          <h2 class="mb-2 glowing">{{ mphLocked.toFormat(2) }}</h2>
           <!-- Title -->
           <h5 class="text-uppercase">MPH unlocked</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">0.00</h2>
+          <h2 class="mb-2 glowing">{{ mphUnlocked.toFormat(2) }}</h2>
           <!-- Button -->
-          <button type="button" class="btn btn-sm btn-bg-gradient">
+          <button
+            type="button"
+            class="btn btn-sm btn-bg-gradient"
+            *ngIf="mphUnlocked.gt(0)"
+          >
             <i class="fe fe-arrow-down mr-2 align-bottom"></i>
             <ng-container i18n="@@">Claim</ng-container>
           </button>
