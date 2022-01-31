@@ -46,6 +46,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CacheInterceptor } from './cache-interceptor';
 import { DepositFeedComponent } from './header/deposit-feed/deposit-feed.component';
+import { GaugeComponent } from './gauge/gauge.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { DepositFeedComponent } from './header/deposit-feed/deposit-feed.compone
     PriceEarningsRatioComponent,
     XmphSupplyDistributionComponent,
     DepositFeedComponent,
+    GaugeComponent,
   ],
   imports: [
     BrowserModule,
