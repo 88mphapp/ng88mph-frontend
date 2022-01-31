@@ -16,7 +16,8 @@
     "BancorLPStore": "0xf5FAB5DBD2f3bf675dE4cB76517d4767013cfB55",
     "BNTToken": "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C",
     "StakedAaveController": "0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5",
-    "AaveProtocolDataProvider": "0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d"
+    "AaveProtocolDataProvider": "0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d",
+    "veMPH": "0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2"
   },
   "4": {
     "MPHMinter": "0x2534b0a1a49b31f982881F3cb2909eCC6aEc2365",
