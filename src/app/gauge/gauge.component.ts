@@ -293,7 +293,30 @@ export class GaugeComponent implements OnInit {
   }
 
   createLock(): void {
-    console.log('creating lock...');
+    const mph = this.contract.getNamedContract('MPHToken');
+    const vemph = this.contract.getNamedContract('veMPH');
+
+    const lockAmount = this.helpers.processWeb3Number(
+      this.lockAmount.times(this.constants.PRECISION)
+    );
+    const now = Math.floor(Date.now() / 1e3);
+    const lockDuration = this.lockDuration * this.constants.DAY_IN_SEC;
+    const unlockTimestamp = this.helpers.processWeb3Number(now + lockDuration);
+
+    const func = vemph.methods.create_lock(lockAmount, unlockTimestamp);
+
+    this.wallet.sendTxWithToken(
+      func,
+      mph,
+      this.constants.VEMPH_ADDRESS[this.wallet.networkID],
+      lockAmount,
+      () => {},
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 
   increaseLockAmount(): void {
