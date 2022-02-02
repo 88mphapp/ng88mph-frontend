@@ -142,11 +142,15 @@
         <div class="col-12 col-lg-8">
           <div class="card">
             <div class="card-header d-flex justify-content-between">
-              <h4 class="card-header-title" i18n="@@">Gauge weight voting</h4>
-              <time class="small"
-                ><span class="d-none d-lg-inline-block">Time left:</span>
-                02D:07H:49M:10S</time
-              >
+              <h4 class="card-header-title" i18n="@@">Gauge Weight Voting</h4>
+              <time class="small">
+                <span class="d-none d-lg-inline-block">Time Left:</span>
+                <span *ngIf="timeLeftCountdown">
+                  {{ timeLeftCountdown.days }}D {{ timeLeftCountdown.hours }}H
+                  {{ timeLeftCountdown.minutes }}M
+                  {{ timeLeftCountdown.seconds }}S
+                </span>
+              </time>
             </div>
 
             <div class="card-body">
@@ -183,29 +187,87 @@
                             aria-label=""
                             aria-describedby=""
                             class="form-control form-control-lg"
+                            [value]="lockAmount.toFixed(18)"
+                            (input)="setLockAmount($event.target.value)"
                           />
                         </div>
                       </div>
-                      <button type="button" class="btn btn-sm btn-dark mr-2">
-                        25%</button
-                      ><button type="button" class="btn btn-sm btn-dark mr-2">
-                        50%</button
-                      ><button type="button" class="btn btn-sm btn-dark mr-2">
-                        75%</button
-                      ><button type="button" class="btn btn-sm btn-dark mr-2">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-dark mr-2"
+                        (click)="presetLockAmount(25)"
+                      >
+                        25%
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-dark mr-2"
+                        (click)="presetLockAmount(50)"
+                      >
+                        50%
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-dark mr-2"
+                        (click)="presetLockAmount(75)"
+                      >
+                        75%
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-dark mr-2"
+                        (click)="presetLockAmount(100)"
+                      >
                         100%
                       </button>
-                      <div class="row mt-2 mb-4">
-                        <div class="col">
-                          <small class="form-text text-white mb-0"
-                            >0.0000 MPH available
-                          </small>
-                        </div>
-                      </div>
+                      <small class="text-white mb-0">
+                        {{ mphBalance.toFormat(4) }} MPH available
+                      </small>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
+                        *ngIf="veBalance.gt(0) && lockAmount.lte(0)"
+                        [disabled]="true"
+                      >
+                        Enter an Amount
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
+                        *ngIf="veBalance.gt(0) && lockAmount.gt(mphBalance)"
+                        [disabled]="true"
+                      >
+                        Not Enough MPH Available
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        *ngIf="
+                          veBalance.gt(0) &&
+                          lockAmount.lte(mphBalance) &&
+                          lockAmount.gt(mphAllowance)
+                        "
+                        (click)="approve()"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
+                        *ngIf="
+                          veBalance.gt(0) &&
+                          lockAmount.gt(0) &&
+                          lockAmount.lte(mphBalance) &&
+                          lockAmount.lte(mphAllowance)
+                        "
+                        (click)="increaseLockAmount()"
+                      >
+                        Add to Lock
+                      </button>
                       <div class="form-row mb-0">
                         <div class="col-12">
                           <div class="form-group mb-2 mt-3">
-                            <label>Lock duration</label>
+                            <label>Lock Duration (days)</label>
                             <div class="input-group align-items-center d-flex">
                               <input
                                 type="tel"
@@ -222,49 +284,66 @@
                                   rounded
                                   mb-3 mb-lg-0
                                 "
+                                [value]="lockDuration"
+                                (input)="setLockDuration($event.target.value)"
                               />
                               <input
                                 type="range"
-                                min="1"
-                                max="365"
+                                min="7"
+                                max="1460"
                                 step="1"
                                 class="custom-range"
+                                [value]="lockDuration"
+                                (input)="setLockDuration($event.target.value)"
                               />
                             </div>
                           </div>
                           <button
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
+                            (click)="setLockDuration(7)"
                           >
-                            1 week</button
-                          ><button
+                            1 week
+                          </button>
+                          <button
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
+                            (click)="setLockDuration(31)"
                           >
-                            1 month</button
-                          ><button
+                            1 month
+                          </button>
+                          <button
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
+                            (click)="setLockDuration(183)"
                           >
-                            6 months</button
-                          ><button
+                            6 months
+                          </button>
+                          <button
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
+                            (click)="setLockDuration(365)"
                           >
-                            1 year</button
-                          ><button
+                            1 year
+                          </button>
+                          <button
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
+                            (click)="setLockDuration(730)"
                           >
-                            2 years</button
-                          ><button
+                            2 years
+                          </button>
+                          <button
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
+                            (click)="setLockDuration(1095)"
                           >
-                            3 years</button
-                          ><button
+                            3 years
+                          </button>
+                          <button
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
+                            (click)="setLockDuration(1460)"
                           >
                             4 years
                           </button>
@@ -280,8 +359,70 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        *ngIf="veBalance.eq(0) && lockAmount.lte(0)"
+                        [disabled]="true"
                       >
-                        Lock
+                        Enter an Amount
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        *ngIf="veBalance.eq(0) && lockAmount.gt(mphBalance)"
+                        [disabled]="true"
+                      >
+                        Not Enough MPH Available
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        *ngIf="
+                          veBalance.eq(0) &&
+                          lockAmount.lte(mphBalance) &&
+                          lockAmount.gt(mphAllowance)
+                        "
+                        (click)="approve()"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        *ngIf="
+                          (veBalance.gt(0) ||
+                            (lockAmount.gt(0) && lockAmount.lte(mphBalance))) &&
+                          lockAmount.lte(mphAllowance) &&
+                          (lockDuration < 7 || lockDuration > 1460)
+                        "
+                        [disabled]="true"
+                      >
+                        Invalid Lock Duration
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        *ngIf="
+                          veBalance.eq(0) &&
+                          lockAmount.gt(0) &&
+                          lockAmount.lte(mphBalance) &&
+                          lockAmount.lte(mphAllowance) &&
+                          lockDuration >= 7 &&
+                          lockDuration <= 1460
+                        "
+                        (click)="createLock()"
+                      >
+                        Create Lock
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        *ngIf="
+                          veBalance.gt(0) &&
+                          lockDuration >= 7 &&
+                          lockDuration <= 1460
+                        "
+                        (click)="increaseLockDuration()"
+                      >
+                        Increase Lock Duration
                       </button>
                     </div>
                   </div>
@@ -308,7 +449,7 @@
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group">
-                        <label for="" i18n="@@">Select a gauge</label>
+                        <label for="" i18n="@@">Select a Gauge</label>
                         <select
                           class="custom-select custom-select-lg"
                           data-toggle="select"
@@ -342,7 +483,7 @@
                     </div>
                     <div class="col ml-n2">
                       <div class="form-group mb-2">
-                        <label>Vote weight</label>
+                        <label>Vote Weight</label>
                         <div class="input-group">
                           <input
                             type="text"
@@ -662,7 +803,7 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-0 glowing">0.00</h4>
+                        <h4 class="mb-0 glowing">{{ veTotal.toFormat(2) }}</h4>
                       </td>
                     </tr>
                     <tr>
@@ -679,7 +820,9 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-0 glowing">0.00</h4>
+                        <h4 class="mb-0 glowing">
+                          {{ totalMPHLocked.toFormat(2) }}
+                        </h4>
                       </td>
                     </tr>
                     <tr>
@@ -696,7 +839,14 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-0 glowing">0.00</h4>
+                        <h4 class="mb-0 glowing">
+                          {{
+                            totalMPHLocked
+                              .div(circulatingMPHSupply)
+                              .times(100)
+                              .toFormat(2)
+                          }}%
+                        </h4>
                       </td>
                     </tr>
                     <tr>
@@ -713,24 +863,14 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-0 glowing">0.00</h4>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip=""
-                        >
-                          Avg lock time
-                          <i class="fe fe-info ml-1 align-bottom"></i>
-                        </span>
-                      </td>
-                      <td
-                        class="px-0 py-2 text-white text-right border-0 small"
-                      >
-                        <h4 class="mb-0 glowing">3.64 years</h4>
+                        <h4 class="mb-0 glowing">
+                          {{
+                            totalMPHLocked
+                              .div(totalMPHSupply)
+                              .times(100)
+                              .toFormat(2)
+                          }}%
+                        </h4>
                       </td>
                     </tr>
                     <tr>
@@ -747,7 +887,9 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-0 glowing">3.64</h4>
+                        <h4 class="mb-0 glowing">
+                          {{ averageLock.toFormat(2) }}
+                        </h4>
                       </td>
                     </tr>
                     <tr>
