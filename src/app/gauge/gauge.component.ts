@@ -1,6 +1,10 @@
 // TODO
 // 1- Change veMPH address to correct address after deployment (contracts.json and constants.service.ts)
 // 2- Change MPHGaugeController address to correct address after deployment (contracts.json)
+// 3- Add checks for extending lock duration (e.g. can't add 4 years to an existing 3 year lock)
+// 4- Prompt network switch if not connected to Mainnet
+// 5- Disable actions if not connected to Mainnet
+// 6- Ensure action flow works as expected (reloads data, etc)
 
 import { Component, OnInit, NgZone } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -324,7 +328,22 @@ export class GaugeComponent implements OnInit {
   }
 
   increaseLockDuration(): void {
-    console.log('increasing lock duration...');
+    const vemph = this.contract.getNamedContract('veMPH');
+    const lockDuration = this.lockDuration * this.constants.DAY_IN_SEC;
+    const unlockTimestamp = this.helpers.processWeb3Number(
+      this.lockEnd + lockDuration
+    );
+    const func = vemph.methods.increase_unlock_time(unlockTimestamp);
+
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
   }
 
   timestampToDateString(timestampSec: number): string {
