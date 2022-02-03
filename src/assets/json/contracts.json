@@ -18,7 +18,8 @@
     "StakedAaveController": "0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5",
     "AaveProtocolDataProvider": "0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d",
     "veMPH": "0xc8418aF6358FFddA74e09Ca9CC3Fe03Ca6aDC5b0",
-    "MPHGaugeController": "0x3669C421b77340B2979d1A00a792CC2ee0FcE737"
+    "MPHGaugeController": "0x3669C421b77340B2979d1A00a792CC2ee0FcE737",
+    "MPHGaugeRewardDistributor": "0x278dC748edA1d8eFEf1aDFB518542612b49Fcd34"
   },
   "4": {
     "MPHMinter": "0x2534b0a1a49b31f982881F3cb2909eCC6aEc2365",
