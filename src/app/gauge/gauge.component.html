@@ -549,7 +549,7 @@
         <div class="col-12 col-lg-4">
           <div class="card mb-6">
             <div class="card-header">
-              <h4 class="card-header-title" i18n="@@">Gauges weight</h4>
+              <h4 class="card-header-title" i18n="@@">Gauges Weight</h4>
               <a
                 class="d-inline-block ml-auto text-primary small"
                 href="https://docs.88mph.app"
@@ -571,7 +571,7 @@
                         aria-controls="home"
                         aria-selected="true"
                       >
-                        My weight
+                        My Weight
                       </a>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -584,7 +584,7 @@
                         aria-controls="home"
                         aria-selected="true"
                       >
-                        Protocol weight
+                        Protocol Weight
                       </a>
                     </li>
                   </ul>
@@ -608,7 +608,18 @@
                       align-items-center
                     "
                   >
-                    <span>Chart</span>
+                    <span *ngIf="userChartData" class="w-100">
+                      <canvas
+                        baseChart
+                        [chartType]="chartType"
+                        [legend]="chartLegend"
+                        [options]="chartOptions"
+                        [labels]="userChartLabels"
+                        [datasets]="userChartData"
+                      >
+                      </canvas>
+                      <!-- User Chart -->
+                    </span>
                   </div>
                   <div class="table-responsive">
                     <table class="table table-sm">
@@ -679,10 +690,71 @@
                       align-items-center
                     "
                   >
-                    <span>Chart</span>
+                    <span *ngIf="protocolChartData" class="w-100">
+                      <canvas
+                        baseChart
+                        [chartType]="chartType"
+                        [legend]="chartLegend"
+                        [options]="chartOptions"
+                        [labels]="protocolChartLabels"
+                        [datasets]="protocolChartData"
+                      >
+                      </canvas>
+                    </span>
                   </div>
                   <div class="table-responsive">
-                    <table class="table table-sm mb-0">
+                    <table
+                      mat-table
+                      matSort
+                      matSortActive="weight"
+                      matSortDirection="desc"
+                      matSortDisableClear
+                      [dataSource]="gauges"
+                      (matSortChange)="sortGauges($event)"
+                      class="table table-sm table-nowrap card-table"
+                    >
+                      <ng-container matColumnDef="name">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                          Gauge
+                        </th>
+                        <td mat-cell *matCellDef="let gauge">
+                          {{ gauge.name }} ({{ gauge.address.slice(0, 5) }})
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="weight">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                          Weight
+                        </th>
+                        <td mat-cell *matCellDef="let gauge">
+                          {{ gauge.weight.toFormat(2) }}%
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="reward">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                          Future MPH APR
+                        </th>
+                        <td mat-cell *matCellDef="let gauge">
+                          {{ gauge.reward.toFormat(2) }}
+                        </td>
+                      </ng-container>
+
+                      <tr
+                        class="text-muted"
+                        mat-header-row
+                        *matHeaderRowDef="['name', 'weight', 'reward']"
+                      ></tr>
+                      <tr
+                        class="mat-table-row"
+                        mat-row
+                        *matRowDef="
+                          let gauge;
+                          columns: ['name', 'weight', 'reward']
+                        "
+                      ></tr>
+                    </table>
+                    <!-- <table class="table table-sm mb-0">
                       <thead>
                         <tr>
                           <th scope="col">
@@ -753,7 +825,7 @@
                           </td>
                         </tr>
                       </tbody>
-                    </table>
+                    </table> -->
                   </div>
                 </div>
               </div>
@@ -769,7 +841,11 @@
                 <ng-container i18n="@@"
                   >Next distribution taking effect in</ng-container
                 >
-                02D:07H:49M:10S
+                <span *ngIf="timeLeftCountdown">
+                  {{ timeLeftCountdown.days }}D {{ timeLeftCountdown.hours }}H
+                  {{ timeLeftCountdown.minutes }}M
+                  {{ timeLeftCountdown.seconds }}S
+                </span>
               </small>
             </div>
           </div>
