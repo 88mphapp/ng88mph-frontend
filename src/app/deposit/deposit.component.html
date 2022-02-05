@@ -160,13 +160,14 @@
 
         <!-- insurance link -->
         <a
-          href="https://app.insurace.io/Insurance/Cart?id=102&referrer=1003844876871153922812567390869716010948231798944&chain=POLYGON"
+          href="https://app.insurace.io/Insurance/Cart?id=102&referrer=1003844876871153922812567390869716010948231798944"
           target="_blank"
           rel="noopener noreferrer"
           title="Insure your funds against smart contract vulnerabilities with our partner InsurAce"
           *ngIf="
             wallet.networkID === constants.CHAIN_ID.POLYGON ||
             wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+            wallet.networkID === constants.CHAIN_ID.FANTOM ||
             wallet.networkID === constants.CHAIN_ID.MAINNET
           "
         >
