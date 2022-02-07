@@ -302,6 +302,7 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
                             (click)="setLockDuration(7)"
+                            *ngIf="maxLockDuration >= 7 * constants.DAY_IN_SEC"
                           >
                             1 week
                           </button>
@@ -309,6 +310,7 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
                             (click)="setLockDuration(31)"
+                            *ngIf="maxLockDuration >= 31 * constants.DAY_IN_SEC"
                           >
                             1 month
                           </button>
@@ -316,6 +318,9 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
                             (click)="setLockDuration(183)"
+                            *ngIf="
+                              maxLockDuration >= 183 * constants.DAY_IN_SEC
+                            "
                           >
                             6 months
                           </button>
@@ -323,6 +328,9 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
                             (click)="setLockDuration(365)"
+                            *ngIf="
+                              maxLockDuration >= 365 * constants.DAY_IN_SEC
+                            "
                           >
                             1 year
                           </button>
@@ -330,6 +338,9 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
                             (click)="setLockDuration(730)"
+                            *ngIf="
+                              maxLockDuration >= 730 * constants.DAY_IN_SEC
+                            "
                           >
                             2 years
                           </button>
@@ -337,6 +348,9 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
                             (click)="setLockDuration(1095)"
+                            *ngIf="
+                              maxLockDuration >= 1095 * constants.DAY_IN_SEC
+                            "
                           >
                             3 years
                           </button>
@@ -344,10 +358,13 @@
                             type="button"
                             class="btn btn-sm btn-dark mr-2"
                             (click)="setLockDuration(1460)"
+                            *ngIf="
+                              maxLockDuration >= 1460 * constants.DAY_IN_SEC
+                            "
                           >
                             4 years
                           </button>
-                          <div class="row">
+                          <div class="row" *ngIf="veBalance.eq(0)">
                             <div class="col">
                               <small class="form-text text-muted my-2"
                                 >Min: 7 days | Max: 1460 days</small
@@ -358,7 +375,7 @@
                       </div>
                       <button
                         type="button"
-                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
                         *ngIf="veBalance.eq(0) && lockAmount.lte(0)"
                         [disabled]="true"
                       >
@@ -366,7 +383,7 @@
                       </button>
                       <button
                         type="button"
-                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
                         *ngIf="veBalance.eq(0) && lockAmount.gt(mphBalance)"
                         [disabled]="true"
                       >
@@ -374,7 +391,7 @@
                       </button>
                       <button
                         type="button"
-                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
                         *ngIf="
                           veBalance.eq(0) &&
                           lockAmount.lte(mphBalance) &&
@@ -386,27 +403,21 @@
                       </button>
                       <button
                         type="button"
-                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                        *ngIf="
-                          (veBalance.gt(0) ||
-                            (lockAmount.gt(0) && lockAmount.lte(mphBalance))) &&
-                          lockAmount.lte(mphAllowance) &&
-                          (lockDuration < 7 || lockDuration > 1460)
-                        "
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
+                        *ngIf="!validLockDuration()"
                         [disabled]="true"
                       >
                         Invalid Lock Duration
                       </button>
                       <button
                         type="button"
-                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
                         *ngIf="
                           veBalance.eq(0) &&
                           lockAmount.gt(0) &&
                           lockAmount.lte(mphBalance) &&
                           lockAmount.lte(mphAllowance) &&
-                          lockDuration >= 7 &&
-                          lockDuration <= 1460
+                          validLockDuration()
                         "
                         (click)="createLock()"
                       >
@@ -414,12 +425,8 @@
                       </button>
                       <button
                         type="button"
-                        class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                        *ngIf="
-                          veBalance.gt(0) &&
-                          lockDuration >= 7 &&
-                          lockDuration <= 1460
-                        "
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
+                        *ngIf="veBalance.gt(0) && validLockDuration()"
                         (click)="increaseLockDuration()"
                       >
                         Increase Lock Duration
