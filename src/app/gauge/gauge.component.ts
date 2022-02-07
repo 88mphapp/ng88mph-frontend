@@ -6,6 +6,7 @@
 // 4- Prompt network switch if not connected to Mainnet
 // 5- Disable actions if not connected to Mainnet
 // 6- Ensure action flow works as expected (reloads data, etc)
+// 7- Check if user is able to vote for gauge (10 day waiting period)
 
 import { Component, OnInit, NgZone } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -26,7 +27,6 @@ import { Chart } from 'chart.js';
 })
 export class GaugeComponent implements OnInit {
   COLORS: string[] = [
-    // change chart colors by changing these
     '107, 94, 174',
     '72, 69, 84',
     '173, 169, 187',
@@ -34,39 +34,61 @@ export class GaugeComponent implements OnInit {
     '234, 125, 114',
   ];
 
-  // user variables
-  mphLocked: BigNumber; // amount of MPH user has locked
-  mphBalance: BigNumber; // user's MPH balance in wallet
-  mphAllowance: BigNumber; // user's MPH allowance for the veMPH contract
-  mphUnlocked: BigNumber; // amount of MPH user can unlock
-  veBalance: BigNumber; // user's veMPH balance
+  // user
+  userGauges: UserGauge[];
+
+  mphBalance: BigNumber; // MPH balance in wallet
+  mphAllowance: BigNumber; // MPH allowance for veMPH
+
+  veBalance: BigNumber;
+  mphLocked: BigNumber;
+  mphUnlocked: BigNumber;
+
   lockEnd: number; // timestamp when user's lock ends
   lockAmount: BigNumber; // amount of MPH to lock
   lockDuration: number; // days to lock
-  userChartLabels: string[];
-  userChartData: {};
 
-  // global variables
-  veTotal: BigNumber;
+  selectedGauge: Gauge;
+  voteWeight: BigNumber;
+  votePowerUsed: BigNumber;
+
+  loadingUser: boolean; // false when done loading
+
+  // global
+  gauges: Gauge[];
+
   totalMPHSupply: BigNumber;
-  circulatingMPHSupply: BigNumber; // circulating = total - gov treasury - dev wallet - merkle distributor
+  circulatingMPHSupply: BigNumber;
   totalMPHLocked: BigNumber;
   averageLock: BigNumber;
+  veTotal: BigNumber;
 
-  // gauge
   timeLeft: number;
   timeLeftCountdown: any;
 
-  gauges: Gauge[];
-  userGauges: any;
+  loadingGlobal: boolean; // false when done loading
 
-  // chart variables
-  chartType = 'pie'; // constant for all charts
-  chartLegend = false; // constant for all charts
-  chartOptions = {}; // constant for all charts
-
+  // chart
   protocolChartLabels: string[];
   protocolChartData: {};
+  userChartLabels: string[];
+  userChartData: {};
+
+  chartType = 'pie';
+  chartLegend = false;
+  chartOptions = {
+    responsive: true,
+    tooltips: {
+      callbacks: {
+        label: function (tooltipItem, data) {
+          const index = tooltipItem.index;
+          const label = data.labels[index];
+          const weight = data.datasets[0].data[index].toFixed(2);
+          return label + ': ' + weight + '%';
+        },
+      },
+    },
+  };
 
   constructor(
     public constants: ConstantsService,
@@ -128,6 +150,11 @@ export class GaugeComponent implements OnInit {
 
       this.userChartLabels = [];
       this.userChartData = [];
+      this.selectedGauge = null;
+      this.voteWeight = new BigNumber(0);
+      this.votePowerUsed = new BigNumber(0);
+      this.userGauges = [];
+      this.loadingUser = true;
     }
 
     if (resetGlobal) {
@@ -143,28 +170,29 @@ export class GaugeComponent implements OnInit {
 
       this.protocolChartLabels = [];
       this.protocolChartData = [];
+
+      this.loadingGlobal = true;
     }
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
+    const now = Math.floor(Date.now() / 1e3);
     const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
-    const address = this.wallet.actualAddress.toLowerCase();
+    // const address = this.wallet.actualAddress.toLowerCase();
+    const address = '0x10c16c7B8b1DDCFE65990ec822DE4379dd8a86dE';
 
     const mph = this.contract.getNamedContract('MPHToken', web3);
     const vemph = this.contract.getNamedContract('veMPH', web3);
-    // @dev currently using address for FXSGaugeController during development
     const gaugeController = this.contract.getNamedContract(
       'MPHGaugeController',
       web3
     );
-    // @dev currently using address for FXSGaugeRewardDistributor during development
     const gaugeDistributor = this.contract.getNamedContract(
       'MPHGaugeRewardDistributor',
       web3
     );
 
     if (loadUser && address) {
-      // load user MPH balance
       if (mph.options.address) {
         mph.methods
           .balanceOf(address)
@@ -187,7 +215,6 @@ export class GaugeComponent implements OnInit {
       }
 
       if (vemph.options.address) {
-        // load user's current voting power
         vemph.methods
           .balanceOf(address)
           .call()
@@ -203,7 +230,6 @@ export class GaugeComponent implements OnInit {
           .locked(address)
           .call()
           .then((result) => {
-            const now = Math.floor(Date.now() / 1e3);
             const amount = new BigNumber(result.amount).div(
               this.constants.PRECISION
             );
@@ -213,6 +239,94 @@ export class GaugeComponent implements OnInit {
               : (this.mphUnlocked = amount);
           });
       }
+
+      // load user's gauges (includes those without a vote weight)
+      let userGauges: UserGauge[] = [];
+      const numGauges = await gaugeController.methods.n_gauges().call();
+
+      for (let i = 0; i < +numGauges; i++) {
+        const gaugeAddress = await gaugeController.methods.gauges(i).call();
+        const poolInfo = this.contract.getPoolInfoFromGauge(gaugeAddress);
+
+        let voteWeight: BigNumber;
+        await gaugeController.methods
+          .vote_user_slopes(address, gaugeAddress)
+          .call()
+          .then((result) => {
+            voteWeight = new BigNumber(result.power).div(100);
+          });
+
+        let lastVote: number;
+        await gaugeController.methods
+          .last_user_vote(address, gaugeAddress)
+          .call()
+          .then((result) => {
+            lastVote = parseInt(result);
+          });
+
+        const canVote = now > lastVote + this.constants.DAY_IN_SEC * 10;
+
+        const userGauge: UserGauge = {
+          name: poolInfo.name,
+          address: gaugeAddress,
+          userWeight: voteWeight,
+          lastVote: lastVote,
+          canVote: canVote,
+          explorerURL: 'https://etherscan.io/address/' + gaugeAddress,
+        };
+        userGauges = [...userGauges, userGauge];
+      }
+
+      userGauges.sort(
+        (a, b) => b.userWeight.toNumber() - a.userWeight.toNumber()
+      );
+
+      // populate user data for chart
+      let data: number[] = [];
+      let labels: string[] = [];
+      let backgroundColor: string[] = [];
+      let hoverBackgroundColor: string[] = [];
+
+      for (let g in userGauges) {
+        const gauge = userGauges[g];
+        const color = 'rgba(' + this.COLORS[+g % this.COLORS.length] + ', 0.5)';
+        const hover = 'rgba(' + this.COLORS[+g % this.COLORS.length] + ', 1)';
+
+        data = [...data, gauge.userWeight.toNumber()];
+        labels = [...labels, gauge.name];
+        backgroundColor = [...backgroundColor, color];
+        hoverBackgroundColor = [...hoverBackgroundColor, hover];
+      }
+
+      // fetch vote power used and add unused vote power (if any) to chart
+      await gaugeController.methods
+        .vote_user_power(address)
+        .call()
+        .then((result) => {
+          this.votePowerUsed = new BigNumber(result).div(100);
+        });
+      if (this.votePowerUsed.lt(100)) {
+        const unallocated = new BigNumber(100).minus(this.votePowerUsed);
+
+        data = [...data, unallocated.toNumber()];
+        labels = [...labels, 'Unallocated'];
+        backgroundColor = [...backgroundColor, 'rgba(255, 255, 255, 0.5)'];
+        backgroundColor = [...backgroundColor, 'rgba(255, 255, 255, 1)'];
+      }
+
+      // assign to global variables
+      this.userGauges = userGauges;
+      this.userChartLabels = labels;
+      this.userChartData = [
+        {
+          data: data,
+          backgroundColor: backgroundColor,
+          hoverBackgroundColor: hoverBackgroundColor,
+          borderWidth: 0.5,
+        },
+      ];
+
+      this.loadingUser = false;
     }
 
     if (loadGlobal) {
@@ -282,15 +396,13 @@ export class GaugeComponent implements OnInit {
         .div(3);
 
       // load the gauge data
-      // @dev switch to subgraph queries once a subgraph has been developed and deployed
       let gauges: Gauge[] = [];
-      let labels: string[] = [];
-      let data: number[] = [];
-      let backgroundColor: string[] = [];
-
       const numGauges = await gaugeController.methods.n_gauges().call();
+
       for (let i = 0; i < +numGauges; i++) {
         const gaugeAddress = await gaugeController.methods.gauges(i).call();
+        const poolInfo = this.contract.getPoolInfoFromGauge(gaugeAddress);
+
         const gaugeWeight = new BigNumber(
           await gaugeController.methods
             .gauge_relative_weight(gaugeAddress)
@@ -302,30 +414,49 @@ export class GaugeComponent implements OnInit {
         const gaugeReward = new BigNumber(
           await gaugeDistributor.methods.currentReward(gaugeAddress).call()
         ).div(this.constants.PRECISION);
+
         const gauge: Gauge = {
-          name: 'Gauge ' + i, // @dev needs to be married with DPool name
+          name: poolInfo.name,
           address: gaugeAddress,
           weight: gaugeWeight,
           reward: gaugeReward,
+          explorerURL: 'https://etherscan.io/address/' + gaugeAddress,
         };
         gauges = [...gauges, gauge];
-        labels = [...labels, gaugeAddress.slice(0, 5)];
-        data = [...data, gaugeWeight.toNumber()];
-        backgroundColor = [
-          ...backgroundColor,
-          'rgba(' + this.COLORS[i % this.COLORS.length] + ', 0.5)',
-        ];
       }
+
       gauges.sort((a, b) => b.weight.toNumber() - a.weight.toNumber());
+
+      // populate global data for chart
+      let data: number[] = [];
+      let labels: string[] = [];
+      let backgroundColor: string[] = [];
+      let hoverBackgroundColor: string[] = [];
+
+      for (let g in gauges) {
+        const gauge = gauges[g];
+        const color = 'rgba(' + this.COLORS[+g % this.COLORS.length] + ', 0.5)';
+        const hover = 'rgba(' + this.COLORS[+g % this.COLORS.length] + ', 1)';
+
+        data = [...data, gauge.weight.toNumber()];
+        labels = [...labels, gauge.name];
+        backgroundColor = [...backgroundColor, color];
+        hoverBackgroundColor = [...hoverBackgroundColor, hover];
+      }
+
+      // assign to global variables
       this.gauges = gauges;
       this.protocolChartLabels = labels;
       this.protocolChartData = [
         {
           data: data,
           backgroundColor: backgroundColor,
+          hoverBackgroundColor: hoverBackgroundColor,
           borderWidth: 0.5,
         },
       ];
+
+      this.loadingGlobal = false;
     }
   }
 
@@ -345,6 +476,13 @@ export class GaugeComponent implements OnInit {
     this.lockDuration = +duration;
     if (isNaN(this.lockDuration)) {
       this.lockDuration = 0;
+    }
+  }
+
+  setVoteWeight(weight: string | number): void {
+    this.voteWeight = new BigNumber(weight);
+    if (this.voteWeight.isNaN()) {
+      this.voteWeight = new BigNumber(0);
     }
   }
 
@@ -448,6 +586,28 @@ export class GaugeComponent implements OnInit {
     );
   }
 
+  vote(_gauge: string, _weight: BigNumber): void {
+    const gauge = _gauge;
+    const weight = this.helpers.processWeb3Number(_weight.times(100));
+    const controller = this.contract.getNamedContract('MPHGaugeController');
+
+    const func = controller.methods.vote_for_gauge_weights(gauge, weight);
+
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
+  }
+
+  resetVote(_gauge: string): void {
+    this.vote(_gauge, new BigNumber(0));
+  }
+
   sortGauges(event: any) {
     const column = event.active;
     if (column === 'name') {
@@ -460,6 +620,29 @@ export class GaugeComponent implements OnInit {
         event.direction === 'asc'
           ? [...this.gauges.sort((a, b) => a[column] - b[column])]
           : [...this.gauges.sort((a, b) => b[column] - a[column])];
+    }
+  }
+
+  sortUserGauges(event: any) {
+    const column = event.active;
+    if (column === 'name') {
+      this.userGauges =
+        event.direction === 'asc'
+          ? [
+              ...this.userGauges.sort((a, b) =>
+                a[column] > b[column] ? 1 : -1
+              ),
+            ]
+          : [
+              ...this.userGauges.sort((a, b) =>
+                b[column] > a[column] ? 1 : -1
+              ),
+            ];
+    } else {
+      this.userGauges =
+        event.direction === 'asc'
+          ? [...this.userGauges.sort((a, b) => a[column] - b[column])]
+          : [...this.userGauges.sort((a, b) => b[column] - a[column])];
     }
   }
 
@@ -479,4 +662,14 @@ interface Gauge {
   address: string;
   weight: BigNumber;
   reward: BigNumber;
+  explorerURL: string;
+}
+
+interface UserGauge {
+  name: string;
+  address: string;
+  userWeight: BigNumber;
+  lastVote: number;
+  canVote: boolean;
+  explorerURL: string;
 }
