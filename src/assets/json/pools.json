@@ -8,7 +8,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/dai.svg",
-      "moneyMarket": "0x692eba0d114cCb1E3866780cE60a1Df608b24d81"
+      "moneyMarket": "0x692eba0d114cCb1E3866780cE60a1Df608b24d81",
+      "gauge": "0x3EF26504dbc8Dd7B7aa3E97Bc9f3813a9FC0B4B0"
     },
     "cUNI": {
       "name": "cUNI",
@@ -18,7 +19,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/uni.svg",
-      "moneyMarket": "0xd075B01fb24e57e3e7bB4Df712bcD8c0a43e1897"
+      "moneyMarket": "0xd075B01fb24e57e3e7bB4Df712bcD8c0a43e1897",
+      "gauge": "0x3e14f6EEDCC5Bc1d0Fc7B20B45eAE7B1F74a6AeC"
     },
     "cLINK": {
       "name": "cLINK",
@@ -28,7 +30,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/link.svg",
-      "moneyMarket": "0xA426d1C4250139B9B1C7257715e88dF59D7821df"
+      "moneyMarket": "0xA426d1C4250139B9B1C7257715e88dF59D7821df",
+      "gauge": "0xF22471AC2156B489CC4a59092c56713F813ff53e"
     },
     "cBAT": {
       "name": "cBAT",
@@ -38,7 +41,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/bat.svg",
-      "moneyMarket": "0x7fAfdd171907d2eB9A03bdDAFCF3B7deaFE78D13"
+      "moneyMarket": "0x7fAfdd171907d2eB9A03bdDAFCF3B7deaFE78D13",
+      "gauge": "0xb4Ab0dE6581FBD3A02cF8f9f265138691c3A7d5D"
     },
     "cCOMP": {
       "name": "cCOMP",
@@ -48,7 +52,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/comp.svg",
-      "moneyMarket": "0x571e4cA449621AE16348C430d14c2Df460Df055C"
+      "moneyMarket": "0x571e4cA449621AE16348C430d14c2Df460Df055C",
+      "gauge": "0xEB81b86248d3C2b618CcB071ADB122109DA96Da2"
     },
     "cUSDT": {
       "name": "cUSDT",
@@ -58,7 +63,8 @@
       "stablecoinDecimals": 6,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/usdt.png",
-      "moneyMarket": "0x8579cA27cCf55804A8982432Df2182E53148fee8"
+      "moneyMarket": "0x8579cA27cCf55804A8982432Df2182E53148fee8",
+      "gauge": "0xcdfc491804A420b677f8e788B5157856910E2F6f"
     },
     "cWBTC": {
       "name": "cWBTC",
@@ -68,7 +74,8 @@
       "stablecoinDecimals": 8,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/wbtc.svg",
-      "moneyMarket": "0x40d77Ee34e81eC77F651e79594efc7f33FC5695C"
+      "moneyMarket": "0x40d77Ee34e81eC77F651e79594efc7f33FC5695C",
+      "gauge": "0x0A53544b2194Dd8Ebc62c779043fc0624705BB56"
     },
     "cZRX": {
       "name": "cZRX",
@@ -78,7 +85,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/zrx.svg",
-      "moneyMarket": "0x983fD4988f6c6b8044EFC6137eE4aB611846c8b8"
+      "moneyMarket": "0x983fD4988f6c6b8044EFC6137eE4aB611846c8b8",
+      "gauge": "0xf8caEd1943B15B877D7105B9906a618c154f69E8"
     },
     "cTUSD": {
       "name": "cTUSD",
@@ -88,7 +96,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/tusd.svg",
-      "moneyMarket": "0xbcd502900E13cB3992Daba98431B083F3Ad56C85"
+      "moneyMarket": "0xbcd502900E13cB3992Daba98431B083F3Ad56C85",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "cUSDC": {
       "name": "cUSDC",
@@ -98,7 +107,8 @@
       "stablecoinDecimals": 6,
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/usdc.svg",
-      "moneyMarket": "0xA62F05e3B72c0Aec2A01Bc9343F92fd4B4a22DbB"
+      "moneyMarket": "0xA62F05e3B72c0Aec2A01Bc9343F92fd4B4a22DbB",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aDAI": {
       "name": "aDAI",
@@ -108,7 +118,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aDAI.svg",
-      "moneyMarket": "0x011735Dc889446b9582b6E7a9B792E2a0D11f56d"
+      "moneyMarket": "0x011735Dc889446b9582b6E7a9B792E2a0D11f56d",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aUSDC": {
       "name": "aUSDC",
@@ -118,7 +129,8 @@
       "stablecoinDecimals": 6,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aUSDC.svg",
-      "moneyMarket": "0x9Aa09d36be9BCEeE36B3Dc81C0A5137eCF7Ea13B"
+      "moneyMarket": "0x9Aa09d36be9BCEeE36B3Dc81C0A5137eCF7Ea13B",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aUSDT": {
       "name": "aUSDT",
@@ -128,7 +140,8 @@
       "stablecoinDecimals": 6,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aUSDT.svg",
-      "moneyMarket": "0x1E98FC27B8e3109D8A426B7A1340C74A4d403fA8"
+      "moneyMarket": "0x1E98FC27B8e3109D8A426B7A1340C74A4d403fA8",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aBAL": {
       "name": "aBAL",
@@ -138,7 +151,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/bal.svg",
-      "moneyMarket": "0x79E554C00A41D4718da04D3AdBebe21d9E677CF3"
+      "moneyMarket": "0x79E554C00A41D4718da04D3AdBebe21d9E677CF3",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aCRV": {
       "name": "aCRV",
@@ -148,7 +162,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/crv.svg",
-      "moneyMarket": "0xcFc17cA3F0c946021afF212eE5219dB56469eB2c"
+      "moneyMarket": "0xcFc17cA3F0c946021afF212eE5219dB56469eB2c",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aGUSD": {
       "name": "aGUSD",
@@ -158,7 +173,8 @@
       "stablecoinDecimals": 2,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/gusd.svg",
-      "moneyMarket": "0xA137a6DE1097F7Ab3e3792776246F5E1a93cb02A"
+      "moneyMarket": "0xA137a6DE1097F7Ab3e3792776246F5E1a93cb02A",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aLINK": {
       "name": "aLINK",
@@ -168,7 +184,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/link.svg",
-      "moneyMarket": "0x4424B43D945906C66f6B5891337C5c2cF611c6be"
+      "moneyMarket": "0x4424B43D945906C66f6B5891337C5c2cF611c6be",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aRAI": {
       "name": "aRAI",
@@ -178,7 +195,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/rai.svg",
-      "moneyMarket": "0x9F4009B5A95486e0759A2449558Fe0DbcBd23c87"
+      "moneyMarket": "0x9F4009B5A95486e0759A2449558Fe0DbcBd23c87",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aREN": {
       "name": "aREN",
@@ -188,7 +206,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/ren.svg",
-      "moneyMarket": "0xbEf20b63C87031279E850281d21762Ca0b9D66b8"
+      "moneyMarket": "0xbEf20b63C87031279E850281d21762Ca0b9D66b8",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aSNX": {
       "name": "aSNX",
@@ -198,7 +217,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/snx.svg",
-      "moneyMarket": "0xEeDbE79DE6CD498d051A632F22DD89D472876e8F"
+      "moneyMarket": "0xEeDbE79DE6CD498d051A632F22DD89D472876e8F",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aTUSD": {
       "name": "aTUSD",
@@ -208,7 +228,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/tusd.svg",
-      "moneyMarket": "0x5CC2cE1A68Ed9b25BAB67C0ca1D0e7890953A454"
+      "moneyMarket": "0x5CC2cE1A68Ed9b25BAB67C0ca1D0e7890953A454",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aUSDP": {
       "name": "aUSDP",
@@ -218,7 +239,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/usdp.svg",
-      "moneyMarket": "0x5ae6269e5F7ab0cD18fAf4A33571AF4750c8e911"
+      "moneyMarket": "0x5ae6269e5F7ab0cD18fAf4A33571AF4750c8e911",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aWBTC": {
       "name": "aWBTC",
@@ -228,7 +250,8 @@
       "stablecoinDecimals": 8,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/wbtc.svg",
-      "moneyMarket": "0xf5a08729E7984902424Fb4957885E624fC7f444C"
+      "moneyMarket": "0xf5a08729E7984902424Fb4957885E624fC7f444C",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aWETH": {
       "name": "aWETH",
@@ -238,7 +261,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/weth.svg",
-      "moneyMarket": "0x2D9028e833645858E292d1d7DEAfDBdCd8555200"
+      "moneyMarket": "0x2D9028e833645858E292d1d7DEAfDBdCd8555200",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aYFI": {
       "name": "aYFI",
@@ -248,7 +272,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/yfi.svg",
-      "moneyMarket": "0xa62E73eaA3e96D353714f6e6faCb883E2Dbd43c1"
+      "moneyMarket": "0xa62E73eaA3e96D353714f6e6faCb883E2Dbd43c1",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "aSUSD": {
       "name": "aSUSD",
@@ -258,7 +283,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/susd.svg",
-      "moneyMarket": "0x2ED6D534aeF5285196c004F11F2fBc8246752783"
+      "moneyMarket": "0x2ED6D534aeF5285196c004F11F2fBc8246752783",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "harvestCRVRENWBTC": {
       "name": "harvestCRVRENWBTC",
@@ -269,6 +295,7 @@
       "protocol": "Harvest",
       "iconPath": "assets/img/token-icons/btc.svg",
       "moneyMarket": "0x4942f85bb088F50094f231f43Cd11803846ffC29",
+      "gauge": "0x0000000000000000000000000000000000000000",
       "stakingPool": "0xA3Cf8D1CEe996253FAD1F8e3d68BDCba7B3A3Db5"
     },
     "bDAI": {
@@ -279,7 +306,8 @@
       "stablecoinDecimals": 18,
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/dai.svg",
-      "moneyMarket": "0x85C2AcCaEEcA93e09bc9AEbb60d59A920aae92Fd"
+      "moneyMarket": "0x85C2AcCaEEcA93e09bc9AEbb60d59A920aae92Fd",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "bUSDC": {
       "name": "bUSDC",
@@ -289,7 +317,8 @@
       "stablecoinDecimals": 6,
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/usdc.svg",
-      "moneyMarket": "0xcAcEc180DACCB02B765Fe42De4bCA15d7D5c5AeC"
+      "moneyMarket": "0xcAcEc180DACCB02B765Fe42De4bCA15d7D5c5AeC",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "bUSDT": {
       "name": "bUSDT",
@@ -299,7 +328,8 @@
       "stablecoinDecimals": 6,
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/usdt.png",
-      "moneyMarket": "0x75EF12f66d55C4698f1a2cAD94b4b7a066585318"
+      "moneyMarket": "0x75EF12f66d55C4698f1a2cAD94b4b7a066585318",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "crFTT": {
       "name": "crFTT",
@@ -309,7 +339,8 @@
       "stablecoinDecimals": 18,
       "protocol": "Cream",
       "iconPath": "assets/img/token-icons/ftt.svg",
-      "moneyMarket": "0xe84B8B41b90759238E67511DD6B582B4d1387E8D"
+      "moneyMarket": "0xe84B8B41b90759238E67511DD6B582B4d1387E8D",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "crUSDC": {
       "name": "crUSDC",
@@ -319,7 +350,8 @@
       "stablecoinDecimals": 6,
       "protocol": "Cream",
       "iconPath": "assets/img/token-icons/usdc.svg",
-      "moneyMarket": "0x89481DA769dE069d7DD6A54F1aC642E1F921c7ec"
+      "moneyMarket": "0x89481DA769dE069d7DD6A54F1aC642E1F921c7ec",
+      "gauge": "0x0000000000000000000000000000000000000000"
     },
     "crUSDT": {
       "name": "crUSDT",
@@ -329,7 +361,8 @@
       "stablecoinDecimals": 6,
       "protocol": "Cream",
       "iconPath": "assets/img/token-icons/usdt.png",
-      "moneyMarket": "0x2A928A3C54622F56E5147f0c9Bf5133e04503c4F"
+      "moneyMarket": "0x2A928A3C54622F56E5147f0c9Bf5133e04503c4F",
+      "gauge": "0x0000000000000000000000000000000000000000"
     }
   },
   "4": {
