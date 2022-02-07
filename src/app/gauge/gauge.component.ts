@@ -7,6 +7,7 @@
 // 5- Disable actions if not connected to Mainnet
 // 6- Ensure action flow works as expected (reloads data, etc)
 // 7- Check if user is able to vote for gauge (10 day waiting period)
+// 8- User must withdraw locked MPH before creating a new lock
 
 import { Component, OnInit, NgZone } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -47,6 +48,7 @@ export class GaugeComponent implements OnInit {
   lockEnd: number; // timestamp when user's lock ends
   lockAmount: BigNumber; // amount of MPH to lock
   lockDuration: number; // days to lock
+  maxLockDuration: number; // maximum seconds that can be locked
 
   selectedGauge: Gauge;
   voteWeight: BigNumber;
@@ -147,6 +149,7 @@ export class GaugeComponent implements OnInit {
       this.lockEnd = 0;
       this.lockAmount = new BigNumber(0);
       this.lockDuration = 7;
+      this.maxLockDuration = 0;
 
       this.userChartLabels = [];
       this.userChartData = [];
@@ -178,8 +181,8 @@ export class GaugeComponent implements OnInit {
   async loadData(loadUser: boolean, loadGlobal: boolean) {
     const now = Math.floor(Date.now() / 1e3);
     const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
-    // const address = this.wallet.actualAddress.toLowerCase();
-    const address = '0x10c16c7B8b1DDCFE65990ec822DE4379dd8a86dE';
+    const address = this.wallet.actualAddress.toLowerCase();
+    // const address = '0x10c16c7B8b1DDCFE65990ec822DE4379dd8a86dE';
 
     const mph = this.contract.getNamedContract('MPHToken', web3);
     const vemph = this.contract.getNamedContract('veMPH', web3);
@@ -226,7 +229,7 @@ export class GaugeComponent implements OnInit {
 
         // load user's current lock
         // @dev needs to be checked against expired lock
-        vemph.methods
+        await vemph.methods
           .locked(address)
           .call()
           .then((result) => {
@@ -234,9 +237,15 @@ export class GaugeComponent implements OnInit {
               this.constants.PRECISION
             );
             this.lockEnd = parseInt(result.end);
-            this.lockEnd > now
-              ? (this.mphLocked = amount)
-              : (this.mphUnlocked = amount);
+
+            if (this.lockEnd > now) {
+              this.mphLocked = amount;
+              this.maxLockDuration =
+                this.constants.YEAR_IN_SEC * 4 - (this.lockEnd - now);
+            } else {
+              this.mphUnlocked = amount;
+              this.maxLockDuration = this.constants.YEAR_IN_SEC * 4;
+            }
           });
       }
 
@@ -643,6 +652,18 @@ export class GaugeComponent implements OnInit {
         event.direction === 'asc'
           ? [...this.userGauges.sort((a, b) => a[column] - b[column])]
           : [...this.userGauges.sort((a, b) => b[column] - a[column])];
+    }
+  }
+
+  // @dev may need a separate check for expired locks
+  validLockDuration(): boolean {
+    if (this.veBalance.eq(0)) {
+      return this.lockDuration >= 7 && this.lockDuration <= 1460;
+    } else {
+      return (
+        this.lockDuration > 0 &&
+        this.maxLockDuration >= this.lockDuration * this.constants.DAY_IN_SEC
+      );
     }
   }
 
