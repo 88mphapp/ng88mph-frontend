@@ -619,6 +619,22 @@ export class GaugeComponent implements OnInit {
     this.vote(_gauge, new BigNumber(0));
   }
 
+  withdraw(): void {
+    const vemph = this.contract.getNamedContract('veMPH');
+    const func = vemph.methods.withdraw();
+
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
+    console.log('withdrawing now...');
+  }
+
   sortGauges(event: any) {
     const column = event.active;
     if (column === 'name') {
