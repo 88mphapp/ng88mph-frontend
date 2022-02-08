@@ -505,7 +505,7 @@
                             aria-label=""
                             aria-describedby=""
                             class="form-control form-control-lg"
-                            [value]="voteWeight.toFixed()"
+                            [value]="voteWeight.toFixed(2)"
                             (input)="setVoteWeight($event.target.value)"
                           />
                         </div>
@@ -538,86 +538,142 @@
                       >
                         100%
                       </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-dark mr-2"
+                        (click)="setVoteWeight(votePowerAvailable.toNumber())"
+                      >
+                        Max
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-dark mr-2"
+                        (click)="setVoteWeight(0)"
+                      >
+                        Reset
+                      </button>
+                      <small class="text-muted mb-0">
+                        {{ votePowerAvailable.toFormat(2) }}% available |
+                        {{ votePowerUsed.toFormat(2) }}% used
+                      </small>
                       <div class="row mt-2 mb-1">
                         <div class="col">
-                          <small class="form-text text-white mb-0"
-                            >{{
-                              veBalance.times(voteWeight.div(1e2)).toFormat(2)
-                            }}
-                            veMPH — ({{ voteWeight.toFormat(2) }}%) of your
-                            voting power will be allocated to this gauge
+                          <small class="form-text text-muted mb-0">
+                            {{ voteWeight.toFormat(2) }}% of your voting power
+                            will be allocated to this gauge
                           </small>
                         </div>
                       </div>
                       <div class="row mt-2">
                         <div class="col">
-                          <small class="form-text text-muted mb-0"
-                            >Vote weight % used:
-                            {{ votePowerUsed.toFormat(2) }}% |
-                            {{
-                              veBalance
-                                .minus(veBalance.times(votePowerUsed.div(1e2)))
-                                .toFormat(4)
-                            }}
-                            veMPH available
-                          </small>
+                          <small class="form-text text-muted mb-0"> </small>
                         </div>
                       </div>
+                      <button
+                        type="button"
+                        class="btn btn-block btn-lg btn-bg-gradient mt-3"
+                        *ngIf="!selectedGauge"
+                        [disabled]="true"
+                      >
+                        <ng-container i18n="@@">Select a Gauge</ng-container>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-block btn-lg btn-bg-gradient mt-3"
+                        *ngIf="
+                          selectedGauge &&
+                          (voteWeight.lt(0) || voteWeight.gt(100))
+                        "
+                        [disabled]="true"
+                      >
+                        <ng-container i18n="@@"
+                          >Invalid Vote Weight</ng-container
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-block btn-lg btn-bg-gradient mt-3"
+                        *ngIf="
+                          selectedGauge && voteWeight.gt(votePowerAvailable)
+                        "
+                        [disabled]="true"
+                      >
+                        <ng-container i18n="@@">
+                          Not Enough Vote Power Available
+                        </ng-container>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-block btn-lg btn-bg-gradient mt-3"
+                        *ngIf="
+                          selectedGauge &&
+                          voteWeight.gt(0) &&
+                          voteWeight.lte(100) &&
+                          voteWeight.lte(votePowerAvailable)
+                        "
+                        (click)="vote(selectedGauge.address, voteWeight)"
+                        [disabled]="!canVote(selectedGauge.address)"
+                      >
+                        <ng-container
+                          *ngIf="
+                            canVote(selectedGauge.address) && veBalance.gt(0)
+                          "
+                          i18n="@@"
+                          >Vote</ng-container
+                        >
+                        <ng-container
+                          *ngIf="
+                            !canVote(selectedGauge.address) && veBalance.eq(0)
+                          "
+                          i18n="@@"
+                        >
+                          Lock MPH To Be Eligible To Vote
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            !canVote(selectedGauge.address) && veBalance.gt(0)
+                          "
+                          i18n="@@"
+                          >You Can Only Vote For The
+                          {{ selectedGauge.name }} Gauge Once Every 10
+                          Days</ng-container
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-block btn-lg btn-bg-gradient mt-3"
+                        *ngIf="selectedGauge && voteWeight.eq(0)"
+                        (click)="resetVote(selectedGauge.address)"
+                        [disabled]="!canVote(selectedGauge.address)"
+                      >
+                        <ng-container
+                          *ngIf="
+                            canVote(selectedGauge.address) && veBalance.gt(0)
+                          "
+                          i18n="@@"
+                          >Reset Vote</ng-container
+                        >
+                        <ng-container
+                          *ngIf="
+                            !canVote(selectedGauge.address) && veBalance.eq(0)
+                          "
+                          i18n="@@"
+                        >
+                          Lock MPH To Be Eligible To Vote
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            !canVote(selectedGauge.address) && veBalance.gt(0)
+                          "
+                          i18n="@@"
+                          >You Can Only Vote For The
+                          {{ selectedGauge.name }} Gauge Once Every 10
+                          Days</ng-container
+                        >
+                      </button>
                     </div>
                   </div>
                   <!-- / .row -->
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12 col-lg-6 mb-3 mb-lg-0">
-                  <button
-                    type="button"
-                    class="btn btn-block btn-lg btn-bg-gradient"
-                    *ngIf="!selectedGauge"
-                    [disabled]="true"
-                  >
-                    <ng-container i18n="@@">Select a Gauge</ng-container>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-block btn-lg btn-bg-gradient"
-                    *ngIf="
-                      selectedGauge && (voteWeight.lt(0) || voteWeight.gt(100))
-                    "
-                    [disabled]="true"
-                  >
-                    <ng-container i18n="@@">Invalid Vote Weight</ng-container>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-block btn-lg btn-bg-gradient"
-                    *ngIf="
-                      selectedGauge && voteWeight.gte(0) && voteWeight.lte(100)
-                    "
-                    (click)="vote(selectedGauge.address, voteWeight)"
-                  >
-                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                    <ng-container i18n="@@">Vote</ng-container>
-                  </button>
-                </div>
-                <div class="col-12 col-lg-6">
-                  <button
-                    type="button"
-                    class="btn btn-block btn-lg border-gradient"
-                    *ngIf="!selectedGauge"
-                    [disabled]="true"
-                  >
-                    <ng-container i18n="@@">Select a Gauge</ng-container>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-block btn-lg border-gradient"
-                    *ngIf="selectedGauge"
-                    (click)="resetVote(selectedGauge.address)"
-                  >
-                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>
-                    <ng-container i18n="@@">Reset vote</ng-container>
-                  </button>
                 </div>
               </div>
             </div>

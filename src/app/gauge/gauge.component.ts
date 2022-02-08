@@ -2,11 +2,9 @@
 // 1- Change veMPH address to correct address after deployment (contracts.json and constants.service.ts)
 // 2- Change MPHGaugeController address to correct address after deployment (contracts.json)
 // 2- Change MPHGaugeRewardDistributor address to correct address after deployment (contracts.json)
-// 3- Add checks for extending lock duration (e.g. can't add 4 years to an existing 3 year lock)
 // 4- Prompt network switch if not connected to Mainnet
 // 5- Disable actions if not connected to Mainnet
 // 6- Ensure action flow works as expected (reloads data, etc)
-// 7- Check if user is able to vote for gauge (10 day waiting period)
 // 8- User must withdraw locked MPH before creating a new lock
 
 import { Component, OnInit, NgZone } from '@angular/core';
@@ -52,7 +50,8 @@ export class GaugeComponent implements OnInit {
 
   selectedGauge: Gauge;
   voteWeight: BigNumber;
-  votePowerUsed: BigNumber;
+  votePowerUsed: BigNumber; // percent of vote power already user
+  votePowerAvailable: BigNumber; // percent of vote power available to use
 
   loadingUser: boolean; // false when done loading
 
@@ -156,6 +155,7 @@ export class GaugeComponent implements OnInit {
       this.selectedGauge = null;
       this.voteWeight = new BigNumber(0);
       this.votePowerUsed = new BigNumber(0);
+      this.votePowerAvailable = new BigNumber(0);
       this.userGauges = [];
       this.loadingUser = true;
     }
@@ -276,7 +276,7 @@ export class GaugeComponent implements OnInit {
         const canVote = now > lastVote + this.constants.DAY_IN_SEC * 10;
 
         const userGauge: UserGauge = {
-          name: poolInfo.name,
+          name: poolInfo ? poolInfo.name : 'Unknown',
           address: gaugeAddress,
           userWeight: voteWeight,
           lastVote: lastVote,
@@ -316,6 +316,8 @@ export class GaugeComponent implements OnInit {
         });
       if (this.votePowerUsed.lt(100)) {
         const unallocated = new BigNumber(100).minus(this.votePowerUsed);
+        this.votePowerAvailable = unallocated;
+        this.voteWeight = unallocated;
 
         data = [...data, unallocated.toNumber()];
         labels = [...labels, 'Unallocated'];
@@ -425,7 +427,7 @@ export class GaugeComponent implements OnInit {
         ).div(this.constants.PRECISION);
 
         const gauge: Gauge = {
-          name: poolInfo.name,
+          name: poolInfo ? poolInfo.name : 'Unknown',
           address: gaugeAddress,
           weight: gaugeWeight,
           reward: gaugeReward,
@@ -653,6 +655,11 @@ export class GaugeComponent implements OnInit {
           ? [...this.userGauges.sort((a, b) => a[column] - b[column])]
           : [...this.userGauges.sort((a, b) => b[column] - a[column])];
     }
+  }
+
+  canVote(_gauge: string): boolean {
+    const gauge = this.userGauges.find((gauge) => gauge.address === _gauge);
+    return gauge.canVote && this.veBalance.gt(0);
   }
 
   // @dev may need a separate check for expired locks
