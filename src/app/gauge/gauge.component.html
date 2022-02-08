@@ -75,6 +75,7 @@
               type="button"
               class="btn btn-sm btn-bg-gradient"
               *ngIf="mphUnlocked.gt(0)"
+              (click)="withdraw()"
             >
               <i class="fe fe-arrow-down mr-2 align-bottom"></i>
               <ng-container i18n="@@">Claim</ng-container>
@@ -132,6 +133,7 @@
             type="button"
             class="btn btn-sm btn-bg-gradient"
             *ngIf="mphUnlocked.gt(0)"
+            (click)="withdraw()"
           >
             <i class="fe fe-arrow-down mr-2 align-bottom"></i>
             <ng-container i18n="@@">Claim</ng-container>
