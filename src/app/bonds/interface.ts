@@ -59,7 +59,6 @@ export interface FundableDeposit {
   yieldTokensAvailableUSD: BigNumber;
   yieldTokensAvailableToken: BigNumber;
   estimatedAPR: BigNumber;
-  mphRewardsAPR: BigNumber;
 }
 
 export interface DPool {
@@ -72,7 +71,6 @@ export interface DPool {
   iconPath: string;
   oneYearInterestRate: BigNumber;
   oracleInterestRate: BigNumber;
-  poolFunderRewardMultiplier: BigNumber;
   poolFundableDeposits: FundableDeposit[];
   totalYieldTokensAvailable: BigNumber;
   totalYieldTokensAvailableUSD: BigNumber;
@@ -80,7 +78,6 @@ export interface DPool {
   totalEarnYieldOn: BigNumber;
   totalEarnYieldOnUSD: BigNumber;
   maxEstimatedAPR: BigNumber;
-  maxEstimatedMPHRewardsAPR: BigNumber;
   surplus: BigNumber;
   isExpanded: boolean;
   emaRate: BigNumber;
