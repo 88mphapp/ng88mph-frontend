@@ -580,9 +580,6 @@ export class BondsComponent implements OnInit {
               100
             ),
             oracleInterestRate: new BigNumber(pool.oracleInterestRate),
-            poolFunderRewardMultiplier: new BigNumber(
-              pool.poolFunderRewardMultiplier
-            ),
             poolFundableDeposits: [],
             totalYieldTokensAvailable: new BigNumber(0),
             totalYieldTokensAvailableUSD: new BigNumber(0),
@@ -590,7 +587,6 @@ export class BondsComponent implements OnInit {
             totalEarnYieldOn: new BigNumber(0),
             totalEarnYieldOnUSD: new BigNumber(0),
             maxEstimatedAPR: new BigNumber(0),
-            maxEstimatedMPHRewardsAPR: new BigNumber(0),
             surplus: new BigNumber(pool.surplus),
             isExpanded: false,
             emaRate: this.helpers
@@ -600,7 +596,6 @@ export class BondsComponent implements OnInit {
               )
               .times(100),
             marketRate: new BigNumber(0),
-            // marketRate: await this.getCurrentMarketRate(poolInfo.stablecoin),
             floatingRatePrediction: this.helpers
               .parseInterestRate(
                 new BigNumber(pool.oracleInterestRate),
@@ -687,10 +682,8 @@ export class BondsComponent implements OnInit {
                   yieldTokensAvailableUSD: bound.times(stablecoinPrice),
                   yieldTokensAvailableToken: bound,
                   estimatedAPR: new BigNumber(0),
-                  mphRewardsAPR: new BigNumber(0),
                 };
                 this.getEstimatedROI(fundableDeposit);
-                this.getEstimatedRewardsAPR(fundableDeposit);
                 poolFundableDeposits.push(fundableDeposit);
 
                 dpoolObj.totalYieldTokensAvailable =
@@ -713,14 +706,6 @@ export class BondsComponent implements OnInit {
                   .plus(fundableDeposit.yieldTokensAvailableUSD);
                 if (fundableDeposit.estimatedAPR.gt(dpoolObj.maxEstimatedAPR)) {
                   dpoolObj.maxEstimatedAPR = fundableDeposit.estimatedAPR;
-                }
-                if (
-                  fundableDeposit.mphRewardsAPR.gt(
-                    dpoolObj.maxEstimatedMPHRewardsAPR
-                  )
-                ) {
-                  dpoolObj.maxEstimatedMPHRewardsAPR =
-                    fundableDeposit.mphRewardsAPR;
                 }
               } else if (bound.gt(this.constants.DUST_THRESHOLD)) {
                 const supply = deposit.funding.totalSupply;
@@ -741,10 +726,8 @@ export class BondsComponent implements OnInit {
                   yieldTokensAvailableUSD: bound.times(stablecoinPrice),
                   yieldTokensAvailableToken: bound,
                   estimatedAPR: new BigNumber(0),
-                  mphRewardsAPR: new BigNumber(0),
                 };
                 this.getEstimatedROI(fundableDeposit);
-                this.getEstimatedRewardsAPR(fundableDeposit);
                 poolFundableDeposits.push(fundableDeposit);
 
                 dpoolObj.totalYieldTokensAvailable =
@@ -767,14 +750,6 @@ export class BondsComponent implements OnInit {
                   .plus(fundableDeposit.yieldTokensAvailableUSD);
                 if (fundableDeposit.estimatedAPR.gt(dpoolObj.maxEstimatedAPR)) {
                   dpoolObj.maxEstimatedAPR = fundableDeposit.estimatedAPR;
-                }
-                if (
-                  fundableDeposit.mphRewardsAPR.gt(
-                    dpoolObj.maxEstimatedMPHRewardsAPR
-                  )
-                ) {
-                  dpoolObj.maxEstimatedMPHRewardsAPR =
-                    fundableDeposit.mphRewardsAPR;
                 }
               }
             }
@@ -867,43 +842,6 @@ export class BondsComponent implements OnInit {
     const estimatedProfit = estimatedInterest.minus(debtToFund);
     const estimatedAPR = estimatedProfit.div(debtToFund).times(100);
     deposit.estimatedAPR = estimatedAPR;
-  }
-
-  getEstimatedRewardsAPR(deposit: FundableDeposit) {
-    const now = Date.now() / 1e3;
-    const debtToFund = deposit.yieldTokensAvailableUSD;
-    const mphFunderRewardMultiplier = new BigNumber(
-      deposit.pool.poolFunderRewardMultiplier
-    );
-
-    // @dev this returns a slightly smaller amount
-    // @dev likely because the returned rate compounds for less time
-    // const estimatedInterestToken = deposit.unfundedDepositAmount
-    //   .plus(deposit.yieldTokensAvailableToken)
-    //   .times(Math.pow(10, deposit.pool.stablecoinDecimals))
-    //   .times(
-    //     this.helpers.parseInterestRate(
-    //       deposit.pool.oracleInterestRate,
-    //       deposit.maturationTimestamp - now
-    //     )
-    //   );
-
-    // @dev this returns a slightly larger amount
-    // @dev likely because the returned rate compounds for more time
-    const estimatedInterestToken = deposit.unfundedDepositAmount
-      .plus(deposit.yieldTokensAvailableToken)
-      .times(Math.pow(10, deposit.pool.stablecoinDecimals))
-      .times(deposit.pool.floatingRatePrediction)
-      .div(100)
-      .times(deposit.maturationTimestamp - now)
-      .div(this.constants.YEAR_IN_SEC);
-
-    const mphReward = estimatedInterestToken
-      .times(mphFunderRewardMultiplier)
-      .div(Math.pow(10, deposit.pool.stablecoinDecimals));
-    const mphRewardUSD = mphReward.times(this.mphPriceUSD);
-    const mphRewardAPR = mphRewardUSD.div(debtToFund).times(100);
-    deposit.mphRewardsAPR = mphRewardAPR;
   }
 
   async getCurrentMarketRate(pool: DPool, poolInfo: PoolInfo) {
@@ -1084,7 +1022,6 @@ export class BondsComponent implements OnInit {
     for (let deposit in pool.poolFundableDeposits) {
       const fundableDeposit = pool.poolFundableDeposits[deposit];
       this.getEstimatedROI(fundableDeposit);
-      this.getEstimatedRewardsAPR(fundableDeposit);
     }
   }
 
