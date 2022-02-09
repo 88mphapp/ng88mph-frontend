@@ -4,6 +4,7 @@ import { request, gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from '../constants.service';
 import { ContractService, PoolInfo } from '../contract.service';
+import { DataService } from '../data.service';
 import { HelpersService } from '../helpers.service';
 import { WalletService } from '../wallet.service';
 import { ModalBuyYieldTokenComponent } from './modal-buy-yield-token/modal-buy-yield-token.component';
@@ -43,6 +44,7 @@ export class BondsComponent implements OnInit {
     public contract: ContractService,
     public helpers: HelpersService,
     public constants: ConstantsService,
+    public datas: DataService,
     private zone: NgZone
   ) {
     this.resetData(true, true);
@@ -167,7 +169,6 @@ export class BondsComponent implements OnInit {
 
     const funder = data.funder;
     const dpools = data.dpools;
-    let stablecoinPriceCache = {};
     const now = Math.floor(Date.now() / 1e3);
     const web3 = this.wallet.httpsWeb3(networkID);
 
@@ -201,14 +202,10 @@ export class BondsComponent implements OnInit {
           // get stablecoin price in USD
           const stablecoin = poolInfo.stablecoin.toLowerCase();
           const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
-          let stablecoinPrice = stablecoinPriceCache[stablecoin];
-          if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(
-              stablecoin,
-              this.wallet.networkID
-            );
-            stablecoinPriceCache[stablecoin] = stablecoinPrice;
-          }
+          const stablecoinPrice = await this.datas.getAssetPriceUSD(
+            poolInfo.stablecoin,
+            networkID
+          );
 
           let yieldToken;
           let yieldTokenAddress;
@@ -558,14 +555,10 @@ export class BondsComponent implements OnInit {
 
           // fetch the price of the pool asset in USD
           const stablecoin = poolInfo.stablecoin.toLowerCase();
-          let stablecoinPrice = stablecoinPriceCache[stablecoin];
-          if (!stablecoinPrice) {
-            stablecoinPrice = await this.helpers.getTokenPriceUSD(
-              stablecoin,
-              this.wallet.networkID
-            );
-            stablecoinPriceCache[stablecoin] = stablecoinPrice;
-          }
+          const stablecoinPrice = await this.datas.getAssetPriceUSD(
+            poolInfo.stablecoin,
+            networkID
+          );
 
           // add pool objects
           const dpoolObj: DPool = {
