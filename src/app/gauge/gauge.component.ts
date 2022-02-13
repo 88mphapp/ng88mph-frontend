@@ -18,6 +18,12 @@ import { WalletService } from '../wallet.service';
 import { HelpersService } from '../helpers.service';
 import { Timer } from '../timer';
 import { Chart } from 'chart.js';
+import { request, gql } from 'graphql-request';
+import {
+  Multicall,
+  ContractCallResults,
+  ContractCallContext,
+} from 'ethereum-multicall';
 
 @Component({
   selector: 'app-gauge',
@@ -150,8 +156,14 @@ export class GaugeComponent implements OnInit {
       this.lockDuration = 7;
       this.maxLockDuration = 0;
 
-      this.userChartLabels = [];
-      this.userChartData = [];
+      this.userChartLabels = ['Unallocated'];
+      this.userChartData = [
+        {
+          data: [100],
+          backgroundColor: 'rgba(255, 255, 255, 0.5)',
+          hoverBackgroundColor: 'rgba(255, 255, 255, 1)',
+        },
+      ];
       this.selectedGauge = null;
       this.voteWeight = new BigNumber(0);
       this.votePowerUsed = new BigNumber(0);
@@ -182,7 +194,9 @@ export class GaugeComponent implements OnInit {
     const now = Math.floor(Date.now() / 1e3);
     const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
     const address = this.wallet.actualAddress.toLowerCase();
-    // const address = '0x10c16c7B8b1DDCFE65990ec822DE4379dd8a86dE';
+    // const address = '0x10c16c7b8b1ddcfe65990ec822de4379dd8a86de';
+
+    const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
     const mph = this.contract.getNamedContract('MPHToken', web3);
     const vemph = this.contract.getNamedContract('veMPH', web3);
@@ -196,278 +210,342 @@ export class GaugeComponent implements OnInit {
     );
 
     if (loadUser && address) {
-      if (mph.options.address) {
-        mph.methods
-          .balanceOf(address)
-          .call()
-          .then((balance) => {
-            this.mphBalance = new BigNumber(balance).div(
-              this.constants.PRECISION
-            );
-            this.setLockAmount(this.mphBalance);
-          });
-
-        mph.methods
-          .allowance(address, vemph.options.address)
-          .call()
-          .then((result) => {
-            this.mphAllowance = new BigNumber(result).div(
-              this.constants.PRECISION
-            );
-          });
-      }
-
-      if (vemph.options.address) {
-        vemph.methods
-          .balanceOf(address)
-          .call()
-          .then((balance) => {
-            this.veBalance = new BigNumber(balance).div(
-              this.constants.PRECISION
-            );
-          });
-
-        // load user's current lock
-        // @dev needs to be checked against expired lock
-        await vemph.methods
-          .locked(address)
-          .call()
-          .then((result) => {
-            const amount = new BigNumber(result.amount).div(
-              this.constants.PRECISION
-            );
-            this.lockEnd = parseInt(result.end);
-
-            if (this.lockEnd > now) {
-              this.mphLocked = amount;
-              this.maxLockDuration =
-                this.constants.YEAR_IN_SEC * 4 - (this.lockEnd - now);
-            } else {
-              this.mphUnlocked = amount;
-              this.maxLockDuration = this.constants.YEAR_IN_SEC * 4;
-            }
-          });
-      }
-
-      // load user's gauges (includes those without a vote weight)
-      let userGauges: UserGauge[] = [];
-      const numGauges = await gaugeController.methods.n_gauges().call();
-
-      for (let i = 0; i < +numGauges; i++) {
-        const gaugeAddress = await gaugeController.methods.gauges(i).call();
-        const poolInfo = this.contract.getPoolInfoFromGauge(gaugeAddress);
-
-        let voteWeight: BigNumber;
-        await gaugeController.methods
-          .vote_user_slopes(address, gaugeAddress)
-          .call()
-          .then((result) => {
-            voteWeight = new BigNumber(result.power).div(100);
-          });
-
-        let lastVote: number;
-        await gaugeController.methods
-          .last_user_vote(address, gaugeAddress)
-          .call()
-          .then((result) => {
-            lastVote = parseInt(result);
-          });
-
-        const canVote = now > lastVote + this.constants.DAY_IN_SEC * 10;
-
-        const userGauge: UserGauge = {
-          name: poolInfo ? poolInfo.name : 'Unknown',
-          address: gaugeAddress,
-          userWeight: voteWeight,
-          lastVote: lastVote,
-          canVote: canVote,
-          explorerURL: 'https://etherscan.io/address/' + gaugeAddress,
-        };
-        userGauges = [...userGauges, userGauge];
-      }
-
-      userGauges.sort(
-        (a, b) => b.userWeight.toNumber() - a.userWeight.toNumber()
-      );
-
-      // populate user data for chart
-      let data: number[] = [];
-      let labels: string[] = [];
-      let backgroundColor: string[] = [];
-      let hoverBackgroundColor: string[] = [];
-
-      for (let g in userGauges) {
-        const gauge = userGauges[g];
-        const color = 'rgba(' + this.COLORS[+g % this.COLORS.length] + ', 0.5)';
-        const hover = 'rgba(' + this.COLORS[+g % this.COLORS.length] + ', 1)';
-
-        data = [...data, gauge.userWeight.toNumber()];
-        labels = [...labels, gauge.name];
-        backgroundColor = [...backgroundColor, color];
-        hoverBackgroundColor = [...hoverBackgroundColor, hover];
-      }
-
-      // fetch vote power used and add unused vote power (if any) to chart
-      await gaugeController.methods
-        .vote_user_power(address)
-        .call()
-        .then((result) => {
-          this.votePowerUsed = new BigNumber(result).div(100);
-        });
-      if (this.votePowerUsed.lt(100)) {
-        const unallocated = new BigNumber(100).minus(this.votePowerUsed);
-        this.votePowerAvailable = unallocated;
-        this.voteWeight = unallocated;
-
-        data = [...data, unallocated.toNumber()];
-        labels = [...labels, 'Unallocated'];
-        backgroundColor = [...backgroundColor, 'rgba(255, 255, 255, 0.5)'];
-        backgroundColor = [...backgroundColor, 'rgba(255, 255, 255, 1)'];
-      }
-
-      // assign to global variables
-      this.userGauges = userGauges;
-      this.userChartLabels = labels;
-      this.userChartData = [
+      const userContext: ContractCallContext[] = [
         {
-          data: data,
-          backgroundColor: backgroundColor,
-          hoverBackgroundColor: hoverBackgroundColor,
-          borderWidth: 0.5,
+          reference: 'MPH',
+          contractAddress: this.constants.MPH_ADDRESS[this.wallet.networkID],
+          abi: require(`src/assets/abis/MPHToken.json`),
+          calls: [
+            {
+              reference: 'User Balance',
+              methodName: 'balanceOf',
+              methodParameters: [address],
+            },
+            {
+              reference: 'User Allowance',
+              methodName: 'allowance',
+              methodParameters: [address, vemph.options.address],
+            },
+          ],
+        },
+        {
+          reference: 'veMPH',
+          contractAddress: this.constants.VEMPH_ADDRESS[this.wallet.networkID],
+          abi: require(`src/assets/abis/veMPH.json`),
+          calls: [
+            {
+              reference: 'User Balance',
+              methodName: 'balanceOf',
+              methodParameters: [address],
+            },
+            {
+              reference: 'User Lock',
+              methodName: 'locked',
+              methodParameters: [address],
+            },
+          ],
         },
       ];
+
+      multicall.call(userContext).then((userResults) => {
+        // handle MPH results
+        const mphResults = userResults.results.MPH.callsReturnContext;
+
+        const mphBalance = new BigNumber(mphResults[0].returnValues[0].hex);
+        this.mphBalance = mphBalance.div(this.constants.PRECISION);
+        this.setLockAmount(this.mphBalance);
+
+        const mphAllowance = new BigNumber(mphResults[1].returnValues[0].hex);
+        this.mphAllowance = mphAllowance.div(this.constants.PRECISION);
+
+        // handle veMPH results
+        const veResults = userResults.results.veMPH.callsReturnContext;
+
+        const veBalance = new BigNumber(veResults[0].returnValues[0].hex);
+        this.veBalance = veBalance.div(this.constants.PRECISION);
+
+        const amount = new BigNumber(veResults[1].returnValues[0].hex);
+        this.lockEnd = parseInt(veResults[1].returnValues[1].hex);
+
+        if (this.lockEnd > now) {
+          this.mphLocked = amount.div(this.constants.PRECISION);
+          this.maxLockDuration =
+            this.constants.YEAR_IN_SEC * 4 - (this.lockEnd - now);
+        } else {
+          this.mphUnlocked = amount.div(this.constants.PRECISION);
+          this.maxLockDuration = this.constants.YEAR_IN_SEC * 4;
+        }
+      });
+
+      const queryString = gql`
+        {
+          user(id: "${address}") {
+            voteWeightUsed
+            votes (
+              orderBy: weight
+              orderDirection: desc
+            ) {
+              gauge {
+                address
+              }
+              weight
+              time
+            }
+          }
+        }
+      `;
+      await request(
+        this.constants.GAUGES_GRAPHQL_ENDPOINT[this.wallet.networkID],
+        queryString
+      ).then((data: QueryResult) => this.handleData(data));
 
       this.loadingUser = false;
     }
 
     if (loadGlobal) {
-      // fetch total and circulating MPH supply
-      mph.methods
-        .totalSupply()
-        .call()
-        .then((result) => {
-          const supply = new BigNumber(result).div(this.constants.PRECISION);
-          this.totalMPHSupply = supply;
-          this.circulatingMPHSupply = this.circulatingMPHSupply.plus(supply);
-        });
-      mph.methods
-        .balanceOf(this.constants.GOV_TREASURY[this.wallet.networkID])
-        .call()
-        .then((result) => {
-          const balance = new BigNumber(result).div(this.constants.PRECISION);
-          this.circulatingMPHSupply = this.circulatingMPHSupply.minus(balance);
-        });
-      mph.methods
-        .balanceOf(this.constants.DEV_WALLET[this.wallet.networkID])
-        .call()
-        .then((result) => {
-          const balance = new BigNumber(result).div(this.constants.PRECISION);
-          this.circulatingMPHSupply = this.circulatingMPHSupply.minus(balance);
-        });
-      mph.methods
-        .balanceOf(this.constants.MERKLE_DISTRIBUTOR[this.wallet.networkID])
-        .call()
-        .then((result) => {
-          const balance = new BigNumber(result).div(this.constants.PRECISION);
-          this.circulatingMPHSupply = this.circulatingMPHSupply.minus(balance);
-        });
-
-      // load gauge time left
-      gaugeController.methods
-        .time_total()
-        .call()
-        .then((result) => {
-          this.timeLeft = parseInt(result);
-          this.timeLeftCountdown = new Timer(this.timeLeft, 'down');
-          this.timeLeftCountdown.start();
-        });
-
-      await vemph.methods
-        .totalSupply()
-        .call()
-        .then((result) => {
-          this.veTotal = new BigNumber(result).div(this.constants.PRECISION);
-        });
-
-      // @dev totalFXSSupply() returns a slightly different value than supply()
-      await vemph.methods
-        .supply()
-        .call()
-        .then((result) => {
-          this.totalMPHLocked = new BigNumber(result).div(
-            this.constants.PRECISION
-          );
-        });
-
-      // @dev MPH * (3/4t + 1) = veMPH
-      this.averageLock = this.veTotal
-        .div(this.totalMPHLocked)
-        .minus(1)
-        .times(4)
-        .div(3);
-
-      // load the gauge data
-      let gauges: Gauge[] = [];
-      const numGauges = await gaugeController.methods.n_gauges().call();
-
-      for (let i = 0; i < +numGauges; i++) {
-        const gaugeAddress = await gaugeController.methods.gauges(i).call();
-        const poolInfo = this.contract.getPoolInfoFromGauge(gaugeAddress);
-
-        const gaugeWeight = new BigNumber(
-          await gaugeController.methods
-            .gauge_relative_weight(gaugeAddress)
-            .call()
-        )
-          .div(this.constants.PRECISION)
-          .times(100);
-
-        const gaugeReward = new BigNumber(
-          await gaugeDistributor.methods.currentReward(gaugeAddress).call()
-        ).div(this.constants.PRECISION);
-
-        const gauge: Gauge = {
-          name: poolInfo ? poolInfo.name : 'Unknown',
-          address: gaugeAddress,
-          weight: gaugeWeight,
-          reward: gaugeReward,
-          explorerURL: 'https://etherscan.io/address/' + gaugeAddress,
-        };
-        gauges = [...gauges, gauge];
-      }
-
-      gauges.sort((a, b) => b.weight.toNumber() - a.weight.toNumber());
-
-      // populate global data for chart
-      let data: number[] = [];
-      let labels: string[] = [];
-      let backgroundColor: string[] = [];
-      let hoverBackgroundColor: string[] = [];
-
-      for (let g in gauges) {
-        const gauge = gauges[g];
-        const color = 'rgba(' + this.COLORS[+g % this.COLORS.length] + ', 0.5)';
-        const hover = 'rgba(' + this.COLORS[+g % this.COLORS.length] + ', 1)';
-
-        data = [...data, gauge.weight.toNumber()];
-        labels = [...labels, gauge.name];
-        backgroundColor = [...backgroundColor, color];
-        hoverBackgroundColor = [...hoverBackgroundColor, hover];
-      }
-
-      // assign to global variables
-      this.gauges = gauges;
-      this.protocolChartLabels = labels;
-      this.protocolChartData = [
+      const globalContext: ContractCallContext[] = [
         {
-          data: data,
-          backgroundColor: backgroundColor,
-          hoverBackgroundColor: hoverBackgroundColor,
-          borderWidth: 0.5,
+          reference: 'MPH',
+          contractAddress: this.constants.MPH_ADDRESS[this.wallet.networkID],
+          abi: require(`src/assets/abis/MPHToken.json`),
+          calls: [
+            {
+              reference: 'Total Supply',
+              methodName: 'totalSupply',
+              methodParameters: [],
+            },
+            {
+              reference: 'Gov Treasury Balance',
+              methodName: 'balanceOf',
+              methodParameters: [
+                this.constants.GOV_TREASURY[this.wallet.networkID],
+              ],
+            },
+            {
+              reference: 'Dev Wallet Balance',
+              methodName: 'balanceOf',
+              methodParameters: [
+                this.constants.DEV_WALLET[this.wallet.networkID],
+              ],
+            },
+            {
+              reference: 'Merkle Distributor Balance',
+              methodName: 'balanceOf',
+              methodParameters: [
+                this.constants.MERKLE_DISTRIBUTOR[this.wallet.networkID],
+              ],
+            },
+          ],
+        },
+        {
+          reference: 'veMPH',
+          contractAddress: this.constants.VEMPH_ADDRESS[this.wallet.networkID],
+          abi: require(`src/assets/abis/veMPH.json`),
+          calls: [
+            {
+              reference: 'Total Supply',
+              methodName: 'totalSupply',
+              methodParameters: [],
+            },
+            {
+              reference: 'Supply',
+              methodName: 'supply',
+              methodParameters: [],
+            },
+          ],
         },
       ];
 
+      const globalResults: ContractCallResults = await multicall.call(
+        globalContext
+      );
+      const mphResults = globalResults.results.MPH.callsReturnContext;
+      const veResults = globalResults.results.veMPH.callsReturnContext;
+
+      // handle MPH results
+      const totalSupply = new BigNumber(mphResults[0].returnValues[0].hex);
+      this.totalMPHSupply = totalSupply.div(this.constants.PRECISION);
+      this.circulatingMPHSupply = totalSupply
+        .minus(mphResults[1].returnValues[0].hex) // gov treasury
+        .minus(mphResults[2].returnValues[0].hex) // dev wallet
+        .minus(mphResults[3].returnValues[0].hex) // merkle distributor
+        .div(this.constants.PRECISION);
+
+      // handle veMPH results
+      this.veTotal = new BigNumber(veResults[0].returnValues[0].hex).div(
+        this.constants.PRECISION
+      );
+      this.totalMPHLocked = new BigNumber(veResults[1].returnValues[0].hex).div(
+        this.constants.PRECISION
+      );
+
+      // MPH * (0.75t + 1) = veMPH
+      this.averageLock = this.veTotal
+        .div(this.totalMPHLocked)
+        .minus(1)
+        .div(0.75);
+
+      const queryString = gql`
+        {
+          gaugeInfo(id: "0") {
+            checkpoint
+            currentTotalWeight
+            futureTotalWeight
+          }
+          gauges(orderBy: currentWeight, orderDirection: desc) {
+            address
+            currentWeight
+            futureWeight
+          }
+        }
+      `;
+      await request(
+        this.constants.GAUGES_GRAPHQL_ENDPOINT[this.wallet.networkID],
+        queryString
+      ).then((data: QueryResult) => this.handleData(data));
+
       this.loadingGlobal = false;
+    }
+  }
+
+  handleData(data: QueryResult): void {
+    const now = Math.floor(Date.now() / 1e3);
+    const user = data.user;
+    const gauges = data.gauges;
+
+    const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
+    const gaugeController = this.contract.getNamedContract(
+      'MPHGaugeController',
+      web3
+    );
+
+    if (user) {
+      let userGauges: UserGauge[] = [];
+      let chartData: number[] = [];
+      let chartLabels: string[] = [];
+      let chartBackgroundColors: string[] = [];
+      let chartHoverBackgroundColors: string[] = [];
+
+      Promise.all(
+        user.votes.map((vote) => {
+          const gauge = vote.gauge;
+          const poolInfo = this.contract.getPoolInfoFromGauge(gauge.address);
+
+          const userGauge: UserGauge = {
+            name: poolInfo ? poolInfo.name : 'Unknown',
+            address: gauge.address,
+            userWeight: new BigNumber(vote.weight).div(100),
+            lastVote: parseInt(vote.time),
+            canVote: now > parseInt(vote.time) + this.constants.DAY_IN_SEC * 10,
+            explorerURL: 'https://etherscan.io/address/' + gauge.address,
+          };
+          userGauges = [...userGauges, userGauge];
+
+          // update chart variables
+          if (userGauge.userWeight.eq(0)) return;
+          const index = (userGauges.length - 1) % this.COLORS.length;
+          chartData = [...chartData, userGauge.userWeight.toNumber()];
+          chartLabels = [...chartLabels, userGauge.name];
+          chartBackgroundColors = [
+            ...chartBackgroundColors,
+            'rgba(' + this.COLORS[index] + ', 0.5)',
+          ];
+          chartHoverBackgroundColors = [
+            ...chartHoverBackgroundColors,
+            'rgba(' + this.COLORS[index] + ', 1)',
+          ];
+        })
+      ).then(() => {
+        this.votePowerUsed = new BigNumber(user.voteWeightUsed).div(100);
+        this.votePowerAvailable = new BigNumber(100).minus(this.votePowerUsed);
+        this.voteWeight = this.votePowerAvailable;
+
+        // add unallocated vote weight to chart
+        if (this.votePowerAvailable.gt(0)) {
+          chartData = [...chartData, this.votePowerAvailable.toNumber()];
+          chartLabels = [...chartLabels, 'Unallocated'];
+          chartBackgroundColors = [
+            ...chartBackgroundColors,
+            'rgba(255, 255, 255, 0.5)',
+          ];
+          chartHoverBackgroundColors = [
+            ...chartHoverBackgroundColors,
+            'rgba(255, 255, 255, 1)',
+          ];
+        }
+
+        this.userGauges = userGauges;
+        this.userChartLabels = chartLabels;
+        this.userChartData = [
+          {
+            data: chartData,
+            backgroundColor: chartBackgroundColors,
+            hoverBackgroundColor: chartHoverBackgroundColors,
+            borderWidth: 0.5,
+          },
+        ];
+      });
+    }
+
+    if (gauges) {
+      const gaugeInfo = data.gaugeInfo;
+      const totalCurrentWeight = new BigNumber(
+        gaugeInfo.currentTotalWeight
+      ).div(this.constants.PRECISION);
+
+      this.timeLeft = parseInt(gaugeInfo.checkpoint);
+      this.timeLeftCountdown = new Timer(this.timeLeft, 'down');
+      this.timeLeftCountdown.start();
+
+      let globalGauges: Gauge[] = [];
+      let chartData: number[] = [];
+      let chartLabels: string[] = [];
+      let chartBackgroundColors: string[] = [];
+      let chartHoverBackgroundColors: string[] = [];
+
+      Promise.all(
+        gauges.map((gauge) => {
+          const poolInfo = this.contract.getPoolInfoFromGauge(gauge.address);
+
+          const weight = new BigNumber(gauge.currentWeight)
+            .div(totalCurrentWeight)
+            .times(100);
+
+          const globalGauge: Gauge = {
+            name: poolInfo ? poolInfo.name : 'Unknown',
+            address: gauge.address,
+            weight: weight,
+            reward: new BigNumber(0),
+            explorerURL: 'https://etherscan.io/address/' + gauge.address,
+          };
+          globalGauges = [...globalGauges, globalGauge];
+
+          // update chart variables
+          if (globalGauge.weight.eq(0)) return;
+          const index = (globalGauges.length - 1) % this.COLORS.length;
+          chartData = [...chartData, globalGauge.weight.toNumber()];
+          chartLabels = [...chartLabels, globalGauge.name];
+          chartBackgroundColors = [
+            ...chartBackgroundColors,
+            'rgba(' + this.COLORS[index] + ', 0.5)',
+          ];
+          chartHoverBackgroundColors = [
+            ...chartHoverBackgroundColors,
+            'rgba(' + this.COLORS[index] + ', 1)',
+          ];
+        })
+      ).then(() => {
+        this.gauges = globalGauges;
+        this.protocolChartLabels = chartLabels;
+        this.protocolChartData = [
+          {
+            data: chartData,
+            backgroundColor: chartBackgroundColors,
+            hoverBackgroundColor: chartHoverBackgroundColors,
+            borderWidth: 0.5,
+          },
+        ];
+      });
     }
   }
 
@@ -632,7 +710,6 @@ export class GaugeComponent implements OnInit {
         this.wallet.displayGenericError(error);
       }
     );
-    console.log('withdrawing now...');
   }
 
   sortGauges(event: any) {
@@ -674,8 +751,10 @@ export class GaugeComponent implements OnInit {
   }
 
   canVote(_gauge: string): boolean {
-    const gauge = this.userGauges.find((gauge) => gauge.address === _gauge);
-    return gauge.canVote && this.veBalance.gt(0);
+    const gauge = this.userGauges.find(
+      (gauge) => gauge.address === _gauge.toLowerCase()
+    );
+    return (!gauge || gauge.canVote) && this.veBalance.gt(0);
   }
 
   // @dev may need a separate check for expired locks
@@ -716,4 +795,27 @@ interface UserGauge {
   lastVote: number;
   canVote: boolean;
   explorerURL: string;
+}
+
+interface QueryResult {
+  user: {
+    voteWeightUsed: string;
+    votes: {
+      gauge: {
+        address: string;
+      };
+      weight: string;
+      time: string;
+    }[];
+  };
+  gauges: {
+    address: string;
+    currentWeight: string;
+    futureWeight: string;
+  }[];
+  gaugeInfo: {
+    checkpoint: string;
+    currentTotalWeight: string;
+    futureTotalWeight: string;
+  };
 }
