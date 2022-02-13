@@ -336,27 +336,6 @@
     "type": "function"
   },
   {
-    "name": "balanceOf",
-    "outputs": [
-      {
-        "type": "uint256",
-        "name": ""
-      }
-    ],
-    "inputs": [
-      {
-        "type": "address",
-        "name": "addr"
-      },
-      {
-        "type": "uint256",
-        "name": "_t"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "name": "balanceOfAt",
     "outputs": [
       {
@@ -387,23 +366,6 @@
       }
     ],
     "inputs": [],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "name": "totalSupply",
-    "outputs": [
-      {
-        "type": "uint256",
-        "name": ""
-      }
-    ],
-    "inputs": [
-      {
-        "type": "uint256",
-        "name": "t"
-      }
-    ],
     "stateMutability": "view",
     "type": "function"
   },

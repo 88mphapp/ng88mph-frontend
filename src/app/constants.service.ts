@@ -109,6 +109,14 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',
   };
+  GAUGES_GRAPHQL_ENDPOINT = {
+    [this.CHAIN_ID.MAINNET]:
+      'https://api.thegraph.com/subgraphs/name/0xszeth/mph-gauges',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
   BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future',
