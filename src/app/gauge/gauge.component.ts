@@ -9,7 +9,6 @@
 
 import { Component, OnInit, NgZone } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalUnstakeComponent } from './modal-unstake/modal-unstake.component';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from '../constants.service';
 import { ContractService } from '../contract.service';
@@ -771,12 +770,6 @@ export class GaugeComponent implements OnInit {
 
   timestampToDateString(timestampSec: number): string {
     return new Date(timestampSec * 1e3).toLocaleString();
-  }
-
-  openUnstakeModal() {
-    const modalRef = this.modalService.open(ModalUnstakeComponent, {
-      windowClass: 'fullscreen',
-    });
   }
 }
 
