@@ -2,7 +2,6 @@
 // 1- Change veMPH address to correct address after deployment (contracts.json and constants.service.ts)
 // 2- Change MPHGaugeController address to correct address after deployment (contracts.json)
 // 2- Change MPHGaugeRewardDistributor address to correct address after deployment (contracts.json)
-// 4- Prompt network switch if not connected to Mainnet
 // 5- Disable actions if not connected to Mainnet
 // 6- Ensure action flow works as expected (reloads data, etc)
 // 8- User must withdraw locked MPH before creating a new lock
@@ -121,12 +120,12 @@ export class GaugeComponent implements OnInit {
       this.loadData(false, false);
     });
 
-    // this.wallet.chainChangedEvent.subscribe((networkID) => {
-    //   this.zone.run(() => {
-    //     this.resetData(true, true);
-    //     this.loadData(true, true);
-    //   });
-    // });
+    this.wallet.chainChangedEvent.subscribe((networkID) => {
+      this.zone.run(() => {
+        this.resetData(true, true);
+        this.loadData(true, true);
+      });
+    });
 
     this.wallet.accountChangedEvent.subscribe((account) => {
       this.zone.run(() => {
@@ -190,6 +189,13 @@ export class GaugeComponent implements OnInit {
   }
 
   async loadData(loadUser: boolean, loadGlobal: boolean) {
+    // prompt network change if not connected to mainnet
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (this.wallet.networkID !== this.constants.CHAIN_ID.MAINNET) {
+      this.wallet.changeChain(this.constants.CHAIN_ID.MAINNET);
+      return;
+    }
+
     const now = Math.floor(Date.now() / 1e3);
     const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
     const address = this.wallet.actualAddress.toLowerCase();
