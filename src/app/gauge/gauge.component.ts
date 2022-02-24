@@ -1,5 +1,7 @@
 // TODO
+// 0- Change the addresses on the subgraph
 // 1- Change veMPH address to correct address after deployment (contracts.json and constants.service.ts)
+// 1- Change veMPHYieldDistributor address to correct address after deployment (contracts.json and constants.service.ts)
 // 2- Change MPHGaugeController address to correct address after deployment (contracts.json)
 // 2- Change MPHGaugeRewardDistributor address to correct address after deployment (contracts.json)
 // 5- Disable actions if not connected to Mainnet
@@ -44,6 +46,7 @@ export class GaugeComponent implements OnInit {
   mphAllowance: BigNumber; // MPH allowance for veMPH
 
   veBalance: BigNumber;
+  veRewards: BigNumber;
   mphLocked: BigNumber;
   mphUnlocked: BigNumber;
 
@@ -67,6 +70,8 @@ export class GaugeComponent implements OnInit {
   totalMPHLocked: BigNumber;
   averageLock: BigNumber;
   veTotal: BigNumber;
+  veYield: BigNumber;
+  veAPR: BigNumber;
 
   timeLeft: number;
   timeLeftCountdown: any;
@@ -149,6 +154,7 @@ export class GaugeComponent implements OnInit {
       this.mphAllowance = new BigNumber(0);
       this.mphUnlocked = new BigNumber(0);
       this.veBalance = new BigNumber(0);
+      this.veRewards = new BigNumber(0);
       this.lockEnd = 0;
       this.lockAmount = new BigNumber(0);
       this.lockDuration = 7;
@@ -172,6 +178,8 @@ export class GaugeComponent implements OnInit {
 
     if (resetGlobal) {
       this.veTotal = new BigNumber(0);
+      this.veYield = new BigNumber(0);
+      this.veAPR = new BigNumber(0);
       this.totalMPHSupply = new BigNumber(0);
       this.circulatingMPHSupply = new BigNumber(0);
       this.totalMPHLocked = new BigNumber(0);
@@ -250,6 +258,19 @@ export class GaugeComponent implements OnInit {
             },
           ],
         },
+        {
+          reference: 'userRewards',
+          contractAddress:
+            this.constants.VEMPH_YIELD_DISTRIBUTOR[this.wallet.networkID],
+          abi: require(`src/assets/abis/veMPHYieldDistributor.json`),
+          calls: [
+            {
+              reference: 'User Rewards',
+              methodName: 'earned',
+              methodParameters: [address],
+            },
+          ],
+        },
       ];
 
       multicall.call(userContext).then((userResults) => {
@@ -280,6 +301,12 @@ export class GaugeComponent implements OnInit {
           this.mphUnlocked = amount.div(this.constants.PRECISION);
           this.maxLockDuration = this.constants.YEAR_IN_SEC * 4;
         }
+
+        // handle veReward results
+        const userRewards = userResults.results.userRewards.callsReturnContext;
+
+        const veRewards = new BigNumber(userRewards[0].returnValues[0].hex);
+        this.veRewards = veRewards.div(this.constants.PRECISION);
       });
 
       const queryString = gql`
@@ -359,6 +386,24 @@ export class GaugeComponent implements OnInit {
             },
           ],
         },
+        {
+          reference: 'veYield',
+          contractAddress:
+            this.constants.VEMPH_YIELD_DISTRIBUTOR[this.wallet.networkID],
+          abi: require(`src/assets/abis/veMPHYieldDistributor.json`),
+          calls: [
+            {
+              reference: 'Yield For Duration',
+              methodName: 'getYieldForDuration',
+              methodParameters: [],
+            },
+            {
+              reference: 'Yield Duration',
+              methodName: 'yieldDuration',
+              methodParameters: [],
+            },
+          ],
+        },
       ];
 
       const globalResults: ContractCallResults = await multicall.call(
@@ -366,6 +411,7 @@ export class GaugeComponent implements OnInit {
       );
       const mphResults = globalResults.results.MPH.callsReturnContext;
       const veResults = globalResults.results.veMPH.callsReturnContext;
+      const veYield = globalResults.results.veYield.callsReturnContext;
 
       // handle MPH results
       const totalSupply = new BigNumber(mphResults[0].returnValues[0].hex);
@@ -383,6 +429,18 @@ export class GaugeComponent implements OnInit {
       this.totalMPHLocked = new BigNumber(veResults[1].returnValues[0].hex).div(
         this.constants.PRECISION
       );
+
+      // handle veYield results
+      this.veYield = new BigNumber(veYield[0].returnValues[0].hex).div(
+        this.constants.PRECISION
+      );
+
+      const yieldDuration = new BigNumber(veYield[1].returnValues[0].hex);
+      this.veAPR = this.veYield
+        .div(yieldDuration)
+        .times(this.constants.YEAR_IN_SEC)
+        .div(this.veTotal.div(4))
+        .times(100);
 
       // MPH * (0.75t + 1) = veMPH
       this.averageLock = this.veTotal
@@ -705,6 +763,21 @@ export class GaugeComponent implements OnInit {
   withdraw(): void {
     const vemph = this.contract.getNamedContract('veMPH');
     const func = vemph.methods.withdraw();
+
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      () => {},
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
+  }
+
+  claim(): void {
+    const distributor = this.contract.getNamedContract('veMPHYieldDistributor');
+    const func = distributor.methods.getYield();
 
     this.wallet.sendTx(
       func,
