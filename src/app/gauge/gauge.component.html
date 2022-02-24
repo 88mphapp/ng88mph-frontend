@@ -88,19 +88,29 @@
             <h5 class="text-uppercase" i18n="@@">MPH rewards</h5>
 
             <!-- Heading -->
-            <span class="h2 mb-2 glowing"> 0.0000 </span>
-            <span
-              class="
-                badge badge-xl badge-soft-success
-                mt-n2
-                ml-1
-                ng-star-inserted
-              "
-              >0.00% APR</span
-            >
-            <h5 class="mb-3 text-white">$0.0000</h5>
+            <span>
+              <span class="h2 mb-2 glowing"> {{ veRewards.toFormat(2) }} </span>
+              <span
+                class="
+                  badge badge-xl badge-soft-success
+                  mt-n2
+                  ml-1
+                  ng-star-inserted
+                "
+                >{{ veAPR.toFormat(2) }}% APR</span
+              >
+            </span>
+
+            <h5 class="mb-3 text-white">
+              ${{ veRewards.times(datas.mphPriceUSD).toFormat(2) }}
+            </h5>
             <!-- Button -->
-            <button type="button" class="btn btn-sm btn-bg-gradient">
+            <button
+              type="button"
+              class="btn btn-sm btn-bg-gradient"
+              *ngIf="veRewards.gt(0)"
+              (click)="claim()"
+            >
               <i class="fe fe-arrow-down mr-2 align-bottom"></i>
               <ng-container i18n="@@">Claim</ng-container>
             </button>
@@ -1093,7 +1103,9 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-0 glowing">$587,745.04</h4>
+                        <h4 class="mb-0 glowing">
+                          ${{ veYield.times(datas.mphPriceUSD).toFormat(2) }}
+                        </h4>
                       </td>
                     </tr>
                     <tr>
@@ -1110,10 +1122,10 @@
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-0 glowing">0.00%</h4>
+                        <h4 class="mb-0 glowing">{{ veAPR.toFormat(2) }}%</h4>
                       </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                       <td class="px-0 py-2 text-white border-0 small" i18n="@@">
                         <span
                           i18n-ngbTooltip="@@"
@@ -1129,7 +1141,7 @@
                       >
                         <h4 class="mb-0 glowing">$0.00</h4>
                       </td>
-                    </tr>
+                    </tr> -->
                   </tbody>
                 </table>
               </div>

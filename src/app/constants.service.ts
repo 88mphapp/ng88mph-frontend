@@ -247,6 +247,13 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',
   };
+  VEMPH_YIELD_DISTRIBUTOR = {
+    [this.CHAIN_ID.MAINNET]: '0xc6764e58b36e26b08Fd1d2AeD4538c02171fA872',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
   FOREIGN_MPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '',
     [this.CHAIN_ID.RINKEBY]: '',
