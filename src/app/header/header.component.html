@@ -109,6 +109,20 @@
         </a>
       </li>
       <li
+        class="nav-item"
+        ngbNavItem="/convert"
+        *ngIf="convertableBalance.gt(0)"
+      >
+        <a
+          class="nav-link text-white animate"
+          routerLink="convert"
+          i18n="@@"
+          ngbNavLink
+        >
+          Convert
+        </a>
+      </li>
+      <li
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
           wallet.networkID === constants.CHAIN_ID.MAINNET ||

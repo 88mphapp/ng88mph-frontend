@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit {
   gasPrice: BigNumber;
   gasInterval: any;
   mphBalance: BigNumber;
+  convertableBalance: BigNumber;
   xMPHBalance: BigNumber;
   acceptedTerms: boolean;
   watchedModel = new Watch(false, '');
@@ -75,6 +76,11 @@ export class HeaderComponent implements OnInit {
     if (loadUser && address) {
       const mph = this.contract.getNamedContract('MPHToken', web3);
       const xmph = this.contract.getNamedContract('xMPH', web3);
+      const convertableMPH = this.contract.getContract(
+        this.constants.FOREIGN_MPH_ADDRESS[this.wallet.networkID],
+        'ERC20',
+        web3
+      );
       if (mph.options.address) {
         mph.methods
           .balanceOf(address)
@@ -95,6 +101,17 @@ export class HeaderComponent implements OnInit {
             );
           });
       }
+
+      if (convertableMPH.options.address) {
+        convertableMPH.methods
+          .balanceOf(address)
+          .call()
+          .then((balance) => {
+            this.convertableBalance = new BigNumber(balance).div(
+              this.constants.PRECISION
+            );
+          });
+      }
     }
 
     if (loadGlobal) {
@@ -111,6 +128,7 @@ export class HeaderComponent implements OnInit {
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
       this.mphBalance = new BigNumber(0);
+      this.convertableBalance = new BigNumber(0);
       this.xMPHBalance = new BigNumber(0);
     }
 
@@ -159,11 +177,4 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
-}
-
-interface QueryResult {
-  mphholder: {
-    mphBalance: string;
-    xmphBalance: string;
-  };
 }
