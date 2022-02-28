@@ -59,6 +59,7 @@ import { DepositFeedComponent } from './header/deposit-feed/deposit-feed.compone
 // other
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CacheInterceptor } from './cache-interceptor';
+import { ConverterComponent } from './bridge/converter/converter.component';
 
 @NgModule({
   declarations: [
@@ -99,6 +100,7 @@ import { CacheInterceptor } from './cache-interceptor';
     XmphSupplyDistributionComponent,
     DepositFeedComponent,
     GaugeComponent,
+    ConverterComponent,
   ],
   imports: [
     BrowserModule,

@@ -5,10 +5,15 @@
         MPH Bridge
       </h1>
       <p class="text-white font-weight-bold mb-5 lead">
-        <ng-container i18n="@@bridgeDesc"
-          >Do more with your MPH by bridging it on our multichains
-          ecosystem</ng-container
-        >
+        <ng-container i18n="@@bridgeDesc">
+          Do more with your MPH by bridging it on our multichains ecosystem
+        </ng-container>
+      </p>
+      <p class="text-muted font-weight-bold mt-n5 mb-5">
+        <ng-container i18n="">
+          Looking to convert your MPH?
+          <a routerLink="/convert">Convert here.</a>
+        </ng-container>
       </p>
       <div class="row">
         <div class="col-12 col-lg-8">
@@ -16,7 +21,7 @@
           <div class="card">
             <div class="card-header">
               <h2 class="card-header-title h4 mb-0" i18n="@@bridgesubTitle">
-                Bridge your MPH in 4 steps
+                Bridge your MPH in 3 steps
               </h2>
             </div>
             <div class="card-body">
@@ -54,29 +59,19 @@
                               class="custom-select custom-select-lg"
                               data-toggle="select"
                               id="FromChain"
-                              [(ngModel)]="fromChain"
-                              (change)="updateBridge()"
+                              (change)="
+                                updateChain(true, false, $event.target.value)
+                              "
+                              [(ngModel)]="selectedFromChain"
                             >
-                              <option [ngValue]="constants.CHAIN_ID.MAINNET">
-                                Ethereum
-                              </option>
                               <option
-                                [ngValue]="constants.CHAIN_ID.FANTOM"
-                                disabled
+                                [value]="chain"
+                                *ngFor="let chain of CHAINS"
+                                [selected]="chain === fromChain"
                               >
-                                Fantom (soon)
-                              </option>
-                              <option
-                                [ngValue]="constants.CHAIN_ID.POLYGON"
-                                disabled
-                              >
-                                Polygon (soon)
-                              </option>
-                              <option
-                                [ngValue]="constants.CHAIN_ID.AVALANCHE"
-                                disabled
-                              >
-                                Avalanche (soon)
+                                {{
+                                  constants.NETWORK_METADATA[chain].displayName
+                                }}
                               </option>
                             </select>
                           </div>
@@ -87,32 +82,44 @@
                               class="font-weight-bold"
                               for="ToChain"
                               i18n="@@selectToChain"
-                              >To Chain</label
-                            >
+                              >To Chain
+                            </label>
                             <select
                               class="custom-select custom-select-lg"
                               data-toggle="select"
                               id="ToChain"
-                              [(ngModel)]="toChain"
+                              (change)="
+                                updateChain(false, true, $event.target.value)
+                              "
                             >
-                              <option [ngValue]="constants.CHAIN_ID.MAINNET">
-                                Ethereum
-                              </option>
-                              <option [ngValue]="constants.CHAIN_ID.FANTOM">
-                                Fantom
-                              </option>
-                              <option
-                                [ngValue]="constants.CHAIN_ID.POLYGON"
-                                disabled
-                              >
-                                Polygon (soon)
-                              </option>
-                              <option
-                                [ngValue]="constants.CHAIN_ID.AVALANCHE"
-                                disabled
-                              >
-                                Avalanche (soon)
-                              </option>
+                              <ng-container *ngFor="let chain of CHAINS">
+                                <option
+                                  value="{{ chain }}"
+                                  *ngIf="
+                                    fromChain == constants.CHAIN_ID.MAINNET &&
+                                    chain != constants.CHAIN_ID.MAINNET
+                                  "
+                                  [selected]="chain === toChain"
+                                >
+                                  {{
+                                    constants.NETWORK_METADATA[chain]
+                                      .displayName
+                                  }}
+                                </option>
+                                <option
+                                  value="{{ chain }}"
+                                  *ngIf="
+                                    fromChain != constants.CHAIN_ID.MAINNET &&
+                                    chain == constants.CHAIN_ID.MAINNET
+                                  "
+                                  [selected]="chain === toChain"
+                                >
+                                  {{
+                                    constants.NETWORK_METADATA[chain]
+                                      .displayName
+                                  }}
+                                </option>
+                              </ng-container>
                             </select>
                           </div>
                         </div>
@@ -186,51 +193,78 @@
                           ></small
                         >
                         <button
+                          i18n="@@"
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          *ngIf="bridgeAmount.lte(0)"
+                          [disabled]="true"
+                        >
+                          Enter an amount
+                        </button>
+                        <button
+                          i18n="@@"
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          *ngIf="
+                            bridgeAmount.gt(0) && bridgeAmount.gt(mphBalance)
+                          "
+                          [disabled]="true"
+                        >
+                          Not enough MPH available
+                        </button>
+                        <button
+                          i18n="@@"
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          *ngIf="
+                            bridgeAmount.gt(0) &&
+                            bridgeAmount.lte(mphBalance) &&
+                            bridgeAmount.lt(bridgeMinimum)
+                          "
+                          [disabled]="true"
+                        >
+                          Amount must be greater than
+                          {{ bridgeMinimum.toFormat(2) }} MPH
+                        </button>
+                        <button
+                          i18n="@@"
+                          type="button"
+                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                          *ngIf="
+                            bridgeAmount.gt(0) &&
+                            bridgeAmount.lte(mphBalance) &&
+                            bridgeAmount.gt(bridgeMaximum)
+                          "
+                          [disabled]="true"
+                        >
+                          Amount must be less than
+                          {{ bridgeMaximum.toFormat(2) }} MPH
+                        </button>
+                        <button
                           type="button"
                           class="btn btn-lg btn-block btn-bg-gradient mb-3"
                           i18n="@@bridge"
-                          [disabled]="!canBridge()"
+                          *ngIf="
+                            bridgeAmount.gt(0) &&
+                            bridgeAmount.lte(mphBalance) &&
+                            bridgeAmount.gte(bridgeMinimum) &&
+                            bridgeAmount.lte(bridgeMaximum)
+                          "
                           (click)="bridge()"
                         >
                           Bridge
                         </button>
-                        <div
-                          class="alert text-danger border-danger text-center"
-                          role="alert"
-                          *ngIf="
-                            wallet.networkID !== constants.CHAIN_ID.MAINNET
-                          "
-                        >
-                          Bridging from
-                          <span class="text-capitalize">{{
-                            constants.CHAIN_ID_STRING[wallet.networkID]
-                          }}</span>
-                          not yet supported. Please switch your network to
-                          Ethereum.
-                        </div>
+
                         <div
                           class="px-0 alert text-warning border-warning"
-                          *ngIf="
-                            wallet.networkID === constants.CHAIN_ID.MAINNET
-                          "
                           role="alert"
                         >
                           <ul class="mb-0">
                             <li>
-                              <ng-container i18n="@@bridgeEstimatedFee"
-                                >Estimated transfer fee:</ng-container
-                              >
-                              {{
-                                bridgeAmount
-                                  .times(bridgeFeeRate)
-                                  .lte(bridgeMinimumFee)
-                                  ? bridgeMinimumFee
-                                  : bridgeAmount
-                                      .times(bridgeFeeRate)
-                                      .gte(bridgeMaximumFee)
-                                  ? bridgeMaximumFee
-                                  : bridgeAmount.times(bridgeFeeRate)
-                              }}
+                              <ng-container i18n="@@bridgeEstimatedFee">
+                                Estimated transfer fee:
+                              </ng-container>
+                              {{ estimatedFee }}
                               MPH
                             </li>
                             <li>
@@ -398,110 +432,6 @@
                             bridged to in order to convert your MPH 👇.
                           </span>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- / .row -->
-                </div>
-                <div class="list-group-item">
-                  <div class="row">
-                    <div class="col-auto text-center">
-                      <div class="avatar avatar-sm">
-                        <div
-                          class="
-                            avatar-title
-                            font-size-lg
-                            bg-dark
-                            rounded-circle
-                            text-white
-                            border-gradient
-                          "
-                          i18n="@@step4"
-                        >
-                          4
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col ml-n2">
-                      <div class="form-group">
-                        <label class="font-weight-bold"
-                          >Amount to Convert</label
-                        >
-                        <div class="input-group mb-2">
-                          <div class="input-group-prepend">
-                            <button
-                              class="btn btn-lg btn-dark"
-                              type="button"
-                              disabled
-                            >
-                              <div class="avatar avatar-xxs">
-                                <img
-                                  src="./assets/img/token-icons/mph-logo-24.svg"
-                                  width="24"
-                                  alt="..."
-                                  class="avatar-img rounded-circle"
-                                />
-                              </div>
-                            </button>
-                          </div>
-                          <input
-                            type="text"
-                            class="form-control form-control-lg"
-                            placeholder="0.00"
-                            aria-label="convert-amount"
-                            [value]="convertAmount.toFixed()"
-                            (input)="setConvertAmount($event.target.value)"
-                          />
-                          <div class="input-group-append">
-                            <button
-                              class="btn btn-lg border-gradient"
-                              type="button"
-                              i18n="@@Max"
-                              (click)="presetConvertAmount(100)"
-                            >
-                              Max
-                            </button>
-                          </div>
-                        </div>
-                        <small class="form-text text-white"
-                          >{{ convertAmount.toFormat(4) }} foreign MPH
-                          <ng-container i18n="@@available"
-                            >available</ng-container
-                          ></small
-                        >
-                        <div
-                          class="alert text-danger border-danger text-center"
-                          role="alert"
-                          *ngIf="foreignBalance.eq(0)"
-                        >
-                          Don't see your bridged MPH? Switch to the network you
-                          bridged to.
-                        </div>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                          i18n="@@approve"
-                          (click)="approveConverter()"
-                          *ngIf="
-                            convertAmount.gt(foreignAllowance) &&
-                            foreignBalance.gt(0)
-                          "
-                        >
-                          Approve
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-block btn-bg-gradient mb-3"
-                          i18n="@@convert"
-                          *ngIf="
-                            convertAmount.lte(foreignAllowance) &&
-                            foreignBalance.gt(0)
-                          "
-                          (click)="convert()"
-                          [disabled]="!canConvert()"
-                        >
-                          Convert
-                        </button>
                       </div>
                     </div>
                   </div>

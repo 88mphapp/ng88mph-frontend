@@ -1,0 +1,102 @@
+<div class="container mt-4 mb-6">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="title-bg-gradient display-2" i18n="@@">MPH Converter</h1>
+      <p class="text-muted font-weight-bold mb-5">
+        <ng-container i18n="@@">
+          If you previously bridged MPH from Ethereum to Fantom, received MPH
+          rewards on Fantom, purchased MPH on Fantom, or otherwise acquired MPH
+          on Fantom you will likely need to convert your MPH. Converting your
+          MPH enables you to bridge your MPH to other chains and participate in
+          the 88mph multichain ecosystem. If you have questions or concerns,
+          please reach out in the #support channel of our Discord.
+        </ng-container>
+      </p>
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="form-group">
+                <label i18n="@@amountToStake">Amount to Convert</label>
+                <div class="input-group mb-2">
+                  <input
+                    type="text"
+                    class="form-control form-control-lg"
+                    placeholder="0.00"
+                    aria-label="stake-amount"
+                    [value]="convertAmount.toFixed()"
+                    (input)="setConvertAmount($event.target.value)"
+                  />
+                  <div class="input-group-append">
+                    <button
+                      class="btn btn-lg border-gradient"
+                      type="button"
+                      (click)="setConvertAmount(convertableBalance)"
+                      i18n="@@max"
+                    >
+                      Max
+                    </button>
+                  </div>
+                </div>
+                <small class="form-text text-muted"
+                  >{{ convertableBalance.toFormat(4) }}
+                  <ng-container i18n="@@mphAvailable"
+                    >MPH available</ng-container
+                  >
+                </small>
+              </div>
+              <button
+                *ngIf="convertAmount.lte(0)"
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                [disabled]="true"
+                i18n="@@enterAmount"
+              >
+                Enter an Amount
+              </button>
+
+              <button
+                *ngIf="
+                  convertAmount.gt(0) && convertAmount.gt(convertableBalance)
+                "
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                [disabled]="true"
+                i18n="@@notEnoughMPH"
+              >
+                Not enough MPH available
+              </button>
+              <button
+                *ngIf="
+                  convertAmount.gt(0) &&
+                  convertAmount.lte(convertableBalance) &&
+                  convertAmount.gt(approvedAmount)
+                "
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                (click)="approveConverter()"
+                [disabled]=""
+                i18n="@@approve"
+              >
+                Approve
+              </button>
+              <button
+                *ngIf="
+                  convertAmount.gt(0) &&
+                  convertAmount.lte(convertableBalance) &&
+                  convertAmount.lte(approvedAmount)
+                "
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                (click)="convert()"
+                [disabled]=""
+              >
+                <ng-container i18n="@@stakeMph">Convert</ng-container>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

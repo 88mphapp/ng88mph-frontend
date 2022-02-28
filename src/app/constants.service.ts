@@ -25,6 +25,7 @@ export class ConstantsService {
     [this.CHAIN_ID.MAINNET]: {
       chainId: '0x1',
       chainName: 'Ethereum',
+      displayName: 'Ethereum',
       nativeCurrency: {
         name: 'Ethereum',
         symbol: 'ETH',
@@ -36,6 +37,7 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: {
       chainId: '0x4',
       chainName: 'Rinkeby',
+      displayName: 'Rinkeby',
       nativeCurrency: {
         name: 'Ethereum',
         symbol: 'ETH',
@@ -47,6 +49,7 @@ export class ConstantsService {
     [this.CHAIN_ID.POLYGON]: {
       chainId: '0x89',
       chainName: 'Polygon Mainnet',
+      displayName: 'Polygon',
       nativeCurrency: {
         name: 'Polygon',
         symbol: 'MATIC',
@@ -58,6 +61,7 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: {
       chainId: '0xa86a',
       chainName: 'Avalanche Network',
+      displayName: 'Avalanche',
       nativeCurrency: {
         name: 'Avalanche',
         symbol: 'AVAX',
@@ -69,6 +73,7 @@ export class ConstantsService {
     [this.CHAIN_ID.FANTOM]: {
       chainId: '0xfa',
       chainName: 'Fantom Opera',
+      displayName: 'Fantom',
       nativeCurrency: {
         name: 'Fantom',
         symbol: 'FTM',
@@ -231,7 +236,7 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
-    [this.CHAIN_ID.FANTOM]: '0x511a986E427FFa281ACfCf07AAd70d03040DbEc0',
+    [this.CHAIN_ID.FANTOM]: '0x37b9a2d62db25501a366f708399546c02be151d0', // this used to be the foreign address
   };
   XMPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '0x1702F18c1173b791900F81EbaE59B908Da8F689b',
@@ -259,7 +264,7 @@ export class ConstantsService {
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
-    [this.CHAIN_ID.FANTOM]: '0x37b9a2d62db25501a366f708399546c02be151d0',
+    [this.CHAIN_ID.FANTOM]: '0x511a986E427FFa281ACfCf07AAd70d03040DbEc0', // this used to be the native address
   };
   MPH_CONVERTER = {
     [this.CHAIN_ID.MAINNET]: '0x5b5e48F5028D46868F3C036a8ea3e7B1cC841a84',
