@@ -196,7 +196,10 @@
                 </small>
               </div>
               <button
-                *ngIf="this.stakeAmount.lte(0)"
+                *ngIf="
+                  this.stakeAmount.lte(0) &&
+                  wallet.networkID !== constants.CHAIN_ID.FANTOM
+                "
                 type="button"
                 class="btn btn-lg btn-block btn-bg-gradient mb-3"
                 [disabled]="true"
@@ -207,7 +210,8 @@
               <button
                 *ngIf="
                   this.tokenAllowance.lt(this.stakeAmount) &&
-                  this.stakeAmount.gt(0)
+                  this.stakeAmount.gt(0) &&
+                  wallet.networkID !== constants.CHAIN_ID.FANTOM
                 "
                 type="button"
                 class="btn btn-lg btn-block btn-bg-gradient mb-3"
@@ -221,7 +225,8 @@
                 *ngIf="
                   this.tokenAllowance.gte(this.stakeAmount) &&
                   this.unstakedMPHBalance.lt(this.stakeAmount) &&
-                  this.stakeAmount.gt(0)
+                  this.stakeAmount.gt(0) &&
+                  wallet.networkID !== constants.CHAIN_ID.FANTOM
                 "
                 type="button"
                 class="btn btn-lg btn-block btn-bg-gradient mb-3"
@@ -234,7 +239,8 @@
                 *ngIf="
                   this.tokenAllowance.gte(this.stakeAmount) &&
                   this.unstakedMPHBalance.gte(this.stakeAmount) &&
-                  this.stakeAmount.gt(0)
+                  this.stakeAmount.gt(0) &&
+                  wallet.networkID !== constants.CHAIN_ID.FANTOM
                 "
                 type="button"
                 class="btn btn-lg btn-block btn-bg-gradient mb-3"
@@ -243,6 +249,15 @@
               >
                 <i class="fe fe-arrow-up mr-2 align-bottom"></i>
                 <ng-container i18n="@@stakeMph">Stake MPH</ng-container>
+              </button>
+              <button
+                type="button"
+                class="btn btn-lg btn-block btn-bg-gradient mb-3"
+                *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM"
+                [disabled]="true"
+              >
+                Staking on Fantom is being depreciated with veMPH. Please
+                Unstake and Convert your MPH.
               </button>
               <div class="row">
                 <div class="col-12 mb-3 mb-lg-0">
