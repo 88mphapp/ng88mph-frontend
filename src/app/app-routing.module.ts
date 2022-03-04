@@ -6,6 +6,7 @@ import { FundingComponent } from './funding/funding.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { TosContentComponent } from './tos-content/tos-content.component';
 import { BridgeComponent } from './bridge/bridge.component';
+import { ConverterComponent } from './bridge/converter/converter.component';
 import { DepositComponent } from './deposit/deposit.component';
 import { FarmingComponent } from './farming/farming.component';
 import { RewardsComponent } from './rewards/rewards.component';
@@ -52,6 +53,10 @@ const routes: Routes = [
   {
     path: 'bridge',
     component: BridgeComponent,
+  },
+  {
+    path: 'convert',
+    component: ConverterComponent,
   },
 ];
 
