@@ -90,7 +90,7 @@ export class BondsComponent implements OnInit {
           loadUser
             ? `funder(id: "${funderID}") {
           address
-          fundings {
+          fundings (first: 1000) {
             nftID
             active
             totalSupply
