@@ -218,16 +218,20 @@ export class BridgeComponent implements OnInit {
   }
 
   bridge() {
+    const user = this.wallet.actualAddress;
     const web3 = this.wallet.readonlyWeb3();
-    const mph = this.contract.getNamedContract(
-      'MPHToken',
-      web3,
-      this.fromChain
-    );
+    const mphAddress = this.constants.MPH_ADDRESS[this.fromChain];
+    const mph =
+      this.fromChain === this.constants.CHAIN_ID.MAINNET
+        ? this.contract.getNamedContract('MPHToken', web3, this.fromChain)
+        : this.contract.getContract(mphAddress, 'AnyswapV5ERC20', web3);
     const bridgeAmount = this.helpers.processWeb3Number(
       this.bridgeAmount.times(this.constants.PRECISION)
     );
-    const func = mph.methods.transfer(this.bridgeAddress, bridgeAmount);
+    const func =
+      this.fromChain === this.constants.CHAIN_ID.MAINNET
+        ? mph.methods.transfer(this.bridgeAddress, bridgeAmount)
+        : mph.methods.Swapout(bridgeAmount, user);
 
     this.wallet.sendTx(
       func,
@@ -251,4 +255,3 @@ export class BridgeComponent implements OnInit {
 
 // TODO:
 // Check that fromChain = networkID before allowing bridge transaction
-// Double check that the bridge actually works
