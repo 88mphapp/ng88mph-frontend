@@ -19,20 +19,30 @@
       >
       <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
-  </div>
-  <div class="card-header">
-    <div class="form-group mb-0">
-      <select
-        [(ngModel)]="PERIOD_NAME"
-        name="period"
-        (change)="changePeriod()"
-        class="custom-select"
-      >
-        <option value="daily" selected>Daily</option>
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-      </select>
-    </div>
+    <button
+      type="button"
+      class="btn btn-sm border-secondary py-0 px-2 m-1"
+      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'daily' }"
+      (click)="changePeriod('daily')"
+    >
+      D
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm border-secondary py-0 px-2 m-1"
+      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'weekly' }"
+      (click)="changePeriod('weekly')"
+    >
+      W
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm border-secondary py-0 px-2 m-1"
+      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'monthly' }"
+      (click)="changePeriod('monthly')"
+    >
+      M
+    </button>
   </div>
   <div class="card-body">
     <div *ngIf="loading" class="d-flex justify-content-center">Loading...</div>

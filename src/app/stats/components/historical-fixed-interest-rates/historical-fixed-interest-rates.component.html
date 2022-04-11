@@ -1,82 +1,88 @@
 <div *ngIf="lineChartData" class="card mb-4 mb-lg-0">
   <div class="card-header">
-    <h4
-      class="card-title mb-0"
-      i18n="@@fixed-rateYield"
-      placement="top"
-      i18n-ngbTooltip="@@fixed-rateYieldText"
-      ngbTooltip="The fixed-rate yield (%) offered on 365-day deposits before accounting for protocol fees. Shorter deposits will receive a higher fixed-rate yield."
-    >
+    <h4 class="card-title mb-0">
       Fixed-Rate Yield
-      <i class="fe fe-info ml-1 align-bottom"></i>
+      <i
+        class="fe fe-info ml-1 align-bottom"
+        i18n="@@fixed-rateYield"
+        placement="top"
+        i18n-ngbTooltip="@@fixed-rateYieldText"
+        ngbTooltip="The fixed-rate yield (%) offered on 365-day deposits before accounting for protocol fees. Shorter deposits will receive a higher fixed-rate yield."
+      ></i>
     </h4>
-  </div>
-  <div class="card-header">
-    <div class="form-row">
-      <div class="col-6">
-        <div class="form-group mb-0 mr-2">
-          <select
-            [(ngModel)]="SELECTED_ASSET"
-            name="selected"
-            (change)="focusAsset()"
-            class="custom-select"
-          >
-            <option value="all" selected>All Assets</option>
-            <option disabled>----------</option>
-            <option
-              *ngFor="
-                let pool of displaySetting === 'all'
-                  ? everythingData
-                  : displaySetting === 'ethereum'
-                  ? ethereumData
-                  : displaySetting === 'polygon'
-                  ? polygonData
-                  : displaySetting === 'avalanche'
-                  ? avalancheData
-                  : displaySetting === 'fantom'
-                  ? fantomData
-                  : displaySetting === 'v2'
-                  ? v2Data
-                  : []
-              "
-              [ngValue]="pool.address"
-            >
-              {{ pool.label }}
-              <ng-container *ngIf="displaySetting === 'all'">
-                --
-                {{
-                  pool.networkID === constants.CHAIN_ID.MAINNET
-                    ? "Ethereum"
-                    : pool.networkID === constants.CHAIN_ID.POLYGON
-                    ? "Polygon"
-                    : pool.networkID === constants.CHAIN_ID.AVALANCHE
-                    ? "Avalanche"
-                    : pool.networkID === constants.CHAIN_ID.FANTOM
-                    ? "Fantom"
-                    : pool.networkID === constants.CHAIN_ID.V2
-                    ? "V2"
-                    : ""
-                }}
-              </ng-container>
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="form-group mb-0 mr-2">
-          <select
-            [(ngModel)]="PERIOD_NAME"
-            name="period"
-            (change)="changePeriod()"
-            class="custom-select"
-          >
-            <option value="daily" selected>Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
-        </div>
-      </div>
-    </div>
+    <select
+      [(ngModel)]="SELECTED_ASSET"
+      name="selected"
+      (change)="focusAsset()"
+      class="
+        custom-select custom-select-sm custom-select-chart
+        border-secondary
+        m-1
+      "
+    >
+      <option value="all" selected>All Assets</option>
+      <option disabled>----------</option>
+      <option
+        *ngFor="
+          let pool of displaySetting === 'all'
+            ? everythingData
+            : displaySetting === 'ethereum'
+            ? ethereumData
+            : displaySetting === 'polygon'
+            ? polygonData
+            : displaySetting === 'avalanche'
+            ? avalancheData
+            : displaySetting === 'fantom'
+            ? fantomData
+            : displaySetting === 'v2'
+            ? v2Data
+            : []
+        "
+        [ngValue]="pool.address"
+      >
+        {{ pool.label }}
+        <ng-container *ngIf="displaySetting === 'all'">
+          --
+          {{
+            pool.networkID === constants.CHAIN_ID.MAINNET
+              ? "Ethereum"
+              : pool.networkID === constants.CHAIN_ID.POLYGON
+              ? "Polygon"
+              : pool.networkID === constants.CHAIN_ID.AVALANCHE
+              ? "Avalanche"
+              : pool.networkID === constants.CHAIN_ID.FANTOM
+              ? "Fantom"
+              : pool.networkID === constants.CHAIN_ID.V2
+              ? "V2"
+              : ""
+          }}
+        </ng-container>
+      </option>
+    </select>
+    <button
+      type="button"
+      class="btn btn-sm border-secondary py-0 px-2 m-1"
+      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'daily' }"
+      (click)="changePeriod('daily')"
+    >
+      D
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm border-secondary py-0 px-2 m-1"
+      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'weekly' }"
+      (click)="changePeriod('weekly')"
+    >
+      W
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm border-secondary py-0 px-2 m-1"
+      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'monthly' }"
+      (click)="changePeriod('monthly')"
+    >
+      M
+    </button>
   </div>
   <div class="card-body">
     <div *ngIf="loading" class="d-flex justify-content-center">Loading...</div>

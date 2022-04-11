@@ -3915,6 +3915,13 @@ input[type="button"].btn-block {
   font-size: 0.9375rem;
 }
 
+.custom-select-chart {
+  width: 150px;
+  text-overflow: ellipsis;
+  height: calc(1.5em + 0.25rem + 1px);
+  line-height: 1.5em;
+}
+
 .custom-file {
   position: relative;
   display: inline-block;
