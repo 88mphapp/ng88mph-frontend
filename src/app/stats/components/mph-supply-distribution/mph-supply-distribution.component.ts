@@ -89,6 +89,10 @@ export class MphSupplyDistributionComponent implements OnInit {
             gridLines: {
               display: false,
             },
+            ticks: {
+              autoSkip: true,
+              autoSkipPadding: 5,
+            },
           },
         ],
         yAxes: [
@@ -409,7 +413,8 @@ export class MphSupplyDistributionComponent implements OnInit {
     return addresses;
   }
 
-  changePeriod() {
+  changePeriod(name: string) {
+    this.PERIOD_NAME = name;
     if (this.PERIOD_NAME === 'daily') {
       this.PERIOD = this.constants.DAY_IN_SEC;
       this.FIRST_INDEX = {

@@ -22,14 +22,14 @@ import { Chart } from 'chart.js';
 export class HistoricalFixedInterestRatesComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1630368000,
-    [this.constants.CHAIN_ID.POLYGON]: 1633392000,
-    [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
-    [this.constants.CHAIN_ID.FANTOM]: 1633996800,
-    [this.constants.CHAIN_ID.V2]: 1606176000,
+    [this.constants.CHAIN_ID.MAINNET]: 1630195200,
+    [this.constants.CHAIN_ID.POLYGON]: 1633219200,
+    [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
+    [this.constants.CHAIN_ID.FANTOM]: 1633824000,
+    [this.constants.CHAIN_ID.V2]: 1606003200,
   };
-  PERIOD: number = this.constants.DAY_IN_SEC;
-  PERIOD_NAME: string = 'daily';
+  PERIOD: number = this.constants.WEEK_IN_SEC;
+  PERIOD_NAME: string = 'weekly';
   SELECTED_ASSET: string = 'all';
   COLORS: string[] = [
     '44, 123, 229',
@@ -134,6 +134,10 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
             gridLines: {
               display: false,
             },
+            ticks: {
+              autoSkip: true,
+              autoSkipPadding: 5,
+            },
           },
         ],
         yAxes: [
@@ -189,7 +193,7 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
           hitRadius: 4,
         },
         line: {
-          tension: 0,
+          tension: 0.4,
           borderWidth: 2,
           hoverBorderWidth: 2,
         },
@@ -251,31 +255,88 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
     }
 
     // generate the query
-    let queryString = `query HistoricalFixedInterestRates {`;
-    queryString += `dpools {
-      address
-      oneYearInterestRate
-    }`;
-    for (let i = 0; i < blocks.length; i++) {
-      queryString += `t${i}: dpools(
-        block: {
-          number: ${blocks[i]}
-        }
-      ) {
-        address
-        oneYearInterestRate
-      }`;
-    }
-    queryString += `}`;
-    const query = gql`
-      ${queryString}
-    `;
+    // let queryString = `query HistoricalFixedInterestRates {`;
+    // queryString += `dpools {
+    //   address
+    //   oneYearInterestRate
+    // }`;
+    // for (let i = 0; i < blocks.length; i++) {
+    //   queryString += `t${i}: dpools(
+    //     block: {
+    //       number: ${blocks[i]}
+    //     }
+    //   ) {
+    //     address
+    //     oneYearInterestRate
+    //   }`;
+    // }
+    // queryString += `}`;
+    // const query = gql`
+    //   ${queryString}
+    // `;
+    // console.log(query);
+    //
+    // // run the query
+    // await request(
+    //   this.constants.BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT[networkID],
+    //   query
+    // ).then((data: QueryResult) => this.handleData(data, networkID));
 
-    // run the query
-    await request(
-      this.constants.BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT[networkID],
-      query
-    ).then((data: QueryResult) => this.handleData(data, networkID));
+    let count = 0;
+    let queries = [];
+    let data = {} as QueryResult;
+
+    // generate an array of queries
+    // @dev each query is limited to 200 blocks to prevent query too large errors
+    while (count < blocks.length) {
+      let limit = blocks.length - count;
+      if (limit > 200) {
+        limit = 200;
+      }
+
+      let queryString = `query HistoricalFixedInterestRates {`;
+      if (count === 0) {
+        queryString += `dpools {
+          address
+          oneYearInterestRate
+        }`;
+      }
+      for (let i = count; i < count + limit; i++) {
+        queryString += `t${i}: dpools(
+          block: {
+            number: ${blocks[i]}
+          }
+        ) {
+          address
+          oneYearInterestRate
+        }`;
+      }
+      queryString += `}`;
+      const query = gql`
+        ${queryString}
+      `;
+
+      queries = [...queries, query];
+      count += limit;
+    }
+
+    // run the queries
+    await Promise.all(
+      queries.map(async (query) => {
+        await request(
+          this.constants.BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT[networkID],
+          query
+        )
+          .then((result: QueryResult) => {
+            data = { ...data, ...result };
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      })
+    ).then(() => {
+      this.handleData(data, networkID);
+    });
   }
 
   handleData(data: QueryResult, networkID: number) {
@@ -297,7 +358,7 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
         label: poolInfo.name,
         address: dpools[i].address,
         networkID: networkID,
-        data: [],
+        data: new Array(Object.keys(result).length - 1).fill(0),
         borderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         hoverBorderColor:
@@ -317,13 +378,6 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
 
     for (let i in result) {
       if (i !== 'dpools') {
-        // initialize the data array
-        for (let d in chainData) {
-          if (chainData[d].label) {
-            chainData[d].data[parseInt(i.substring(1))] = 0;
-          }
-        }
-
         // populate the data array
         for (let d in result[i]) {
           let pool = result[i][d];
@@ -372,7 +426,8 @@ export class HistoricalFixedInterestRatesComponent implements OnInit {
     return readable;
   }
 
-  changePeriod() {
+  changePeriod(name: string) {
+    this.PERIOD_NAME = name;
     if (this.PERIOD_NAME === 'daily') {
       this.PERIOD = this.constants.DAY_IN_SEC;
       this.FIRST_INDEX = {
