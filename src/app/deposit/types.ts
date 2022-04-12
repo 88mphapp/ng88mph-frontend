@@ -14,7 +14,8 @@ export interface AllPool {
 
   // global
   mphDepositorRewardMintMultiplier: BigNumber;
-  maxAPR: BigNumber;
+  monthlyAPR: BigNumber;
+  yearlyAPR: BigNumber;
   mphAPR: BigNumber;
   isBest: boolean;
 
@@ -28,7 +29,8 @@ export interface GlobalPool {
   address: string;
   stablecoin: string;
   mphDepositorRewardMintMultiplier: BigNumber;
-  maxAPR: BigNumber;
+  monthlyAPR: BigNumber;
+  yearlyAPR: BigNumber;
   mphAPR: BigNumber;
   isBest: boolean;
 }
