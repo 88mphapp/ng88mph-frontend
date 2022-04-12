@@ -170,7 +170,8 @@ export class DepositComponent implements OnInit {
         );
         allPool.mphDepositorRewardMintMultiplier =
           globalPool.mphDepositorRewardMintMultiplier;
-        allPool.maxAPR = globalPool.maxAPR;
+        allPool.monthlyAPR = globalPool.monthlyAPR;
+        allPool.yearlyAPR = globalPool.yearlyAPR;
         allPool.mphAPR = globalPool.mphAPR;
         allPool.isBest = globalPool.isBest;
       }
@@ -218,7 +219,8 @@ export class DepositComponent implements OnInit {
 
           // global
           mphDepositorRewardMintMultiplier: new BigNumber(0),
-          maxAPR: new BigNumber(0),
+          monthlyAPR: new BigNumber(0),
+          yearlyAPR: new BigNumber(0),
           mphAPR: new BigNumber(0),
           isBest: false,
 
@@ -352,7 +354,8 @@ export class DepositComponent implements OnInit {
           address: poolInfo.address,
           stablecoin: poolInfo.stablecoin,
           mphDepositorRewardMintMultiplier: mphDepositorRewardMintMultiplier,
-          maxAPR: await this.datas.getPoolMaxAPR(poolInfo.address),
+          monthlyAPR: await this.datas.getPoolAPR(poolInfo.address, 30),
+          yearlyAPR: await this.datas.getPoolAPR(poolInfo.address, 365),
           mphAPR: mphAPR,
           isBest: false,
         };
@@ -365,7 +368,7 @@ export class DepositComponent implements OnInit {
           poolObj.isBest = true;
         } else {
           const bestPool = sameAssetPools.find((x) => x.isBest === true);
-          if (poolObj.maxAPR.gt(bestPool.maxAPR)) {
+          if (poolObj.monthlyAPR.gt(bestPool.monthlyAPR)) {
             bestPool.isBest = false;
             poolObj.isBest = true;
           }
