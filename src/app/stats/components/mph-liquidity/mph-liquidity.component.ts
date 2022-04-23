@@ -14,10 +14,10 @@ import { Chart } from 'chart.js';
 })
 export class MphLiquidityComponent implements OnInit {
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1605744000,
+    [this.constants.CHAIN_ID.MAINNET]: 1605398400,
   };
-  PERIOD: number = this.constants.DAY_IN_SEC;
-  PERIOD_NAME: string = 'daily';
+  PERIOD: number = this.constants.WEEK_IN_SEC;
+  PERIOD_NAME: string = 'weekly';
 
   // data variables
   timeseriesdata: number[][];
@@ -264,17 +264,25 @@ export class MphLiquidityComponent implements OnInit {
     let data = [];
     let bookmark = 0;
 
-    while (bookmark < this.timestamps.length) {
-      const start_date = this.timestamps[bookmark];
+    const bancorTimestamps = (
+      await this.timeseries.getCustomTimeSeries(
+        1605398400,
+        this.constants.DAY_IN_SEC,
+        networkID
+      )
+    )[0];
+
+    while (bookmark < bancorTimestamps.length) {
+      const start_date = bancorTimestamps[bookmark];
       const end_date =
-        this.timestamps.length - bookmark > 360
-          ? this.timestamps[bookmark + 360 - 1]
-          : this.timestamps[this.timestamps.length - 1];
+        bancorTimestamps.length - bookmark > 364
+          ? bancorTimestamps[bookmark + 364 - 1]
+          : bancorTimestamps[bancorTimestamps.length - 1];
 
       const apiStr = `https://api-v2.bancor.network/history/liquidity-depth/?dlt_type=ethereum&token_dlt_id=${this.constants.MPH_ADDRESS[networkID]}&start_date=${start_date}&end_date=${end_date}&interval=day`;
       const result = await this.helpers.httpsGet(apiStr);
       data = data.concat(result.data);
-      bookmark += 360;
+      bookmark += 364;
     }
 
     this.handleBancorData(data, networkID);
