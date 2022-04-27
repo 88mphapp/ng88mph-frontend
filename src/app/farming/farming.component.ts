@@ -18,8 +18,8 @@ export class FarmingComponent implements OnInit {
   BLOCK_TIME_IN_SEC = 14.256; // used for sushi APY
 
   // liquidity mining pool select options
-  selectedPool: string = 'SushiSwap';
-  liquidityPools: Array<string> = ['SushiSwap', 'Uniswap v2', 'Bancor'];
+  selectedPool: string = 'Uniswap v2';
+  liquidityPools: Array<string> = ['Uniswap v2', 'SushiSwap', 'Bancor'];
   bancorSelectedToken: string = 'MPH';
   bancorTokens: Array<string> = ['MPH', 'BNT'];
   stakeAmount: BigNumber;
@@ -38,8 +38,8 @@ export class FarmingComponent implements OnInit {
   monthlyROI: BigNumber;
   weeklyROI: BigNumber;
   dailyROI: BigNumber;
-  rewardStartTime: string;
-  rewardEndTime: string;
+  rewardStartTime: number;
+  rewardEndTime: number;
   active: boolean;
 
   sushiUnstakedLPBalance: BigNumber;
@@ -167,15 +167,13 @@ export class FarmingComponent implements OnInit {
         .periodFinish()
         .call()
         .then((endTime) => {
-          this.rewardStartTime = new Date(
-            (+endTime - this.PERIOD * 24 * 60 * 60) * 1e3
-          ).toLocaleString();
-          this.rewardEndTime = new Date(+endTime * 1e3).toLocaleString();
+          this.rewardStartTime = +endTime - this.PERIOD * 24 * 60 * 60;
+          this.rewardEndTime = +endTime;
         });
 
       this.mphPriceUSD = await this.helpers.getMPHPriceUSD();
       this.mphLPPriceUSD = await this.helpers.getMPHLPPriceUSD();
-      if (parseInt(this.rewardEndTime) >= Date.now() / 1e3) {
+      if (this.rewardEndTime >= Date.now() / 1e3) {
         const secondROI = this.totalRewardPerSecond
           .times(this.mphPriceUSD)
           .div(this.totalStakedMPHBalance.times(this.mphLPPriceUSD))
