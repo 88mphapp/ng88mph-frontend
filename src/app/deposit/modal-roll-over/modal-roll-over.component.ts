@@ -6,7 +6,7 @@ import { ConstantsService } from 'src/app/constants.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 import { ContractService, PoolInfo } from '../../contract.service';
-import { UserDeposit } from '../types';
+import { UserDeposit, AllPool } from '../types';
 
 @Component({
   selector: 'app-modal-roll-over',
@@ -17,6 +17,7 @@ export class ModalRollOverComponent implements OnInit {
   @Input() userDeposit: UserDeposit;
   @Input() poolInfo: PoolInfo;
   @Input() mphDepositorRewardMintMultiplier: BigNumber;
+  @Input() pool: AllPool;
 
   depositAmountToken: BigNumber;
   depositAmountUSD: BigNumber;
@@ -32,6 +33,7 @@ export class ModalRollOverComponent implements OnInit {
   mphRewardAPR: BigNumber;
   depositMaturation: string;
   maxDepositPeriodInDays: number;
+  rewardRate: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -58,7 +60,15 @@ export class ModalRollOverComponent implements OnInit {
     });
   }
 
-  loadData() {
+  async loadData() {
+    // load the reward rate for the pool
+    const vest = this.contract.getNamedContract('Vesting03');
+    let rewardRate = new BigNumber(0);
+    if (vest.options.address) {
+      rewardRate = await vest.methods.rewardRate(this.poolInfo.address).call();
+    }
+    this.rewardRate = rewardRate;
+
     this.depositAmountToken = this.userDeposit.amount.plus(
       this.userDeposit.interest
     );
@@ -117,6 +127,8 @@ export class ModalRollOverComponent implements OnInit {
       day: 'numeric',
       year: 'numeric',
     });
+
+    this.rewardRate = new BigNumber(0);
   }
 
   async updateAPY() {
@@ -165,23 +177,24 @@ export class ModalRollOverComponent implements OnInit {
       this.interestRate = new BigNumber(0);
     }
 
-    // get MPH reward amount
-    this.mphRewardAmountToken = this.mphDepositorRewardMintMultiplier
-      .times(this.depositAmountToken)
-      .times(depositTime);
-    this.mphRewardAmountUSD = this.mphRewardAmountToken.times(this.mphPriceUSD);
-
-    const mphAPY = this.mphRewardAmountToken
-      .times(this.mphPriceUSD)
-      .div(this.depositAmountUSD)
-      .div(depositTime)
+    // calculate the reward APR
+    const mphAPR = this.rewardRate
       .times(this.constants.YEAR_IN_SEC)
+      .times(this.mphPriceUSD)
+      .div(this.pool.totalDeposits.plus(this.userDeposit.interest))
+      .div(this.stablecoinPriceUSD)
       .times(100);
-    if (mphAPY.isNaN()) {
-      this.mphRewardAPR = new BigNumber(0);
-    } else {
-      this.mphRewardAPR = mphAPY;
-    }
+    this.mphRewardAPR = mphAPR.isNaN() ? new BigNumber(0) : mphAPR;
+
+    // estimate the MPH reward amount for the deposit duration
+    const mphAmount = this.rewardRate
+      .times(depositTime)
+      .times(this.depositAmountToken)
+      .div(this.pool.totalDeposits.plus(this.userDeposit.interest));
+    this.mphRewardAmountToken = mphAmount.isNaN()
+      ? new BigNumber(0)
+      : mphAmount;
+    this.mphRewardAmountUSD = this.mphRewardAmountToken.times(this.mphPriceUSD);
   }
 
   setDepositTime(timeInDays: number | string): void {

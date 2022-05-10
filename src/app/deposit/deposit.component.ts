@@ -170,6 +170,8 @@ export class DepositComponent implements OnInit {
         );
         allPool.mphDepositorRewardMintMultiplier =
           globalPool.mphDepositorRewardMintMultiplier;
+        allPool.totalDepositsUSD = globalPool.totalDepositsUSD;
+        allPool.totalDeposits = globalPool.totalDeposits;
         allPool.maxAPR = globalPool.maxAPR;
         allPool.mphAPR = globalPool.mphAPR;
         allPool.isBest = globalPool.isBest;
@@ -218,6 +220,8 @@ export class DepositComponent implements OnInit {
 
           // global
           mphDepositorRewardMintMultiplier: new BigNumber(0),
+          totalDepositsUSD: new BigNumber(0),
+          totalDeposits: new BigNumber(0),
           maxAPR: new BigNumber(0),
           mphAPR: new BigNumber(0),
           isBest: false,
@@ -259,6 +263,7 @@ export class DepositComponent implements OnInit {
       {
         dpools {
           address
+          totalDeposit
           poolDepositorRewardMintMultiplier
         }
       }
@@ -323,8 +328,10 @@ export class DepositComponent implements OnInit {
   async handleGlobalData(data: GlobalQueryResult, networkID: number) {
     if (networkID !== this.wallet.networkID) return;
 
-    let globalPoolList: GlobalPool[] = [];
+    const vest = this.contract.getNamedContract('Vesting03');
     const dpools = data.dpools;
+
+    let globalPoolList: GlobalPool[] = [];
     await Promise.all(
       dpools.map(async (pool) => {
         const poolInfo = this.contract.getPoolInfoFromAddress(
@@ -333,7 +340,6 @@ export class DepositComponent implements OnInit {
         );
         if (poolInfo.protocol === 'Cream') return;
 
-        // get MPH APR
         const stablecoinPrice = await this.datas.getAssetPriceUSD(
           poolInfo.stablecoin,
           networkID
@@ -341,11 +347,20 @@ export class DepositComponent implements OnInit {
         const mphDepositorRewardMintMultiplier = new BigNumber(
           pool.poolDepositorRewardMintMultiplier
         );
-        const mphAPR = mphDepositorRewardMintMultiplier
-          .times(this.datas.mphPriceUSD)
-          .times(this.constants.YEAR_IN_SEC)
-          .div(stablecoinPrice)
-          .times(100);
+
+        // calculate MPH APR (gauge)
+        let mphAPR = new BigNumber(0);
+        // if (vest.options.address) { // actual if statement
+        if (vest.options.address && false) {
+          // used for testing purposes
+          const rewardRate = await vest.methods.rewardRate(pool.address).call();
+          mphAPR = new BigNumber(rewardRate)
+            .times(this.constants.YEAR_IN_SEC)
+            .times(this.datas.mphPriceUSD)
+            .div(pool.totalDeposit)
+            .div(stablecoinPrice)
+            .times(100);
+        }
 
         // create the poolObj
         const poolObj: GlobalPool = {
@@ -355,6 +370,10 @@ export class DepositComponent implements OnInit {
           maxAPR: await this.datas.getPoolMaxAPR(poolInfo.address),
           mphAPR: mphAPR,
           isBest: false,
+          totalDeposits: new BigNumber(pool.totalDeposit),
+          totalDepositsUSD: new BigNumber(pool.totalDeposit).times(
+            stablecoinPrice
+          ),
         };
 
         // update best pool
@@ -405,9 +424,10 @@ export class DepositComponent implements OnInit {
         let userPoolDeposit: BigNumber = new BigNumber(0);
         let userPoolInterest: BigNumber = new BigNumber(0);
 
-        Promise.all(
-          pool.deposits.map((deposit) => {
+        await Promise.all(
+          pool.deposits.map(async (deposit) => {
             const vest = deposit.vest;
+            const vestContract = this.contract.getNamedContract('Vesting03');
             const amount = new BigNumber(deposit.amount); // @dev should virtualTokenTotalSupply/(interestRate + 1) be used?
             const interest = amount.times(deposit.interestRate);
             const interestAPR = interest
@@ -425,54 +445,58 @@ export class DepositComponent implements OnInit {
             let vestObj: Vest;
 
             if (vest) {
-              // @dev chains without rewards won't have a vest
+              // @dev Chains without rewards won't have a vest.
               if (vest.owner === user.address) {
-                // @dev vest hasn't been transferred
-                // calculate reward for deposit
-                reward = new BigNumber(vest.totalExpectedMPHAmount);
-                rewardAPR = reward
-                  .times(this.datas.mphPriceUSD)
-                  .div(amount.times(stablecoinPrice))
-                  .div(
-                    parseInt(deposit.maturationTimestamp) -
-                      parseInt(deposit.depositTimestamp)
-                  )
-                  .times(this.constants.YEAR_IN_SEC)
-                  .times(100);
+                // @dev Vest hasn't been transferred.
+                if (parseInt(vest.lastUpdateTimestamp) === 0) {
+                  // @dev created by Vesting03
+                  claimableReward = new BigNumber(
+                    await vestContract.methods
+                      .getVestWithdrawableAmount(vest.nftID)
+                      .call()
+                  ).div(this.constants.PRECISION);
+                } else {
+                  // @dev created by Vesting02
+                  claimableReward = new BigNumber(
+                    await vestContract.methods
+                      .getVestWithdrawableAmount(vest.nftID)
+                      .call()
+                  ).div(this.constants.PRECISION);
+
+                  // calculate the MPH APR
+                  reward = reward.plus(vest.accumulatedAmount);
+                  const depositTime = parseInt(deposit.depositTimestamp);
+                  const maturationTime = parseInt(deposit.maturationTimestamp);
+                  const lastUpdateTime = parseInt(vest.lastUpdateTimestamp);
+                  if (maturationTime > lastUpdateTime) {
+                    reward = reward.plus(
+                      amount
+                        .times(vest.vestAmountPerStablecoinPerSecond)
+                        .times(maturationTime - lastUpdateTime)
+                    );
+                  }
+                  rewardAPR = reward
+                    .times(this.datas.mphPriceUSD)
+                    .div(amount.times(stablecoinPrice))
+                    .div(maturationTime - depositTime)
+                    .times(this.constants.YEAR_IN_SEC)
+                    .times(100);
+                }
 
                 // create vest object for list
+                // @dev the can probably be trimmed or scrapped completely
                 vestObj = {
                   nftID: parseInt(vest.nftID),
                   vestAmountPerStablecoinPerSecond: new BigNumber(
                     vest.vestAmountPerStablecoinPerSecond
                   ),
-                  totalExpectedMPHAmount: new BigNumber(
-                    vest.totalExpectedMPHAmount
-                  ),
+                  totalExpectedMPHAmount: reward,
                   lastUpdateTimestamp: parseInt(vest.lastUpdateTimestamp),
                   accumulatedAmount: new BigNumber(vest.accumulatedAmount),
                   withdrawnAmount: new BigNumber(vest.withdrawnAmount),
                 };
                 userVestList.push(vestObj);
 
-                // calculate total claimable MPH
-                const currentTimestamp = Math.min(
-                  Math.floor(Date.now() / 1e3),
-                  parseFloat(deposit.maturationTimestamp)
-                );
-                claimableReward = claimableReward
-                  .plus(vest.accumulatedAmount)
-                  .minus(vest.withdrawnAmount);
-                if (currentTimestamp >= parseInt(vest.lastUpdateTimestamp)) {
-                  // @dev add reward since last update
-                  claimableReward = claimableReward.plus(
-                    amount
-                      .times(
-                        currentTimestamp - parseInt(vest.lastUpdateTimestamp)
-                      )
-                      .times(vest.vestAmountPerStablecoinPerSecond)
-                  );
-                }
                 userTotalClaimableReward =
                   userTotalClaimableReward.plus(claimableReward);
 
@@ -499,8 +523,8 @@ export class DepositComponent implements OnInit {
                 interestUSD: interest.times(stablecoinPrice),
                 interestAPR: interestAPR,
 
-                reward: reward,
-                rewardUSD: reward.times(this.datas.mphPriceUSD),
+                reward: claimableReward,
+                rewardUSD: claimableReward.times(this.datas.mphPriceUSD),
                 rewardAPR: rewardAPR,
 
                 virtualTokenTotalSupply: new BigNumber(
@@ -606,6 +630,7 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
       ? dpool.mphDepositorRewardMintMultiplier
       : new BigNumber(0);
+    modalRef.componentInstance.pool = dpool;
   }
 
   openRollOverModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
@@ -620,6 +645,7 @@ export class DepositComponent implements OnInit {
     modalRef.componentInstance.mphDepositorRewardMintMultiplier = dpool
       ? dpool.mphDepositorRewardMintMultiplier
       : new BigNumber(0);
+    modalRef.componentInstance.pool = dpool;
   }
 
   openNFTModal(userDeposit: UserDeposit, poolInfo: PoolInfo) {
@@ -643,7 +669,7 @@ export class DepositComponent implements OnInit {
 
   claimAllRewards() {
     const userVests = this.userVestList;
-    const vestContract = this.contract.getNamedContract('Vesting02');
+    const vestContract = this.contract.getNamedContract('Vesting03');
     let vestIdList = new Array<number>(0);
 
     for (let vest in userVests) {
@@ -657,9 +683,7 @@ export class DepositComponent implements OnInit {
       func,
       () => {},
       () => {},
-      () => {
-        this.router.navigateByUrl('/stake');
-      },
+      () => {},
       (error) => {
         this.wallet.displayGenericError(error);
       }
@@ -744,6 +768,7 @@ export class DepositComponent implements OnInit {
 interface GlobalQueryResult {
   dpools: {
     address: string;
+    totalDeposit: string;
     poolDepositorRewardMintMultiplier: string;
   }[];
 }
