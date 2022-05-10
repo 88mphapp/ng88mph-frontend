@@ -2,10 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import BigNumber from 'bignumber.js';
 import { ConstantsService } from 'src/app/constants.service';
+import { DataService } from 'src/app/data.service';
 import { HelpersService } from 'src/app/helpers.service';
 import { WalletService } from 'src/app/wallet.service';
 import { ContractService, PoolInfo } from '../../contract.service';
-import { UserPool, UserDeposit } from '../types';
+import { UserPool, UserDeposit, AllPool } from '../types';
 
 @Component({
   selector: 'app-modal-top-up',
@@ -16,6 +17,7 @@ export class ModalTopUpComponent implements OnInit {
   @Input() userDeposit: UserDeposit;
   @Input() poolInfo: PoolInfo;
   @Input() mphDepositorRewardMintMultiplier: BigNumber;
+  @Input() pool: AllPool;
 
   depositAmountToken: BigNumber;
   depositAmountUSD: BigNumber;
@@ -25,17 +27,22 @@ export class ModalTopUpComponent implements OnInit {
   interestRate: BigNumber;
   interestAmountToken: BigNumber;
   interestAmountUSD: BigNumber;
-  mphRewardAmountToken: BigNumber;
-  mphRewardAmountUSD: BigNumber;
-  mphRewardAPR: BigNumber;
   depositMaturation: string;
+
+  // new variables
+  topupRewardAPR: BigNumber;
+  totalRewardAPR: BigNumber;
+  topupReward: BigNumber;
+  totalReward: BigNumber;
+  rewardRate: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
     public wallet: WalletService,
     public contract: ContractService,
     public helpers: HelpersService,
-    public constants: ConstantsService
+    public constants: ConstantsService,
+    public data: DataService
   ) {
     this.resetData();
   }
@@ -62,6 +69,14 @@ export class ModalTopUpComponent implements OnInit {
       this.mphPriceUSD = price;
     });
 
+    // fetch the current reward rate for the pool
+    const vest = this.contract.getNamedContract('Vesting03');
+    let rewardRate = new BigNumber(0);
+    if (vest.options.address) {
+      rewardRate = await vest.methods.rewardRate(this.poolInfo.address).call();
+    }
+    this.rewardRate = rewardRate;
+
     const stablecoin = this.contract.getPoolStablecoin(this.poolInfo.name);
     const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);
     this.depositTokenBalance = new BigNumber(
@@ -87,14 +102,17 @@ export class ModalTopUpComponent implements OnInit {
     this.interestRate = new BigNumber(0);
     this.interestAmountToken = new BigNumber(0);
     this.interestAmountUSD = new BigNumber(0);
-    this.mphRewardAmountToken = new BigNumber(0);
-    this.mphRewardAmountUSD = new BigNumber(0);
-    this.mphRewardAPR = new BigNumber(0);
     this.depositMaturation = new Date(Date.now()).toLocaleString('en-US', {
       month: 'long',
       day: 'numeric',
       year: 'numeric',
     });
+
+    this.topupRewardAPR = new BigNumber(0);
+    this.totalRewardAPR = new BigNumber(0);
+    this.topupReward = new BigNumber(0);
+    this.totalReward = new BigNumber(0);
+    this.rewardRate = new BigNumber(0);
   }
 
   async updateAPY() {
@@ -154,21 +172,64 @@ export class ModalTopUpComponent implements OnInit {
     }
 
     // get MPH reward amount
-    this.mphRewardAmountToken = this.mphDepositorRewardMintMultiplier
-      .times(this.depositAmountToken)
-      .times(depositTime);
-    this.mphRewardAmountUSD = this.mphRewardAmountToken.times(this.mphPriceUSD);
+    if (this.userDeposit.vest.lastUpdateTimestamp === 0) {
+      // Vesting03
 
-    const mphAPY = this.mphRewardAmountToken
-      .times(this.mphPriceUSD)
-      .div(this.depositAmountUSD)
-      .div(depositTime)
-      .times(this.constants.YEAR_IN_SEC)
-      .times(100);
-    if (mphAPY.isNaN()) {
-      this.mphRewardAPR = new BigNumber(0);
+      // calculate the reward APR for the pool (including deposit amount)
+      const mphAPR = this.rewardRate
+        .times(this.constants.YEAR_IN_SEC)
+        .times(this.mphPriceUSD)
+        .div(this.pool.totalDeposits.plus(this.depositAmountToken))
+        .div(stablecoinPrice)
+        .times(100);
+      this.topupRewardAPR = mphAPR.isNaN() ? new BigNumber(0) : mphAPR;
+      this.totalRewardAPR = mphAPR.isNaN() ? new BigNumber(0) : mphAPR;
+
+      // calculate the estimated reward for the top up amount
+      const topupReward = this.rewardRate
+        .times(this.depositAmountToken)
+        .times(depositTime)
+        .div(this.pool.totalDeposits.plus(this.depositAmountToken));
+      this.topupReward = topupReward.isNaN() ? new BigNumber(0) : topupReward;
+
+      // calculate the estimated reward for the total deposit
+      // @dev does not include rewards that have already been earned
+      const totalReward = this.rewardRate
+        .times(this.depositAmountToken.plus(this.userDeposit.amount))
+        .times(depositTime)
+        .div(this.pool.totalDeposits.plus(this.depositAmountToken));
+      this.totalReward = totalReward.isNaN() ? new BigNumber(0) : totalReward;
     } else {
-      this.mphRewardAPR = mphAPY;
+      // Vesting02
+
+      // calculate the reward for the top up amount
+      const topupReward = this.mphDepositorRewardMintMultiplier
+        .times(this.depositAmountToken)
+        .times(depositTime);
+      this.topupReward = topupReward.isNaN() ? new BigNumber(0) : topupReward;
+
+      // calculate the reward for the total deposit
+      const vest = this.userDeposit.vest;
+      const totalReward = vest.totalExpectedMPHAmount.plus(this.topupReward);
+      this.totalReward = totalReward.isNaN() ? new BigNumber(0) : totalReward;
+
+      // calculate the reward APR for the top up amount
+      const topupAPR = this.topupReward
+        .times(this.mphPriceUSD)
+        .div(this.depositAmountUSD)
+        .div(depositTime)
+        .times(this.constants.YEAR_IN_SEC)
+        .times(100);
+      this.topupRewardAPR = topupAPR.isNaN() ? new BigNumber(0) : topupAPR;
+
+      // calculate the reward APR for the total deposit
+      const totalAPR = this.totalReward
+        .times(this.mphPriceUSD)
+        .div(this.userDeposit.amountUSD.plus(this.depositAmountUSD))
+        .div(this.userDeposit.depositLength)
+        .times(this.constants.YEAR_IN_SEC)
+        .times(100);
+      this.totalRewardAPR = totalAPR.isNaN() ? new BigNumber(0) : totalAPR;
     }
   }
 
