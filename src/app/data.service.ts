@@ -14,6 +14,8 @@ export class DataService {
   mphPriceUSD: BigNumber = new BigNumber(0);
   daiPriceUSD: BigNumber = new BigNumber(0);
   assetPriceUSD: any = {};
+  poolTVL: any = {};
+  poolTVLUSD: any = {};
 
   constructor(
     public constants: ConstantsService,
@@ -171,11 +173,62 @@ export class DataService {
 
     return new BigNumber(rewardAPR);
   }
+
+  async loadPoolTVL(networkID: number, usd: boolean = false) {
+    const queryString = gql`
+      {
+        dpools {
+          address
+          stablecoin
+          totalDeposit
+        }
+      }
+    `;
+    await request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
+      async (data: QueryResult) => {
+        this.poolTVL[networkID] = {};
+        this.poolTVLUSD[networkID] = {};
+
+        for (const dpool of data.dpools) {
+          const address = dpool.address;
+          const totalDeposit = new BigNumber(dpool.totalDeposit);
+          this.poolTVL[networkID][address] = totalDeposit;
+
+          if (usd) {
+            const stablecoin = dpool.stablecoin;
+            if (totalDeposit.gt(0)) {
+              const price = await this.getAssetPriceUSD(stablecoin, networkID);
+              const totalDepositUSD = totalDeposit.times(price);
+              this.poolTVLUSD[networkID][address] = totalDepositUSD;
+            } else {
+              this.poolTVLUSD[networkID][address] = new BigNumber(0);
+            }
+          }
+        }
+      }
+    );
+    return usd ? this.poolTVLUSD[networkID] : this.poolTVL[networkID];
+  }
+
+  async getPoolTVL(address: string, networkID: number) {
+    if (!this.poolTVL[networkID]) {
+      this.poolTVL[networkID] = {};
+    }
+
+    let poolTVL = this.poolTVL[networkID][address];
+    if (!poolTVL) {
+      await this.loadPoolTVL(networkID);
+      poolTVL = this.poolTVL[networkID][address];
+    }
+    return poolTVL;
+  }
 }
 
 interface QueryResult {
   dpools: {
     address: string;
+    stablecoin: string;
+    totalDeposit: string;
     poolDepositorRewardMintMultiplier: BigNumber;
   }[];
 }
