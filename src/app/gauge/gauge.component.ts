@@ -455,7 +455,7 @@ export class GaugeComponent implements OnInit {
             currentTotalWeight
             futureTotalWeight
           }
-          gauges(orderBy: currentWeight, orderDirection: desc) {
+          gauges(orderBy: futureWeight, orderDirection: desc) {
             address
             currentWeight
             futureWeight
@@ -471,7 +471,7 @@ export class GaugeComponent implements OnInit {
     }
   }
 
-  handleData(data: QueryResult): void {
+  async handleData(data: QueryResult) {
     const now = Math.floor(Date.now() / 1e3);
     const user = data.user;
     const gauges = data.gauges;
@@ -555,6 +555,16 @@ export class GaugeComponent implements OnInit {
       const totalCurrentWeight = new BigNumber(
         gaugeInfo.currentTotalWeight
       ).div(this.constants.PRECISION);
+      const totalFutureWeight = new BigNumber(gaugeInfo.futureTotalWeight).div(
+        this.constants.PRECISION
+      );
+      const globalEmissionRate = await gaugeController.methods
+        .global_emission_rate()
+        .call();
+      const poolTVLUSD = await this.datas.loadPoolTVL(
+        this.wallet.networkID,
+        true
+      );
 
       this.timeLeft = parseInt(gaugeInfo.checkpoint);
       this.timeLeftCountdown = new Timer(this.timeLeft, 'down');
@@ -567,26 +577,61 @@ export class GaugeComponent implements OnInit {
       let chartHoverBackgroundColors: string[] = [];
 
       Promise.all(
-        gauges.map((gauge) => {
+        gauges.map(async (gauge) => {
           const poolInfo = this.contract.getPoolInfoFromGauge(gauge.address);
 
-          const weight = new BigNumber(gauge.currentWeight)
+          let tvlUSD = new BigNumber(0);
+          if (poolInfo) {
+            tvlUSD = poolTVLUSD[poolInfo.address.toLowerCase()];
+          }
+
+          const currentWeight = new BigNumber(gauge.currentWeight)
             .div(totalCurrentWeight)
             .times(100);
+          const futureWeight = new BigNumber(gauge.futureWeight)
+            .div(totalFutureWeight)
+            .times(100);
+
+          const currentEmissions = new BigNumber(globalEmissionRate)
+            .times(currentWeight)
+            .div(100);
+          const futureEmissions = new BigNumber(globalEmissionRate)
+            .times(futureWeight)
+            .div(100);
+
+          let currentAPR = currentEmissions
+            .times(this.constants.YEAR_IN_SEC)
+            .times(this.datas.mphPriceUSD)
+            .div(this.constants.PRECISION)
+            .div(tvlUSD)
+            .times(100);
+          let futureAPR = futureEmissions
+            .times(this.constants.YEAR_IN_SEC)
+            .times(this.datas.mphPriceUSD)
+            .div(this.constants.PRECISION)
+            .div(tvlUSD)
+            .times(100);
+
+          // @dev isNaN() occurs when both the numerator and denominator are 0
+          currentAPR = currentAPR.isNaN() ? new BigNumber(0) : currentAPR;
+          futureAPR = futureAPR.isNaN() ? new BigNumber(0) : futureAPR;
 
           const globalGauge: Gauge = {
             name: poolInfo ? poolInfo.name : 'Unknown',
             address: gauge.address,
-            weight: weight,
-            reward: new BigNumber(0),
+            currentWeight: currentWeight,
+            futureWeight: futureWeight,
+            currentAPR: currentAPR,
+            futureAPR: futureAPR,
             explorerURL: 'https://etherscan.io/address/' + gauge.address,
           };
           globalGauges = [...globalGauges, globalGauge];
 
           // update chart variables
-          if (globalGauge.weight.eq(0)) return;
+          if (globalGauge.currentWeight.eq(0) && globalGauge.futureWeight.eq(0))
+            return;
           const index = (globalGauges.length - 1) % this.COLORS.length;
-          chartData = [...chartData, globalGauge.weight.toNumber()];
+          chartData = [...chartData, globalGauge.futureWeight.toNumber()];
           chartLabels = [...chartLabels, globalGauge.name];
           chartBackgroundColors = [
             ...chartBackgroundColors,
@@ -800,8 +845,8 @@ export class GaugeComponent implements OnInit {
     } else {
       this.gauges =
         event.direction === 'asc'
-          ? [...this.gauges.sort((a, b) => a[column] - b[column])]
-          : [...this.gauges.sort((a, b) => b[column] - a[column])];
+          ? [...this.gauges.sort((a, b) => a[column].minus(b[column]))]
+          : [...this.gauges.sort((a, b) => b[column].minus(a[column]))];
     }
   }
 
@@ -855,8 +900,10 @@ export class GaugeComponent implements OnInit {
 interface Gauge {
   name: string;
   address: string;
-  weight: BigNumber;
-  reward: BigNumber;
+  currentWeight: BigNumber;
+  futureWeight: BigNumber;
+  currentAPR: BigNumber;
+  futureAPR: BigNumber;
   explorerURL: string;
 }
 

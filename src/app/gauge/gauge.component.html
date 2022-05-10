@@ -699,6 +699,7 @@
                 class="d-inline-block ml-auto text-primary small"
                 href="https://docs.88mph.app"
                 i18n="@@help"
+                target="_blank"
                 >Help</a
               >
             </div>
@@ -888,7 +889,7 @@
                     <table
                       mat-table
                       matSort
-                      matSortActive="weight"
+                      matSortActive="futureWeight"
                       matSortDirection="desc"
                       matSortDisableClear
                       [dataSource]="gauges"
@@ -911,24 +912,30 @@
                         </td>
                       </ng-container>
 
-                      <ng-container matColumnDef="weight">
+                      <ng-container matColumnDef="futureWeight">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef>
                           Weight
                         </th>
                         <td mat-cell *matCellDef="let gauge">
-                          {{ gauge.weight.toFormat(2) }}%
+                          <h5 class="mb-1 glowing">
+                            {{ gauge.futureWeight.toFormat(2) }}%
+                          </h5>
+                          <span class="text-secondary small">
+                            {{ gauge.currentWeight.toFormat(2) }}%
+                          </span>
                         </td>
                       </ng-container>
 
-                      <ng-container matColumnDef="reward">
+                      <ng-container matColumnDef="futureAPR">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                          Future MPH APR
+                          MPH APR
                         </th>
                         <td mat-cell *matCellDef="let gauge">
-                          <!-- {{ gauge.reward.toFormat(2) }} -->
-                          <h5 class="mb-1 glowing">00.00% to 00.00%</h5>
+                          <h5 class="mb-1 glowing">
+                            {{ gauge.futureAPR.toFormat(2) }}%
+                          </h5>
                           <span class="text-secondary small">
-                            00.00% to 00.00%
+                            {{ gauge.currentAPR.toFormat(2) }}%
                           </span>
                         </td>
                       </ng-container>
@@ -936,14 +943,14 @@
                       <tr
                         class="text-muted"
                         mat-header-row
-                        *matHeaderRowDef="['name', 'weight', 'reward']"
+                        *matHeaderRowDef="['name', 'futureWeight', 'futureAPR']"
                       ></tr>
                       <tr
                         class="mat-table-row"
                         mat-row
                         *matRowDef="
                           let gauge;
-                          columns: ['name', 'weight', 'reward']
+                          columns: ['name', 'futureWeight', 'futureAPR']
                         "
                       ></tr>
                     </table>
@@ -979,6 +986,7 @@
                 class="d-inline-block ml-auto text-primary small"
                 href="https://docs.88mph.app"
                 i18n="@@help"
+                target="_blank"
                 >Help</a
               >
             </div>
