@@ -230,8 +230,6 @@ export class BondsComponent implements OnInit {
           const yieldTokenPercentage = yieldTokenBalance.div(
             funding.totalSupply
           );
-          console.log('deposit ID: ' + funding.deposit.nftID);
-          console.log('YT percentage: ' + yieldTokenPercentage.toString());
           const maturity = new BigNumber(funding.deposit.maturationTimestamp);
 
           // calculate amount of deposit earning yield
@@ -239,19 +237,11 @@ export class BondsComponent implements OnInit {
             funding.principalPerToken
           );
 
-          console.log('earn yield on: ' + earnYieldOn.toString());
-
-          console.log('deposit amount: ' + funding.deposit.amount);
-          console.log('funded deficit amount: ' + funding.fundedDeficitAmount);
-
           // calculate USD value of yield tokens
           const interestRate = new BigNumber(funding.deposit.interestRate);
           const feeRate = new BigNumber(funding.deposit.feeRate);
           const fundedDepositAmount = earnYieldOn.div(
             interestRate.plus(feeRate).plus(1)
-          );
-          console.log(
-            'funded deposit amount: ' + fundedDepositAmount.toString()
           );
           const yieldTokenBalanceUSD2 = earnYieldOn
             .minus(fundedDepositAmount)
@@ -264,20 +254,12 @@ export class BondsComponent implements OnInit {
           )
             .times(yieldTokenPercentage)
             .times(stablecoinPrice);
-          console.log(
-            'yield token balance: ' + yieldTokenBalanceUSD.toString()
-          );
-          console.log(
-            'yield token balance 2: ' + yieldTokenBalanceUSD2.toString()
-          );
-
-          console.log(stablecoinPrice.toString());
 
           // calculate amount of yield earned
           let yieldEarned = new BigNumber(0);
 
           // some will have been accrued, which is equally split among yield token holders
-          let funderAccruedInterest;
+          let funderAccruedInterest = new BigNumber(0);
           await lens.methods
             .accruedInterestOfFunding(funding.pool.address, funding.nftID)
             .call()
@@ -288,6 +270,16 @@ export class BondsComponent implements OnInit {
               funderAccruedInterest =
                 fundingTotalAccruedInterest.times(yieldTokenPercentage);
               yieldEarned = yieldEarned.plus(funderAccruedInterest);
+              // console.log('______success______');
+              // console.log(funding.pool.address);
+              // console.log(funding.nftID);
+            })
+            .catch((error) => {
+              // console.log('______ERROR______');
+              // console.log(funding.pool.address);
+              // console.log(funding.nftID);
+              // console.log(error);
+              return;
             });
 
           // some will have been paid out already
