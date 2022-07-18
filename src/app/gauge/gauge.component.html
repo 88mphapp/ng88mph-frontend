@@ -21,10 +21,10 @@
         <div class="card mb-5 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase" i18n="@@">MPH balance</h5>
+            <h5 i18n="@@">80MPH-20WETH balance</h5>
 
             <!-- Heading -->
-            <h2 class="mb-2 glowing">{{ mphBalance.toFormat(4) }}</h2>
+            <h2 class="mb-2 glowing">{{ balBalance.toFormat(4) }}</h2>
             <!-- <h5 class="mb-3 text-white">
               ${{ mphBalance.times(datas.mphPriceUSD).toFormat(4) }}
             </h5> -->
@@ -51,11 +51,11 @@
         <div class="card mb-5 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase" i18n="@@">MPH locked</h5>
+            <h5 i18n="@@">80MPH-20WETH locked</h5>
 
             <!-- Heading -->
-            <h2 class="mb-2 glowing">{{ mphLocked.toFormat(4) }}</h2>
-            <div class="h5 mb-3 text-white" *ngIf="mphLocked.gt(0)">
+            <h2 class="mb-2 glowing">{{ balLocked.toFormat(4) }}</h2>
+            <div class="h5 mb-3 text-white" *ngIf="balLocked.gt(0)">
               Locked Until:
               <br />
               {{ timestampToDateString(lockEnd) }}
@@ -65,16 +65,16 @@
         <div class="card mb-5 mb-lg-0">
           <div class="card-body">
             <!-- Title -->
-            <h5 class="text-uppercase" i18n="@@">MPH unlocked</h5>
+            <h5 i18n="@@">80MPH-20WETH unlocked</h5>
 
             <!-- Heading -->
-            <h2 class="mb-2 glowing">{{ mphUnlocked.toFormat(4) }}</h2>
+            <h2 class="mb-2 glowing">{{ balUnlocked.toFormat(4) }}</h2>
             <!-- <h5 class="mb-3 text-white">${{ mphUnlocked.times(datas.mphPriceUSD).toFormat(4) }}</h5> -->
             <!-- Button -->
             <button
               type="button"
               class="btn btn-sm btn-bg-gradient"
-              *ngIf="mphUnlocked.gt(0)"
+              *ngIf="balUnlocked.gt(0)"
               (click)="withdraw()"
             >
               <i class="fe fe-arrow-down mr-2 align-bottom"></i>
@@ -121,9 +121,9 @@
       <div class="row d-lg-none my-5">
         <div class="col-6">
           <!-- Title -->
-          <h5 class="text-uppercase" i18n="@@">MPH balance</h5>
+          <h5 class="text-uppercase" i18n="@@">80MPH-20WETH balance</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ mphBalance.toFormat(2) }}</h2>
+          <h2 class="mb-2 glowing">{{ balBalance.toFormat(2) }}</h2>
           <!-- Title -->
           <h5 class="text-uppercase" i18n="@@valueInMph">veMPH balance</h5>
           <!-- Heading -->
@@ -131,18 +131,18 @@
         </div>
         <div class="col-6">
           <!-- Title -->
-          <h5 class="text-uppercase">MPH locked</h5>
+          <h5 class="text-uppercase">80MPH-20WETH locked</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ mphLocked.toFormat(2) }}</h2>
+          <h2 class="mb-2 glowing">{{ balLocked.toFormat(2) }}</h2>
           <!-- Title -->
-          <h5 class="text-uppercase">MPH unlocked</h5>
+          <h5 class="text-uppercase">balMPH unlocked</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ mphUnlocked.toFormat(2) }}</h2>
+          <h2 class="mb-2 glowing">{{ balUnlocked.toFormat(2) }}</h2>
           <!-- Button -->
           <button
             type="button"
             class="btn btn-sm btn-bg-gradient"
-            *ngIf="mphUnlocked.gt(0)"
+            *ngIf="balUnlocked.gt(0)"
             (click)="withdraw()"
           >
             <i class="fe fe-arrow-down mr-2 align-bottom"></i>
@@ -189,8 +189,8 @@
                     <div class="col ml-n2">
                       <div class="form-group mb-2">
                         <label
-                          >MPH amount to lock in order to vote for gauge
-                          weights</label
+                          >80MPH-20WETH amount to lock in order to vote for
+                          gauge weights</label
                         >
                         <div class="input-group">
                           <input
@@ -233,7 +233,7 @@
                         100%
                       </button>
                       <small class="text-white mb-0">
-                        {{ mphBalance.toFormat(4) }} MPH available
+                        {{ balBalance.toFormat(4) }} 80MPH-20WETH available
                       </small>
                       <button
                         type="button"
@@ -246,18 +246,18 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
-                        *ngIf="veBalance.gt(0) && lockAmount.gt(mphBalance)"
+                        *ngIf="veBalance.gt(0) && lockAmount.gt(balBalance)"
                         [disabled]="true"
                       >
-                        Not Enough MPH Available
+                        Not Enough 80MPH-20WETH Available
                       </button>
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient mb-3"
                         *ngIf="
                           veBalance.gt(0) &&
-                          lockAmount.lte(mphBalance) &&
-                          lockAmount.gt(mphAllowance)
+                          lockAmount.lte(balBalance) &&
+                          lockAmount.gt(balAllowance)
                         "
                         (click)="approve()"
                       >
@@ -269,8 +269,8 @@
                         *ngIf="
                           veBalance.gt(0) &&
                           lockAmount.gt(0) &&
-                          lockAmount.lte(mphBalance) &&
-                          lockAmount.lte(mphAllowance)
+                          lockAmount.lte(balBalance) &&
+                          lockAmount.lte(balAllowance)
                         "
                         (click)="increaseLockAmount()"
                       >
@@ -396,18 +396,18 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
-                        *ngIf="veBalance.eq(0) && lockAmount.gt(mphBalance)"
+                        *ngIf="veBalance.eq(0) && lockAmount.gt(balBalance)"
                         [disabled]="true"
                       >
-                        Not Enough MPH Available
+                        Not Enough 80MPH-20WETH Available
                       </button>
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
                         *ngIf="
                           veBalance.eq(0) &&
-                          lockAmount.lte(mphBalance) &&
-                          lockAmount.gt(mphAllowance)
+                          lockAmount.lte(balBalance) &&
+                          lockAmount.gt(balAllowance)
                         "
                         (click)="approve()"
                       >
@@ -427,8 +427,8 @@
                         *ngIf="
                           veBalance.eq(0) &&
                           lockAmount.gt(0) &&
-                          lockAmount.lte(mphBalance) &&
-                          lockAmount.lte(mphAllowance) &&
+                          lockAmount.lte(balBalance) &&
+                          lockAmount.lte(balAllowance) &&
                           validLockDuration()
                         "
                         (click)="createLock()"
@@ -756,13 +756,19 @@
                   >
                     <span *ngIf="userChartData" class="w-100">
                       <h2
-                        *ngIf="loadingUser"
+                        *ngIf="!wallet.userAddress"
+                        class="d-flex justify-content-center"
+                      >
+                        Connect a Wallet
+                      </h2>
+                      <h2
+                        *ngIf="wallet.userAddress && loadingUser"
                         class="d-flex justify-content-center"
                       >
                         Loading...
                       </h2>
                       <canvas
-                        *ngIf="!loadingUser"
+                        *ngIf="wallet.userAddress && !loadingUser"
                         baseChart
                         [chartType]="chartType"
                         [legend]="chartLegend"
@@ -776,7 +782,9 @@
                   </div>
                   <div
                     class="d-flex justify-content-center align-items-center"
-                    *ngIf="!loadingUser && votePowerUsed.lte(0)"
+                    *ngIf="
+                      wallet.userAddress && !loadingUser && votePowerUsed.lte(0)
+                    "
                   >
                     You haven't voted for any gauges yet
                   </div>

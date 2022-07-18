@@ -21,7 +21,8 @@
     "veMPH": "0xc8418aF6358FFddA74e09Ca9CC3Fe03Ca6aDC5b0",
     "veMPHYieldDistributor": "0xc6764e58b36e26b08Fd1d2AeD4538c02171fA872",
     "MPHGaugeController": "0x3669C421b77340B2979d1A00a792CC2ee0FcE737",
-    "MPHGaugeRewardDistributor": "0x278dC748edA1d8eFEf1aDFB518542612b49Fcd34"
+    "MPHGaugeRewardDistributor": "0x278dC748edA1d8eFEf1aDFB518542612b49Fcd34",
+    "balMPH": "0x3E09E828c716c5e2BC5034EeD7d5eC8677ffba18"
   },
   "4": {
     "MPHMinter": "0x2534b0a1a49b31f982881F3cb2909eCC6aEc2365",

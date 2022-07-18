@@ -245,6 +245,13 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
   };
+  BALMPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '0x3E09E828c716c5e2BC5034EeD7d5eC8677ffba18',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
   VEMPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '0xc8418aF6358FFddA74e09Ca9CC3Fe03Ca6aDC5b0',
     [this.CHAIN_ID.RINKEBY]: '',

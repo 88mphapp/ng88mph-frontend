@@ -42,13 +42,13 @@ export class GaugeComponent implements OnInit {
   // user
   userGauges: UserGauge[];
 
-  mphBalance: BigNumber; // MPH balance in wallet
-  mphAllowance: BigNumber; // MPH allowance for veMPH
+  balBalance: BigNumber; // balMPH balance in wallet
+  balAllowance: BigNumber; // balMPH allowance for veMPH
 
   veBalance: BigNumber;
   veRewards: BigNumber;
-  mphLocked: BigNumber;
-  mphUnlocked: BigNumber;
+  balLocked: BigNumber;
+  balUnlocked: BigNumber;
 
   lockEnd: number; // timestamp when user's lock ends
   lockAmount: BigNumber; // amount of MPH to lock
@@ -149,10 +149,10 @@ export class GaugeComponent implements OnInit {
 
   resetData(resetUser: boolean, resetGlobal: boolean): void {
     if (resetUser) {
-      this.mphLocked = new BigNumber(0);
-      this.mphBalance = new BigNumber(0);
-      this.mphAllowance = new BigNumber(0);
-      this.mphUnlocked = new BigNumber(0);
+      this.balLocked = new BigNumber(0);
+      this.balBalance = new BigNumber(0);
+      this.balAllowance = new BigNumber(0);
+      this.balUnlocked = new BigNumber(0);
       this.veBalance = new BigNumber(0);
       this.veRewards = new BigNumber(0);
       this.lockEnd = 0;
@@ -207,7 +207,7 @@ export class GaugeComponent implements OnInit {
     const now = Math.floor(Date.now() / 1e3);
     const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
     const address = this.wallet.actualAddress.toLowerCase();
-    // const address = '0x10c16c7b8b1ddcfe65990ec822de4379dd8a86de';
+    // const address = '0xef456ac918201e967b0b209f3b6c89a0b1b7d1cc';
 
     const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
@@ -223,11 +223,12 @@ export class GaugeComponent implements OnInit {
     );
 
     if (loadUser && address) {
+      // this.loadingUser = true;
       const userContext: ContractCallContext[] = [
         {
-          reference: 'MPH',
-          contractAddress: this.constants.MPH_ADDRESS[this.wallet.networkID],
-          abi: require(`src/assets/abis/MPHToken.json`),
+          reference: 'balMPH',
+          contractAddress: this.constants.BALMPH_ADDRESS[this.wallet.networkID],
+          abi: require(`src/assets/abis/balMPH.json`),
           calls: [
             {
               reference: 'User Balance',
@@ -275,14 +276,14 @@ export class GaugeComponent implements OnInit {
 
       multicall.call(userContext).then((userResults) => {
         // handle MPH results
-        const mphResults = userResults.results.MPH.callsReturnContext;
+        const balResults = userResults.results.balMPH.callsReturnContext;
 
-        const mphBalance = new BigNumber(mphResults[0].returnValues[0].hex);
-        this.mphBalance = mphBalance.div(this.constants.PRECISION);
-        this.setLockAmount(this.mphBalance);
+        const balBalance = new BigNumber(balResults[0].returnValues[0].hex);
+        this.balBalance = balBalance.div(this.constants.PRECISION);
+        this.setLockAmount(this.balBalance);
 
-        const mphAllowance = new BigNumber(mphResults[1].returnValues[0].hex);
-        this.mphAllowance = mphAllowance.div(this.constants.PRECISION);
+        const balAllowance = new BigNumber(balResults[1].returnValues[0].hex);
+        this.balAllowance = balAllowance.div(this.constants.PRECISION);
 
         // handle veMPH results
         const veResults = userResults.results.veMPH.callsReturnContext;
@@ -294,11 +295,11 @@ export class GaugeComponent implements OnInit {
         this.lockEnd = parseInt(veResults[1].returnValues[1].hex);
 
         if (this.lockEnd > now) {
-          this.mphLocked = amount.div(this.constants.PRECISION);
+          this.balLocked = amount.div(this.constants.PRECISION);
           this.maxLockDuration =
             this.constants.YEAR_IN_SEC * 4 - (this.lockEnd - now);
         } else {
-          this.mphUnlocked = amount.div(this.constants.PRECISION);
+          this.balUnlocked = amount.div(this.constants.PRECISION);
           this.maxLockDuration = this.constants.YEAR_IN_SEC * 4;
         }
 
@@ -456,6 +457,7 @@ export class GaugeComponent implements OnInit {
             futureTotalWeight
           }
           gauges(orderBy: futureWeight, orderDirection: desc) {
+            id
             address
             currentWeight
             futureWeight
@@ -666,7 +668,7 @@ export class GaugeComponent implements OnInit {
 
   presetLockAmount(percent: string | number): void {
     const ratio = new BigNumber(percent).div(100);
-    this.lockAmount = this.mphBalance.times(ratio);
+    this.lockAmount = this.balBalance.times(ratio);
   }
 
   setLockDuration(duration: string | number): void {
@@ -685,25 +687,25 @@ export class GaugeComponent implements OnInit {
 
   approve(): void {
     const user = this.wallet.actualAddress;
-    const mph = this.contract.getNamedContract('MPHToken');
+    const balMPH = this.contract.getNamedContract('balMPH');
     const lockAmount = this.helpers.processWeb3Number(
       this.lockAmount.times(this.constants.PRECISION)
     );
 
     this.wallet.approveToken(
-      mph,
+      balMPH,
       this.constants.VEMPH_ADDRESS[this.wallet.networkID],
       lockAmount,
       () => {},
       () => {},
       async () => {
         const web3 = this.wallet.httpsWeb3();
-        const mph = this.contract.getNamedContract('MPHToken', web3);
-        await mph.methods
+        const balMPH = this.contract.getNamedContract('balMPH', web3);
+        await balMPH.methods
           .allowance(user, this.constants.VEMPH_ADDRESS[this.wallet.networkID])
           .call()
           .then((result) => {
-            this.mphAllowance = new BigNumber(result).div(
+            this.balAllowance = new BigNumber(result).div(
               this.constants.PRECISION
             );
           });
@@ -716,7 +718,7 @@ export class GaugeComponent implements OnInit {
   }
 
   createLock(): void {
-    const mph = this.contract.getNamedContract('MPHToken');
+    const balmph = this.contract.getNamedContract('balMPH');
     const vemph = this.contract.getNamedContract('veMPH');
 
     const lockAmount = this.helpers.processWeb3Number(
@@ -730,7 +732,7 @@ export class GaugeComponent implements OnInit {
 
     this.wallet.sendTxWithToken(
       func,
-      mph,
+      balmph,
       this.constants.VEMPH_ADDRESS[this.wallet.networkID],
       lockAmount,
       () => {},
@@ -743,7 +745,7 @@ export class GaugeComponent implements OnInit {
   }
 
   increaseLockAmount(): void {
-    const mph = this.contract.getNamedContract('MPHToken');
+    const balmph = this.contract.getNamedContract('balMPH');
     const vemph = this.contract.getNamedContract('veMPH');
     const lockAmount = this.helpers.processWeb3Number(
       this.lockAmount.times(this.constants.PRECISION)
@@ -752,7 +754,7 @@ export class GaugeComponent implements OnInit {
 
     this.wallet.sendTxWithToken(
       func,
-      mph,
+      balmph,
       this.constants.VEMPH_ADDRESS[this.wallet.networkID],
       lockAmount,
       () => {},
