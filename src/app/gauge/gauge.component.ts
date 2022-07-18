@@ -587,12 +587,34 @@ export class GaugeComponent implements OnInit {
             tvlUSD = poolTVLUSD[poolInfo.address.toLowerCase()];
           }
 
-          const currentWeight = new BigNumber(gauge.currentWeight)
-            .div(totalCurrentWeight)
-            .times(100);
-          const futureWeight = new BigNumber(gauge.futureWeight)
-            .div(totalFutureWeight)
-            .times(100);
+          // @dev using subgraph (when futureWeight values are correct)
+          // const currentWeight = new BigNumber(gauge.currentWeight)
+          //   .div(totalCurrentWeight)
+          //   .times(100);
+          // const futureWeight = new BigNumber(gauge.futureWeight)
+          //   .div(totalFutureWeight)
+          //   .times(100);
+
+          // using contract calls (when futureWeight values are incorrect)
+          const currentWeight = await gaugeController.methods
+            .points_weight(
+              gauge.address,
+              +gaugeInfo.checkpoint - this.constants.WEEK_IN_SEC
+            )
+            .call()
+            .then((result) => {
+              return new BigNumber(result.bias)
+                .div(totalCurrentWeight)
+                .times(100);
+            });
+          const futureWeight = await gaugeController.methods
+            .points_weight(gauge.address, +gaugeInfo.checkpoint)
+            .call()
+            .then((result) => {
+              return new BigNumber(result.bias)
+                .div(totalFutureWeight)
+                .times(100);
+            });
 
           const currentEmissions = new BigNumber(globalEmissionRate)
             .times(currentWeight)
@@ -632,19 +654,37 @@ export class GaugeComponent implements OnInit {
           // update chart variables
           if (globalGauge.currentWeight.eq(0) && globalGauge.futureWeight.eq(0))
             return;
-          const index = (globalGauges.length - 1) % this.COLORS.length;
-          chartData = [...chartData, globalGauge.futureWeight.toNumber()];
-          chartLabels = [...chartLabels, globalGauge.name];
+          // @dev use if subgraph returns correct values for futureWeight
+          // const index = (globalGauges.length - 1) % this.COLORS.length;
+          // chartData = [...chartData, globalGauge.futureWeight.toNumber()];
+          // chartLabels = [...chartLabels, globalGauge.name];
+          // chartBackgroundColors = [
+          //   ...chartBackgroundColors,
+          //   'rgba(' + this.COLORS[index] + ', 0.5)',
+          // ];
+          // chartHoverBackgroundColors = [
+          //   ...chartHoverBackgroundColors,
+          //   'rgba(' + this.COLORS[index] + ', 1)',
+          // ];
+        })
+      ).then(() => {
+        // @dev use if subgraph returns incorrect values for futureWeight
+        globalGauges.sort((a, b) =>
+          a.futureWeight.gt(b.futureWeight) ? -1 : 1
+        );
+        globalGauges.map((gauge, index) => {
+          chartData = [...chartData, gauge.futureWeight.toNumber()];
+          chartLabels = [...chartLabels, gauge.name];
           chartBackgroundColors = [
             ...chartBackgroundColors,
-            'rgba(' + this.COLORS[index] + ', 0.5)',
+            'rgba(' + this.COLORS[index % this.COLORS.length] + ', 0.5)',
           ];
           chartHoverBackgroundColors = [
             ...chartHoverBackgroundColors,
-            'rgba(' + this.COLORS[index] + ', 1)',
+            'rgba(' + this.COLORS[index % this.COLORS.length] + ', 1)',
           ];
-        })
-      ).then(() => {
+        });
+
         this.gauges = globalGauges;
         this.protocolChartLabels = chartLabels;
         this.protocolChartData = [
