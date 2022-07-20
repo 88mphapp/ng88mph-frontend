@@ -15,7 +15,7 @@ import { Chart } from 'chart.js';
 export class MphSupplyDistributionComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1605398400,
+    [this.constants.CHAIN_ID.MAINNET]: 1605834000,
   };
   PERIOD: number = this.constants.WEEK_IN_SEC;
   PERIOD_NAME: string = 'weekly';
@@ -417,19 +417,10 @@ export class MphSupplyDistributionComponent implements OnInit {
     this.PERIOD_NAME = name;
     if (this.PERIOD_NAME === 'daily') {
       this.PERIOD = this.constants.DAY_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1605744000,
-      };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1605398400,
-      };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1604188800,
-      };
     }
 
     this.resetChart();
