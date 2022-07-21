@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit {
   mphBalance: BigNumber;
   convertableBalance: BigNumber;
   xMPHBalance: BigNumber;
+  veMPHBalance: BigNumber;
   acceptedTerms: boolean;
   watchedModel = new Watch(false, '');
 
@@ -76,6 +77,7 @@ export class HeaderComponent implements OnInit {
     if (loadUser && address) {
       const mph = this.contract.getNamedContract('MPHToken', web3);
       const xmph = this.contract.getNamedContract('xMPH', web3);
+      const vemph = this.contract.getNamedContract('veMPH', web3);
       const convertableMPH = this.contract.getContract(
         this.constants.FOREIGN_MPH_ADDRESS[this.wallet.networkID],
         'ERC20',
@@ -97,6 +99,16 @@ export class HeaderComponent implements OnInit {
           .call()
           .then((balance) => {
             this.xMPHBalance = new BigNumber(balance).div(
+              this.constants.PRECISION
+            );
+          });
+      }
+      if (vemph.options.address) {
+        vemph.methods
+          .balanceOf(address)
+          .call()
+          .then((balance) => {
+            this.veMPHBalance = new BigNumber(balance).div(
               this.constants.PRECISION
             );
           });
@@ -130,6 +142,7 @@ export class HeaderComponent implements OnInit {
       this.mphBalance = new BigNumber(0);
       this.convertableBalance = new BigNumber(0);
       this.xMPHBalance = new BigNumber(0);
+      this.veMPHBalance = new BigNumber(0);
     }
 
     if (resetGlobal) {
