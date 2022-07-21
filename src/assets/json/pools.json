@@ -9,7 +9,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/dai.svg",
       "moneyMarket": "0x692eba0d114cCb1E3866780cE60a1Df608b24d81",
-      "gauge": "0x3EF26504dbc8Dd7B7aa3E97Bc9f3813a9FC0B4B0"
+      "gauge": ""
     },
     "cUNI": {
       "name": "cUNI",
@@ -20,7 +20,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/uni.svg",
       "moneyMarket": "0xd075B01fb24e57e3e7bB4Df712bcD8c0a43e1897",
-      "gauge": "0x3e14f6EEDCC5Bc1d0Fc7B20B45eAE7B1F74a6AeC"
+      "gauge": ""
     },
     "cLINK": {
       "name": "cLINK",
@@ -31,7 +31,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/link.svg",
       "moneyMarket": "0xA426d1C4250139B9B1C7257715e88dF59D7821df",
-      "gauge": "0xF22471AC2156B489CC4a59092c56713F813ff53e"
+      "gauge": ""
     },
     "cBAT": {
       "name": "cBAT",
@@ -42,7 +42,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/bat.svg",
       "moneyMarket": "0x7fAfdd171907d2eB9A03bdDAFCF3B7deaFE78D13",
-      "gauge": "0xb4Ab0dE6581FBD3A02cF8f9f265138691c3A7d5D"
+      "gauge": ""
     },
     "cCOMP": {
       "name": "cCOMP",
@@ -53,7 +53,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/comp.svg",
       "moneyMarket": "0x571e4cA449621AE16348C430d14c2Df460Df055C",
-      "gauge": "0xEB81b86248d3C2b618CcB071ADB122109DA96Da2"
+      "gauge": ""
     },
     "cUSDT": {
       "name": "cUSDT",
@@ -64,7 +64,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/usdt.png",
       "moneyMarket": "0x8579cA27cCf55804A8982432Df2182E53148fee8",
-      "gauge": "0xcdfc491804A420b677f8e788B5157856910E2F6f"
+      "gauge": ""
     },
     "cWBTC": {
       "name": "cWBTC",
@@ -75,7 +75,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/wbtc.svg",
       "moneyMarket": "0x40d77Ee34e81eC77F651e79594efc7f33FC5695C",
-      "gauge": "0x0A53544b2194Dd8Ebc62c779043fc0624705BB56"
+      "gauge": ""
     },
     "cZRX": {
       "name": "cZRX",
@@ -86,7 +86,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/zrx.svg",
       "moneyMarket": "0x983fD4988f6c6b8044EFC6137eE4aB611846c8b8",
-      "gauge": "0xf8caEd1943B15B877D7105B9906a618c154f69E8"
+      "gauge": ""
     },
     "cTUSD": {
       "name": "cTUSD",
@@ -97,7 +97,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/tusd.svg",
       "moneyMarket": "0xbcd502900E13cB3992Daba98431B083F3Ad56C85",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "cUSDC": {
       "name": "cUSDC",
@@ -108,7 +108,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/usdc.svg",
       "moneyMarket": "0xA62F05e3B72c0Aec2A01Bc9343F92fd4B4a22DbB",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aDAI": {
       "name": "aDAI",
@@ -119,7 +119,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aDAI.svg",
       "moneyMarket": "0x011735Dc889446b9582b6E7a9B792E2a0D11f56d",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aUSDC": {
       "name": "aUSDC",
@@ -130,7 +130,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aUSDC.svg",
       "moneyMarket": "0x9Aa09d36be9BCEeE36B3Dc81C0A5137eCF7Ea13B",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aUSDT": {
       "name": "aUSDT",
@@ -141,7 +141,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aUSDT.svg",
       "moneyMarket": "0x1E98FC27B8e3109D8A426B7A1340C74A4d403fA8",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aBAL": {
       "name": "aBAL",
@@ -152,7 +152,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/bal.svg",
       "moneyMarket": "0x79E554C00A41D4718da04D3AdBebe21d9E677CF3",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aCRV": {
       "name": "aCRV",
@@ -163,7 +163,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/crv.svg",
       "moneyMarket": "0xcFc17cA3F0c946021afF212eE5219dB56469eB2c",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aGUSD": {
       "name": "aGUSD",
@@ -174,7 +174,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/gusd.svg",
       "moneyMarket": "0xA137a6DE1097F7Ab3e3792776246F5E1a93cb02A",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aLINK": {
       "name": "aLINK",
@@ -185,7 +185,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/link.svg",
       "moneyMarket": "0x4424B43D945906C66f6B5891337C5c2cF611c6be",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aRAI": {
       "name": "aRAI",
@@ -196,7 +196,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/rai.svg",
       "moneyMarket": "0x9F4009B5A95486e0759A2449558Fe0DbcBd23c87",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aREN": {
       "name": "aREN",
@@ -207,7 +207,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/ren.svg",
       "moneyMarket": "0xbEf20b63C87031279E850281d21762Ca0b9D66b8",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aSNX": {
       "name": "aSNX",
@@ -218,7 +218,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/snx.svg",
       "moneyMarket": "0xEeDbE79DE6CD498d051A632F22DD89D472876e8F",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aTUSD": {
       "name": "aTUSD",
@@ -229,7 +229,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/tusd.svg",
       "moneyMarket": "0x5CC2cE1A68Ed9b25BAB67C0ca1D0e7890953A454",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aUSDP": {
       "name": "aUSDP",
@@ -240,7 +240,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/usdp.svg",
       "moneyMarket": "0x5ae6269e5F7ab0cD18fAf4A33571AF4750c8e911",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aWBTC": {
       "name": "aWBTC",
@@ -251,7 +251,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/wbtc.svg",
       "moneyMarket": "0xf5a08729E7984902424Fb4957885E624fC7f444C",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aWETH": {
       "name": "aWETH",
@@ -262,7 +262,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/weth.svg",
       "moneyMarket": "0x2D9028e833645858E292d1d7DEAfDBdCd8555200",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aYFI": {
       "name": "aYFI",
@@ -273,7 +273,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/yfi.svg",
       "moneyMarket": "0xa62E73eaA3e96D353714f6e6faCb883E2Dbd43c1",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "aSUSD": {
       "name": "aSUSD",
@@ -284,7 +284,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/susd.svg",
       "moneyMarket": "0x2ED6D534aeF5285196c004F11F2fBc8246752783",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "harvestCRVRENWBTC": {
       "name": "harvestCRVRENWBTC",
@@ -295,7 +295,7 @@
       "protocol": "Harvest",
       "iconPath": "assets/img/token-icons/btc.svg",
       "moneyMarket": "0x4942f85bb088F50094f231f43Cd11803846ffC29",
-      "gauge": "0x0000000000000000000000000000000000000000",
+      "gauge": "",
       "stakingPool": "0xA3Cf8D1CEe996253FAD1F8e3d68BDCba7B3A3Db5"
     },
     "bDAI": {
@@ -307,7 +307,7 @@
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/dai.svg",
       "moneyMarket": "0x85C2AcCaEEcA93e09bc9AEbb60d59A920aae92Fd",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "bUSDC": {
       "name": "bUSDC",
@@ -318,7 +318,7 @@
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/usdc.svg",
       "moneyMarket": "0xcAcEc180DACCB02B765Fe42De4bCA15d7D5c5AeC",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "bUSDT": {
       "name": "bUSDT",
@@ -329,7 +329,7 @@
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/usdt.png",
       "moneyMarket": "0x75EF12f66d55C4698f1a2cAD94b4b7a066585318",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "crFTT": {
       "name": "crFTT",
@@ -340,7 +340,7 @@
       "protocol": "Cream",
       "iconPath": "assets/img/token-icons/ftt.svg",
       "moneyMarket": "0xe84B8B41b90759238E67511DD6B582B4d1387E8D",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "crUSDC": {
       "name": "crUSDC",
@@ -351,7 +351,7 @@
       "protocol": "Cream",
       "iconPath": "assets/img/token-icons/usdc.svg",
       "moneyMarket": "0x89481DA769dE069d7DD6A54F1aC642E1F921c7ec",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     },
     "crUSDT": {
       "name": "crUSDT",
@@ -362,7 +362,7 @@
       "protocol": "Cream",
       "iconPath": "assets/img/token-icons/usdt.png",
       "moneyMarket": "0x2A928A3C54622F56E5147f0c9Bf5133e04503c4F",
-      "gauge": "0x0000000000000000000000000000000000000000"
+      "gauge": ""
     }
   },
   "4": {
