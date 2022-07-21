@@ -1,12 +1,7 @@
 // TODO
-// 0- Change the addresses on the subgraph
-// 1- Change veMPH address to correct address after deployment (contracts.json and constants.service.ts)
-// 1- Change veMPHYieldDistributor address to correct address after deployment (contracts.json and constants.service.ts)
-// 2- Change MPHGaugeController address to correct address after deployment (contracts.json)
-// 2- Change MPHGaugeRewardDistributor address to correct address after deployment (contracts.json)
-// 5- Disable actions if not connected to Mainnet
-// 6- Ensure action flow works as expected (reloads data, etc)
-// 8- User must withdraw locked MPH before creating a new lock
+// 1- Disable actions if not connected to Mainnet
+// 2- Ensure action flow works as expected (reloads data, etc)
+// 3- User must withdraw locked MPH before creating a new lock
 
 import { Component, OnInit, NgZone } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -75,6 +70,8 @@ export class GaugeComponent implements OnInit {
 
   timeLeft: number;
   timeLeftCountdown: any;
+  rewardPeriodEnd: number;
+  rewardPeriodCountdown: any;
 
   loadingGlobal: boolean; // false when done loading
 
@@ -187,6 +184,7 @@ export class GaugeComponent implements OnInit {
 
       // gauge
       this.timeLeft = 0;
+      this.rewardPeriodEnd = 0;
       this.gauges = [];
 
       this.protocolChartLabels = [];
@@ -403,6 +401,11 @@ export class GaugeComponent implements OnInit {
               methodName: 'yieldDuration',
               methodParameters: [],
             },
+            {
+              reference: 'Period Finish',
+              methodName: 'periodFinish',
+              methodParameters: [],
+            },
           ],
         },
       ];
@@ -442,12 +445,24 @@ export class GaugeComponent implements OnInit {
         .times(this.constants.YEAR_IN_SEC)
         .div(this.veTotal.div(4))
         .times(100);
+      if (this.veAPR.isNaN()) {
+        this.veAPR = new BigNumber(0);
+      }
 
       // MPH * (0.75t + 1) = veMPH
       this.averageLock = this.veTotal
         .div(this.totalMPHLocked)
         .minus(1)
         .div(0.75);
+      if (this.averageLock.isNaN()) {
+        this.averageLock = new BigNumber(0);
+      }
+
+      this.rewardPeriodEnd = new BigNumber(
+        veYield[2].returnValues[0].hex
+      ).toNumber();
+      this.rewardPeriodCountdown = new Timer(this.rewardPeriodEnd, 'down');
+      this.rewardPeriodCountdown.start();
 
       const queryString = gql`
         {

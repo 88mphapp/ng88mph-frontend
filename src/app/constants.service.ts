@@ -253,14 +253,14 @@ export class ConstantsService {
     [this.CHAIN_ID.FANTOM]: '',
   };
   VEMPH_ADDRESS = {
-    [this.CHAIN_ID.MAINNET]: '0xc8418aF6358FFddA74e09Ca9CC3Fe03Ca6aDC5b0',
+    [this.CHAIN_ID.MAINNET]: '0x0f17c89ae8edf5f8ad78d4af5518dc238bb62624',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',
   };
   VEMPH_YIELD_DISTRIBUTOR = {
-    [this.CHAIN_ID.MAINNET]: '0xc6764e58b36e26b08Fd1d2AeD4538c02171fA872',
+    [this.CHAIN_ID.MAINNET]: '0x2470c7b811f43bAAE862FC9de0BfC5B6284eA57F',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',

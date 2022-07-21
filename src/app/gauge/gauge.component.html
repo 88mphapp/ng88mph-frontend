@@ -5,11 +5,11 @@
         Gauge weight vote
       </h1>
       <p class="text-white font-weight-bold mb-5 lead">
-        <ng-container i18n="@@rewardsPageText"
-          >You can vote for gauge weight with your veMPH tokens (MPH
-          vote-locked). Gauge weights are used to determine how much MPH does
-          each fixed rate pool get and your veMPH balance influences your MPH
-          APR when you deposit in 88mph fixed rate pools.
+        <ng-container i18n="@@rewardsPageText">
+          MPH emissions are directed by the community of veMPH holders. Lock
+          your 80MPH-20WETH tokens to receive veMPH and vote to influence how
+          much MPH each fixed-rate pool will receive. The more votes a pool
+          receives, the higher the MPH APR will be on that pool.
         </ng-container>
         <a class="text-purple" href="https://docs.88mph.app/" target="_blank">
           <ng-container i18n="@@learnMore">Learn more</ng-container>
@@ -1168,11 +1168,15 @@
                 placement="top"
                 ngbTooltip="88mph Protocol revenues are distributed to MPH stakers on a bi-weekly basis via a buy-back mechansim. 88mph governance decides the percentage of revenues distributed, by default, it's 100%."
                 i18n-ngbTooltip="@@nextDistributionText"
+                *ngIf="rewardPeriodCountdown"
               >
-                <ng-container i18n="@@nextDistributionOn"
-                  >Next earnings distribution in</ng-container
-                >
-                02D:07H:49M:10S
+                <ng-container i18n="@@nextDistributionOn">
+                  Next earnings distribution in
+                </ng-container>
+                {{ rewardPeriodCountdown.days }}D
+                {{ rewardPeriodCountdown.hours }}H
+                {{ rewardPeriodCountdown.minutes }}M
+                {{ rewardPeriodCountdown.seconds }}S
               </small>
             </div>
           </div>
