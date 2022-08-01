@@ -640,6 +640,45 @@ export class HelpersService {
           .div(lpTotalSupply);
   }
 
+  async getBPTPriceUSD(): Promise<BigNumber> {
+    const web3 = this.wallet.readonlyWeb3();
+    const bpt = this.contract.getNamedContract('balMPH', web3);
+    // const bpt = this.contract.getContract("0x5c6Ee304399DBdB9C8Ef030aB642B10820DB8F56", 'balMPH', web3);
+    const vault = this.contract.getNamedContract('BalancerVault', web3);
+
+    const poolID = await bpt.methods.getPoolId().call();
+    const details = await vault.methods.getPoolTokens(poolID).call();
+
+    const token0 = details.tokens[0];
+    const token0Balance = new BigNumber(details.balances[0]).div(
+      this.constants.PRECISION
+    );
+    const token0PriceUSD = await this.getTokenPriceUSD(
+      token0,
+      this.wallet.networkID
+    );
+
+    const token1 = details.tokens[1];
+    const token1Balance = new BigNumber(details.balances[1]).div(
+      this.constants.PRECISION
+    );
+    const token1PriceUSD = await this.getTokenPriceUSD(
+      token1,
+      this.wallet.networkID
+    );
+
+    const bptSupply = new BigNumber(await bpt.methods.totalSupply().call()).div(
+      this.constants.PRECISION
+    );
+
+    return bptSupply.isZero()
+      ? new BigNumber(0)
+      : token0Balance
+          .times(token0PriceUSD)
+          .plus(token1Balance.times(token1PriceUSD))
+          .div(bptSupply);
+  }
+
   async getZCBLPPriceUSD(
     lpTokenAddress: string,
     baseTokenAddress: string

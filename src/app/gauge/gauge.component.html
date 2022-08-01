@@ -27,76 +27,52 @@
       <div class="card-deck d-none d-lg-flex my-5">
         <div class="card mb-5 mb-lg-0">
           <div class="card-body">
-            <!-- Title -->
-            <h5 i18n="@@">80MPH-20WETH balance</h5>
-
-            <!-- Heading -->
-            <h2 class="mb-2 glowing">{{ balBalance.toFormat(4) }}</h2>
-            <!-- <h5 class="mb-3 text-white">
-              ${{ mphBalance.times(datas.mphPriceUSD).toFormat(4) }}
-            </h5> -->
-            <!-- Button -->
-            <!-- <button
-              type="button"
-              class="btn btn-sm btn-bg-gradient"
-              (click)="openUnstakeModal()"
+            <h5 i18n="@@">BPT Balance</h5>
+            <h2 class="mb-2 glowing">{{ bptBalance.toFormat(6) }}</h2>
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <h5 i18n="@@">BPT Unlocked</h5>
+            <span class="d-flex justify-content-between align-items-center">
+              <h2 class="mb-0 glowing">{{ bptUnlocked.toFormat(6) }}</h2>
+              <button
+                type="button"
+                class="btn btn-sm btn-bg-gradient"
+                *ngIf="bptUnlocked.gt(0)"
+                (click)="withdraw()"
+              >
+                <ng-container i18n="@@">Withdraw</ng-container>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <h5 i18n="@@">BPT Locked</h5>
+            <h2 class="mb-2 glowing">{{ bptLocked.toFormat(6) }}</h2>
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <h5 i18n="@@">Locked Until</h5>
+            <h2 class="mb-2 glowing">
+              {{
+                lockEnd && lockEnd > now
+                  ? timestampToDateString(lockEnd)
+                  : "-----"
+              }}
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck d-none d-lg-flex my-5">
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <span
+              class="d-flex justify-content-between align-items-center mb-2"
             >
-              <i class="fe fe-arrow-down mr-2 align-bottom"></i>
-              <ng-container i18n="@@unstake">Unstake</ng-container>
-            </button> -->
-          </div>
-        </div>
-        <div class="card mb-5 mb-lg-0">
-          <div class="card-body">
-            <!-- Title -->
-            <h5 i18n="@@">veMPH BALANCE</h5>
-
-            <!-- Heading -->
-            <h2 class="mb-2 glowing">{{ veBalance.toFormat(4) }}</h2>
-          </div>
-        </div>
-        <div class="card mb-5 mb-lg-0">
-          <div class="card-body">
-            <!-- Title -->
-            <h5 i18n="@@">80MPH-20WETH locked</h5>
-
-            <!-- Heading -->
-            <h2 class="mb-2 glowing">{{ balLocked.toFormat(4) }}</h2>
-            <div class="h5 mb-3 text-white" *ngIf="balLocked.gt(0)">
-              Locked Until:
-              <br />
-              {{ timestampToDateString(lockEnd) }}
-            </div>
-          </div>
-        </div>
-        <div class="card mb-5 mb-lg-0">
-          <div class="card-body">
-            <!-- Title -->
-            <h5 i18n="@@">80MPH-20WETH unlocked</h5>
-
-            <!-- Heading -->
-            <h2 class="mb-2 glowing">{{ balUnlocked.toFormat(4) }}</h2>
-            <!-- <h5 class="mb-3 text-white">${{ mphUnlocked.times(datas.mphPriceUSD).toFormat(4) }}</h5> -->
-            <!-- Button -->
-            <button
-              type="button"
-              class="btn btn-sm btn-bg-gradient"
-              *ngIf="balUnlocked.gt(0)"
-              (click)="withdraw()"
-            >
-              <i class="fe fe-arrow-down mr-2 align-bottom"></i>
-              <ng-container i18n="@@">Claim</ng-container>
-            </button>
-          </div>
-        </div>
-        <div class="card mb-5 mb-lg-0">
-          <div class="card-body">
-            <!-- Title -->
-            <h5 class="text-uppercase" i18n="@@">MPH rewards</h5>
-
-            <!-- Heading -->
-            <span>
-              <span class="h2 mb-2 glowing"> {{ veRewards.toFormat(2) }} </span>
+              <h5 i18n="@@">veMPH Balance</h5>
               <span
                 class="
                   badge badge-xl badge-soft-success
@@ -104,23 +80,85 @@
                   ml-1
                   ng-star-inserted
                 "
-                >{{ veAPR.toFormat(2) }}% APR</span
               >
+                {{ veAPR.toFormat(2) }}% APR
+              </span>
             </span>
-
-            <h5 class="mb-3 text-white">
-              ${{ veRewards.times(datas.mphPriceUSD).toFormat(2) }}
-            </h5>
-            <!-- Button -->
-            <button
-              type="button"
-              class="btn btn-sm btn-bg-gradient"
-              *ngIf="veRewards.gt(0)"
-              (click)="claim()"
+            <span class="d-flex justify-content-between align-items-center">
+              <span class="h2 mb-2 glowing">{{ veBalance.toFormat(6) }}</span>
+              <button
+                type="button"
+                class="btn btn-sm btn-bg-gradient"
+                (click)="claimAll()"
+                *ngIf="mphRewards.gt(0) && balRewards.gt(0)"
+              >
+                <ng-container i18n="@@">Claim All</ng-container>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <span
+              class="d-flex justify-content-between align-items-center mb-2"
             >
-              <i class="fe fe-arrow-down mr-2 align-bottom"></i>
-              <ng-container i18n="@@">Claim</ng-container>
-            </button>
+              <h5 class="" i18n="@@">MPH Rewards</h5>
+              <span
+                class="
+                  badge badge-xl badge-soft-success
+                  mt-n2
+                  ml-1
+                  ng-star-inserted
+                "
+              >
+                {{ mphAPR.toFormat(2) }}% APR
+              </span>
+            </span>
+            <span class="d-flex justify-content-between align-items-center">
+              <span class="h2 mb-0 glowing">
+                {{ mphRewards.toFormat(6) }}
+              </span>
+              <button
+                type="button"
+                class="btn btn-sm btn-bg-gradient"
+                (click)="claim(constants.MPH_ADDRESS[wallet.networkID])"
+                *ngIf="mphRewards.gt(0)"
+              >
+                <ng-container i18n="@@">Claim</ng-container>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="card mb-5 mb-lg-0">
+          <div class="card-body">
+            <span
+              class="d-flex justify-content-between align-items-center mb-2"
+            >
+              <h5 class="" i18n="@@">BAL Rewards</h5>
+              <span
+                class="
+                  badge badge-xl badge-soft-success
+                  mt-n2
+                  ml-1
+                  ng-star-inserted
+                "
+              >
+                {{ balAPR.toFormat(2) }}% APR
+              </span>
+            </span>
+            <span class="d-flex justify-content-between align-items-center">
+              <span class="h2 mb-0 glowing">
+                {{ balRewards.toFormat(6) }}
+              </span>
+              <button
+                type="button"
+                class="btn btn-sm btn-bg-gradient"
+                (click)="claim(constants.BAL[wallet.networkID])"
+                *ngIf="balRewards.gt(0)"
+              >
+                <ng-container i18n="@@">Claim</ng-container>
+              </button>
+            </span>
           </div>
         </div>
       </div>
@@ -128,32 +166,32 @@
       <div class="row d-lg-none my-5">
         <div class="col-6">
           <!-- Title -->
-          <h5 class="text-uppercase" i18n="@@">80MPH-20WETH balance</h5>
+          <h5 class="text-uppercase" i18n="@@">BPT Balance</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ balBalance.toFormat(2) }}</h2>
+          <h2 class="mb-2 glowing">{{ bptBalance.toFormat(2) }}</h2>
           <!-- Title -->
-          <h5 class="text-uppercase" i18n="@@valueInMph">veMPH balance</h5>
+          <h5 class="text-uppercase" i18n="@@valueInMph">veMPH Balance</h5>
           <!-- Heading -->
           <span class="h2 mb-0 glowing">{{ veBalance.toFormat(2) }}</span>
         </div>
         <div class="col-6">
           <!-- Title -->
-          <h5 class="text-uppercase">80MPH-20WETH locked</h5>
+          <h5 class="text-uppercase">BPT Locked</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ balLocked.toFormat(2) }}</h2>
+          <h2 class="mb-2 glowing">{{ bptLocked.toFormat(2) }}</h2>
           <!-- Title -->
-          <h5 class="text-uppercase">balMPH unlocked</h5>
+          <h5 class="text-uppercase">BPT Unlocked</h5>
           <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ balUnlocked.toFormat(2) }}</h2>
+          <h2 class="mb-2 glowing">{{ bptUnlocked.toFormat(2) }}</h2>
           <!-- Button -->
           <button
             type="button"
             class="btn btn-sm btn-bg-gradient"
-            *ngIf="balUnlocked.gt(0)"
+            *ngIf="bptUnlocked.gt(0)"
             (click)="withdraw()"
           >
             <i class="fe fe-arrow-down mr-2 align-bottom"></i>
-            <ng-container i18n="@@">Claim</ng-container>
+            <ng-container i18n="@@">Withdraw</ng-container>
           </button>
         </div>
       </div>
@@ -163,11 +201,13 @@
             <div class="card-header d-flex justify-content-between">
               <h4 class="card-header-title" i18n="@@">Gauge Weight Voting</h4>
               <time class="small">
-                <span class="d-none d-lg-inline-block">Time Left:</span>
+                <span class="d-none d-lg-inline-block"
+                  >Voting Period Ends:</span
+                >
                 <span *ngIf="timeLeftCountdown">
-                  {{ timeLeftCountdown.days }}D {{ timeLeftCountdown.hours }}H
-                  {{ timeLeftCountdown.minutes }}M
-                  {{ timeLeftCountdown.seconds }}S
+                  {{ timeLeftCountdown.days }}d {{ timeLeftCountdown.hours }}h
+                  {{ timeLeftCountdown.minutes }}m
+                  {{ timeLeftCountdown.seconds }}s
                 </span>
               </time>
             </div>
@@ -246,12 +286,35 @@
                         100%
                       </button>
                       <small class="text-white mb-0">
-                        {{ balBalance.toFormat(4) }} 80MPH-20WETH available
+                        {{ bptBalance.toFormat(4) }} BPT available
                       </small>
                       <button
                         type="button"
+                        class="
+                          btn btn-lg btn-block btn-bg-gradient
+                          my-3
+                          d-flex
+                          justify-content-center
+                          align-items-center
+                        "
+                        *ngIf="bptUnlocked.gt(0)"
+                        (click)="withdraw()"
+                      >
+                        Withdraw Expired Lock
+                        <i
+                          class="fe fe-help-circle ml-2"
+                          placement="right"
+                          ngbTooltip="Before creating a new lock, you must first withdraw your expired lock."
+                        ></i>
+                      </button>
+                      <button
+                        type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
-                        *ngIf="veBalance.gt(0) && lockAmount.lte(0)"
+                        *ngIf="
+                          bptUnlocked.eq(0) &&
+                          veBalance.gt(0) &&
+                          lockAmount.lte(0)
+                        "
                         [disabled]="true"
                       >
                         Enter an Amount
@@ -259,7 +322,11 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
-                        *ngIf="veBalance.gt(0) && lockAmount.gt(balBalance)"
+                        *ngIf="
+                          bptUnlocked.eq(0) &&
+                          veBalance.gt(0) &&
+                          lockAmount.gt(bptBalance)
+                        "
                         [disabled]="true"
                       >
                         Not Enough 80MPH-20WETH Available
@@ -268,9 +335,10 @@
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient mb-3"
                         *ngIf="
+                          bptUnlocked.eq(0) &&
                           veBalance.gt(0) &&
-                          lockAmount.lte(balBalance) &&
-                          lockAmount.gt(balAllowance)
+                          lockAmount.lte(bptBalance) &&
+                          lockAmount.gt(bptAllowance)
                         "
                         (click)="approve()"
                       >
@@ -280,10 +348,11 @@
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
                         *ngIf="
+                          bptUnlocked.eq(0) &&
                           veBalance.gt(0) &&
                           lockAmount.gt(0) &&
-                          lockAmount.lte(balBalance) &&
-                          lockAmount.lte(balAllowance)
+                          lockAmount.lte(bptBalance) &&
+                          lockAmount.lte(bptAllowance)
                         "
                         (click)="increaseLockAmount()"
                       >
@@ -400,59 +469,92 @@
                       </div>
                       <button
                         type="button"
+                        class="
+                          btn btn-lg btn-block btn-bg-gradient
+                          my-3
+                          d-flex
+                          justify-content-center
+                          align-items-center
+                        "
+                        (click)="withdraw()"
+                        *ngIf="bptUnlocked.gt(0)"
+                      >
+                        Withdraw Expired Lock
+                        <i
+                          class="fe fe-help-circle ml-2"
+                          placement="right"
+                          ngbTooltip="Before creating a new lock, you must first withdraw your expired lock."
+                        ></i>
+                      </button>
+                      <button
+                        type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
-                        *ngIf="veBalance.eq(0) && lockAmount.lte(0)"
                         [disabled]="true"
+                        *ngIf="
+                          bptUnlocked.eq(0) &&
+                          veBalance.eq(0) &&
+                          lockAmount.lte(0)
+                        "
                       >
                         Enter an Amount
                       </button>
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
-                        *ngIf="veBalance.eq(0) && lockAmount.gt(balBalance)"
                         [disabled]="true"
-                      >
-                        Not Enough 80MPH-20WETH Available
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-block btn-bg-gradient my-3"
                         *ngIf="
+                          bptUnlocked.eq(0) &&
                           veBalance.eq(0) &&
-                          lockAmount.lte(balBalance) &&
-                          lockAmount.gt(balAllowance)
+                          lockAmount.gt(bptBalance)
                         "
-                        (click)="approve()"
                       >
-                        Approve
+                        Not Enough BPT Available
                       </button>
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
-                        *ngIf="!validLockDuration()"
+                        (click)="approve()"
+                        *ngIf="
+                          bptUnlocked.eq(0) &&
+                          veBalance.eq(0) &&
+                          lockAmount.lte(bptBalance) &&
+                          lockAmount.gt(bptAllowance)
+                        "
+                      >
+                        Approve BPT
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-block btn-bg-gradient my-3"
                         [disabled]="true"
+                        *ngIf="bptUnlocked.eq(0) && !validLockDuration()"
                       >
                         Invalid Lock Duration
                       </button>
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
+                        (click)="createLock()"
                         *ngIf="
                           veBalance.eq(0) &&
+                          bptUnlocked.eq(0) &&
                           lockAmount.gt(0) &&
-                          lockAmount.lte(balBalance) &&
-                          lockAmount.lte(balAllowance) &&
+                          lockAmount.lte(bptBalance) &&
+                          lockAmount.lte(bptAllowance) &&
                           validLockDuration()
                         "
-                        (click)="createLock()"
                       >
                         Create Lock
                       </button>
                       <button
                         type="button"
                         class="btn btn-lg btn-block btn-bg-gradient my-3"
-                        *ngIf="veBalance.gt(0) && validLockDuration()"
                         (click)="increaseLockDuration()"
+                        *ngIf="
+                          veBalance.gt(0) &&
+                          bptUnlocked.eq(0) &&
+                          validLockDuration()
+                        "
                       >
                         Increase Lock Duration
                       </button>
@@ -490,7 +592,7 @@
                         >
                           <option [ngValue]="null">Select a Gauge...</option>
                           <option
-                            *ngFor="let gauge of gauges"
+                            *ngFor="let gauge of protocolGauges"
                             [ngValue]="gauge"
                           >
                             {{ gauge.name }} {{ gauge.address.slice(0, 5) }}
@@ -652,7 +754,7 @@
                           "
                           i18n="@@"
                         >
-                          Lock MPH To Be Eligible To Vote
+                          Lock BPT To Be Eligible To Vote
                         </ng-container>
                         <ng-container
                           *ngIf="
@@ -684,7 +786,7 @@
                           "
                           i18n="@@"
                         >
-                          Lock MPH To Be Eligible To Vote
+                          Lock BPT To Be Eligible To Vote
                         </ng-container>
                         <ng-container
                           *ngIf="
@@ -780,8 +882,22 @@
                       >
                         Loading...
                       </h2>
+                      <h2
+                        *ngIf="
+                          wallet.userAddress &&
+                          !loadingUser &&
+                          userChartLabels.length == 0
+                        "
+                        class="d-flex justify-content-center"
+                      >
+                        User Has No Lock
+                      </h2>
                       <canvas
-                        *ngIf="wallet.userAddress && !loadingUser"
+                        *ngIf="
+                          wallet.userAddress &&
+                          !loadingUser &&
+                          userChartLabels.length > 0
+                        "
                         baseChart
                         [chartType]="chartType"
                         [legend]="chartLegend"
@@ -792,14 +908,6 @@
                       </canvas>
                       <!-- User Chart -->
                     </span>
-                  </div>
-                  <div
-                    class="d-flex justify-content-center align-items-center"
-                    *ngIf="
-                      wallet.userAddress && !loadingUser && votePowerUsed.lte(0)
-                    "
-                  >
-                    You haven't voted for any gauges yet
                   </div>
                   <div class="table-responsive" *ngIf="votePowerUsed.gt(0)">
                     <table
@@ -847,7 +955,7 @@
                             class="btn btn-sm border-gradient"
                             (click)="resetVote(gauge.address)"
                             [disabled]="
-                              !gauge.canVote || gauge.userWeight.eq(0)
+                              !gauge.userCanVote || gauge.userWeight.eq(0)
                             "
                           >
                             Reset
@@ -894,8 +1002,16 @@
                       >
                         Loading...
                       </h2>
+                      <h2
+                        *ngIf="
+                          !loadingGlobal && protocolChartLabels.length == 0
+                        "
+                        class="d-flex justify-content-center"
+                      >
+                        No Available Gauges
+                      </h2>
                       <canvas
-                        *ngIf="!loadingGlobal"
+                        *ngIf="!loadingGlobal && protocolChartLabels.length > 0"
                         baseChart
                         [chartType]="chartType"
                         [legend]="chartLegend"
@@ -906,14 +1022,17 @@
                       </canvas>
                     </span>
                   </div>
-                  <div class="table-responsive">
+                  <div
+                    class="table-responsive"
+                    *ngIf="protocolGauges.length > 0"
+                  >
                     <table
                       mat-table
                       matSort
-                      matSortActive="futureWeight"
+                      matSortActive="gaugeWeightNextPeriod"
                       matSortDirection="desc"
                       matSortDisableClear
-                      [dataSource]="gauges"
+                      [dataSource]="protocolGauges"
                       (matSortChange)="sortGauges($event)"
                       class="table table-sm table-nowrap card-table"
                     >
@@ -933,30 +1052,30 @@
                         </td>
                       </ng-container>
 
-                      <ng-container matColumnDef="futureWeight">
+                      <ng-container matColumnDef="gaugeWeightNextPeriod">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef>
                           Weight
                         </th>
                         <td mat-cell *matCellDef="let gauge">
                           <h5 class="mb-1 glowing">
-                            {{ gauge.futureWeight.toFormat(2) }}%
+                            {{ gauge.gaugeWeightNextPeriod.toFormat(2) }}%
                           </h5>
                           <span class="text-secondary small">
-                            {{ gauge.currentWeight.toFormat(2) }}%
+                            {{ gauge.gaugeWeightThisPeriod.toFormat(2) }}%
                           </span>
                         </td>
                       </ng-container>
 
-                      <ng-container matColumnDef="futureAPR">
+                      <ng-container matColumnDef="gaugeAprNextPeriod">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef>
                           MPH APR
                         </th>
                         <td mat-cell *matCellDef="let gauge">
                           <h5 class="mb-1 glowing">
-                            {{ gauge.futureAPR.toFormat(2) }}%
+                            {{ gauge.gaugeAprNextPeriod.toFormat(2) }}%
                           </h5>
                           <span class="text-secondary small">
-                            {{ gauge.currentAPR.toFormat(2) }}%
+                            {{ gauge.gaugeAprThisPeriod.toFormat(2) }}%
                           </span>
                         </td>
                       </ng-container>
@@ -964,14 +1083,22 @@
                       <tr
                         class="text-muted"
                         mat-header-row
-                        *matHeaderRowDef="['name', 'futureWeight', 'futureAPR']"
+                        *matHeaderRowDef="[
+                          'name',
+                          'gaugeWeightNextPeriod',
+                          'gaugeAprNextPeriod'
+                        ]"
                       ></tr>
                       <tr
                         class="mat-table-row"
                         mat-row
                         *matRowDef="
                           let gauge;
-                          columns: ['name', 'futureWeight', 'futureAPR']
+                          columns: [
+                            'name',
+                            'gaugeWeightNextPeriod',
+                            'gaugeAprNextPeriod'
+                          ]
                         "
                       ></tr>
                     </table>
@@ -980,20 +1107,18 @@
               </div>
             </div>
 
-            <div class="card-footer">
+            <div class="card-footer text-center">
               <small
                 class="mb-0"
                 placement="top"
                 ngbTooltip=""
                 i18n-ngbTooltip="@@"
               >
-                <ng-container i18n="@@"
-                  >Next distribution taking effect in</ng-container
-                >
+                <ng-container i18n="@@">Voting Period Ends:</ng-container>
                 <span *ngIf="timeLeftCountdown">
-                  {{ timeLeftCountdown.days }}D {{ timeLeftCountdown.hours }}H
-                  {{ timeLeftCountdown.minutes }}M
-                  {{ timeLeftCountdown.seconds }}S
+                  {{ timeLeftCountdown.days }}d {{ timeLeftCountdown.hours }}h
+                  {{ timeLeftCountdown.minutes }}m
+                  {{ timeLeftCountdown.seconds }}s
                 </span>
               </small>
             </div>
@@ -1017,13 +1142,12 @@
                   <tbody>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip=""
-                        >
+                        <span>
                           Total veMPH:
-                          <i class="fe fe-info ml-1 align-bottom"></i>
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            ngbTooltip="Total voting power."
+                          ></i>
                         </span>
                       </td>
                       <td
@@ -1034,13 +1158,30 @@
                     </tr>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip=""
-                        >
-                          Total MPH vote-locked
-                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        <span>
+                          Total BPT
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            ngbTooltip="Total amount of BPT in existence."
+                          ></i>
+                        </span>
+                      </td>
+                      <td
+                        class="px-0 py-2 text-white text-right border-0 small"
+                      >
+                        <h4 class="mb-0 glowing">
+                          {{ totalMPHSupply.toFormat(2) }}
+                        </h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
+                        <span>
+                          Locked BPT
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            ngbTooltip="Amount of BPT locked in the Voting Escrow."
+                          ></i>
                         </span>
                       </td>
                       <td
@@ -1053,37 +1194,12 @@
                     </tr>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip=""
-                        >
-                          % of circ. MPH Locked
-                          <i class="fe fe-info ml-1 align-bottom"></i>
-                        </span>
-                      </td>
-                      <td
-                        class="px-0 py-2 text-white text-right border-0 small"
-                      >
-                        <h4 class="mb-0 glowing">
-                          {{
-                            totalMPHLocked
-                              .div(circulatingMPHSupply)
-                              .times(100)
-                              .toFormat(2)
-                          }}%
-                        </h4>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip=""
-                        >
-                          % of tot. MPH Locked
-                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        <span>
+                          Percentage Locked
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            ngbTooltip="Percentage of BPT locked in the Voting Escrow."
+                          ></i>
                         </span>
                       </td>
                       <td
@@ -1101,13 +1217,13 @@
                     </tr>
                     <tr>
                       <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip=""
-                        >
-                          Avg. lock time (years)
-                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        <span>
+                          Avgerage Lock Time
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="Average lock duration in years."
+                          ></i>
                         </span>
                       </td>
                       <td
@@ -1119,33 +1235,14 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip=""
-                        >
-                          Est. yield per month
-                          <i class="fe fe-info ml-1 align-bottom"></i>
-                        </span>
-                      </td>
-                      <td
-                        class="px-0 py-2 text-white text-right border-0 small"
-                      >
-                        <h4 class="mb-0 glowing">
-                          ${{ veYield.times(datas.mphPriceUSD).toFormat(2) }}
-                        </h4>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip="Annual Percentage Rate. Assumes 4 veMPH = 1 MPH (i.e. 1 MPH locked 4 years)"
-                        >
-                          veMPH holder APR
-                          <i class="fe fe-info ml-1 align-bottom"></i>
+                      <td class="px-0 py-2 text-white border-0 small">
+                        <span>
+                          veMPH APR
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="Annual Percentage Rate. Assumes 1 BPT = 1 veMPH (max lock)."
+                          ></i>
                         </span>
                       </td>
                       <td
@@ -1154,28 +1251,28 @@
                         <h4 class="mb-0 glowing">{{ veAPR.toFormat(2) }}%</h4>
                       </td>
                     </tr>
-                    <!-- <tr>
+                    <tr>
                       <td class="px-0 py-2 text-white border-0 small" i18n="@@">
-                        <span
-                          i18n-ngbTooltip="@@"
-                          placement="top"
-                          ngbTooltip=""
-                        >
-                          Yearly earnings per 1 veMPH
-                          <i class="fe fe-info ml-1 align-bottom"></i>
+                        <span>
+                          Annual Earnings
+                          <i
+                            class="fe fe-info ml-1 align-bottom"
+                            placement="top"
+                            ngbTooltip="Yearly earnings in USD per veMPH."
+                          ></i>
                         </span>
                       </td>
                       <td
                         class="px-0 py-2 text-white text-right border-0 small"
                       >
-                        <h4 class="mb-0 glowing">$0.00</h4>
+                        <h4 class="mb-0 glowing">${{ veYield.toFormat(2) }}</h4>
                       </td>
-                    </tr> -->
+                    </tr>
                   </tbody>
                 </table>
               </div>
             </div>
-            <div class="card-footer">
+            <div class="card-footer text-center">
               <small
                 class="mb-0"
                 placement="top"
@@ -1184,12 +1281,12 @@
                 *ngIf="rewardPeriodCountdown"
               >
                 <ng-container i18n="@@nextDistributionOn">
-                  Next earnings distribution in
+                  Next Earnings Distribution:
                 </ng-container>
-                {{ rewardPeriodCountdown.days }}D
-                {{ rewardPeriodCountdown.hours }}H
-                {{ rewardPeriodCountdown.minutes }}M
-                {{ rewardPeriodCountdown.seconds }}S
+                {{ rewardPeriodCountdown.days }}d
+                {{ rewardPeriodCountdown.hours }}h
+                {{ rewardPeriodCountdown.minutes }}m
+                {{ rewardPeriodCountdown.seconds }}s
               </small>
             </div>
           </div>

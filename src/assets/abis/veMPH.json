@@ -128,7 +128,7 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 37568
+    "gas": 37597
   },
   {
     "name": "apply_transfer_ownership",
@@ -136,7 +136,7 @@
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 38407
+    "gas": 38497
   },
   {
     "name": "commit_smart_wallet_checker",
@@ -149,7 +149,7 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 36278
+    "gas": 36307
   },
   {
     "name": "apply_smart_wallet_checker",
@@ -157,32 +157,7 @@
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 37005
-  },
-  {
-    "name": "toggleEmergencyUnlock",
-    "outputs": [],
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function",
-    "gas": 37038
-  },
-  {
-    "name": "recoverERC20",
-    "outputs": [],
-    "inputs": [
-      {
-        "type": "address",
-        "name": "token_addr"
-      },
-      {
-        "type": "uint256",
-        "name": "amount"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function",
-    "gas": 4045
+    "gas": 37095
   },
   {
     "name": "get_last_user_slope",
@@ -200,7 +175,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2600
+    "gas": 2569
   },
   {
     "name": "user_point_history__ts",
@@ -222,7 +197,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 1703
+    "gas": 1672
   },
   {
     "name": "locked__end",
@@ -240,7 +215,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 1624
+    "gas": 1593
   },
   {
     "name": "checkpoint",
@@ -248,7 +223,7 @@
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 46119699
+    "gas": 37052342
   },
   {
     "name": "deposit_for",
@@ -265,7 +240,7 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 92414024
+    "gas": 74279891
   },
   {
     "name": "create_lock",
@@ -282,7 +257,7 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 92415425
+    "gas": 74281465
   },
   {
     "name": "increase_amount",
@@ -295,7 +270,7 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 92414846
+    "gas": 74280830
   },
   {
     "name": "increase_unlock_time",
@@ -308,7 +283,7 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 92415493
+    "gas": 74281578
   },
   {
     "name": "withdraw",
@@ -316,7 +291,7 @@
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 46291332
+    "gas": 37223566
   },
   {
     "name": "balanceOf",
@@ -355,7 +330,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 512868
+    "gas": 514333
   },
   {
     "name": "totalSupply",
@@ -385,38 +360,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 882020
-  },
-  {
-    "name": "totalFXSSupply",
-    "outputs": [
-      {
-        "type": "uint256",
-        "name": ""
-      }
-    ],
-    "inputs": [],
-    "stateMutability": "view",
-    "type": "function",
-    "gas": 2116
-  },
-  {
-    "name": "totalFXSSupplyAt",
-    "outputs": [
-      {
-        "type": "uint256",
-        "name": ""
-      }
-    ],
-    "inputs": [
-      {
-        "type": "uint256",
-        "name": "_block"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "gas": 252170
+    "gas": 812560
   },
   {
     "name": "changeController",
@@ -429,7 +373,7 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function",
-    "gas": 36998
+    "gas": 36907
   },
   {
     "name": "token",
@@ -442,7 +386,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 1871
+    "gas": 1841
   },
   {
     "name": "supply",
@@ -455,7 +399,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 1901
+    "gas": 1871
   },
   {
     "name": "locked",
@@ -477,7 +421,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 3380
+    "gas": 3359
   },
   {
     "name": "epoch",
@@ -490,7 +434,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 1961
+    "gas": 1931
   },
   {
     "name": "point_history",
@@ -510,10 +454,6 @@
       {
         "type": "uint256",
         "name": "blk"
-      },
-      {
-        "type": "uint256",
-        "name": "fxs_amt"
       }
     ],
     "inputs": [
@@ -524,7 +464,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 6280
+    "gas": 5550
   },
   {
     "name": "user_point_history",
@@ -544,10 +484,6 @@
       {
         "type": "uint256",
         "name": "blk"
-      },
-      {
-        "type": "uint256",
-        "name": "fxs_amt"
       }
     ],
     "inputs": [
@@ -562,7 +498,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 6525
+    "gas": 6079
   },
   {
     "name": "user_point_epoch",
@@ -580,7 +516,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2266
+    "gas": 2175
   },
   {
     "name": "slope_changes",
@@ -598,7 +534,7 @@
     ],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2196
+    "gas": 2166
   },
   {
     "name": "controller",
@@ -611,7 +547,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2111
+    "gas": 2081
   },
   {
     "name": "transfersEnabled",
@@ -624,20 +560,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2141
-  },
-  {
-    "name": "emergencyUnlockActive",
-    "outputs": [
-      {
-        "type": "bool",
-        "name": ""
-      }
-    ],
-    "inputs": [],
-    "stateMutability": "view",
-    "type": "function",
-    "gas": 2171
+    "gas": 2111
   },
   {
     "name": "name",
@@ -650,7 +573,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 8603
+    "gas": 8543
   },
   {
     "name": "symbol",
@@ -663,7 +586,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 7656
+    "gas": 7596
   },
   {
     "name": "version",
@@ -676,7 +599,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 7686
+    "gas": 7626
   },
   {
     "name": "decimals",
@@ -689,7 +612,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2291
+    "gas": 2231
   },
   {
     "name": "future_smart_wallet_checker",
@@ -702,7 +625,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2321
+    "gas": 2261
   },
   {
     "name": "smart_wallet_checker",
@@ -715,7 +638,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2351
+    "gas": 2291
   },
   {
     "name": "admin",
@@ -728,7 +651,7 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2381
+    "gas": 2321
   },
   {
     "name": "future_admin",
@@ -741,6 +664,6 @@
     "inputs": [],
     "stateMutability": "view",
     "type": "function",
-    "gas": 2411
+    "gas": 2351
   }
 ]
