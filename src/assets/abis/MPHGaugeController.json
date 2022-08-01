@@ -323,24 +323,6 @@
       {
         "name": "addr",
         "type": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "gas": 9320264858
-  },
-  {
-    "stateMutability": "nonpayable",
-    "type": "function",
-    "name": "gauge_relative_weight_write",
-    "inputs": [
-      {
-        "name": "addr",
-        "type": "address"
       },
       {
         "name": "time",
