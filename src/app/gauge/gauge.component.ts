@@ -280,7 +280,8 @@ export class GaugeComponent implements OnInit {
       this.callGlobalData(),
       this.callGaugeWeightThisPeriod(gauges),
       this.callGaugeWeightNextPeriod(gauges),
-    ]).then(() => {
+    ]).then(async () => {
+      await this.calcGaugeApr(gauges);
       const protocolGauges = [...gauges];
       protocolGauges.sort((a, b) =>
         a.gaugeWeightNextPeriod.gt(b.gaugeWeightNextPeriod) ? -1 : 1
@@ -737,9 +738,45 @@ export class GaugeComponent implements OnInit {
 
   async calcGaugeApr(gauges: Gauge[]) {
     const web3 = this.wallet.httpsWeb3(this.wallet.networkID);
-    // const gaugeController = this.contract.getNamedContract('MPHGaugeController', web3);
-    // const gaugeController = this.contract.getNamedContract('MPHGaugeController', web3);
-    // const globalEmissionRate = await gaugeController.methods.global_emission_rate().call();
+    const rewardDistributor = this.contract.getNamedContract(
+      'GaugeRewardDistributor',
+      web3
+    );
+    const globalEmissionRate = await rewardDistributor.methods
+      .global_emission_rate()
+      .call();
+
+    const mphPriceUSD = this.datas.mphPriceUSD;
+    const poolTVLUSD = await this.datas.loadPoolTVL(
+      this.wallet.networkID,
+      true
+    );
+
+    gauges.forEach((gauge) => {
+      const gauge_weight_this_period = gauge.gaugeWeightThisPeriod;
+      const reward_this_period = gauge_weight_this_period
+        .times(globalEmissionRate)
+        .div(this.constants.PRECISION)
+        .times(mphPriceUSD);
+      gauge.gaugeAprThisPeriod = reward_this_period
+        .times(52)
+        .div(poolTVLUSD[gauge.address]);
+      if (gauge.gaugeAprThisPeriod.isNaN()) {
+        gauge.gaugeAprThisPeriod = new BigNumber(0);
+      }
+
+      const gauge_weight_next_period = gauge.gaugeWeightNextPeriod;
+      const reward_next_period = gauge_weight_next_period
+        .times(globalEmissionRate)
+        .div(this.constants.PRECISION)
+        .times(mphPriceUSD);
+      gauge.gaugeAprNextPeriod = reward_next_period
+        .times(52)
+        .div(poolTVLUSD[gauge.address]);
+      if (gauge.gaugeAprNextPeriod.isNaN()) {
+        gauge.gaugeAprNextPeriod = new BigNumber(0);
+      }
+    });
   }
 
   fillProtocolChart(gauges: Gauge[]) {
