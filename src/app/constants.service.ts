@@ -117,6 +117,7 @@ export class ConstantsService {
   GAUGES_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/mph-gauges',
+    // 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
