@@ -19,6 +19,8 @@ import {
   ContractCallContext,
 } from 'ethereum-multicall';
 
+import { BalancerService } from 'src/app/services/liquidity/balancer.service';
+
 @Component({
   selector: 'app-gauge',
   templateUrl: './gauge.component.html',
@@ -66,9 +68,10 @@ export class GaugeComponent implements OnInit {
   veTotal: BigNumber;
   veYield: BigNumber;
 
-  mphAPR: BigNumber; // the mph reward APR for veMPH holders
-  balAPR: BigNumber; // the bal reward APR for veMPH holders
-  veAPR: BigNumber; // mph reward + bal reward APR for veMPH holders (@todo add LP fee APR)
+  bptAPR: BigNumber; // swap fee APR for veMPH holders
+  mphAPR: BigNumber; // MPH reward APR for veMPH holders
+  balAPR: BigNumber; // BAL reward APR for veMPH holders
+  veAPR: BigNumber; // bptAPR + mphAPR + balAPR for veMPH holders
 
   timeLeft: number;
   timeLeftCountdown: any;
@@ -99,6 +102,7 @@ export class GaugeComponent implements OnInit {
   };
 
   constructor(
+    public balancer: BalancerService,
     public constants: ConstantsService,
     public contract: ContractService,
     public datas: DataService,
@@ -181,6 +185,7 @@ export class GaugeComponent implements OnInit {
 
       this.veTotal = new BigNumber(0);
       this.veYield = new BigNumber(0);
+      this.bptAPR = new BigNumber(0);
       this.mphAPR = new BigNumber(0);
       this.balAPR = new BigNumber(0);
       this.veAPR = new BigNumber(0);
@@ -212,7 +217,6 @@ export class GaugeComponent implements OnInit {
 
     this.now = Math.floor(Date.now() / 1e3);
     const user = this.wallet.actualAddress;
-    // const user = "0x682c4184286415344a35a0ff6699bb8edabddc17";
 
     if (loadGauges) await this.loadGauges();
     if (loadUser) this.loadUser(this.gauges, user);
@@ -394,6 +398,11 @@ export class GaugeComponent implements OnInit {
       .div(this.constants.PRECISION)
       .times(balPriceUSD);
 
+    this.bptAPR = await this.balancer.calcSwapFeeApr();
+    if (this.bptAPR.isNaN()) {
+      this.bptAPR = new BigNumber(0);
+    }
+
     this.mphAPR = mphRewardUSD
       .times(52)
       .div(bptPriceUSD.times(this.veTotal))
@@ -410,7 +419,7 @@ export class GaugeComponent implements OnInit {
       this.balAPR = new BigNumber(0);
     }
 
-    this.veAPR = this.mphAPR.plus(this.balAPR);
+    this.veAPR = this.bptAPR.plus(this.mphAPR).plus(this.balAPR);
     this.veYield = mphRewardUSD.plus(balRewardUSD).times(52).div(this.veTotal);
     if (this.veYield.isNaN()) {
       this.veYield = new BigNumber(0);
