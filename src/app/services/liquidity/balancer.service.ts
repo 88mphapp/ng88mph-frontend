@@ -22,8 +22,34 @@ export class BalancerService {
   ) {}
 
   ////////////////////////////////////////////////////////////
+  // @notice Calculates the BPT price in USD on Mainnet.
+  ////////////////////////////////////////////////////////////
+  async calcBptPrice(): Promise<BigNumber> {
+    const queryString = gql`
+      {
+        pool(
+          id: "${this.balancer_pool_token_id}"
+        ) {
+          totalShares
+          totalLiquidity
+        }
+      }
+    `;
+    return request(this.balancer_subgraph, queryString).then(
+      (data: QueryResult) => {
+        const shares = new BigNumber(data.pool.totalShares);
+        const liquidity = new BigNumber(data.pool.totalLiquidity);
+        return liquidity.div(shares);
+      }
+    );
+  }
+
+  ////////////////////////////////////////////////////////////
   // @notice Calculates the swap fee APR on Mainnet.
-  // @dev Based on 24 hour swap fee accumulation.
+  //
+  // @dev Based on 24 hour swap fee accumulation. Balancer may display a
+  // different APR because their time travel query is based on static block
+  // times and is less accurate.
   ////////////////////////////////////////////////////////////
   async calcSwapFeeApr(): Promise<BigNumber> {
     const now = Math.floor(Date.now() / 1e3);
@@ -47,7 +73,6 @@ export class BalancerService {
           }
         ) {
           totalSwapFee
-          totalLiquidity
         }
       }
     `;
@@ -73,6 +98,7 @@ export class BalancerService {
 
 interface QueryResult {
   pool: {
+    totalShares: string;
     totalSwapFee: string;
     totalLiquidity: string;
   };

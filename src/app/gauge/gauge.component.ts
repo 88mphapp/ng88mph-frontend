@@ -388,8 +388,7 @@ export class GaugeComponent implements OnInit {
       this.constants.BAL[this.wallet.networkID],
       this.wallet.networkID
     );
-    const bptPriceUSD = await this.helpers.getBPTPriceUSD();
-    // console.log(bptPriceUSD.toString());
+    const bptPriceUSD = await this.balancer.calcBptPrice();
 
     const mphRewardUSD = new BigNumber(veYield[0].returnValues[0].hex)
       .div(this.constants.PRECISION)
