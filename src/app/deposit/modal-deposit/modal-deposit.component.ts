@@ -179,7 +179,7 @@ export class ModalDepositComponent implements OnInit {
         .rewardRate(this.selectedPoolInfo.address)
         .call();
     }
-    this.rewardRate = rewardRate;
+    this.rewardRate = new BigNumber(rewardRate);
 
     const queryString = gql`
       {
