@@ -113,7 +113,6 @@ export class HeaderComponent implements OnInit {
             );
           });
       }
-
       if (convertableMPH.options.address) {
         convertableMPH.methods
           .balanceOf(address)

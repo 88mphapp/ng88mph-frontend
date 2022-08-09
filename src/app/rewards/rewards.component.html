@@ -404,16 +404,20 @@
               <small
                 class="mb-0"
                 placement="top"
-                ngbTooltip="88mph Protocol revenues are distributed to MPH stakers on a bi-weekly basis via a buy-back mechansim. 88mph governance decides the percentage of revenues distributed, by default, it's 100%."
+                ngbTooltip="88mph Protocol revenues are distributed to MPH stakers on a monthly basis via a buy-back mechansim. 88mph governance decides the percentage of revenues distributed, by default, it's 100%."
                 i18n-ngbTooltip="@@nextDistributionText"
               >
-                <ng-container i18n="@@nextDistributionOn"
-                  >Next distribution in</ng-container
-                >
-                {{ daysToNextDistribution }}
-                <ng-container i18n="@@nextDistributionOnDays"
-                  >days</ng-container
-                >
+                Distributed on a monthly basis
+                <!--hidden until we switch to the venomics and decide what to do with the revenue distri-->
+                <span class="d-none">
+                  <ng-container i18n="@@nextDistributionOn"
+                    >Next distribution in</ng-container
+                  >
+                  {{ daysToNextDistribution }}
+                  <ng-container i18n="@@nextDistributionOnDays"
+                    >days</ng-container
+                  >
+                </span>
                 <i class="fe fe-info ml-1 align-bottom"></i>
               </small>
             </div>
@@ -462,6 +466,21 @@
                     Learn more</small
                   >
                 </a>
+                <div
+                  class="list-group-item list-group-item-action px-4"
+                  *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM"
+                >
+                  <h4 class="mb-1" i18n="@@farmYourYield">
+                    Provide liquidity & boost your yield
+                  </h4>
+                  <small class="text-muted" i18n="@@provideLiquidityText2"
+                    >Provide liquidity on our trading pools, and get rewarded by
+                    doing so from trading fees and liquidity mining.</small
+                  >
+                  <small class="btn btn-sm btn-bg-gradient ml-2">
+                    Coming soon</small
+                  >
+                </div>
               </div>
             </div>
           </div>

@@ -55,11 +55,11 @@ import { XmphSupplyDistributionComponent } from './stats/components/xmph-supply-
 
 import { HeaderComponent } from './header/header.component';
 import { DepositFeedComponent } from './header/deposit-feed/deposit-feed.component';
+import { ConverterComponent } from './bridge/converter/converter.component';
 
 // other
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CacheInterceptor } from './cache-interceptor';
-import { ConverterComponent } from './bridge/converter/converter.component';
 
 @NgModule({
   declarations: [

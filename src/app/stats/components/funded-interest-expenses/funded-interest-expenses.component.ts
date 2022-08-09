@@ -22,14 +22,14 @@ import { Chart } from 'chart.js';
 export class FundedInterestExpensesComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1630368000,
-    [this.constants.CHAIN_ID.POLYGON]: 1633392000,
-    [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
-    [this.constants.CHAIN_ID.FANTOM]: 1633996800,
+    [this.constants.CHAIN_ID.MAINNET]: 1630454400,
+    [this.constants.CHAIN_ID.POLYGON]: 1633564800,
+    [this.constants.CHAIN_ID.AVALANCHE]: 1633737600,
+    [this.constants.CHAIN_ID.FANTOM]: 1634083200,
     [this.constants.CHAIN_ID.V2]: 1606176000,
   };
-  PERIOD: number = this.constants.DAY_IN_SEC;
-  PERIOD_NAME: string = 'daily';
+  PERIOD: number = this.constants.WEEK_IN_SEC;
+  PERIOD_NAME: string = 'weekly';
   SELECTED_ASSET: string = 'all';
   COLORS: string[] = [
     '44, 123, 229',
@@ -138,6 +138,10 @@ export class FundedInterestExpensesComponent implements OnInit {
             gridLines: {
               display: false,
             },
+            ticks: {
+              autoSkip: true,
+              autoSkipPadding: 5,
+            },
           },
         ],
         yAxes: [
@@ -193,7 +197,7 @@ export class FundedInterestExpensesComponent implements OnInit {
           hitRadius: 4,
         },
         line: {
-          tension: 0,
+          tension: 0.4,
           borderWidth: 2,
           hoverBorderWidth: 2,
         },
@@ -282,9 +286,11 @@ export class FundedInterestExpensesComponent implements OnInit {
     `;
 
     // run the query
-    await request(this.constants.GRAPHQL_ENDPOINT[networkID], query).then(
-      (data: QueryResult) => this.handleData(data, networkID, blocks)
-    );
+    await request(this.constants.GRAPHQL_ENDPOINT[networkID], query)
+      .then((data: QueryResult) => this.handleData(data, networkID, blocks))
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   async loadDataV2() {
@@ -370,9 +376,9 @@ export class FundedInterestExpensesComponent implements OnInit {
         label: poolInfo.name,
         address: dpools[i].address,
         networkID: networkID,
-        data: [],
-        interestExpenses: [],
-        fundedExpenses: [],
+        data: new Array(Object.keys(result).length - 1).fill(0),
+        interestExpenses: new Array(Object.keys(result).length - 1).fill(0),
+        fundedExpenses: new Array(Object.keys(result).length - 1).fill(0),
         borderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         hoverBorderColor:
@@ -393,14 +399,6 @@ export class FundedInterestExpensesComponent implements OnInit {
     // populate data structure
     for (let i in result) {
       if (i !== 'dpools') {
-        // initialize dpool data arrays
-        for (let x in chainData) {
-          if (chainData[x].label) {
-            chainData[x].interestExpenses[parseInt(i.substring(1))] = 0;
-            chainData[x].fundedExpenses[parseInt(i.substring(1))] = 0;
-          }
-        }
-
         // populate dpool data arrays
         for (let p in result[i]) {
           const pool = result[i][p];
@@ -475,9 +473,9 @@ export class FundedInterestExpensesComponent implements OnInit {
         label: poolInfo.name,
         address: dpools[i].address,
         networkID: this.constants.CHAIN_ID.V2,
-        data: [],
-        interestExpenses: [],
-        fundedExpenses: [],
+        data: new Array(Object.keys(result).length - 1).fill(0),
+        interestExpenses: new Array(Object.keys(result).length - 1).fill(0),
+        fundedExpenses: new Array(Object.keys(result).length - 1).fill(0),
         borderColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         hoverBorderColor:
@@ -498,15 +496,6 @@ export class FundedInterestExpensesComponent implements OnInit {
     // populate data structure
     for (let i in result) {
       if (i !== 'dpools') {
-        // initialize dpool data arrays
-        for (let x in chainData) {
-          if (chainData[x].label) {
-            chainData[x].interestExpenses[parseInt(i.substring(1))] = 0;
-            chainData[x].fundedExpenses[parseInt(i.substring(1))] = 0;
-            chainData[x].data[parseInt(i.substring(1))] = 0;
-          }
-        }
-
         // populate dpool data arrays
         for (let p in result[i]) {
           const pool = result[i][p];
@@ -569,34 +558,14 @@ export class FundedInterestExpensesComponent implements OnInit {
     return readable;
   }
 
-  changePeriod() {
+  changePeriod(name: string) {
+    this.PERIOD_NAME = name;
     if (this.PERIOD_NAME === 'daily') {
       this.PERIOD = this.constants.DAY_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1630368000,
-        [this.constants.CHAIN_ID.POLYGON]: 1633392000,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
-        [this.constants.CHAIN_ID.FANTOM]: 1633996800,
-        [this.constants.CHAIN_ID.V2]: 1606176000,
-      };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1630195200,
-        [this.constants.CHAIN_ID.POLYGON]: 1633219200,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
-        [this.constants.CHAIN_ID.FANTOM]: 1633824000,
-        [this.constants.CHAIN_ID.V2]: 1606003200,
-      };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1627776000,
-        [this.constants.CHAIN_ID.POLYGON]: 1633046400,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633046400,
-        [this.constants.CHAIN_ID.FANTOM]: 1633046400,
-        [this.constants.CHAIN_ID.V2]: 1604188800,
-      };
     }
     this.resetChart();
     this.drawChart();

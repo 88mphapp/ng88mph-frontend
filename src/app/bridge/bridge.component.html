@@ -428,8 +428,7 @@
                             *ngIf="toStatus === 'success'"
                             class="text-success"
                           >
-                            Success. Almost there! Switch to the network you
-                            bridged to in order to convert your MPH 👇.
+                            Success!
                           </span>
                         </div>
                       </div>
@@ -453,6 +452,7 @@
                 <a
                   href="/stake"
                   class="list-group-item list-group-item-action px-4"
+                  *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
                 >
                   <h4 class="mb-1" i18n="@@stakeMPHForXMPH">
                     Stake MPH for xMPH
@@ -483,6 +483,21 @@
                     >Learn more</small
                   >
                 </a>
+                <div
+                  class="list-group-item list-group-item-action px-4"
+                  *ngIf="wallet.networkID === constants.CHAIN_ID.FANTOM"
+                >
+                  <h4 class="mb-1" i18n="@@farmYourYield">
+                    Provide liquidity & boost your yield
+                  </h4>
+                  <small class="text-muted" i18n="@@provideLiquidityText2"
+                    >Provide liquidity on our trading pools, and get rewarded by
+                    doing so from trading fees and liquidity mining.</small
+                  >
+                  <small class="btn btn-sm btn-bg-gradient ml-2">
+                    Coming soon</small
+                  >
+                </div>
               </div>
             </div>
           </div>

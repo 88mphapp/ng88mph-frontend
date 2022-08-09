@@ -62,6 +62,21 @@
                               </option>
                             </select>
                           </div>
+                          <small
+                            class="text-form text-danger my-2"
+                            *ngIf="
+                              wallet.networkID === constants.CHAIN_ID.FANTOM
+                            "
+                            >If you select a SCREAM's asset, make sure to verify
+                            SCREAM's solvency before proceeding with your
+                            deposit on
+                            <a
+                              href="https://v1.scream.sh/"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >v1.scream.sh v1</a
+                            >.</small
+                          >
                         </div>
                       </div>
                     </div>
@@ -610,7 +625,8 @@
                   *ngIf="
                     wallet.networkID === constants.CHAIN_ID.MAINNET ||
                     wallet.networkID === constants.CHAIN_ID.RINKEBY ||
-                    wallet.networkID === constants.CHAIN_ID.POLYGON
+                    wallet.networkID === constants.CHAIN_ID.POLYGON ||
+                    wallet.networkID === constants.CHAIN_ID.FANTOM
                   "
                 >
                   <div class="col">
@@ -645,13 +661,34 @@
                               a title, a description, an image,
                               etc</ng-container
                             >
-                            <a
-                              href="https://opensea.io/assets/0x9d481e42d9a2b52397262cdbe76abf3ca7b52203/34"
-                              target="_blank"
-                              i18n="@@NFTMetadataHelp2"
+                            <ngcontainer
+                              *ngIf="
+                                wallet.networkID ===
+                                  constants.CHAIN_ID.MAINNET ||
+                                wallet.networkID ===
+                                  constants.CHAIN_ID.RINKEBY ||
+                                wallet.networkID === constants.CHAIN_ID.POLYGON
+                              "
                             >
-                              (example)</a
-                            >.
+                              <a
+                                href="https://opensea.io/assets/0x9d481e42d9a2b52397262cdbe76abf3ca7b52203/34"
+                                target="_blank"
+                                i18n="@@NFTMetadataHelp2"
+                                >(example)</a
+                              >.
+                            </ngcontainer>
+                            <ngcontainer
+                              *ngIf="
+                                wallet.networkID === constants.CHAIN_ID.FANTOM
+                              "
+                              ><a
+                                href="https://paintswap.finance/marketplace/assets/0x87ebd80873d42227d06b087d1465f418c99ccddd/29"
+                                target="_blank"
+                                i18n="@@NFTMetadataHelp2"
+                                >(example)</a
+                              >.
+                            </ngcontainer>
+
                             <ng-container i18n="@@NFTMetadataHelp3">
                               We invite you to learn more about NFT metadata on
                             </ng-container>

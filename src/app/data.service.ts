@@ -156,6 +156,45 @@ export class DataService {
     return apy;
   }
 
+  async getPoolAPR(address: string, duration: number): Promise<BigNumber> {
+    const web3 = this.wallet.httpsWeb3();
+    const poolInfo = this.contract.getPoolInfoFromAddress(address);
+    if (!poolInfo) return new BigNumber(0);
+
+    const pool = this.contract.getPool(poolInfo.name, web3);
+
+    // get interest amount
+    const deposit = new BigNumber(10000);
+    const depositLength = new BigNumber(duration);
+    const stablecoinPrecision = Math.pow(10, poolInfo.stablecoinDecimals);
+    const depositAmount = this.helpers.processWeb3Number(
+      deposit.times(stablecoinPrecision)
+    );
+    const depositTime = this.helpers.processWeb3Number(
+      depositLength.times(this.constants.DAY_IN_SEC)
+    );
+    const rawInterestAmountToken = new BigNumber(
+      await pool.methods
+        .calculateInterestAmount(depositAmount, depositTime)
+        .call()
+    );
+    const interestEarnedToken = await this.helpers.applyFeeToInterest(
+      rawInterestAmountToken,
+      poolInfo
+    );
+
+    let apr = interestEarnedToken
+      .div(depositAmount)
+      .div(depositTime)
+      .times(this.constants.YEAR_IN_SEC)
+      .times(100);
+    if (apr.isNaN()) {
+      apr = new BigNumber(0);
+    }
+
+    return apr;
+  }
+
   async getPoolRewardAPR(
     address: string,
     mintMintiplier: BigNumber

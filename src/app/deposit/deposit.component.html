@@ -160,13 +160,14 @@
 
         <!-- insurance link -->
         <a
-          href="https://app.insurace.io/Insurance/Cart?id=102&referrer=1003844876871153922812567390869716010948231798944&chain=POLYGON"
+          href="https://app.insurace.io/Insurance/Cart?id=102&referrer=1003844876871153922812567390869716010948231798944"
           target="_blank"
           rel="noopener noreferrer"
           title="Insure your funds against smart contract vulnerabilities with our partner InsurAce"
           *ngIf="
             wallet.networkID === constants.CHAIN_ID.POLYGON ||
             wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
+            wallet.networkID === constants.CHAIN_ID.FANTOM ||
             wallet.networkID === constants.CHAIN_ID.MAINNET
           "
         >
@@ -421,64 +422,92 @@
               <td mat-footer-cell *matFooterCellDef>Total Deposits</td>
             </ng-container>
 
-            <ng-container matColumnDef="maxAPR">
+            <ng-container matColumnDef="monthlyAPR">
               <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                Fixed APR / MPH Rewards APR
+                Fixed APR
               </th>
               <td mat-cell *matCellDef="let pool">
-                <span class="h4 mb-0 glowing"
-                  >Up to {{ pool.maxAPR.toFormat(3) }}%</span
-                >
+                <ng-template #tooltipContent>
+                  <div class="p-3">
+                    30 Day APR: {{ pool.monthlyAPR.toFormat(2) }}%<br />
+                    365 Day APR: {{ pool.yearlyAPR.toFormat(2) }}%
+                  </div>
+                </ng-template>
                 <span
-                  class="
-                    badge badge-dark
-                    border border-light
-                    py-0
-                    pl-0
-                    mt-n2
-                    ml-2
-                  "
-                  style="border-radius: 14px"
+                  class="h4 mb-0 glowing"
                   placement="top"
                   i18n-ngbTooltip="@@depositsCustomMaturityText"
                   ngbTooltip="Deposits with custom maturity get rewarded with MPH tokens that can be locked for veMPH to influence gauge weight votes and receive protocol revenues"
                 >
-                  <div class="avatar avatar-xxs">
+                  {{ pool.yearlyAPR.toFormat(2) }}%
+                  <i class="fe fe-arrow-right align-center"></i>
+                  {{ pool.monthlyAPR.toFormat(2) }}%
+                </span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Fixed APR</td>
+            </ng-container>
+
+            <ng-container matColumnDef="mphAPR">
+              <th mat-header-cell mat-sort-header *matHeaderCellDef>MPH APR</th>
+              <td mat-cell *matCellDef="let pool">
+                <span class="h4 mb-0 glowing b-1 border-primary">
+                  +{{ pool.mphAPR.toFormat(2) }}%
+                  <div class="avatar avatar-xxs ml-1">
                     <img
                       src="./assets/img/token-icons/mph-logo-24.svg"
                       width="16"
-                      alt="..."
-                      class="avatar-img rounded-circle"
+                      alt="MPH Logo"
+                      class="avatar-img rounded-circle mt-n1"
                     />
                   </div>
-                  +{{ pool.mphAPR.toFormat(DECIMALS) }}%
                 </span>
               </td>
-              <td mat-footer-cell *matFooterCellDef>
-                Fixed APR / MPH Rewards APR
-              </td>
+              <td mat-footer-cell *matFooterCellDef>MPH APR</td>
             </ng-container>
 
             <ng-container matColumnDef="deposit">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let pool">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-bg-gradient mr-3"
-                  (click)="openDepositModal(pool.name)"
-                  [disabled]="wallet.watching"
-                  i18n="@@depositBtn"
-                >
-                  <i class="fe fe-arrow-up mr-2 align-bottom"></i>Deposit
-                </button>
-                <button
-                  class="btn btn-sm btn-dark btn-rounded-circle"
-                  type="button"
-                  *ngIf="userHasDeposit(pool.address)"
-                  (click)="pool.isExpanded = !pool.isExpanded"
-                >
-                  <i class="fe fe-chevron-down"></i>
-                </button>
+                <span class="d-flex align-items-center justify-content-end">
+                  <button
+                    class="btn btn-sm btn-dark btn-rounded-circle mr-3"
+                    type="button"
+                    *ngIf="userHasDeposit(pool.address)"
+                    (click)="pool.isExpanded = !pool.isExpanded"
+                  >
+                    <i class="fe fe-chevron-down" *ngIf="!pool.isExpanded"></i>
+                    <i class="fe fe-chevron-up" *ngIf="pool.isExpanded"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-bg-gradient mr-3"
+                    (click)="openDepositModal(pool.name)"
+                    [disabled]="wallet.watching"
+                    i18n="@@depositBtn"
+                  >
+                    <i class="fe fe-arrow-up mr-2 align-bottom"></i>Deposit
+                  </button>
+                  <div class="avatar avatar-xs mr-3">
+                    <a
+                      href="{{
+                        constants.NETWORK_METADATA[wallet.networkID]
+                          .blockExplorerUrls[0]
+                      }}/address/{{ pool.address }}"
+                      target="_blank"
+                    >
+                      <img
+                        class="avatar-img rounded-circle mr-3"
+                        src="
+                          {{
+                          constants.NETWORK_METADATA[wallet.networkID]
+                            .blockExplorerIcons[0]
+                        }}
+                        "
+                        alt="Block Explorer Icon"
+                      />
+                    </a>
+                  </div>
+                </span>
               </td>
               <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
@@ -599,7 +628,8 @@
                         *ngIf="
                           wallet.networkID === constants.CHAIN_ID.MAINNET ||
                           wallet.networkID === constants.CHAIN_ID.RINKEBY ||
-                          wallet.networkID === constants.CHAIN_ID.POLYGON
+                          wallet.networkID === constants.CHAIN_ID.POLYGON ||
+                          wallet.networkID === constants.CHAIN_ID.FANTOM
                         "
                       >
                         <i class="fe fe-settings mr-2 align-bottom"></i>NFT
@@ -695,7 +725,8 @@
                 'stablecoinSymbol',
                 'userTotalDepositUSD',
                 'totalDepositsUSD',
-                'maxAPR',
+                'monthlyAPR',
+                'mphAPR',
                 'deposit'
               ]"
             ></tr>
@@ -708,7 +739,8 @@
                   'stablecoinSymbol',
                   'userTotalDepositUSD',
                   'totalDepositsUSD',
-                  'maxAPR',
+                  'monthlyAPR',
+                  'mphAPR',
                   'deposit'
                 ]
               "

@@ -21,14 +21,14 @@ import { Chart } from 'chart.js';
 })
 export class HistoricalAssetTvlComponent implements OnInit {
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1630368000,
-    [this.constants.CHAIN_ID.POLYGON]: 1633392000,
-    [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
-    [this.constants.CHAIN_ID.FANTOM]: 1633996800,
+    [this.constants.CHAIN_ID.MAINNET]: 1630454400,
+    [this.constants.CHAIN_ID.POLYGON]: 1633564800,
+    [this.constants.CHAIN_ID.AVALANCHE]: 1633737600,
+    [this.constants.CHAIN_ID.FANTOM]: 1634083200,
     [this.constants.CHAIN_ID.V2]: 1606176000,
   };
-  PERIOD: number = this.constants.DAY_IN_SEC;
-  PERIOD_NAME: string = 'daily';
+  PERIOD: number = this.constants.WEEK_IN_SEC;
+  PERIOD_NAME: string = 'weekly';
   SELECTED_ASSET: string = 'all';
   COLORS: string[] = [
     '44, 123, 229',
@@ -137,6 +137,10 @@ export class HistoricalAssetTvlComponent implements OnInit {
             stacked: true,
             gridLines: {
               display: false,
+            },
+            ticks: {
+              autoSkip: true,
+              autoSkipPadding: 5,
             },
           },
         ],
@@ -289,10 +293,13 @@ export class HistoricalAssetTvlComponent implements OnInit {
     `;
 
     // then run the query
-    await request(this.constants.GRAPHQL_ENDPOINT[networkID], query).then(
-      (data: QueryResult) =>
+    await request(this.constants.GRAPHQL_ENDPOINT[networkID], query)
+      .then((data: QueryResult) =>
         this.handleData(data, networkID, blocks, timestamps)
-    );
+      )
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   async handleData(
@@ -316,9 +323,9 @@ export class HistoricalAssetTvlComponent implements OnInit {
         label: poolInfo.name,
         address: dpools[pool].address,
         networkID: networkID,
-        data: [],
-        dataTVL: [],
-        dataUSD: [],
+        data: new Array(Object.keys(result).length - 1).fill(0),
+        dataTVL: new Array(Object.keys(result).length - 1).fill(0),
+        dataUSD: new Array(Object.keys(result).length - 1).fill(0),
         backgroundColor:
           'rgba(' + this.COLORS[parseInt(pool) % this.COLORS.length] + ', 0.5)',
         hoverBackgroundColor:
@@ -330,24 +337,15 @@ export class HistoricalAssetTvlComponent implements OnInit {
 
     for (let t in result) {
       if (t !== 'dpools') {
-        // initialize dpool data arrays
-        for (let x in chainData) {
-          if (chainData[x].label) {
-            chainData[x].dataTVL[parseInt(t.substring(1))] = 0;
-            chainData[x].dataUSD[parseInt(t.substring(1))] = 0;
-          }
-        }
-
         // populate dpool TVL array
         for (let pool in result[t]) {
           let dpool = result[t][pool];
           let entry = chainData.find((pool) => pool.address === dpool.address);
           let totalDeposit = parseFloat(dpool.totalDeposit);
 
-          if (isNaN(totalDeposit)) {
-            totalDeposit = 0;
+          if (!isNaN(totalDeposit)) {
+            entry.dataTVL[parseInt(t.substring(1))] = totalDeposit;
           }
-          entry.dataTVL[parseInt(t.substring(1))] = totalDeposit;
         }
       }
     }
@@ -452,9 +450,13 @@ export class HistoricalAssetTvlComponent implements OnInit {
     await request(
       this.constants.GRAPHQL_ENDPOINT_V2[this.constants.CHAIN_ID.MAINNET],
       query
-    ).then((data: QueryResultV2) =>
-      this.handleDataV2(data, blocks, timestamps)
-    );
+    )
+      .then((data: QueryResultV2) =>
+        this.handleDataV2(data, blocks, timestamps)
+      )
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   async handleDataV2(
@@ -574,34 +576,14 @@ export class HistoricalAssetTvlComponent implements OnInit {
     return readable;
   }
 
-  changePeriod() {
+  changePeriod(name: string) {
+    this.PERIOD_NAME = name;
     if (this.PERIOD_NAME === 'daily') {
       this.PERIOD = this.constants.DAY_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1630368000,
-        [this.constants.CHAIN_ID.POLYGON]: 1633392000,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
-        [this.constants.CHAIN_ID.FANTOM]: 1633996800,
-        [this.constants.CHAIN_ID.V2]: 1606176000,
-      };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1630195200,
-        [this.constants.CHAIN_ID.POLYGON]: 1633219200,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
-        [this.constants.CHAIN_ID.FANTOM]: 1633824000,
-        [this.constants.CHAIN_ID.V2]: 1606003200,
-      };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1627776000,
-        [this.constants.CHAIN_ID.POLYGON]: 1633046400,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633046400,
-        [this.constants.CHAIN_ID.FANTOM]: 1633046400,
-        [this.constants.CHAIN_ID.V2]: 1604188800,
-      };
     }
     this.resetChart();
     this.drawChart();

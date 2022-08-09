@@ -110,32 +110,12 @@
                         colspan="2"
                       >
                         <div class="d-flex justify-content-between">
-                          <!-- <span
-                            class="text-white"
-                            placement="bottom"
-                            i18n-ngbTooltip="@@AvgFloatingRatePrediction"
-                            ngbTooltip="Use the slide below to see how your average floating rate
-                          prediction for {{ pool.stablecoinSymbol }} on {{
-                              pool.protocol
-                            }} until the YT reaches its maturity date could impact your ROI. 'For eg. an average of 10% for the floating yield rate of {{
-                              pool.stablecoinSymbol
-                            }} over the next x days impacts my ROI by x%.'"
-                          > -->
                           <span class="text-white">
                             Floating Rate Prediction:
                             <span class="text-white">
                               {{ pool.floatingRatePrediction.toFixed(2) }}% APY
                             </span>
                           </span>
-                          <!-- <span
-                            class="text-white"
-                            i18n-ngbTooltip="@@CurrentFloatingRate"
-                            ngbTooltip="Check this box to know the current floating rate for {{
-                              pool.stablecoinSymbol
-                            }} on {{
-                              pool.protocol
-                            }} and how it could impact your ROI if it stays at that rate until the YT reaches its maturity date."
-                          > -->
                           <span class="text-white">
                             Use Current Floating Rate:
                             <input
@@ -168,23 +148,11 @@
                             <small>0%</small>
                           </div>
                           <div class="col text-center">
-                            <small *ngIf="!pool.useMarketRate"
-                              >{{ pool.emaRate.toFixed(2) }}%
-                              <!-- <br />
-                              <span
-                                placement="top"
-                                i18n-ngbTooltip="@@Current30dEMA"
-                                ngbTooltip="Current 30-day exponential moving average (EMA) of the floating yield rate of {{
-                                  pool.stablecoinSymbol
-                                }} on {{ pool.protocol }}."
-                              >
-                                (Current 30d EMA floating rate)
-                              </span> -->
+                            <small *ngIf="!pool.useMarketRate">
+                              {{ pool.emaRate.toFixed(2) }}%
                             </small>
                             <small *ngIf="pool.useMarketRate">
                               {{ pool.marketRate.toFixed(2) }}%
-                              <!-- <br/>
-                              (Current floating rate) -->
                             </small>
                           </div>
                           <div class="col text-right">
@@ -258,37 +226,6 @@
                             estimatedYield.times(stablecoinPriceUSD).toFixed(2)
                           }}
                         </span>
-                      </td>
-                    </tr>
-                    <tr *ngIf="pool.poolFunderRewardMultiplier.gt(0)">
-                      <!-- <tr> -->
-                      <td class="px-0 py-2 text-white border-0 small">
-                        Est. MPH Reward at Maturity
-                      </td>
-                      <td
-                        class="px-0 py-2 text-white text-right border-0 small"
-                      >
-                        <span class="h4 mb-1 glowing">
-                          {{ estimatedReward.toFixed(6) }}
-                          MPH
-                        </span>
-                        <span class="h5 text-muted">
-                          ${{
-                            estimatedReward.times(datas.mphPriceUSD).toFixed(2)
-                          }}
-                        </span>
-                      </td>
-                    </tr>
-                    <tr *ngIf="pool.poolFunderRewardMultiplier.gt(0)">
-                      <td class="px-0 py-2 text-white border-0 small">
-                        Est. MPH APR
-                      </td>
-                      <td
-                        class="px-0 py-2 text-white text-right border-0 small"
-                      >
-                        <h4 class="mb-1 glowing">
-                          {{ estimatedRewardAPR.toFormat(2) }}%
-                        </h4>
                       </td>
                     </tr>
                     <tr>

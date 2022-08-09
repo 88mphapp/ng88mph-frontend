@@ -24,9 +24,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
   fundAmount: BigNumber;
   debtAvailable: BigNumber;
   estimatedYield: BigNumber;
-  estimatedReward: BigNumber;
   estimatedROI: BigNumber;
-  estimatedRewardAPR: BigNumber;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -107,9 +105,7 @@ export class ModalBuyYieldTokenComponent implements OnInit {
     this.fundAmount = new BigNumber(0);
     this.debtAvailable = new BigNumber(0);
     this.estimatedYield = new BigNumber(0);
-    this.estimatedReward = new BigNumber(0);
     this.estimatedROI = new BigNumber(0);
-    this.estimatedRewardAPR = new BigNumber(0);
   }
 
   setFundAmount(amount: number | string | BigNumber) {
@@ -149,20 +145,6 @@ export class ModalBuyYieldTokenComponent implements OnInit {
       .times(100);
     if (this.estimatedROI.isNaN()) {
       this.estimatedROI = new BigNumber(0);
-    }
-
-    // estimate reward at maturity
-    if (this.deposit.pool.poolFunderRewardMultiplier.gt(0)) {
-      this.estimatedReward = this.estimatedYield.times(
-        this.deposit.pool.poolFunderRewardMultiplier
-      );
-      this.estimatedRewardAPR = this.estimatedReward
-        .times(this.datas.mphPriceUSD)
-        .div(this.fundAmount.times(this.stablecoinPriceUSD))
-        .times(100);
-      if (this.estimatedRewardAPR.isNaN()) {
-        this.estimatedRewardAPR = new BigNumber(0);
-      }
     }
   }
 

@@ -16,10 +16,10 @@ import { Chart } from 'chart.js';
 export class PriceEarningsRatioComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1630972800,
+    [this.constants.CHAIN_ID.MAINNET]: 1630800000,
   };
-  PERIOD: number = this.constants.DAY_IN_SEC;
-  PERIOD_NAME: string = 'daily';
+  PERIOD: number = this.constants.WEEK_IN_SEC;
+  PERIOD_NAME: string = 'weekly';
   COLORS: string[] = [
     '44, 123, 229',
     '255, 103, 155',
@@ -89,6 +89,10 @@ export class PriceEarningsRatioComponent implements OnInit {
             gridLines: {
               display: false,
             },
+            ticks: {
+              autoSkip: true,
+              autoSkipPadding: 5,
+            },
           },
         ],
         yAxes: [
@@ -128,7 +132,7 @@ export class PriceEarningsRatioComponent implements OnInit {
           hitRadius: 4,
         },
         line: {
-          tension: 0,
+          tension: 0.4,
           borderWidth: 2,
           hoverBorderWidth: 2,
         },
@@ -240,7 +244,11 @@ export class PriceEarningsRatioComponent implements OnInit {
         this.constants.CHAIN_ID.MAINNET
       ],
       query
-    ).then((data: QueryResult) => this.handleData(data));
+    )
+      .then((data: QueryResult) => this.handleData(data))
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   async handleData(data: QueryResult) {
@@ -306,7 +314,8 @@ export class PriceEarningsRatioComponent implements OnInit {
     this.loading = false;
   }
 
-  changePeriod() {
+  changePeriod(name: string) {
+    this.PERIOD_NAME = name;
     if (this.PERIOD_NAME === 'daily') {
       this.PERIOD = this.constants.DAY_IN_SEC;
       this.FIRST_INDEX = {
