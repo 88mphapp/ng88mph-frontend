@@ -33,6 +33,7 @@ export class ConstantsService {
       },
       rpcUrls: ['https://mainnet.infura.io/v3'],
       blockExplorerUrls: ['https://etherscan.io'],
+      blockExplorerIcons: ['assets/img/etherscan.png'],
     },
     [this.CHAIN_ID.RINKEBY]: {
       chainId: '0x4',
@@ -45,6 +46,7 @@ export class ConstantsService {
       },
       rpcUrls: ['https://rinkeby.infura.io/v3'],
       blockExplorerUrls: ['https://rinkeby.etherscan.io'],
+      blockExplorerIcons: ['assets/img/etherscan.png'],
     },
     [this.CHAIN_ID.POLYGON]: {
       chainId: '0x89',
@@ -57,6 +59,7 @@ export class ConstantsService {
       },
       rpcUrls: ['https://polygon-rpc.com'],
       blockExplorerUrls: ['https://polygonscan.com'],
+      blockExplorerIcons: ['assets/img/polygonscan.png'],
     },
     [this.CHAIN_ID.AVALANCHE]: {
       chainId: '0xa86a',
@@ -68,7 +71,8 @@ export class ConstantsService {
         decimals: 18,
       },
       rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
-      blockExplorerUrls: ['https://cchain.explorer.avax.network'],
+      blockExplorerUrls: ['https://snowtrace.io'],
+      blockExplorerIcons: ['assets/img/snowtrace.svg'],
     },
     [this.CHAIN_ID.FANTOM]: {
       chainId: '0xfa',
@@ -81,13 +85,16 @@ export class ConstantsService {
       },
       rpcUrls: ['https://rpc.ftm.tools'],
       blockExplorerUrls: ['https://ftmscan.com'],
+      blockExplorerIcons: ['assets/img/ftmscan.png'],
     },
   };
 
   // GRAPHQL ENDPOINTS //
   GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
-      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3',
+      // 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3', // hosted
+      // 'https://api.studio.thegraph.com/query/23186/eighty-eight-mph-v3/test', // test studio (rate limited)
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/Ep6qPG4Pscywwdr2NbSBKJu7RrN4pqie5RGPGHKXMviN', // production studio
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby',
     [this.CHAIN_ID.POLYGON]:

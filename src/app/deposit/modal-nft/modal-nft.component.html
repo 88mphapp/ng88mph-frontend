@@ -361,15 +361,28 @@
                     <div class="col ml-n2">
                       <h3>
                         <ng-container i18n="@@modalNFTView"
-                          >View Your NFT on&nbsp;</ng-container
-                        >
+                          >View Your NFT on&nbsp;
+                        </ng-container>
                         <a
-                          href="{{ openseaURL }}"
+                          href="{{ nftPlatformURL }}"
                           target="_blank"
                           class="text-primary"
                           i18n="@@OpenSea"
-                          >OpenSea!</a
                         >
+                          <ngcontainer
+                            *ngIf="
+                              wallet.networkID === constants.CHAIN_ID.MAINNET ||
+                              wallet.networkID === constants.CHAIN_ID.RINKEBY ||
+                              wallet.networkID === constants.CHAIN_ID.POLYGON
+                            "
+                            >OpenSea</ngcontainer
+                          ><ngcontainer
+                            *ngIf="
+                              wallet.networkID === constants.CHAIN_ID.FANTOM
+                            "
+                            >PaintSwap</ngcontainer
+                          >
+                        </a>
                       </h3>
                     </div>
                   </div>

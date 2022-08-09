@@ -85,6 +85,13 @@ export class Web3Enabled {
       const wallets = [
         genericMobileWalletConfig,
         { walletName: 'metamask', preferred: true },
+        { walletName: 'coinbase', preferred: true },
+        {
+          walletName: 'walletLink',
+          appUrl: 'https://88mph.app',
+          rpcUrl: this.constants.RPC[this.networkID],
+          preferred: true,
+        },
         {
           walletName: 'walletConnect',
           rpc: this.constants.RPC,

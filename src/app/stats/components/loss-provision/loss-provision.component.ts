@@ -22,14 +22,14 @@ import { Chart } from 'chart.js';
 export class LossProvisionComponent implements OnInit {
   // constants
   FIRST_INDEX = {
-    [this.constants.CHAIN_ID.MAINNET]: 1630368000,
-    [this.constants.CHAIN_ID.POLYGON]: 1633392000,
-    [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
-    [this.constants.CHAIN_ID.FANTOM]: 1633996800,
+    [this.constants.CHAIN_ID.MAINNET]: 1630454400,
+    [this.constants.CHAIN_ID.POLYGON]: 1633564800,
+    [this.constants.CHAIN_ID.AVALANCHE]: 1633737600,
+    [this.constants.CHAIN_ID.FANTOM]: 1634083200,
     [this.constants.CHAIN_ID.V2]: 1606176000,
   };
-  PERIOD: number = this.constants.DAY_IN_SEC;
-  PERIOD_NAME: string = 'daily';
+  PERIOD: number = this.constants.WEEK_IN_SEC;
+  PERIOD_NAME: string = 'weekly';
   SELECTED_ASSET: string = 'all';
   COLORS: string[] = [
     '44, 123, 229',
@@ -138,6 +138,10 @@ export class LossProvisionComponent implements OnInit {
             stacked: true,
             gridLines: {
               display: false,
+            },
+            ticks: {
+              autoSkip: true,
+              autoSkipPadding: 5,
             },
           },
         ],
@@ -297,9 +301,13 @@ export class LossProvisionComponent implements OnInit {
     await request(
       this.constants.BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT[networkID],
       query
-    ).then((data: QueryResult) =>
-      this.handleData(data, networkID, blocks, timestamps)
-    );
+    )
+      .then((data: QueryResult) =>
+        this.handleData(data, networkID, blocks, timestamps)
+      )
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   async handleData(
@@ -325,9 +333,9 @@ export class LossProvisionComponent implements OnInit {
         label: poolInfo.name,
         address: dpools[i].address,
         networkID: networkID,
-        data: [],
-        dataUSD: [],
-        dataLossProvision: [],
+        data: new Array(Object.keys(data).length - 1).fill(0),
+        dataUSD: new Array(Object.keys(data).length - 1).fill(0),
+        dataLossProvision: new Array(Object.keys(data).length - 1).fill(0),
         backgroundColor:
           'rgba(' + this.COLORS[parseInt(i) % this.COLORS.length] + ', 0.5)',
         hoverBackgroundColor:
@@ -340,13 +348,6 @@ export class LossProvisionComponent implements OnInit {
     // populate loss provision data
     for (let i in data) {
       if (i !== 'dpools') {
-        // initialize dpool data arrays
-        for (let x in chainData) {
-          if (chainData[x].label) {
-            chainData[x].dataLossProvision[parseInt(i.substring(1))] = 0;
-          }
-        }
-
         // populate loss provision data
         for (let p in data[i]) {
           let pool = data[i][p];
@@ -438,34 +439,14 @@ export class LossProvisionComponent implements OnInit {
     return readable;
   }
 
-  changePeriod() {
+  changePeriod(name: string) {
+    this.PERIOD_NAME = name;
     if (this.PERIOD_NAME === 'daily') {
       this.PERIOD = this.constants.DAY_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1630368000,
-        [this.constants.CHAIN_ID.POLYGON]: 1633392000,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633651200,
-        [this.constants.CHAIN_ID.FANTOM]: 1633996800,
-        [this.constants.CHAIN_ID.V2]: 1606176000,
-      };
     } else if (this.PERIOD_NAME === 'weekly') {
       this.PERIOD = this.constants.WEEK_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1630195200,
-        [this.constants.CHAIN_ID.POLYGON]: 1633219200,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633219200,
-        [this.constants.CHAIN_ID.FANTOM]: 1633824000,
-        [this.constants.CHAIN_ID.V2]: 1606003200,
-      };
     } else if (this.PERIOD_NAME === 'monthly') {
       this.PERIOD = this.constants.MONTH_IN_SEC;
-      this.FIRST_INDEX = {
-        [this.constants.CHAIN_ID.MAINNET]: 1627776000,
-        [this.constants.CHAIN_ID.POLYGON]: 1633046400,
-        [this.constants.CHAIN_ID.AVALANCHE]: 1633046400,
-        [this.constants.CHAIN_ID.FANTOM]: 1633046400,
-        [this.constants.CHAIN_ID.V2]: 1604188800,
-      };
     }
     this.resetChart();
     this.drawChart();

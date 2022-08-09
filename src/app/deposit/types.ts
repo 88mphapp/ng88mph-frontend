@@ -16,7 +16,8 @@ export interface AllPool {
   mphDepositorRewardMintMultiplier: BigNumber;
   totalDepositsUSD: BigNumber;
   totalDeposits: BigNumber;
-  maxAPR: BigNumber;
+  monthlyAPR: BigNumber;
+  yearlyAPR: BigNumber;
   mphAPR: BigNumber;
   isBest: boolean;
 
@@ -32,7 +33,8 @@ export interface GlobalPool {
   mphDepositorRewardMintMultiplier: BigNumber;
   totalDepositsUSD: BigNumber;
   totalDeposits: BigNumber;
-  maxAPR: BigNumber;
+  monthlyAPR: BigNumber;
+  yearlyAPR: BigNumber;
   mphAPR: BigNumber;
   isBest: boolean;
 }
