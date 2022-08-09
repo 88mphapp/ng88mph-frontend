@@ -55,6 +55,12 @@ export class ContractService {
     );
   }
 
+  getPoolInfoFromGauge(gauge: string): PoolInfo {
+    return this.getPoolInfoList().find(
+      (poolInfo) => poolInfo.gauge.toLowerCase() === gauge.toLowerCase()
+    );
+  }
+
   getPool(name: string, web3?: Web3) {
     const address = this.getPoolAddress(name);
     return this.getContract(address, 'DInterest', web3);
@@ -120,6 +126,7 @@ export interface PoolInfo {
   protocol: string;
   iconPath: string;
   moneyMarket: string;
+  gauge?: string;
   stakingPool?: string;
   curveSwapAddress?: string;
   zapDepositTokens?: string[];

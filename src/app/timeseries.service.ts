@@ -23,6 +23,31 @@ export class TimeSeriesService {
     return interval / period;
   }
 
+  async getBlock(timestamp: number, chainId: number): Promise<number> {
+    const queryString = gql`
+      {
+        blocks(
+          first: 1,
+          orderBy: timestamp,
+          orderDirection: asc,
+          where: {
+            timestamp_gt: ${timestamp},
+            timestamp_lt: ${timestamp + 600}
+          }
+        ) {
+          id
+          number
+        }
+      }
+    `;
+    return await request(
+      this.constants.BLOCKS_GRAPHQL_ENDPOINT[chainId],
+      queryString
+    ).then((result) => {
+      return result.blocks[0].number;
+    });
+  }
+
   async getCustomTimeSeries(
     customStart: number,
     customPeriod: number,

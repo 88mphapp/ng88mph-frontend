@@ -39,9 +39,10 @@ export class ModalDepositComponent implements OnInit {
   mphRewardAmount: BigNumber;
   minDepositAmount: BigNumber;
   maxDepositPeriodInDays: number;
+  totalDeposit: BigNumber;
+  rewardRate: BigNumber;
   mphPriceUSD: BigNumber;
-  mphAPY: BigNumber;
-  mphDepositorRewardMintMultiplier: BigNumber;
+  mphAPR: BigNumber;
   shouldDisplayZap: boolean;
   selectedDepositToken: string;
   zapDepositTokens: string[];
@@ -142,9 +143,10 @@ export class ModalDepositComponent implements OnInit {
     this.mphRewardAmount = new BigNumber(0);
     this.minDepositAmount = new BigNumber(0);
     this.maxDepositPeriodInDays = 0;
+    this.totalDeposit = new BigNumber(0);
+    this.rewardRate = new BigNumber(0);
     this.mphPriceUSD = new BigNumber(0);
-    this.mphAPY = new BigNumber(0);
-    this.mphDepositorRewardMintMultiplier = new BigNumber(0);
+    this.mphAPR = new BigNumber(0);
     this.shouldDisplayZap = false;
     this.selectedDepositToken = '';
     this.zapDepositTokens = [];
@@ -169,6 +171,16 @@ export class ModalDepositComponent implements OnInit {
       this.selectedPoolInfo.zapDepositTokens
     );
 
+    let rewardRate = new BigNumber(0);
+    const vest = this.contract.getNamedContract('Vesting03');
+
+    if (vest.options.address) {
+      rewardRate = await vest.methods
+        .rewardRate(this.selectedPoolInfo.address)
+        .call();
+    }
+    this.rewardRate = rewardRate;
+
     const queryString = gql`
       {
         dpools (
@@ -179,9 +191,9 @@ export class ModalDepositComponent implements OnInit {
           }
         ) {
           id
+          totalDeposit
           MinDepositAmount
           MaxDepositPeriod
-          poolDepositorRewardMintMultiplier
         }
       }
     `;
@@ -194,9 +206,7 @@ export class ModalDepositComponent implements OnInit {
       this.maxDepositPeriodInDays = Math.floor(
         pool.MaxDepositPeriod / this.constants.DAY_IN_SEC
       );
-      this.mphDepositorRewardMintMultiplier = new BigNumber(
-        pool.poolDepositorRewardMintMultiplier
-      );
+      this.totalDeposit = new BigNumber(pool.totalDeposit);
     });
 
     let userAddress: string = this.wallet.actualAddress;
@@ -375,22 +385,20 @@ export class ModalDepositComponent implements OnInit {
       this.apy = new BigNumber(0);
     }
 
-    // get MPH reward amount
-    this.mphRewardAmount = this.mphDepositorRewardMintMultiplier
-      .times(this.depositAmount)
-      .times(depositTime);
-
-    const mphAPY = this.mphRewardAmount
-      .times(this.mphPriceUSD)
-      .div(this.depositAmountUSD)
-      .div(depositTime)
+    const mphAPR = this.rewardRate
       .times(this.constants.YEAR_IN_SEC)
+      .times(this.mphPriceUSD)
+      .div(this.totalDeposit.plus(this.depositAmount))
+      .div(stablecoinPrice)
       .times(100);
-    if (mphAPY.isNaN()) {
-      this.mphAPY = new BigNumber(0);
-    } else {
-      this.mphAPY = mphAPY;
-    }
+    this.mphAPR = mphAPR.isNaN() ? new BigNumber(0) : mphAPR;
+
+    // estimate the MPH reward amount for the deposit duration
+    const mphAmount = this.rewardRate
+      .times(depositTime)
+      .times(this.depositAmount)
+      .div(this.totalDeposit.plus(this.depositAmount));
+    this.mphRewardAmount = mphAmount.isNaN() ? new BigNumber(0) : mphAmount;
   }
 
   approve() {
@@ -433,7 +441,6 @@ export class ModalDepositComponent implements OnInit {
     );
   }
 
-  // @dev needs to be fully tested with a deployed v3 contract, including ZCB
   deposit() {
     if (this.selectedDepositToken === this.selectedPoolInfo.stablecoinSymbol) {
       this.normalDeposit();
@@ -926,8 +933,8 @@ export class ModalDepositComponent implements OnInit {
 interface QueryResult {
   dpools: {
     id: string;
+    totalDeposit: string;
     MinDepositAmount: number;
     MaxDepositPeriod: number;
-    poolDepositorRewardMintMultiplier: number;
   }[];
 }

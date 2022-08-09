@@ -10,7 +10,9 @@ import { ConverterComponent } from './bridge/converter/converter.component';
 import { DepositComponent } from './deposit/deposit.component';
 import { FarmingComponent } from './farming/farming.component';
 import { RewardsComponent } from './rewards/rewards.component';
+import { GaugeComponent } from './gauge/gauge.component';
 import { StatsComponent } from './stats/stats.component';
+import { ConverterComponent } from './bridge/converter/converter.component';
 
 const routes: Routes = [
   {
@@ -53,6 +55,10 @@ const routes: Routes = [
   {
     path: 'bridge',
     component: BridgeComponent,
+  },
+  {
+    path: 'gauge',
+    component: GaugeComponent,
   },
   {
     path: 'convert',

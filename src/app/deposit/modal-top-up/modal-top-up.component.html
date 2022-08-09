@@ -131,7 +131,7 @@
                           class="px-0 py-2 text-white border-0 small"
                           i18n="@@yieldEarned"
                         >
-                          Yield earned
+                          Yield Earned
                         </td>
                       </tr>
                       <tr>
@@ -183,7 +183,7 @@
                       <tr>
                         <td class="px-0 py-2 text-white border-0 small">
                           <ng-container i18n="@@withdrawableAtMaturity"
-                            >Withdrawable at maturity</ng-container
+                            >Withdrawable at Maturity</ng-container
                           >
                           | {{ depositMaturation }}
                         </td>
@@ -264,9 +264,52 @@
                       <tr>
                         <td
                           class="px-0 py-2 text-white border-0 small"
+                          i18n="@@MPHApr"
+                        >
+                          MPH APR
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                          i18n="@@topUpAmount"
+                        >
+                          Top Up Amount
+                        </td>
+                        <td
+                          class="px-0 py-1 text-white text-right border-0 small"
+                        >
+                          <span class="mb-1 glowing">
+                            {{ topupRewardAPR.toFormat(4) }}%
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          class="px-0 pl-3 py-1 text-secondary border-0 small"
+                          i18n="@@totalDeposit"
+                        >
+                          Total Deposit
+                        </td>
+                        <td
+                          class="px-0 py-1 text-white text-right border-0 small"
+                        >
+                          <span class="mb-1 glowing">
+                            {{ totalRewardAPR.toFormat(4) }}%
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          class="px-0 py-2 text-white border-0 small"
                           i18n="@@MPHRewards"
                         >
-                          MPH rewards
+                          <ng-container
+                            *ngIf="userDeposit.vest.lastUpdateTimestamp === 0"
+                          >
+                            Estimated
+                          </ng-container>
+                          MPH Rewards
                           <span
                             class="badge badge-soft-success ml-1"
                             *ngIf="
@@ -288,11 +331,11 @@
                           class="px-0 py-1 text-white text-right border-0 small"
                         >
                           <span class="mb-1 glowing">
-                            {{ mphRewardAmountToken.toFormat(4) }}
+                            {{ topupReward.toFormat(4) }}
                             <ng-container i18n="@@MPH">MPH</ng-container>
                           </span>
                           <span class="text-muted">
-                            (${{ mphRewardAmountUSD.toFormat(4) }})
+                            (${{ topupReward.times(mphPriceUSD).toFormat(4) }})
                           </span>
                         </td>
                       </tr>
@@ -307,69 +350,11 @@
                           class="px-0 py-1 text-white text-right border-0 small"
                         >
                           <span class="mb-1 glowing">
-                            {{
-                              userDeposit.reward
-                                .plus(mphRewardAmountToken)
-                                .toFormat(4)
-                            }}
+                            {{ totalReward.toFormat(4) }}
                             <ng-container i18n="@@MPH">MPH</ng-container>
                           </span>
                           <span class="text-muted">
-                            (${{
-                              userDeposit.reward
-                                .plus(mphRewardAmountToken)
-                                .times(mphPriceUSD)
-                                .toFormat(4)
-                            }})
-                          </span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          class="px-0 py-2 text-white border-0 small"
-                          i18n="@@MPHApr"
-                        >
-                          MPH APR
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          class="px-0 pl-3 py-1 text-secondary border-0 small"
-                          i18n="@@topUpAmount"
-                        >
-                          Top Up Amount
-                        </td>
-                        <td
-                          class="px-0 py-1 text-white text-right border-0 small"
-                        >
-                          <span class="mb-1 glowing">
-                            +{{ mphRewardAPR.toFormat(4) }}%
-                          </span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          class="px-0 pl-3 py-1 text-secondary border-0 small"
-                          i18n="@@totalDeposit"
-                        >
-                          Total Deposit
-                        </td>
-                        <td
-                          class="px-0 py-1 text-white text-right border-0 small"
-                        >
-                          <span class="mb-1 glowing">
-                            +{{
-                              userDeposit.reward
-                                .times(mphPriceUSD)
-                                .plus(mphRewardAmountUSD)
-                                .div(
-                                  userDeposit.amountUSD.plus(depositAmountUSD)
-                                )
-                                .div(userDeposit.depositLength)
-                                .times(constants.YEAR_IN_SEC)
-                                .times(100)
-                                .toFormat(4)
-                            }}%
+                            (${{ totalReward.times(mphPriceUSD).toFormat(4) }})
                           </span>
                         </td>
                       </tr>

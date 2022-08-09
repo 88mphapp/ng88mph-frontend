@@ -398,12 +398,28 @@
                     {{ pool.userTotalDeposit.toFormat(DECIMALS) }}
                     {{ pool.stablecoinSymbol }}
                   </h4>
-                  <span class="text-white">
+                  <span class="text-muted">
                     ${{ pool.userTotalDepositUSD.toFormat(DECIMALS) }}
                   </span>
                 </ng-container>
               </td>
               <td mat-footer-cell *matFooterCellDef>Your Deposit Balance</td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalDepositsUSD">
+              <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                Total Deposits
+              </th>
+              <td mat-cell *matCellDef="let pool">
+                <h4 class="mb-1 glowing">
+                  {{ pool.totalDeposits.toFormat(DECIMALS) }}
+                  {{ pool.stablecoinSymbol }}
+                </h4>
+                <span class="text-muted">
+                  ${{ pool.totalDepositsUSD.toFormat(DECIMALS) }}
+                </span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Total Deposits</td>
             </ng-container>
 
             <ng-container matColumnDef="monthlyAPR">
@@ -421,7 +437,7 @@
                   class="h4 mb-0 glowing"
                   placement="top"
                   i18n-ngbTooltip="@@depositsCustomMaturityText"
-                  [ngbTooltip]="tooltipContent"
+                  ngbTooltip="Deposits with custom maturity get rewarded with MPH tokens that can be locked for veMPH to influence gauge weight votes and receive protocol revenues"
                 >
                   {{ pool.yearlyAPR.toFormat(2) }}%
                   <i class="fe fe-arrow-right align-center"></i>
@@ -559,39 +575,40 @@
 
                   <ng-container matColumnDef="interestAPR">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                      Deposit Fixed APR / MPH Rewards APR
+                      Fixed APR
                     </th>
                     <td mat-cell *matCellDef="let deposit">
                       <span class="h4 mb-1 glowing">
                         {{ deposit.interestAPR.toFormat(DECIMALS) }}%
                       </span>
-                      <span
-                        class="
-                          badge badge-dark
-                          border border-light
-                          py-0
-                          pl-0
-                          mt-n1
-                        "
-                        style="border-radius: 14px"
-                        placement="top"
-                        i18n-ngbTooltip="@@depositsCustomMaturityText"
-                        ngbTooltip="Deposits with custom maturity get rewarded with vested MPH tokens that can be staked to earn rewards (protocol fees, harvested tokens, etc)"
-                      >
-                        <div class="avatar avatar-xxs">
-                          <img
-                            src="./assets/img/token-icons/mph-logo-24.svg"
-                            width="16"
-                            alt="..."
-                            class="avatar-img rounded-circle"
-                          />
-                        </div>
-                        +{{ deposit.rewardAPR.toFormat(DECIMALS) }}%
-                      </span>
-                      <span class="text-muted d-block"
-                        >{{ deposit.interest.toFormat(DECIMALS) }}
+                      <span class="text-muted d-block">
+                        {{ deposit.interest.toFormat(DECIMALS) }}
                         {{ pool.stablecoinSymbol }}
-                        (${{ deposit.interestUSD.toFormat(DECIMALS) }}) /
+                        (${{ deposit.interestUSD.toFormat(DECIMALS) }})
+                      </span>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="mphAPR">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                      MPH APR
+                    </th>
+                    <td mat-cell *matCellDef="let deposit">
+                      <span
+                        class="h4 mb-1 glowing"
+                        *ngIf="deposit.vest.lastUpdateTimestamp === 0"
+                      >
+                        <!-- Vesting03 -->
+                        {{ pool.mphAPR.toFormat(DECIMALS) }}%
+                      </span>
+                      <span
+                        class="h4 mb-1 glowing"
+                        *ngIf="deposit.vest.lastUpdateTimestamp > 0"
+                      >
+                        <!-- Vesting02 -->
+                        {{ deposit.rewardAPR.toFormat(DECIMALS) }}%
+                      </span>
+                      <span class="text-muted d-block">
                         {{ deposit.reward.toFormat(DECIMALS) }} MPH (${{
                           deposit.rewardUSD.toFormat(DECIMALS)
                         }})
@@ -681,6 +698,7 @@
                       'maturation',
                       'amount',
                       'interestAPR',
+                      'mphAPR',
                       'action'
                     ]"
                   ></tr>
@@ -688,7 +706,13 @@
                     mat-row
                     *matRowDef="
                       let row;
-                      columns: ['maturation', 'amount', 'interestAPR', 'action']
+                      columns: [
+                        'maturation',
+                        'amount',
+                        'interestAPR',
+                        'mphAPR',
+                        'action'
+                      ]
                     "
                   ></tr>
                 </table>
@@ -700,6 +724,7 @@
               *matHeaderRowDef="[
                 'stablecoinSymbol',
                 'userTotalDepositUSD',
+                'totalDepositsUSD',
                 'monthlyAPR',
                 'mphAPR',
                 'deposit'
@@ -713,6 +738,7 @@
                 columns: [
                   'stablecoinSymbol',
                   'userTotalDepositUSD',
+                  'totalDepositsUSD',
                   'monthlyAPR',
                   'mphAPR',
                   'deposit'

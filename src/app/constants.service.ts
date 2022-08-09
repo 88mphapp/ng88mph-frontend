@@ -121,6 +121,15 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',
   };
+  GAUGES_GRAPHQL_ENDPOINT = {
+    [this.CHAIN_ID.MAINNET]:
+      'https://api.thegraph.com/subgraphs/name/0xszeth/mph-gauges',
+    // 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
   BACK_TO_THE_FUTURE_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/back-to-the-future',
@@ -244,6 +253,33 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '0xC79a56Af51Ec36738E965e88100e4570c5C77A93',
   };
+  BALMPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '0x3E09E828c716c5e2BC5034EeD7d5eC8677ffba18', // 80MPH-20WETH
+    // [this.CHAIN_ID.MAINNET]: '0x5c6Ee304399DBdB9C8Ef030aB642B10820DB8F56', // 80BAL-20WETH
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
+  VEMPH_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '0xf183287df9cB613c16989C16BF60537592fA736c', // veMPH
+    // [this.CHAIN_ID.MAINNET]: '0xC128a9954e6c874eA3d62ce62B468bA073093F25', // veBAL
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
+  FEE_DISTRIBUTOR = {
+    [this.CHAIN_ID.MAINNET]: '0xe336C2e48dBF83eD85Bd6591cE0a335bB5844385', // veMPH
+    // [this.CHAIN_ID.MAINNET]: '0xD3cf852898b21fc233251427c2DC93d3d604F3BB', // veBAL
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
+  GAUGE_CONTROLLER = '0x16dff045De4421E836A42FC2e98d4Ec9015bd470'; // veMPH
+  // GAUGE_CONTROLLER = '0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD'; // veBal
+
   FOREIGN_MPH_ADDRESS = {
     [this.CHAIN_ID.MAINNET]: '',
     [this.CHAIN_ID.RINKEBY]: '',

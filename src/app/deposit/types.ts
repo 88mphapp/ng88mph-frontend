@@ -14,6 +14,8 @@ export interface AllPool {
 
   // global
   mphDepositorRewardMintMultiplier: BigNumber;
+  totalDepositsUSD: BigNumber;
+  totalDeposits: BigNumber;
   monthlyAPR: BigNumber;
   yearlyAPR: BigNumber;
   mphAPR: BigNumber;
@@ -29,6 +31,8 @@ export interface GlobalPool {
   address: string;
   stablecoin: string;
   mphDepositorRewardMintMultiplier: BigNumber;
+  totalDepositsUSD: BigNumber;
+  totalDeposits: BigNumber;
   monthlyAPR: BigNumber;
   yearlyAPR: BigNumber;
   mphAPR: BigNumber;

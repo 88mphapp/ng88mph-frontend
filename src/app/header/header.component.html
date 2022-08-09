@@ -79,6 +79,20 @@
       </li>
       <li
         class="nav-item"
+        ngbNavItem="/gauge"
+        *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+      >
+        <a
+          class="nav-link text-white"
+          routerLink="gauge"
+          i18n="@@gauge"
+          ngbNavLink
+        >
+          Gauge
+        </a>
+      </li>
+      <li
+        class="nav-item"
         ngbNavItem="/bridge"
         *ngIf="
           wallet.networkID === constants.CHAIN_ID.MAINNET ||
@@ -560,7 +574,7 @@
       <button
         class="btn btn-block btn-dark mr-1 mb-3"
         type="button"
-        routerLink="/stake"
+        routerLink="/gauge"
       >
         <img
           src="./assets/img/token-icons/mph-logo-24.svg"
@@ -574,16 +588,16 @@
       <button
         class="btn btn-block btn-dark mr-3 mb-3"
         type="button"
-        routerLink="/stake"
+        routerLink="/gauge"
       >
         <img
           src="./assets/img/token-icons/xmph-logo-24.svg"
           class="mx-1 icon-logo"
-          alt="xMPH logo"
+          alt="veMPH logo"
           width="24px"
         />
-        {{ xMPHBalance.toFormat(2) }}
-        <ng-container i18n="@@xMPH">xMPH</ng-container>
+        {{ veMPHBalance.toFormat(2) }}
+        <ng-container i18n="@@veMPH">veMPH</ng-container>
       </button>
 
       <div class="dropdown d-none">
@@ -916,7 +930,7 @@
     <button
       class="btn btn-sm btn-dark mr-1 d-none d-lg-flex align-items-center"
       type="button"
-      routerLink="/stake"
+      routerLink="/gauge"
     >
       <img
         src="./assets/img/token-icons/mph-logo-24.svg"
@@ -930,16 +944,16 @@
     <button
       class="btn btn-sm btn-dark mr-3 d-none d-lg-flex align-items-center"
       type="button"
-      routerLink="/stake"
+      routerLink="/gauge"
     >
       <img
         src="./assets/img/token-icons/xmph-logo-24.svg"
         class="mx-1 icon-logo"
-        alt="xMPH logo"
+        alt="veMPH logo"
         width="20px"
       />
-      {{ xMPHBalance.toFormat(2) }}
-      <ng-container i18n="@@xmph">xMPH</ng-container>
+      {{ veMPHBalance.toFormat(2) }}
+      <ng-container i18n="@@vemph">veMPH</ng-container>
     </button>
     <!-- Connect/watch button -->
     <div class="btn-group btn-group-sm mr-3" style="height: 29px">
