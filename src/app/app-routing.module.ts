@@ -56,7 +56,7 @@ const routes: Routes = [
     component: BridgeComponent,
   },
   {
-    path: 'gauge',
+    path: 'vemph',
     component: GaugeComponent,
   },
   {
