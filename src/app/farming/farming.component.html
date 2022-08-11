@@ -545,22 +545,12 @@
                 </table>
               </div>
               <div
-                class="px-0 py-3 alert text-center text-warning border-warning"
-                *ngIf="!bancorActive && selectedPool == 'Bancor'"
+                class="py-3 alert text-warning border-warning"
+                i18n="@@LiquidityMiningAlertText"
               >
-                <ng-container i18n="@@bancorLiquidityText"
-                  >Bancor liquidity mining has ended. You can continue to stake
-                  MPH and BNT to earn trading fees.</ng-container
-                >
-              </div>
-              <div
-                class="px-0 py-3 alert text-center text-warning border-warning"
-                *ngIf="!active && selectedPool == 'Uniswap v2'"
-              >
-                <ng-container i18n="@@uniswapLiquidityText"
-                  >Uniswap v2 liquidity mining has ended. You can continue to
-                  provide liquidity to earn trading fees.</ng-container
-                >
+                All the liquidity mining rewards have ended. Stay tuned for new
+                liquidity mining announcements on our social channels. You can
+                continue to provide liquidity to earn trading fees.
               </div>
               <button
                 type="button"
