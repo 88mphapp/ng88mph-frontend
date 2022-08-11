@@ -412,7 +412,7 @@ export class DepositComponent implements OnInit {
     let userTotalInterestUSD: BigNumber = new BigNumber(0);
     let userTotalClaimableReward: BigNumber = new BigNumber(0);
 
-    Promise.all(
+    await Promise.all(
       user.pools.map(async (pool) => {
         const poolInfo = this.contract.getPoolInfoFromAddress(
           pool.address,
