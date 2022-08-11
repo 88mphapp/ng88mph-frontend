@@ -79,16 +79,16 @@
       </li>
       <li
         class="nav-item"
-        ngbNavItem="/gauge"
+        ngbNavItem="/vemph"
         *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
       >
         <a
           class="nav-link text-white"
-          routerLink="gauge"
-          i18n="@@gauge"
+          routerLink="vemph"
+          i18n="@@vemph"
           ngbNavLink
         >
-          Gauge
+          veMPH&nbsp;✨
         </a>
       </li>
       <li
@@ -574,7 +574,7 @@
       <button
         class="btn btn-block btn-dark mr-1 mb-3"
         type="button"
-        routerLink="/gauge"
+        routerLink="/vemph"
       >
         <img
           src="./assets/img/token-icons/mph-logo-24.svg"
@@ -588,7 +588,7 @@
       <button
         class="btn btn-block btn-dark mr-3 mb-3"
         type="button"
-        routerLink="/gauge"
+        routerLink="/vemph"
       >
         <img
           src="./assets/img/token-icons/xmph-logo-24.svg"
@@ -930,7 +930,7 @@
     <button
       class="btn btn-sm btn-dark mr-1 d-none d-lg-flex align-items-center"
       type="button"
-      routerLink="/gauge"
+      routerLink="/vemph"
     >
       <img
         src="./assets/img/token-icons/mph-logo-24.svg"
@@ -944,7 +944,7 @@
     <button
       class="btn btn-sm btn-dark mr-3 d-none d-lg-flex align-items-center"
       type="button"
-      routerLink="/gauge"
+      routerLink="/vemph"
     >
       <img
         src="./assets/img/token-icons/xmph-logo-24.svg"
@@ -1224,6 +1224,47 @@
     >
       <a class="nav-link text-white" routerLink="farm" i18n="@@farm" ngbNavLink>
         Farm
+      </a>
+    </li>
+    <li
+      class="nav-item"
+      ngbNavItem="/vemph"
+      *ngIf="wallet.networkID === constants.CHAIN_ID.MAINNET"
+    >
+      <a
+        class="nav-link text-white"
+        routerLink="vemph"
+        i18n="@@vemph"
+        ngbNavLink
+      >
+        veMPH&nbsp;✨
+      </a>
+    </li>
+    <li
+      class="nav-item"
+      ngbNavItem="/bridge"
+      *ngIf="
+        wallet.networkID === constants.CHAIN_ID.MAINNET ||
+        wallet.networkID === constants.CHAIN_ID.FANTOM
+      "
+    >
+      <a
+        class="nav-link text-white"
+        routerLink="bridge"
+        i18n="@@brdige"
+        ngbNavLink
+      >
+        Bridge
+      </a>
+    </li>
+    <li class="nav-item" ngbNavItem="/convert" *ngIf="convertableBalance.gt(0)">
+      <a
+        class="nav-link text-white animate"
+        routerLink="convert"
+        i18n="@@"
+        ngbNavLink
+      >
+        Convert
       </a>
     </li>
     <li
