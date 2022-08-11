@@ -595,7 +595,9 @@
                             *ngFor="let gauge of protocolGauges"
                             [ngValue]="gauge"
                           >
-                            {{ gauge.name }} {{ gauge.address.slice(0, 5) }}
+                            {{ gauge.name }} ({{
+                              gauge.address.slice(0, 6)
+                            }}...{{ gauge.address.slice(38, 42) }})
                           </option>
                         </select>
                       </div>

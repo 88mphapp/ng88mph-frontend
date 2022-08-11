@@ -9,7 +9,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/dai.svg",
       "moneyMarket": "0x692eba0d114cCb1E3866780cE60a1Df608b24d81",
-      "gauge": "0xA83Ae02a9163B93285aCC479cd96A0AF96960829"
+      "gauge": "0xb632401fd01c1c4C533564b19a0a7caAF5D94F61"
     },
     "cUNI": {
       "name": "cUNI",
@@ -20,7 +20,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/uni.svg",
       "moneyMarket": "0xd075B01fb24e57e3e7bB4Df712bcD8c0a43e1897",
-      "gauge": "0xce0c33137Be02fD44B757b3C5ab3B3296B070A2E"
+      "gauge": "0x4F16b56b4Ad7f69A1a2473Fe8a098B41A49b20c5"
     },
     "cLINK": {
       "name": "cLINK",
@@ -31,7 +31,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/link.svg",
       "moneyMarket": "0xA426d1C4250139B9B1C7257715e88dF59D7821df",
-      "gauge": "0x3f31188Cb313A81AB2EfC579De542A84262b820b"
+      "gauge": "0x501930Fa05Fc494788167E991320546B5A722a30"
     },
     "cBAT": {
       "name": "cBAT",
@@ -42,7 +42,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/bat.svg",
       "moneyMarket": "0x7fAfdd171907d2eB9A03bdDAFCF3B7deaFE78D13",
-      "gauge": "0x7710f28f7d29525b7364E969b4b42DA7108EbFA5"
+      "gauge": "0x32CA3A498A13cbeF2C8B6953961EfF38c2c10325"
     },
     "cCOMP": {
       "name": "cCOMP",
@@ -53,7 +53,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/comp.svg",
       "moneyMarket": "0x571e4cA449621AE16348C430d14c2Df460Df055C",
-      "gauge": "0xC782c8E615e565dA9121f6b1A8f41b8864D70C63"
+      "gauge": "0xaB7EE15d2ffD01C8d667A19313AEfc884842A641"
     },
     "cUSDT": {
       "name": "cUSDT",
@@ -64,7 +64,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/usdt.png",
       "moneyMarket": "0x8579cA27cCf55804A8982432Df2182E53148fee8",
-      "gauge": "0x364561b26fda6c461e175d5Dea9e894B449EbC39"
+      "gauge": "0x52B6b9601b8443839461A9B3566F823729b170D2"
     },
     "cWBTC": {
       "name": "cWBTC",
@@ -75,7 +75,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/wbtc.svg",
       "moneyMarket": "0x40d77Ee34e81eC77F651e79594efc7f33FC5695C",
-      "gauge": "0x87ab62d004dAa0798186d1f75e25AAe82220c5aF"
+      "gauge": "0xb19B6A7BC0A686aF5aDb802a1d3d691660812601"
     },
     "cZRX": {
       "name": "cZRX",
@@ -86,7 +86,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/zrx.svg",
       "moneyMarket": "0x983fD4988f6c6b8044EFC6137eE4aB611846c8b8",
-      "gauge": "0xfB8C28d412d6A3001f05A63433836d0952cDD5ba"
+      "gauge": "0x2Fdda9542c8560Ce53Fd39D94034d0110C3E57db"
     },
     "cTUSD": {
       "name": "cTUSD",
@@ -97,7 +97,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/tusd.svg",
       "moneyMarket": "0xbcd502900E13cB3992Daba98431B083F3Ad56C85",
-      "gauge": "0x15D9d0Ba8160fc996B88a36000aCd1D1562973a8"
+      "gauge": "0x5197BE72A2A19886566e3da444ad396087fe5028"
     },
     "cUSDC": {
       "name": "cUSDC",
@@ -108,7 +108,7 @@
       "protocol": "Compound",
       "iconPath": "assets/img/token-icons/usdc.svg",
       "moneyMarket": "0xA62F05e3B72c0Aec2A01Bc9343F92fd4B4a22DbB",
-      "gauge": "0x7337bD6F28A135C54Cd9C99e7024B0c5c5fBAcc7"
+      "gauge": "0x4e33A497301D1E68149d6337b0398BFdb1F35B96"
     },
     "aDAI": {
       "name": "aDAI",
@@ -119,7 +119,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aDAI.svg",
       "moneyMarket": "0x011735Dc889446b9582b6E7a9B792E2a0D11f56d",
-      "gauge": "0x76d4D8DBE2d7f185c71933972DE10FC45D9F5b6D"
+      "gauge": "0xe503Bf01F7a3729F1C4A6138319a27e8BBD6003c"
     },
     "aUSDC": {
       "name": "aUSDC",
@@ -130,7 +130,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aUSDC.svg",
       "moneyMarket": "0x9Aa09d36be9BCEeE36B3Dc81C0A5137eCF7Ea13B",
-      "gauge": "0xcCb63e2504bCcdc327dB4A16E4b5e61A6B78Abc7"
+      "gauge": "0x0dDF0ebB46328F4F16dBfA0374C2FEF92fc03143"
     },
     "aUSDT": {
       "name": "aUSDT",
@@ -141,7 +141,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/aUSDT.svg",
       "moneyMarket": "0x1E98FC27B8e3109D8A426B7A1340C74A4d403fA8",
-      "gauge": "0xF6C717371AB95d9e15c6f074e59Cc16CCA87D687"
+      "gauge": "0x497F5452D3f1EC387E03FB2DE0Feff88843963D7"
     },
     "aBAL": {
       "name": "aBAL",
@@ -152,7 +152,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/bal.svg",
       "moneyMarket": "0x79E554C00A41D4718da04D3AdBebe21d9E677CF3",
-      "gauge": "0x66f807bBF632373F6441b6b5B45D0FdD7153e242"
+      "gauge": "0x916BBF67b2383B1ae54C8df609d8939169c878CC"
     },
     "aCRV": {
       "name": "aCRV",
@@ -163,7 +163,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/crv.svg",
       "moneyMarket": "0xcFc17cA3F0c946021afF212eE5219dB56469eB2c",
-      "gauge": "0x3D3565F26414D8AF508Cca9515d9978A8685708B"
+      "gauge": "0x7EF9dea461c49e25FC92b4340595eA5d1C2cb06f"
     },
     "aGUSD": {
       "name": "aGUSD",
@@ -174,7 +174,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/gusd.svg",
       "moneyMarket": "0xA137a6DE1097F7Ab3e3792776246F5E1a93cb02A",
-      "gauge": "0x458F4162B0Eba234940554F6E1227ae2eE88465b"
+      "gauge": "0x781BCc249Eb3A68786CAeacc8C8dF47251323217"
     },
     "aLINK": {
       "name": "aLINK",
@@ -185,7 +185,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/link.svg",
       "moneyMarket": "0x4424B43D945906C66f6B5891337C5c2cF611c6be",
-      "gauge": "0x62F851F3cB42D1fB6Df7Da534aff52728C11aEaA"
+      "gauge": "0x73f6753da8330104783e5ff5A6c1B76361a0D2E0"
     },
     "aRAI": {
       "name": "aRAI",
@@ -196,7 +196,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/rai.svg",
       "moneyMarket": "0x9F4009B5A95486e0759A2449558Fe0DbcBd23c87",
-      "gauge": "0x310AbE11DE499570775fcCb41ea3d26769239ecd"
+      "gauge": "0xd5Ac0e023772b2B95DE3eF32492e120B5707f6BC"
     },
     "aREN": {
       "name": "aREN",
@@ -207,7 +207,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/ren.svg",
       "moneyMarket": "0xbEf20b63C87031279E850281d21762Ca0b9D66b8",
-      "gauge": "0x95Acb6b43bFAEd91582c2A0bD1919Eb7751B921b"
+      "gauge": "0x0d9D5Dd31E58538131d2669239e4C7Dd4BA8B9Ee"
     },
     "aSNX": {
       "name": "aSNX",
@@ -218,7 +218,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/snx.svg",
       "moneyMarket": "0xEeDbE79DE6CD498d051A632F22DD89D472876e8F",
-      "gauge": "0xC97C3a21789Af9e0F335179842A15B55b706236d"
+      "gauge": "0xBCeb85A0300fB3BA6e285a22505687292B481178"
     },
     "aTUSD": {
       "name": "aTUSD",
@@ -229,7 +229,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/tusd.svg",
       "moneyMarket": "0x5CC2cE1A68Ed9b25BAB67C0ca1D0e7890953A454",
-      "gauge": "0xDD8A990eeC74b1030849eaAb9a1cc5f3Ac0AfF9b"
+      "gauge": "0xF64A170313e6F779289F2CE784Fd38f354AB26C6"
     },
     "aUSDP": {
       "name": "aUSDP",
@@ -240,7 +240,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/usdp.svg",
       "moneyMarket": "0x5ae6269e5F7ab0cD18fAf4A33571AF4750c8e911",
-      "gauge": "0x6488eFC28fd6526066C21534901A63a3A4213414"
+      "gauge": "0xd3670cD2Cf27E49445B498474Fed57b65FEa77C1"
     },
     "aWBTC": {
       "name": "aWBTC",
@@ -251,7 +251,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/wbtc.svg",
       "moneyMarket": "0xf5a08729E7984902424Fb4957885E624fC7f444C",
-      "gauge": "0xEc4F224ea52769d50521166eF8c6EaC034b51063"
+      "gauge": "0x8D96a082784B4052Bb02B2071ef924Ff9752df93"
     },
     "aWETH": {
       "name": "aWETH",
@@ -262,7 +262,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/weth.svg",
       "moneyMarket": "0x2D9028e833645858E292d1d7DEAfDBdCd8555200",
-      "gauge": "0x5e16Ad512bb8827f607e8f09D391213Da3692Bf1"
+      "gauge": "0x539034290768c04073e7534399d966919A4ABBe2"
     },
     "aYFI": {
       "name": "aYFI",
@@ -273,7 +273,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/yfi.svg",
       "moneyMarket": "0xa62E73eaA3e96D353714f6e6faCb883E2Dbd43c1",
-      "gauge": "0x08214a29caC83B8eE5ec59E5D4c5fb597f385480"
+      "gauge": "0x546Ca2739B045fBea2F59e89d55711cd7a37647E"
     },
     "aSUSD": {
       "name": "aSUSD",
@@ -284,7 +284,7 @@
       "protocol": "Aave",
       "iconPath": "assets/img/token-icons/susd.svg",
       "moneyMarket": "0x2ED6D534aeF5285196c004F11F2fBc8246752783",
-      "gauge": "0x67dBd66Fac27952207231f00a185534Bac5dA510"
+      "gauge": "0x5F44512a0941441d56D81024da094D3c8DD87B86"
     },
     "harvestCRVRENWBTC": {
       "name": "harvestCRVRENWBTC",
@@ -295,7 +295,7 @@
       "protocol": "Harvest",
       "iconPath": "assets/img/token-icons/btc.svg",
       "moneyMarket": "0x4942f85bb088F50094f231f43Cd11803846ffC29",
-      "gauge": "0x2fB4230cf39D461255920043c5bd787D9B87c120",
+      "gauge": "0x3a47119ebAEB3007dd4Fac974eAb2a03766C0d9C",
       "stakingPool": "0xA3Cf8D1CEe996253FAD1F8e3d68BDCba7B3A3Db5"
     },
     "bDAI": {
@@ -307,7 +307,7 @@
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/dai.svg",
       "moneyMarket": "0x85C2AcCaEEcA93e09bc9AEbb60d59A920aae92Fd",
-      "gauge": "0xAaD842b6361728595498fC623cf1873fCe76d602"
+      "gauge": "0x9a16Fe0c7a8FC783E169aDE50e2CBaC69e682580"
     },
     "bUSDC": {
       "name": "bUSDC",
@@ -318,7 +318,7 @@
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/usdc.svg",
       "moneyMarket": "0xcAcEc180DACCB02B765Fe42De4bCA15d7D5c5AeC",
-      "gauge": "0x756d2952a9d5af7d53a1247b47364D61Bcc2290F"
+      "gauge": "0x6268Db41a99600CC112668Ef783DF300495bF4f2"
     },
     "bUSDT": {
       "name": "bUSDT",
@@ -329,7 +329,7 @@
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/usdt.png",
       "moneyMarket": "0x75EF12f66d55C4698f1a2cAD94b4b7a066585318",
-      "gauge": "0x82b28B95eA6e771F3972b7258f437321be49268a"
+      "gauge": "0x16dff045De4421E836A42FC2e98d4Ec9015bd470"
     },
     "crFTT": {
       "name": "crFTT",
