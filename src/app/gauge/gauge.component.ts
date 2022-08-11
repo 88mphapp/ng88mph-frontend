@@ -235,8 +235,12 @@ export class GaugeComponent implements OnInit {
       this.constants.GAUGES_GRAPHQL_ENDPOINT[this.wallet.networkID],
       queryString
     ).then((data: QueryResult) => {
-      const gauges = data.gauges.map((gauge) => {
+      let gauges: Gauge[] = [];
+
+      data.gauges.map((gauge) => {
         const poolInfo = this.contract.getPoolInfoFromGauge(gauge.address);
+        if (poolInfo.protocol === 'Harvest') return;
+
         const gaugeObj: Gauge = {
           name: poolInfo ? poolInfo.name : 'Unknown',
           address: gauge.address,
@@ -251,8 +255,9 @@ export class GaugeComponent implements OnInit {
           userLastVote: new BigNumber(0),
           userCanVote: false,
         };
-        return gaugeObj;
+        gauges = [...gauges, gaugeObj];
       });
+
       this.gauges = gauges;
     });
   }
