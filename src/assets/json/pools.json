@@ -329,7 +329,7 @@
       "protocol": "B.Protocol",
       "iconPath": "assets/img/token-icons/usdt.png",
       "moneyMarket": "0x75EF12f66d55C4698f1a2cAD94b4b7a066585318",
-      "gauge": "0x16dff045De4421E836A42FC2e98d4Ec9015bd470"
+      "gauge": "0xF4BEA168808A8520Fb653bf3aFCb5c1b086590B5"
     },
     "crFTT": {
       "name": "crFTT",
