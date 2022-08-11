@@ -752,6 +752,9 @@
                   pool.protocol !== selectedProtocol) ||
                 (selectedProtocol === 'best' &&
                   !pool.isBest &&
+                  pool.userTotalDeposit.eq(0)) ||
+                (pool.address ===
+                  '0x5b1a10aAF807d4297048297c30B2504b42C3395F' &&
                   pool.userTotalDeposit.eq(0))
               "
             ></tr>
