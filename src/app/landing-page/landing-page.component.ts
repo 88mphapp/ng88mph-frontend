@@ -255,10 +255,7 @@ export class LandingPageComponent implements OnInit {
                 pool.poolDepositorRewardMintMultiplier
               ),
               maxAPR: await this.datas.getPoolMaxAPR(pool.address),
-              mphAPR: await this.datas.getPoolRewardAPR(
-                pool.address,
-                new BigNumber(pool.poolDepositorRewardMintMultiplier)
-              ),
+              mphAPR: await this.datas.getPoolRewardAPR(pool.address),
             };
             allPoolList.push(dpoolObj);
 

@@ -101,10 +101,7 @@ export class DataService {
     });
 
     for (let dpool in dpools) {
-      const apy = await this.getPoolRewardAPR(
-        dpools[dpool].address,
-        dpools[dpool].poolDepositorRewardMintMultiplier
-      );
+      const apy = await this.getPoolRewardAPR(dpools[dpool].address);
       if (apy.gt(maxMPHAPY)) {
         maxMPHAPY = apy;
       }
@@ -195,22 +192,18 @@ export class DataService {
     return apr;
   }
 
-  async getPoolRewardAPR(
-    address: string,
-    mintMintiplier: BigNumber
-  ): Promise<BigNumber> {
-    const poolInfo = this.contract.getPoolInfoFromAddress(address);
-    const stablecoinPriceUSD = await this.getAssetPriceUSD(
-      poolInfo.stablecoin,
-      this.wallet.networkID
-    );
-    const rewardAPR = new BigNumber(mintMintiplier)
-      .times(this.mphPriceUSD)
-      .div(stablecoinPriceUSD)
+  async getPoolRewardAPR(address: string): Promise<BigNumber> {
+    const vest = this.contract.getNamedContract('Vesting03');
+    const poolTVL = await this.getPoolTVL(address, this.wallet.networkID, true);
+    const rewardRate = await vest.methods.rewardRate(address).call();
+
+    const mphAPR = new BigNumber(rewardRate)
       .times(this.constants.YEAR_IN_SEC)
+      .times(this.mphPriceUSD)
+      .div(poolTVL)
       .times(100);
 
-    return new BigNumber(rewardAPR);
+    return poolTVL.eq(0) ? new BigNumber(0) : mphAPR;
   }
 
   async loadPoolTVL(networkID: number, usd: boolean = false) {
@@ -249,15 +242,17 @@ export class DataService {
     return usd ? this.poolTVLUSD[networkID] : this.poolTVL[networkID];
   }
 
-  async getPoolTVL(address: string, networkID: number) {
+  async getPoolTVL(address: string, networkID: number, usd: boolean = false) {
     if (!this.poolTVL[networkID]) {
       this.poolTVL[networkID] = {};
     }
 
     let poolTVL = this.poolTVL[networkID][address];
     if (!poolTVL) {
-      await this.loadPoolTVL(networkID);
-      poolTVL = this.poolTVL[networkID][address];
+      await this.loadPoolTVL(networkID, usd);
+      poolTVL = usd
+        ? this.poolTVLUSD[networkID][address]
+        : this.poolTVL[networkID][address];
     }
     return poolTVL;
   }
