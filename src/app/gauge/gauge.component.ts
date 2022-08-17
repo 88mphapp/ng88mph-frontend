@@ -207,6 +207,12 @@ export class GaugeComponent implements OnInit {
     }
   }
 
+  // ----------------------------------------------------------------------
+  // @dev loadGauges() may not finish loading before loadUser() is called
+  // resulting in user data not being loaded. So, we call loadGauges() if
+  // this.gauges hasn't been populated. This will cause 2 subgraph queries,
+  // which is suboptimal.
+  // ----------------------------------------------------------------------
   async loadData(loadUser: boolean, loadGlobal: boolean, loadGauges: boolean) {
     // prompt network change if not connected to mainnet
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -218,7 +224,7 @@ export class GaugeComponent implements OnInit {
     this.now = Math.floor(Date.now() / 1e3);
     const user = this.wallet.actualAddress;
 
-    if (loadGauges) await this.loadGauges();
+    if (loadGauges || this.gauges.length == 0) await this.loadGauges();
     if (loadUser) this.loadUser(this.gauges, user);
     if (loadGlobal) this.loadGlobal(this.gauges);
   }
