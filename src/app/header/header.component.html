@@ -1192,14 +1192,7 @@
         Yield
       </a>
     </li>
-    <li
-      class="nav-item"
-      ngbNavItem="/stake"
-      *ngIf="
-        wallet.networkID === constants.CHAIN_ID.MAINNET ||
-        wallet.networkID === constants.CHAIN_ID.RINKEBY
-      "
-    >
+    <li class="nav-item" ngbNavItem="/stake" *ngIf="xMPHBalance.gt(0)">
       <a
         class="nav-link text-white"
         routerLink="stake"
