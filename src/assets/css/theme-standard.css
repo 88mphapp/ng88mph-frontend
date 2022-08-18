@@ -11451,6 +11451,13 @@ a.text-white:focus {
   right: 1.5rem;
 }
 
+.card-active {
+  border: 1px solid #161522;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  box-shadow: none;
+}
+
 .card-inactive {
   border-color: #161522;
   border-style: dashed;

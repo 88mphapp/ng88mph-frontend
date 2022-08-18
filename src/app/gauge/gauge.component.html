@@ -66,6 +66,7 @@
           </div>
         </div>
       </div>
+      <!-- <div class="card-deck d-none d-lg-flex my-5"> -->
       <div class="card-deck d-none d-lg-flex my-5">
         <div class="card mb-5 mb-lg-0">
           <div class="card-body">
@@ -162,39 +163,114 @@
           </div>
         </div> -->
       </div>
+
       <!--mobile user's data-->
-      <div class="row d-lg-none my-5">
-        <div class="col-6">
-          <!-- Title -->
-          <h5 class="text-uppercase" i18n="@@">BPT Balance</h5>
-          <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ bptBalance.toFormat(2) }}</h2>
-          <!-- Title -->
-          <h5 class="text-uppercase" i18n="@@valueInMph">veMPH Balance</h5>
-          <!-- Heading -->
-          <span class="h2 mb-0 glowing">{{ veBalance.toFormat(2) }}</span>
+      <div class="d-lg-none">
+        <div class="card-active mb-3 mb-lg-0">
+          <div class="card-body">
+            <h5 i18n="@@">BPT Balance</h5>
+            <h2 class="mb-2 glowing">{{ bptBalance.toFormat(6) }}</h2>
+          </div>
         </div>
-        <div class="col-6">
-          <!-- Title -->
-          <h5 class="text-uppercase">BPT Locked</h5>
-          <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ bptLocked.toFormat(2) }}</h2>
-          <!-- Title -->
-          <h5 class="text-uppercase">BPT Unlocked</h5>
-          <!-- Heading -->
-          <h2 class="mb-2 glowing">{{ bptUnlocked.toFormat(2) }}</h2>
-          <!-- Button -->
-          <button
-            type="button"
-            class="btn btn-sm btn-bg-gradient"
-            *ngIf="bptUnlocked.gt(0)"
-            (click)="withdraw()"
-          >
-            <i class="fe fe-arrow-down mr-2 align-bottom"></i>
-            <ng-container i18n="@@">Withdraw</ng-container>
-          </button>
+        <div class="card-active mb-3 mb-lg-0">
+          <div class="card-body">
+            <h5 i18n="@@">BPT Unlocked</h5>
+            <span class="d-flex justify-content-between align-items-center">
+              <h2 class="mb-0 glowing">{{ bptUnlocked.toFormat(6) }}</h2>
+              <button
+                type="button"
+                class="btn btn-sm btn-bg-gradient"
+                *ngIf="bptUnlocked.gt(0)"
+                (click)="withdraw()"
+              >
+                <ng-container i18n="@@">Withdraw</ng-container>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="card-active mb-3 mb-lg-0">
+          <div class="card-body">
+            <h5 i18n="@@">BPT Locked</h5>
+            <h2 class="mb-2 glowing">{{ bptLocked.toFormat(6) }}</h2>
+          </div>
+        </div>
+        <div class="card-active mb-3 mb-lg-0">
+          <div class="card-body">
+            <h5 i18n="@@">Locked Until</h5>
+            <h2 class="mb-2 glowing">
+              {{
+                lockEnd && lockEnd > now
+                  ? timestampToDateString(lockEnd)
+                  : "-----"
+              }}
+            </h2>
+          </div>
+        </div>
+        <div class="card-active mb-3 mb-lg-0">
+          <div class="card-body">
+            <span
+              class="d-flex justify-content-between align-items-center mb-2"
+            >
+              <h5 i18n="@@">veMPH Balance</h5>
+              <span
+                class="
+                  badge badge-xl badge-soft-success
+                  mt-n2
+                  ml-1
+                  ng-star-inserted
+                "
+              >
+                {{ veAPR.toFormat(2) }}% APR
+              </span>
+            </span>
+            <span class="d-flex justify-content-between align-items-center">
+              <span class="h2 mb-2 glowing">{{ veBalance.toFormat(6) }}</span>
+              <button
+                type="button"
+                class="btn btn-sm btn-bg-gradient"
+                (click)="claimAll()"
+                *ngIf="mphRewards.gt(0) && balRewards.gt(0)"
+              >
+                <ng-container i18n="@@">Claim All</ng-container>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="card-active mb-5 mb-lg-0">
+          <div class="card-body">
+            <span
+              class="d-flex justify-content-between align-items-center mb-2"
+            >
+              <h5 class="" i18n="@@">MPH Rewards</h5>
+              <span
+                class="
+                  badge badge-xl badge-soft-success
+                  mt-n2
+                  ml-1
+                  ng-star-inserted
+                "
+              >
+                {{ mphAPR.toFormat(2) }}% APR
+              </span>
+            </span>
+            <span class="d-flex justify-content-between align-items-center">
+              <span class="h2 mb-0 glowing">
+                {{ mphRewards.toFormat(6) }}
+              </span>
+              <button
+                type="button"
+                class="btn btn-sm btn-bg-gradient"
+                (click)="claim(constants.MPH_ADDRESS[wallet.networkID])"
+                *ngIf="mphRewards.gt(0)"
+              >
+                <ng-container i18n="@@">Claim</ng-container>
+              </button>
+            </span>
+          </div>
         </div>
       </div>
+      <!-- end mobile user's data-->
+
       <div class="row">
         <div class="col-12 col-lg-8">
           <div class="card">
