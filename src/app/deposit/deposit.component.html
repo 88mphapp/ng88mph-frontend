@@ -596,14 +596,18 @@
                     <td mat-cell *matCellDef="let deposit">
                       <span
                         class="h4 mb-1 glowing"
-                        *ngIf="deposit.vest.lastUpdateTimestamp === 0"
+                        *ngIf="
+                          deposit.vest && deposit.vest.lastUpdateTimestamp === 0
+                        "
                       >
                         <!-- Vesting03 -->
                         {{ pool.mphAPR.toFormat(DECIMALS) }}%
                       </span>
                       <span
                         class="h4 mb-1 glowing"
-                        *ngIf="deposit.vest.lastUpdateTimestamp > 0"
+                        *ngIf="
+                          deposit.vest && deposit.vest.lastUpdateTimestamp > 0
+                        "
                       >
                         <!-- Vesting02 -->
                         {{ deposit.rewardAPR.toFormat(DECIMALS) }}%
