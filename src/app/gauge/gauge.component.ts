@@ -249,6 +249,7 @@ export class GaugeComponent implements OnInit {
 
         const gaugeObj: Gauge = {
           name: poolInfo ? poolInfo.name : 'Unknown',
+          pool: poolInfo.address.toLowerCase(),
           address: gauge.address,
           explorerURL: 'https://etherscan.io/address/' + gauge.address,
 
@@ -775,11 +776,14 @@ export class GaugeComponent implements OnInit {
       const gauge_weight_this_period = gauge.gaugeWeightThisPeriod;
       const reward_this_period = gauge_weight_this_period
         .times(globalEmissionRate)
+        .times(this.constants.WEEK_IN_SEC)
         .div(this.constants.PRECISION)
+        .div(100)
         .times(mphPriceUSD);
       gauge.gaugeAprThisPeriod = reward_this_period
         .times(52)
-        .div(poolTVLUSD[gauge.address]);
+        .div(poolTVLUSD[gauge.pool])
+        .times(100);
       if (gauge.gaugeAprThisPeriod.isNaN()) {
         gauge.gaugeAprThisPeriod = new BigNumber(0);
       }
@@ -787,11 +791,15 @@ export class GaugeComponent implements OnInit {
       const gauge_weight_next_period = gauge.gaugeWeightNextPeriod;
       const reward_next_period = gauge_weight_next_period
         .times(globalEmissionRate)
+        .times(this.constants.WEEK_IN_SEC)
         .div(this.constants.PRECISION)
+        .div(100)
         .times(mphPriceUSD);
+
       gauge.gaugeAprNextPeriod = reward_next_period
         .times(52)
-        .div(poolTVLUSD[gauge.address]);
+        .div(poolTVLUSD[gauge.pool])
+        .times(100);
       if (gauge.gaugeAprNextPeriod.isNaN()) {
         gauge.gaugeAprNextPeriod = new BigNumber(0);
       }
@@ -1174,6 +1182,7 @@ export class GaugeComponent implements OnInit {
 
 interface Gauge {
   name: string;
+  pool: string;
   address: string;
   explorerURL: string;
 
