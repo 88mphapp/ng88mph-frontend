@@ -304,7 +304,7 @@
             </ng-container>
           </div>
         </div>
-        <div class="card mb-4 mb-lg-0">
+        <div class="card mb-4 mb-lg-0 d-none">
           <div class="card-body">
             <h5 class="text-uppercase" i18n="@@mphStakedRewardsPool">
               MPH staked in rewards pool
@@ -384,7 +384,7 @@
             </ng-container>
           </div>
         </div>
-        <div class="card mb-4 mb-lg-0">
+        <div class="card mb-4 mb-lg-0 d-none">
           <div class="card-body">
             <h5 class="text-uppercase" i18n="@@historicalStakingDistributed">
               Historical staking rewards
@@ -477,19 +477,9 @@
       </div>
       <div class="card-deck my-5 justify-content-around">
         <app-loss-provision
-          class="w-50"
+          class="w-100"
           [displaySetting]="displaySetting"
         ></app-loss-provision>
-        <app-xmph-supply-distribution
-          class="w-50"
-        ></app-xmph-supply-distribution>
-      </div>
-      <div class="card-deck my-5 justify-content-around">
-        <app-historical-staking-rewards
-          [displaySetting]="displaySetting"
-          class="w-50"
-        ></app-historical-staking-rewards>
-        <app-price-earnings-ratio class="w-50"></app-price-earnings-ratio>
       </div>
       <div class="card-deck my-5 justify-content-around">
         <app-mph-liquidity class="w-50"></app-mph-liquidity>
