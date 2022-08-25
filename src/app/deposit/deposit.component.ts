@@ -352,12 +352,11 @@ export class DepositComponent implements OnInit {
 
         // calculate MPH APR (gauge)
         let mphAPR = new BigNumber(0);
-        // if (vest.options.address) { // actual if statement
-        if (vest.options.address && false) {
-          // used for testing purposes
+        if (vest.options.address) {
           const rewardRate = await vest.methods.rewardRate(pool.address).call();
           mphAPR = new BigNumber(rewardRate)
             .times(this.constants.YEAR_IN_SEC)
+            .div(this.constants.PRECISION)
             .times(this.datas.mphPriceUSD)
             .div(pool.totalDeposit)
             .div(stablecoinPrice)

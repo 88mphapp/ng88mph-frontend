@@ -387,6 +387,7 @@ export class ModalDepositComponent implements OnInit {
 
     const mphAPR = this.rewardRate
       .times(this.constants.YEAR_IN_SEC)
+      .div(this.constants.PRECISION)
       .times(this.mphPriceUSD)
       .div(this.totalDeposit.plus(this.depositAmount))
       .div(stablecoinPrice)
@@ -395,6 +396,7 @@ export class ModalDepositComponent implements OnInit {
 
     // estimate the MPH reward amount for the deposit duration
     const mphAmount = this.rewardRate
+      .div(this.constants.PRECISION)
       .times(depositTime)
       .times(this.depositAmount)
       .div(this.totalDeposit.plus(this.depositAmount));

@@ -178,6 +178,7 @@ export class ModalTopUpComponent implements OnInit {
       // calculate the reward APR for the pool (including deposit amount)
       const mphAPR = this.rewardRate
         .times(this.constants.YEAR_IN_SEC)
+        .div(this.constants.PRECISION)
         .times(this.mphPriceUSD)
         .div(this.pool.totalDeposits.plus(this.depositAmountToken))
         .div(stablecoinPrice)
@@ -187,6 +188,7 @@ export class ModalTopUpComponent implements OnInit {
 
       // calculate the estimated reward for the top up amount
       const topupReward = this.rewardRate
+        .div(this.constants.PRECISION)
         .times(this.depositAmountToken)
         .times(depositTime)
         .div(this.pool.totalDeposits.plus(this.depositAmountToken));
@@ -195,6 +197,7 @@ export class ModalTopUpComponent implements OnInit {
       // calculate the estimated reward for the total deposit
       // @dev does not include rewards that have already been earned
       const totalReward = this.rewardRate
+        .div(this.constants.PRECISION)
         .times(this.depositAmountToken.plus(this.userDeposit.amount))
         .times(depositTime)
         .div(this.pool.totalDeposits.plus(this.depositAmountToken));

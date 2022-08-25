@@ -180,6 +180,7 @@ export class ModalRollOverComponent implements OnInit {
     // calculate the reward APR
     const mphAPR = this.rewardRate
       .times(this.constants.YEAR_IN_SEC)
+      .div(this.constants.PRECISION)
       .times(this.mphPriceUSD)
       .div(this.pool.totalDeposits.plus(this.userDeposit.interest))
       .div(this.stablecoinPriceUSD)
@@ -188,6 +189,7 @@ export class ModalRollOverComponent implements OnInit {
 
     // estimate the MPH reward amount for the deposit duration
     const mphAmount = this.rewardRate
+      .div(this.constants.PRECISION)
       .times(depositTime)
       .times(this.depositAmountToken)
       .div(this.pool.totalDeposits.plus(this.userDeposit.interest));
