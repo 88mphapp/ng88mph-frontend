@@ -361,6 +361,9 @@ export class DepositComponent implements OnInit {
             .div(pool.totalDeposit)
             .div(stablecoinPrice)
             .times(100);
+          if (mphAPR.isNaN()) {
+            mphAPR = new BigNumber(0);
+          }
         }
 
         // create the poolObj
@@ -386,7 +389,11 @@ export class DepositComponent implements OnInit {
           poolObj.isBest = true;
         } else {
           const bestPool = sameAssetPools.find((x) => x.isBest === true);
-          if (poolObj.monthlyAPR.gt(bestPool.monthlyAPR)) {
+          if (
+            poolObj.monthlyAPR
+              .plus(poolObj.mphAPR)
+              .gt(bestPool.monthlyAPR.plus(bestPool.mphAPR))
+          ) {
             bestPool.isBest = false;
             poolObj.isBest = true;
           }
