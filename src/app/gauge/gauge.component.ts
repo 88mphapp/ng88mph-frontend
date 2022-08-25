@@ -464,7 +464,7 @@ export class GaugeComponent implements OnInit {
     const calls = gauges.map((gauge) => {
       return {
         reference: `${gauge.address}`,
-        methodName: 'gauge_relative_weight_write',
+        methodName: 'gauge_relative_weight',
         methodParameters: [gauge.address, this_week_timestamp],
       };
     });
