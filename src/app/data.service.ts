@@ -200,6 +200,7 @@ export class DataService {
     const mphAPR = new BigNumber(rewardRate)
       .times(this.constants.YEAR_IN_SEC)
       .times(this.mphPriceUSD)
+      .div(this.constants.PRECISION)
       .div(poolTVL)
       .times(100);
 
