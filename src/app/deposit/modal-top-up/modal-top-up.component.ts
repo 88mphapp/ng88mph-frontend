@@ -75,7 +75,7 @@ export class ModalTopUpComponent implements OnInit {
     if (vest.options.address) {
       rewardRate = await vest.methods.rewardRate(this.poolInfo.address).call();
     }
-    this.rewardRate = rewardRate;
+    this.rewardRate = new BigNumber(rewardRate);
 
     const stablecoin = this.contract.getPoolStablecoin(this.poolInfo.name);
     const stablecoinPrecision = Math.pow(10, this.poolInfo.stablecoinDecimals);

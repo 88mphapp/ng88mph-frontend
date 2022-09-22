@@ -90,7 +90,7 @@ export class BondsComponent implements OnInit {
       {
         ${
           loadUser
-            ? `funder(id: "${funderID}") {
+            ? `user(id: "${funderID}") {
           address
           fundings(first: 1000) {
             nftID
@@ -167,7 +167,7 @@ export class BondsComponent implements OnInit {
       return;
     }
 
-    const funder = data.funder;
+    const funder = data.user;
     const dpools = data.dpools;
     const now = Math.floor(Date.now() / 1e3);
     const web3 = this.wallet.httpsWeb3(networkID);
@@ -252,6 +252,7 @@ export class BondsComponent implements OnInit {
           const yieldTokenBalanceUSD = new BigNumber(
             funding.fundedDeficitAmount
           )
+            .div(funding.principalPerToken)
             .times(yieldTokenPercentage)
             .times(stablecoinPrice);
 
@@ -355,7 +356,6 @@ export class BondsComponent implements OnInit {
             const fundingObj = await poolContract.methods
               .getFunding(funding.nftID)
               .call();
-            console.log(fundingObj);
 
             const now = Date.now() / 1e3;
             const maturationTimstamp = parseInt(
@@ -545,6 +545,12 @@ export class BondsComponent implements OnInit {
             return;
           }
 
+          // fetch the updated pool surplus
+          const surplusCall = await poolContract.methods.surplus().call();
+          const surplus = new BigNumber(surplusCall.surplusAmount)
+            .div(Math.pow(10, poolInfo.stablecoinDecimals))
+            .times(surplusCall.isNegative ? -1 : 1);
+
           // fetch the price of the pool asset in USD
           const stablecoin = poolInfo.stablecoin.toLowerCase();
           const stablecoinPrice = await this.datas.getAssetPriceUSD(
@@ -572,7 +578,7 @@ export class BondsComponent implements OnInit {
             totalEarnYieldOn: new BigNumber(0),
             totalEarnYieldOnUSD: new BigNumber(0),
             maxEstimatedAPR: new BigNumber(0),
-            surplus: new BigNumber(pool.surplus),
+            surplus: surplus,
             isExpanded: false,
             emaRate: this.helpers
               .parseInterestRate(
@@ -590,7 +596,6 @@ export class BondsComponent implements OnInit {
             useMarketRate: false,
           };
           this.getCurrentMarketRate(dpoolObj, poolInfo);
-
           if (dpoolObj.surplus.lt(0)) {
             let poolFundableDeposits: FundableDeposit[] = [];
             for (let d in pool.deposits) {
@@ -1201,7 +1206,7 @@ export class BondsComponent implements OnInit {
 }
 
 interface QueryResult {
-  funder: {
+  user: {
     address: string;
     fundings: {
       nftID: string;

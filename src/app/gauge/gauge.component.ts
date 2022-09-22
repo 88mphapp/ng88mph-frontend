@@ -238,7 +238,7 @@ export class GaugeComponent implements OnInit {
       }
     `;
     await request(
-      this.constants.GAUGES_GRAPHQL_ENDPOINT[this.wallet.networkID],
+      this.constants.GRAPHQL_ENDPOINT[this.wallet.networkID],
       queryString
     ).then((data: QueryResult) => {
       let gauges: Gauge[] = [];

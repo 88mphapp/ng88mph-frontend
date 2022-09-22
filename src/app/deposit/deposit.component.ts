@@ -299,7 +299,7 @@ export class DepositComponent implements OnInit {
       {
         user (id: "${userID}") {
           address
-          pools {
+          depositPools {
             address
             deposits (where: { user: "${userID}" }) {
               nftID
@@ -309,7 +309,9 @@ export class DepositComponent implements OnInit {
               maturationTimestamp
               virtualTokenTotalSupply
               vest {
-                owner
+                owner {
+                  address
+                }
                 nftID
                 vestAmountPerStablecoinPerSecond
                 totalExpectedMPHAmount
@@ -350,9 +352,12 @@ export class DepositComponent implements OnInit {
           pool.poolDepositorRewardMintMultiplier
         );
 
-        // calculate MPH APR (gauge)
+        // calculate MPH APR (gauge) (only available on Mainnet)
         let mphAPR = new BigNumber(0);
-        if (vest.options.address) {
+        if (
+          vest.options.address &&
+          this.wallet.networkID === this.constants.CHAIN_ID.MAINNET
+        ) {
           const rewardRate = await vest.methods.rewardRate(pool.address).call();
           mphAPR = new BigNumber(rewardRate)
             .times(this.constants.YEAR_IN_SEC)
@@ -419,7 +424,7 @@ export class DepositComponent implements OnInit {
     let userTotalClaimableReward: BigNumber = new BigNumber(0);
 
     await Promise.all(
-      user.pools.map(async (pool) => {
+      user.depositPools.map(async (pool) => {
         const poolInfo = this.contract.getPoolInfoFromAddress(
           pool.address,
           networkID
@@ -452,10 +457,9 @@ export class DepositComponent implements OnInit {
             let rewardAPR = new BigNumber(0);
             let claimableReward = new BigNumber(0);
             let vestObj: Vest;
-
             if (vest) {
               // @dev Chains without rewards won't have a vest.
-              if (vest.owner === user.address) {
+              if (vest.owner.address === user.address) {
                 // @dev Vest hasn't been transferred.
                 if (parseInt(vest.lastUpdateTimestamp) === 0) {
                   // @dev created by Vesting03
@@ -785,7 +789,7 @@ interface GlobalQueryResult {
 interface UserQueryResult {
   user: {
     address: string;
-    pools: {
+    depositPools: {
       address: string;
       deposits: {
         nftID: string;
@@ -795,7 +799,9 @@ interface UserQueryResult {
         maturationTimestamp: string;
         virtualTokenTotalSupply: string;
         vest: {
-          owner: string;
+          owner: {
+            address: string;
+          };
           nftID: string;
           vestAmountPerStablecoinPerSecond: string;
           totalExpectedMPHAmount: string;

@@ -569,6 +569,8 @@ export class NetInterestMarginComponent implements OnInit {
       for (let p in result[i]) {
         const pool = result[i][p];
         const entry = chainData.find((x) => x.address === pool.address);
+        if (!entry) continue;
+
         const deposits = entry.totalDeposits[parseInt(i.substring(1))];
         const interestRate = this.helpers.parseInterestRate(
           new BigNumber(pool.oracleInterestRate),

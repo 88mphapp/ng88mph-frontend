@@ -392,8 +392,7 @@
             <ng-container *ngIf="displaySetting === 'all'">
               <h2 class="mb-3 glowing">
                 ${{
-                  mphTotalHistoricalReward
-                    .times(datas.mphPriceUSD)
+                  mphTotalHistoricalRewardUSD
                     .plus(daiTotalHistoricalReward.times(datas.daiPriceUSD))
                     .toFormat(4)
                 }}

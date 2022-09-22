@@ -92,17 +92,17 @@ export class ConstantsService {
   // GRAPHQL ENDPOINTS //
   GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
-      // 'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3', // hosted
-      // 'https://api.studio.thegraph.com/query/23186/eighty-eight-mph-v3/test', // test studio (rate limited)
-      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/Ep6qPG4Pscywwdr2NbSBKJu7RrN4pqie5RGPGHKXMviN', // production studio
+      'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-mainnet',
+    // 'https://api.studio.thegraph.com/query/23186/eighty-eight-mph-v3/test', // test studio (rate limited)
+    // 'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/Ep6qPG4Pscywwdr2NbSBKJu7RrN4pqie5RGPGHKXMviN', // production studio
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby',
     [this.CHAIN_ID.POLYGON]:
-      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-polygon',
+      'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-polygon',
     [this.CHAIN_ID.AVALANCHE]:
-      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-avalanche',
+      'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-avalanche',
     [this.CHAIN_ID.FANTOM]:
-      'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-fantom',
+      'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-fantom',
   };
   GRAPHQL_ENDPOINT_V2 = {
     [this.CHAIN_ID.MAINNET]:
@@ -117,15 +117,6 @@ export class ConstantsService {
       'https://api.thegraph.com/subgraphs/name/0xszeth/mph-token',
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/0xszeth/mph-token-rinkeby',
-    [this.CHAIN_ID.POLYGON]: '',
-    [this.CHAIN_ID.AVALANCHE]: '',
-    [this.CHAIN_ID.FANTOM]: '',
-  };
-  GAUGES_GRAPHQL_ENDPOINT = {
-    [this.CHAIN_ID.MAINNET]:
-      'https://api.thegraph.com/subgraphs/name/0xszeth/mph-gauges',
-    // 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
-    [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',

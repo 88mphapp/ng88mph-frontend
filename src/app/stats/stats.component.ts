@@ -51,6 +51,7 @@ export class StatsComponent implements OnInit {
   mphStaked: BigNumber;
 
   mphTotalHistoricalReward: BigNumber;
+  mphTotalHistoricalRewardUSD: BigNumber;
   daiTotalHistoricalReward: BigNumber;
 
   // settings
@@ -70,10 +71,10 @@ export class StatsComponent implements OnInit {
   }
 
   loadAll() {
-    this.loadData(this.constants.CHAIN_ID.MAINNET);
-    this.loadData(this.constants.CHAIN_ID.POLYGON);
-    this.loadData(this.constants.CHAIN_ID.AVALANCHE);
-    this.loadData(this.constants.CHAIN_ID.FANTOM);
+    this.loadData(true, this.constants.CHAIN_ID.MAINNET);
+    this.loadData(true, this.constants.CHAIN_ID.POLYGON);
+    this.loadData(true, this.constants.CHAIN_ID.AVALANCHE);
+    this.loadData(true, this.constants.CHAIN_ID.FANTOM);
     this.loadV2(this.constants.CHAIN_ID.MAINNET);
     this.loadMPH(this.constants.CHAIN_ID.MAINNET);
     // this.loadMPH(this.constants.CHAIN_ID.POLYGON);
@@ -81,33 +82,56 @@ export class StatsComponent implements OnInit {
     this.loadMPH(this.constants.CHAIN_ID.FANTOM);
   }
 
-  loadData(networkID: number) {
-    const queryString = gql`
-      {
-        dpools {
-          id
-          address
-          stablecoin
-          totalDeposit
-          totalInterestOwed
-          historicalInterestPaid
-        }
-        globalStats(id: "0") {
-          xMPHRewardDistributed
-        }
-      }
+  loadData(loadStats: boolean, networkID: number) {
+    // const queryString = gql`
+    //   {
+    //     dpools {
+    //       id
+    //       address
+    //       stablecoin
+    //       totalDeposit
+    //       totalInterestOwed
+    //       historicalInterestPaid
+    //     }
+    //     globalStats(id: "0") {
+    //       xMPHRewardDistributed
+    //     }
+    //   }
+    // `;
+
+    let queryString = `{`;
+    queryString += `dpools {
+      id
+      address
+      stablecoin
+      totalDeposit
+      totalInterestOwed
+      historicalInterestPaid
+    }`;
+    if (loadStats) {
+      queryString += `xMPH(id: "${this.constants.XMPH_ADDRESS[
+        networkID
+      ].toLowerCase()}") {
+        totalRewardDistributed
+        totalRewardDistributedUSD
+      }`;
+    }
+    queryString += `}`;
+    const query = gql`
+      ${queryString}
     `;
-    request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
-      (data: QueryResult) => this.handleData(data, networkID)
-    );
+    request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString)
+      .then((data: QueryResult) => this.handleData(data, networkID))
+      .catch((error) => this.loadData(false, networkID));
   }
 
   async handleData(data: QueryResult, networkID: number) {
     const dpools = data.dpools;
-    const rewards = data.globalStats;
+    const rewards = data.xMPH;
 
     if (rewards) {
-      const reward = new BigNumber(rewards.xMPHRewardDistributed);
+      const reward = new BigNumber(rewards.totalRewardDistributed);
+      const rewardUSD = new BigNumber(rewards.totalRewardDistributedUSD);
 
       switch (networkID) {
         case this.constants.CHAIN_ID.MAINNET:
@@ -126,6 +150,8 @@ export class StatsComponent implements OnInit {
 
       this.mphTotalHistoricalReward =
         this.mphTotalHistoricalReward.plus(reward);
+      this.mphTotalHistoricalRewardUSD =
+        this.mphTotalHistoricalRewardUSD.plus(reward);
     }
 
     if (dpools) {
@@ -358,6 +384,7 @@ export class StatsComponent implements OnInit {
     this.mphStaked = new BigNumber(0);
 
     this.mphTotalHistoricalReward = new BigNumber(0);
+    this.mphTotalHistoricalRewardUSD = new BigNumber(0);
     this.daiTotalHistoricalReward = new BigNumber(0);
 
     // settings
@@ -374,8 +401,9 @@ interface QueryResult {
     totalInterestOwed: number;
     historicalInterestPaid: number;
   }[];
-  globalStats: {
-    xMPHRewardDistributed: string;
+  xMPH: {
+    totalRewardDistributed: string;
+    totalRewardDistributedUSD: string;
   };
 }
 

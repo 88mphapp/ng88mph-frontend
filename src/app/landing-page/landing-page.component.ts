@@ -124,25 +124,31 @@ export class LandingPageComponent implements OnInit {
   }
 
   async loadChainData(loadStats: boolean, networkID: number) {
-    const queryString = gql`
-      {
-        dpools {
-          id
-          address
-          totalDeposit
-          totalInterestOwed
-          oneYearInterestRate
-          poolDepositorRewardMintMultiplier
-          historicalInterestPaid
-        }
-        globalStats(id: "0") {
-          xMPHRewardDistributed
-        }
-      }
+    let queryString = `{`;
+    queryString += `dpools {
+      id
+      address
+      totalDeposit
+      totalInterestOwed
+      oneYearInterestRate
+      poolDepositorRewardMintMultiplier
+      historicalInterestPaid
+    }`;
+    if (loadStats) {
+      queryString += `xMPH(id: "${this.constants.XMPH_ADDRESS[
+        networkID
+      ].toLowerCase()}") {
+        totalRewardDistributedUSD
+      }`;
+    }
+    queryString += `}`;
+    const query = gql`
+      ${queryString}
     `;
-    request(this.constants.GRAPHQL_ENDPOINT[networkID], queryString).then(
-      (data: QueryResult) => this.handleData(data, loadStats, networkID)
-    );
+
+    request(this.constants.GRAPHQL_ENDPOINT[networkID], query)
+      .then((data: QueryResult) => this.handleData(data, loadStats, networkID))
+      .catch((error) => this.loadChainData(false, networkID));
   }
 
   loadV2Data(loadStats: boolean) {
@@ -323,10 +329,9 @@ export class LandingPageComponent implements OnInit {
     }
 
     if (loadStats) {
-      const reward = new BigNumber(data.globalStats.xMPHRewardDistributed);
-      const totalEarningsUSD = reward.times(this.datas.mphPriceUSD).div(1e6);
+      const reward = new BigNumber(data.xMPH.totalRewardDistributedUSD);
       if (!this.totalEarningsUSD.isNaN()) {
-        this.totalEarningsUSD = this.totalEarningsUSD.plus(totalEarningsUSD);
+        this.totalEarningsUSD = this.totalEarningsUSD.plus(reward);
       }
     }
   }
@@ -497,8 +502,8 @@ interface QueryResult {
     poolDepositorRewardMintMultiplier: number;
     historicalInterestPaid: number;
   }[];
-  globalStats: {
-    xMPHRewardDistributed: number;
+  xMPH: {
+    totalRewardDistributedUSD: number;
   };
 }
 
