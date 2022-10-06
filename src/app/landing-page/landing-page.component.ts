@@ -329,7 +329,9 @@ export class LandingPageComponent implements OnInit {
     }
 
     if (loadStats) {
-      const reward = new BigNumber(data.xMPH.totalRewardDistributedUSD);
+      const reward = new BigNumber(data.xMPH.totalRewardDistributedUSD).div(
+        1e6
+      );
       if (!this.totalEarningsUSD.isNaN()) {
         this.totalEarningsUSD = this.totalEarningsUSD.plus(reward);
       }
