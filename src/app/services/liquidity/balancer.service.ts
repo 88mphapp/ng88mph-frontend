@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 import { ConstantsService } from 'src/app/constants.service';
 import { TimeSeriesService } from 'src/app/timeseries.service';
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
+import { BALANCER_DEPLOYMENT_TIMESTAMP } from 'src/app/constants/deployments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BalancerService {
+  @Output() loadedEvent = new EventEmitter();
+
   balancer_subgraph: string =
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2';
   balancer_protocol_fee: number = 0.5;
@@ -16,10 +20,75 @@ export class BalancerService {
   balancer_pool_token_id: string =
     '0x3e09e828c716c5e2bc5034eed7d5ec8677ffba180002000000000000000002b1';
 
+  liquidity: Liquidity = Object.create({});
+
   constructor(
     public constants: ConstantsService,
     public time: TimeSeriesService
-  ) {}
+  ) {
+    this.loadData();
+  }
+
+  loadData() {
+    Promise.all([this.fetchLiquidity(this.constants.CHAIN_ID.MAINNET)]).then(
+      () => {
+        this.loadedEvent.emit();
+      }
+    );
+  }
+
+  ////////////////////////////////////////////////////////////
+  // @notice Fetches historical liquidity data.
+  ////////////////////////////////////////////////////////////
+  async fetchLiquidity(networkID: number) {
+    const [timestamps, blocks] = await this.time.getCustomTimeSeries(
+      BALANCER_DEPLOYMENT_TIMESTAMP[networkID],
+      this.constants.DAY_IN_SEC,
+      networkID
+    );
+
+    let data: QueryResult = Object.create({});
+
+    let count: number = 0;
+    while (count < blocks.length) {
+      let limit = blocks.length - count;
+      if (limit > 250) {
+        // @dev adjust the limit to prevent 413 errors
+        limit = 250;
+      }
+
+      let queryString = `query Liquidity {`;
+      for (let i = count; i < count + limit; i++) {
+        queryString += `t${i}: pool(
+          id: "${this.balancer_pool_token_id}",
+          block: {
+            number: ${blocks[i]}
+          }
+        ) {
+          totalLiquidity
+        }`;
+      }
+      queryString += `}`;
+      const query = gql`
+        ${queryString}
+      `;
+
+      await request(this.balancer_subgraph, query)
+        .then((result: QueryResult) => (data = { ...data, ...result }))
+        .catch((error) => console.error(error));
+
+      count += limit;
+    }
+
+    const liquidity: number[] = [];
+
+    for (let point in data) {
+      liquidity.push(data[point] ? parseFloat(data[point].totalLiquidity) : 0);
+    }
+
+    this.liquidity.labels = this.getReadableTimestamps(timestamps);
+    this.liquidity.data = liquidity;
+  }
 
   ////////////////////////////////////////////////////////////
   // @notice Calculates the BPT price in USD on Mainnet.
@@ -94,6 +163,20 @@ export class BalancerService {
       }
     );
   }
+
+  getReadableTimestamps(timestamps: number[]): string[] {
+    let readable: string[] = [];
+    for (let i in timestamps) {
+      readable.push(
+        new Date(timestamps[i] * 1000).toLocaleString('en-US', {
+          timeZone: 'UTC',
+          month: 'short',
+          day: 'numeric',
+        })
+      );
+    }
+    return readable;
+  }
 }
 
 interface QueryResult {
@@ -102,4 +185,9 @@ interface QueryResult {
     totalSwapFee: string;
     totalLiquidity: string;
   };
+}
+
+interface Liquidity {
+  data: number[];
+  labels: string[];
 }
