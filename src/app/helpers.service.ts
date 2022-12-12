@@ -712,6 +712,29 @@ export class HelpersService {
       Math.pow(2, oracleInterestRate.times(time).toNumber()) - 1
     );
   }
+
+  formatBN(bn: BigNumber): [BigNumber, string] {
+    const s = bn.s;
+
+    bn = bn.abs();
+    let magnitudeLabel = null;
+    let formattedBN = bn;
+
+    if (bn.gte(1e3) && bn.lt(1e6)) {
+      formattedBN = bn.div(1e3);
+      magnitudeLabel = 'k';
+    } else if (bn.gte(1e6) && bn.lt(1e9)) {
+      formattedBN = bn.div(1e6);
+      magnitudeLabel = 'm';
+    } else if (bn.gte(1e9) && bn.lt(1e12)) {
+      formattedBN = bn.div(1e9);
+      magnitudeLabel = 'b';
+    } else if (bn.gte(1e12) && bn.lt(1e15)) {
+      formattedBN = bn.div(1e12);
+      magnitudeLabel = 't';
+    }
+    return [formattedBN.times(s), magnitudeLabel];
+  }
 }
 
 interface ChainlinkQueryResult {
