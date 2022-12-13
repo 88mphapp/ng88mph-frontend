@@ -18,9 +18,9 @@
       </button>
       <button
         type="button"
-        (click)="displaySetting = 'ethereum'"
+        (click)="displaySetting = 'mainnet'"
         [ngClass]="
-          displaySetting === 'ethereum'
+          displaySetting === 'mainnet'
             ? 'btn-bg-gradient text-white'
             : 'btn-dark text-muted'
         "
@@ -64,425 +64,174 @@
       >
         Fantom
       </button>
-      <button
-        type="button"
-        (click)="displaySetting = 'v2'"
-        [ngClass]="
-          displaySetting === 'v2'
-            ? 'btn-bg-gradient text-white'
-            : 'btn-dark text-muted'
-        "
-        class="btn btn-sm mr-2 mb-4"
-      >
-        V2
-      </button>
       <div class="card-deck mb-4">
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase" i18n="@@totalDeposit">Total deposit</h5>
+            <h5 class="text-uppercase" i18n="@@totalDeposit">Total deposits</h5>
             <h2 class="mb-1 glowing" *ngIf="displaySetting === 'all'">
-              ${{
-                totalDepositEthereum
-                  .plus(totalDepositPolygon)
-                  .plus(totalDepositAvalanche)
-                  .plus(totalDepositFantom)
-                  .plus(totalDepositV2)
-                  .toFormat(4)
-              }}
+              ${{ statistics.deposits.all.toFormat(2) }}
             </h2>
-            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'ethereum'">
-              ${{ totalDepositEthereum.toFormat(4) }}
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'mainnet'">
+              ${{ statistics.deposits.mainnet.toFormat(2) }}
             </h2>
             <h2 class="mb-1 glowing" *ngIf="displaySetting === 'polygon'">
-              ${{ totalDepositPolygon.toFormat(4) }}
+              ${{ statistics.deposits.polygon.toFormat(2) }}
             </h2>
             <h2 class="mb-1 glowing" *ngIf="displaySetting === 'avalanche'">
-              ${{ totalDepositAvalanche.toFormat(4) }}
+              ${{ statistics.deposits.avalanche.toFormat(2) }}
             </h2>
             <h2 class="mb-1 glowing" *ngIf="displaySetting === 'fantom'">
-              ${{ totalDepositFantom.toFormat(4) }}
-            </h2>
-            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'v2'">
-              ${{ totalDepositV2.toFormat(4) }}
+              ${{ statistics.deposits.fantom.toFormat(2) }}
             </h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase" i18n="@@historicalInterestDistributed">
-              Interest earned
+            <h5 class="text-uppercase" i18n="">
+              Interest Expense
+              <i
+                class="fe fe-info"
+                ngbTooltip="Amount of interest owed to depositors plus fees owed to the protocol."
+              ></i>
             </h5>
             <h2 class="mb-1 glowing" *ngIf="displaySetting === 'all'">
-              ${{
-                totalInterestEarnedEthereum
-                  .plus(totalInterestEarnedPolygon)
-                  .plus(totalInterestEarnedAvalanche)
-                  .plus(totalInterestEarnedFantom)
-                  .plus(totalInterestEarnedV2)
-                  .toFormat(4)
-              }}
+              ${{ statistics.debt.all.toFormat(2) }}
             </h2>
-            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'ethereum'">
-              ${{ totalInterestEarnedEthereum.toFormat(4) }}
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'mainnet'">
+              ${{ statistics.debt.mainnet.toFormat(2) }}
             </h2>
             <h2 class="mb-1 glowing" *ngIf="displaySetting === 'polygon'">
-              ${{ totalInterestEarnedPolygon.toFormat(4) }}
+              ${{ statistics.debt.polygon.toFormat(2) }}
             </h2>
             <h2 class="mb-1 glowing" *ngIf="displaySetting === 'avalanche'">
-              ${{ totalInterestEarnedAvalanche.toFormat(4) }}
+              ${{ statistics.debt.avalanche.toFormat(2) }}
             </h2>
             <h2 class="mb-1 glowing" *ngIf="displaySetting === 'fantom'">
-              ${{ totalInterestEarnedFantom.toFormat(4) }}
-            </h2>
-            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'v2'">
-              ${{ totalInterestEarnedV2.toFormat(4) }}
+              ${{ statistics.debt.fantom.toFormat(2) }}
             </h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase" i18n="@@mphPrice">MPH price</h5>
-            <h2 class="mb-3 glowing">${{ datas.mphPriceUSD.toFormat(4) }}</h2>
+            <h5 class="text-uppercase" i18n="">
+              Funded Interest Expense
+              <i
+                class="fe fe-info"
+                ngbTooltip="Interest expense that has been funded by yield token purchases."
+              ></i>
+            </h5>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'all'">
+              ${{ statistics.funded.all.toFormat(2) }}
+            </h2>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'mainnet'">
+              ${{ statistics.funded.mainnet.toFormat(2) }}
+            </h2>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'polygon'">
+              ${{ statistics.funded.polygon.toFormat(2) }}
+            </h2>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'avalanche'">
+              ${{ statistics.funded.avalanche.toFormat(2) }}
+            </h2>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'fantom'">
+              ${{ statistics.funded.fantom.toFormat(2) }}
+            </h2>
+          </div>
+        </div>
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-body">
+            <h5 class="text-uppercase" i18n="">
+              Loan Loss Reserve
+              <i
+                class="fe fe-info"
+                ngbTooltip="Estimate of reserves (USD) after all depositors, funders, and fees have been paid."
+              ></i>
+            </h5>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'all'">
+              ${{ statistics.surplus.all.toFormat(2) }}
+            </h2>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'mainnet'">
+              ${{ statistics.surplus.mainnet.toFormat(2) }}
+            </h2>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'polygon'">
+              ${{ statistics.surplus.polygon.toFormat(2) }}
+            </h2>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'avalanche'">
+              ${{ statistics.surplus.avalanche.toFormat(2) }}
+            </h2>
+            <h2 class="mb-1 glowing" *ngIf="displaySetting === 'fantom'">
+              ${{ statistics.surplus.fantom.toFormat(2) }}
+            </h2>
           </div>
         </div>
       </div>
       <div class="card-deck mb-6">
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase" i18n="@@mphTotalSupply">
-              MPH total supply
+            <h5 class="text-uppercase" i18n="a">
+              MPH Price
+              <i
+                class="fe fe-info"
+                ngbTooltip="Current price of MPH in USD."
+              ></i>
             </h5>
-            <ng-container *ngIf="displaySetting === 'all'">
-              <h2 class="mb-3 glowing">
-                {{ mphTotalSupply.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{ mphTotalSupply.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'ethereum'">
-              <h2 class="mb-3 glowing">
-                {{ mphTotalSupplyEthereum.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphTotalSupplyEthereum.times(datas.mphPriceUSD).toFormat(4)
-                }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'polygon'">
-              <h2 class="mb-3 glowing">
-                {{ mphTotalSupplyPolygon.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphTotalSupplyPolygon.times(datas.mphPriceUSD).toFormat(4)
-                }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'avalanche'">
-              <h2 class="mb-3 glowing">
-                {{ mphTotalSupplyAvalanche.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphTotalSupplyAvalanche.times(datas.mphPriceUSD).toFormat(4)
-                }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'fantom'">
-              <h2 class="mb-3 glowing">
-                {{ mphTotalSupplyFantom.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{ mphTotalSupplyFantom.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'v2'">
-              <h2 class="mb-3 glowing">
-                {{ mphTotalSupplyEthereum.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphTotalSupplyEthereum.times(datas.mphPriceUSD).toFormat(4)
-                }}
-              </h5>
-            </ng-container>
+            <h2 class="mb-1 glowing">${{ mph.price.toFormat(2) }}</h2>
           </div>
         </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5
-              class="text-uppercase"
-              i18n="@@mphCirculatingSupply"
-              placement="top"
-              ngbTooltip="Subtracted: Governance Treasury, Developer Fund, MPH Staked, Merkle Distributor"
-              i18n-ngbTooltip="@@mphCirculatingSupplyText"
-            >
-              MPH circulating supply
-              <i class="fe fe-info"></i>
+            <h5 class="text-uppercase" i18n="">
+              MPH Circulating Supply
+              <i
+                class="fe fe-info"
+                ngbTooltip="Subtracted: Governance Treasury, Dev Wallet, Merkle Distributor."
+              ></i>
             </h5>
-            <ng-container *ngIf="displaySetting === 'all'">
-              <h2 class="mb-3 glowing">
-                {{ mphCirculatingSupply.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{ mphCirculatingSupply.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'ethereum'">
-              <h2 class="mb-3 glowing">
-                {{ mphCirculatingSupplyEthereum.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphCirculatingSupplyEthereum
-                    .times(datas.mphPriceUSD)
-                    .toFormat(4)
-                }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'polygon'">
-              <h2 class="mb-3 glowing">
-                {{ mphCirculatingSupplyPolygon.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphCirculatingSupplyPolygon
-                    .times(datas.mphPriceUSD)
-                    .toFormat(4)
-                }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'avalanche'">
-              <h2 class="mb-3 glowing">
-                {{ mphCirculatingSupplyAvalanche.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphCirculatingSupplyAvalanche
-                    .times(datas.mphPriceUSD)
-                    .toFormat(4)
-                }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'fantom'">
-              <h2 class="mb-3 glowing">
-                {{ mphCirculatingSupplyFantom.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphCirculatingSupplyFantom
-                    .times(datas.mphPriceUSD)
-                    .toFormat(4)
-                }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'v2'">
-              <h2 class="mb-3 glowing">
-                {{ mphCirculatingSupplyEthereum.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{
-                  mphCirculatingSupplyEthereum
-                    .times(datas.mphPriceUSD)
-                    .toFormat(4)
-                }}
-              </h5>
-            </ng-container>
+            <h2 class="mb-1 glowing">
+              {{ mph.circulatingSupply.toFormat(4) }} MPH
+            </h2>
           </div>
         </div>
-        <div class="card mb-4 mb-lg-0 d-none">
+        <div class="card mb-4 mb-lg-0">
           <div class="card-body">
-            <h5 class="text-uppercase" i18n="@@mphStakedRewardsPool">
-              MPH staked in rewards pool
+            <h5 class="text-uppercase" i18n="">
+              MPH Total Supply
+              <i class="fe fe-info" ngbTooltip="Total supply of MPH."></i>
             </h5>
-            <ng-container *ngIf="displaySetting === 'all'">
-              <h2 class="mb-3 glowing">
-                {{ mphStaked.div(mphTotalSupply).times(100).toFormat(4) }}%
-              </h2>
-              <h5 class="text-white">
-                ${{ mphStaked.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'ethereum'">
-              <h2 class="mb-3 glowing">
-                {{
-                  mphStakedEthereum
-                    .div(mphTotalSupplyEthereum)
-                    .times(100)
-                    .toFormat(4)
-                }}%
-              </h2>
-              <h5 class="text-white">
-                ${{ mphStakedEthereum.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'polygon'">
-              <h2 class="mb-3 glowing">
-                {{
-                  mphStakedPolygon
-                    .div(mphTotalSupplyPolygon)
-                    .times(100)
-                    .toFormat(4)
-                }}%
-              </h2>
-              <h5 class="text-white">
-                ${{ mphStakedPolygon.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'avalanche'">
-              <h2 class="mb-3 glowing">
-                {{
-                  mphStakedAvalanche
-                    .div(mphTotalSupplyAvalanche)
-                    .times(100)
-                    .toFormat(4)
-                }}%
-              </h2>
-              <h5 class="text-white">
-                ${{ mphStakedAvalanche.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'fantom'">
-              <h2 class="mb-3 glowing">
-                {{
-                  mphStakedFantom
-                    .div(mphTotalSupplyFantom)
-                    .times(100)
-                    .toFormat(4)
-                }}%
-              </h2>
-              <h5 class="text-white">
-                ${{ mphStakedFantom.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'v2'">
-              <h2 class="mb-3 glowing">
-                {{
-                  mphStakedEthereum
-                    .div(mphTotalSupplyEthereum)
-                    .times(100)
-                    .toFormat(4)
-                }}%
-              </h2>
-              <h5 class="text-white">
-                ${{ mphStakedEthereum.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-          </div>
-        </div>
-        <div class="card mb-4 mb-lg-0 d-none">
-          <div class="card-body">
-            <h5 class="text-uppercase" i18n="@@historicalStakingDistributed">
-              Historical staking rewards
-            </h5>
-            <ng-container *ngIf="displaySetting === 'all'">
-              <h2 class="mb-3 glowing">
-                ${{
-                  mphTotalHistoricalRewardUSD
-                    .plus(daiTotalHistoricalReward.times(datas.daiPriceUSD))
-                    .toFormat(4)
-                }}
-              </h2>
-              <h5 class="text-white">
-                {{ mphTotalHistoricalReward.toFormat(2) }}
-                <ng-container i18n="@@mph">MPH + </ng-container>
-                {{ daiTotalHistoricalReward.toFormat(2) }}
-                <ng-container i18n="@@dai">DAI</ng-container>
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'ethereum'">
-              <h2 class="mb-3 glowing">
-                {{ totalRewardEthereum.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{ totalRewardEthereum.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'polygon'">
-              <h2 class="mb-3 glowing">
-                {{ totalRewardPolygon.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{ totalRewardPolygon.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'avalanche'">
-              <h2 class="mb-3 glowing">
-                {{ totalRewardAvalanche.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{ totalRewardAvalanche.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'fantom'">
-              <h2 class="mb-3 glowing">
-                {{ totalRewardFantom.toFormat(4) }}
-                <ng-container i18n="@@mph">MPH</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{ totalRewardFantom.times(datas.mphPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
-            <ng-container *ngIf="displaySetting === 'v2'">
-              <h2 class="mb-3 glowing">
-                {{ totalRewardV2.toFormat(4) }}
-                <ng-container i18n="@@dai">DAI</ng-container>
-              </h2>
-              <h5 class="text-white">
-                ${{ totalRewardV2.times(datas.daiPriceUSD).toFormat(4) }}
-              </h5>
-            </ng-container>
+            <h2 class="mb-1 glowing">{{ mph.totalSupply.toFormat(4) }} MPH</h2>
           </div>
         </div>
       </div>
 
       <!-- Start Charts -->
       <div class="card-deck my-5 justify-content-around">
-        <app-historical-fixed-interest-rates
-          class="w-50"
-          [displaySetting]="displaySetting"
-        ></app-historical-fixed-interest-rates>
         <app-historical-asset-tvl
           class="w-50"
           [displaySetting]="displaySetting"
         ></app-historical-asset-tvl>
-      </div>
-      <div class="card-deck my-5 justify-content-around">
-        <app-net-interest-margin
+        <app-interest-expense
           class="w-50"
           [displaySetting]="displaySetting"
-        ></app-net-interest-margin>
-        <app-funded-interest-expenses
-          class="w-50"
-          [displaySetting]="displaySetting"
-        ></app-funded-interest-expenses>
+        ></app-interest-expense>
       </div>
       <div class="card-deck my-5 justify-content-around">
+        <app-funded-expense
+          class="w-50"
+          [displaySetting]="displaySetting"
+        ></app-funded-expense>
         <app-loss-provision
-          class="w-100"
+          class="w-50"
           [displaySetting]="displaySetting"
         ></app-loss-provision>
       </div>
       <div class="card-deck my-5 justify-content-around">
-        <app-mph-liquidity class="w-50"></app-mph-liquidity>
-        <app-mph-supply-distribution class="w-50"></app-mph-supply-distribution>
+        <app-mph-liquidity
+          class="w-50"
+          [displaySetting]="displaySetting"
+        ></app-mph-liquidity>
+        <app-mph-supply-distribution
+          class="w-50"
+          [displaySetting]="displaySetting"
+        ></app-mph-supply-distribution>
       </div>
       <!-- End Charts -->
     </div>

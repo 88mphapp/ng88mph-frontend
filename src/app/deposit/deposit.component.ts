@@ -689,6 +689,7 @@ export class DepositComponent implements OnInit {
       const vestID = userVests[vest].nftID;
       vestIdList.push(vestID);
     }
+    console.log(vestIdList);
 
     const func = vestContract.methods.multiWithdraw(vestIdList);
 

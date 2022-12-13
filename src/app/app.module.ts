@@ -42,16 +42,11 @@ import { RewardsComponent } from './rewards/rewards.component';
 import { ModalUnstakeComponent } from './rewards/modal-unstake/modal-unstake.component';
 
 import { StatsComponent } from './stats/stats.component';
-import { FundedInterestExpensesComponent } from './stats/components/funded-interest-expenses/funded-interest-expenses.component';
 import { HistoricalAssetTvlComponent } from './stats/components/historical-asset-tvl/historical-asset-tvl.component';
-import { HistoricalFixedInterestRatesComponent } from './stats/components/historical-fixed-interest-rates/historical-fixed-interest-rates.component';
-import { HistoricalStakingRewardsComponent } from './stats/components/historical-staking-rewards/historical-staking-rewards.component';
 import { LossProvisionComponent } from './stats/components/loss-provision/loss-provision.component';
 import { MphLiquidityComponent } from './stats/components/mph-liquidity/mph-liquidity.component';
 import { MphSupplyDistributionComponent } from './stats/components/mph-supply-distribution/mph-supply-distribution.component';
-import { NetInterestMarginComponent } from './stats/components/net-interest-margin/net-interest-margin.component';
-import { PriceEarningsRatioComponent } from './stats/components/price-earnings-ratio/price-earnings-ratio.component';
-import { XmphSupplyDistributionComponent } from './stats/components/xmph-supply-distribution/xmph-supply-distribution.component';
+import { InterestExpenseComponent } from './stats/components/interest-expense/interest-expense.component';
 
 import { HeaderComponent } from './header/header.component';
 import { DepositFeedComponent } from './header/deposit-feed/deposit-feed.component';
@@ -60,6 +55,7 @@ import { ConverterComponent } from './bridge/converter/converter.component';
 // other
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CacheInterceptor } from './cache-interceptor';
+import { FundedExpenseComponent } from './stats/components/funded-expense/funded-expense.component';
 
 @NgModule({
   declarations: [
@@ -87,20 +83,16 @@ import { CacheInterceptor } from './cache-interceptor';
     ModalBuyYieldTokenComponent,
     HistoricalAssetTvlComponent,
     MphSupplyDistributionComponent,
-    HistoricalFixedInterestRatesComponent,
-    FundedInterestExpensesComponent,
     ModalWithdrawYieldTokenInterestComponent,
-    NetInterestMarginComponent,
     TermsOfServiceComponent,
     ModalTransactionAlertsComponent,
     ModalNftComponent,
     LossProvisionComponent,
-    HistoricalStakingRewardsComponent,
-    PriceEarningsRatioComponent,
-    XmphSupplyDistributionComponent,
     DepositFeedComponent,
     GaugeComponent,
     ConverterComponent,
+    InterestExpenseComponent,
+    FundedExpenseComponent,
   ],
   imports: [
     BrowserModule,

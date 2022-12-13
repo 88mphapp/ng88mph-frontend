@@ -9,13 +9,14 @@ import BigNumber from 'bignumber.js';
 
 import { ChartsService } from 'src/app/services/analytics/charts.service';
 import { HelpersService } from 'src/app/helpers.service';
+import { Chart } from 'chart.js';
 
 @Component({
-  selector: 'app-historical-asset-tvl',
-  templateUrl: './historical-asset-tvl.component.html',
-  styleUrls: ['./historical-asset-tvl.component.css'],
+  selector: 'app-interest-expense',
+  templateUrl: './interest-expense.component.html',
+  styleUrls: ['./interest-expense.component.css'],
 })
-export class HistoricalAssetTvlComponent implements OnInit {
+export class InterestExpenseComponent implements OnInit {
   @Input() displaySetting: string;
 
   period: number = 7;
@@ -121,7 +122,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ...(this.displaySetting.match(/^(all|avalanche)$/)
         ? [
             {
-              data: this.padData(this.chart.avalanche.deposits).reduce(
+              data: this.padData(this.chart.avalanche.interestExpense).reduce(
                 (a, e, i) => {
                   if (i % this.period === 0) {
                     a.push(e);
@@ -139,7 +140,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ...(this.displaySetting.match(/^(all|mainnet)$/)
         ? [
             {
-              data: this.padData(this.chart.mainnet.deposits).reduce(
+              data: this.padData(this.chart.mainnet.interestExpense).reduce(
                 (a, e, i) => {
                   if (i % this.period === 0) {
                     a.push(e);
@@ -157,7 +158,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ...(this.displaySetting.match(/^(all|polygon)$/)
         ? [
             {
-              data: this.padData(this.chart.polygon.deposits).reduce(
+              data: this.padData(this.chart.polygon.interestExpense).reduce(
                 (a, e, i) => {
                   if (i % this.period === 0) {
                     a.push(e);
@@ -175,7 +176,7 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ...(this.displaySetting.match(/^(all|fantom)$/)
         ? [
             {
-              data: this.padData(this.chart.fantom.deposits).reduce(
+              data: this.padData(this.chart.fantom.interestExpense).reduce(
                 (a, e, i) => {
                   if (i % this.period === 0) {
                     a.push(e);

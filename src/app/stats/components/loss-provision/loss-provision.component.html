@@ -1,85 +1,36 @@
-<div *ngIf="barChartData" class="card mb-4 mb-lg-0">
+<div class="card mb-4 mb-lg-0">
   <div class="card-header">
     <h4
       class="card-title mb-0"
-      i18n="@@lossProvision"
+      i18n="@@assetTVL"
       placement="top"
-      i18n-ngbTooltip="@@lossProvisionText"
-      ngbTooltip="An estimation of potential losses that 88mph might experience due to non-performing loans, underlying protocol risks (eg. Aave or Compound), and high market rates volatility that incur lower-than-previously-estimated payments on the assets supplied on those money markets. This provision could be used to cover a portion or the totality of the remaining interest expenses not already funded by yield token holders."
+      i18n-ngbTooltip="@@assetTVLText"
+      ngbTooltip="Estimate of reserves (USD) after all depositors, funders, and fees have been paid."
     >
-      Loan Loss Provision ($USD)
+      Loan Loss Reserves
       <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
-    <select
-      [(ngModel)]="SELECTED_ASSET"
-      name="selected"
-      (change)="focusAsset()"
-      class="
-        custom-select custom-select-sm custom-select-chart
-        border-secondary
-        m-1
-      "
-    >
-      <option value="all" selected>All Assets</option>
-      <option disabled>----------</option>
-      <option
-        *ngFor="
-          let pool of displaySetting === 'all'
-            ? everythingData
-            : displaySetting === 'ethereum'
-            ? ethereumData
-            : displaySetting === 'polygon'
-            ? polygonData
-            : displaySetting === 'avalanche'
-            ? avalancheData
-            : displaySetting === 'fantom'
-            ? fantomData
-            : displaySetting === 'v2'
-            ? v2Data
-            : []
-        "
-        [ngValue]="pool.address"
-      >
-        {{ pool.label }}
-        <ng-container *ngIf="displaySetting === 'all'">
-          --
-          {{
-            pool.networkID === constants.CHAIN_ID.MAINNET
-              ? "Ethereum"
-              : pool.networkID === constants.CHAIN_ID.POLYGON
-              ? "Polygon"
-              : pool.networkID === constants.CHAIN_ID.AVALANCHE
-              ? "Avalanche"
-              : pool.networkID === constants.CHAIN_ID.FANTOM
-              ? "Fantom"
-              : pool.networkID === constants.CHAIN_ID.V2
-              ? "V2"
-              : ""
-          }}
-        </ng-container>
-      </option>
-    </select>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'daily' }"
-      (click)="changePeriod('daily')"
+      [ngClass]="{ 'bg-secondary ': period === 1 }"
+      (click)="changePeriod(1)"
     >
       D
     </button>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'weekly' }"
-      (click)="changePeriod('weekly')"
+      [ngClass]="{ 'bg-secondary ': period === 7 }"
+      (click)="changePeriod(7)"
     >
       W
     </button>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'monthly' }"
-      (click)="changePeriod('monthly')"
+      [ngClass]="{ 'bg-secondary ': period === 30 }"
+      (click)="changePeriod(30)"
     >
       M
     </button>

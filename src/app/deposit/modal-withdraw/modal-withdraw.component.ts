@@ -67,6 +67,8 @@ export class ModalWithdrawComponent implements OnInit {
       withdrawVirtualTokenAmount,
       early
     );
+    console.log(this.poolInfo);
+    console.log(func);
 
     this.wallet.sendTx(
       func,

@@ -9,13 +9,14 @@ import BigNumber from 'bignumber.js';
 
 import { ChartsService } from 'src/app/services/analytics/charts.service';
 import { HelpersService } from 'src/app/helpers.service';
+import { Chart } from 'chart.js';
 
 @Component({
-  selector: 'app-historical-asset-tvl',
-  templateUrl: './historical-asset-tvl.component.html',
-  styleUrls: ['./historical-asset-tvl.component.css'],
+  selector: 'app-funded-expense',
+  templateUrl: './funded-expense.component.html',
+  styleUrls: ['./funded-expense.component.css'],
 })
-export class HistoricalAssetTvlComponent implements OnInit {
+export class FundedExpenseComponent implements OnInit {
   @Input() displaySetting: string;
 
   period: number = 7;
@@ -121,15 +122,14 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ...(this.displaySetting.match(/^(all|avalanche)$/)
         ? [
             {
-              data: this.padData(this.chart.avalanche.deposits).reduce(
-                (a, e, i) => {
-                  if (i % this.period === 0) {
-                    a.push(e);
-                  }
-                  return a;
-                },
-                []
-              ),
+              data: this.padData(
+                this.chart.avalanche.fundedInterestExpense
+              ).reduce((a, e, i) => {
+                if (i % this.period === 0) {
+                  a.push(e);
+                }
+                return a;
+              }, []),
               label: 'Avalanche',
               backgroundColor: 'rgba(232, 65, 66, 0.5)',
               hoverBackgroundColor: 'rgba(232, 65, 66, 1)',
@@ -139,15 +139,14 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ...(this.displaySetting.match(/^(all|mainnet)$/)
         ? [
             {
-              data: this.padData(this.chart.mainnet.deposits).reduce(
-                (a, e, i) => {
-                  if (i % this.period === 0) {
-                    a.push(e);
-                  }
-                  return a;
-                },
-                []
-              ),
+              data: this.padData(
+                this.chart.mainnet.fundedInterestExpense
+              ).reduce((a, e, i) => {
+                if (i % this.period === 0) {
+                  a.push(e);
+                }
+                return a;
+              }, []),
               label: 'Ethereum',
               backgroundColor: 'rgba(255, 255, 255, 0.5)',
               hoverBackgroundColor: 'rgba(255, 255, 255, 1)',
@@ -157,15 +156,14 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ...(this.displaySetting.match(/^(all|polygon)$/)
         ? [
             {
-              data: this.padData(this.chart.polygon.deposits).reduce(
-                (a, e, i) => {
-                  if (i % this.period === 0) {
-                    a.push(e);
-                  }
-                  return a;
-                },
-                []
-              ),
+              data: this.padData(
+                this.chart.polygon.fundedInterestExpense
+              ).reduce((a, e, i) => {
+                if (i % this.period === 0) {
+                  a.push(e);
+                }
+                return a;
+              }, []),
               label: 'Polygon',
               backgroundColor: 'rgba(123, 63, 228, 0.5)',
               hoverBackgroundColor: 'rgba(123, 63, 228, 1)',
@@ -175,15 +173,14 @@ export class HistoricalAssetTvlComponent implements OnInit {
       ...(this.displaySetting.match(/^(all|fantom)$/)
         ? [
             {
-              data: this.padData(this.chart.fantom.deposits).reduce(
-                (a, e, i) => {
-                  if (i % this.period === 0) {
-                    a.push(e);
-                  }
-                  return a;
-                },
-                []
-              ),
+              data: this.padData(
+                this.chart.fantom.fundedInterestExpense
+              ).reduce((a, e, i) => {
+                if (i % this.period === 0) {
+                  a.push(e);
+                }
+                return a;
+              }, []),
               label: 'Fantom',
               backgroundColor: 'rgba(25, 105, 255, 0.5)',
               hoverBackgroundColor: 'rgba(25, 105, 255, 1)',

@@ -92,9 +92,9 @@ export class ConstantsService {
   // GRAPHQL ENDPOINTS //
   GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
-      // 'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-mainnet', // hosted
-      // 'https://api.studio.thegraph.com/query/23186/88mph/0.0.1', // test studio (rate limited)
-      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/Ep6qPG4Pscywwdr2NbSBKJu7RrN4pqie5RGPGHKXMviN', // production studio
+      'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-mainnet', // hosted
+    // 'https://api.studio.thegraph.com/query/23186/88mph/0.0.1', // test studio (rate limited)
+    // 'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/Ep6qPG4Pscywwdr2NbSBKJu7RrN4pqie5RGPGHKXMviN', // production studio
     [this.CHAIN_ID.RINKEBY]:
       'https://api.thegraph.com/subgraphs/name/bacon-labs/eighty-eight-mph-v3-rinkeby',
     [this.CHAIN_ID.POLYGON]:

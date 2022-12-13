@@ -1,45 +1,36 @@
-<div *ngIf="barChartData" class="card mb-4 mb-lg-0">
+<div class="card mb-4 mb-lg-0">
   <div class="card-header">
     <h4
       class="card-title mb-0"
-      i18n="@@stakingRewards"
+      i18n="@@assetTVL"
       placement="top"
-      i18n-ngbTooltip="@@stakingRewardsHelpText"
-      ngbTooltip="The cumulative amount of MPH distributed to xMPH holders."
+      i18n-ngbTooltip="@@assetTVLText"
+      ngbTooltip="The amount (USD) of interest owed to depositors plus fees owed to the protocol."
     >
-      Staking Rewards
-      <span
-        class="badge badge-soft-success ml-1"
-        *ngIf="
-          wallet.networkID === constants.CHAIN_ID.POLYGON ||
-          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
-          wallet.networkID === constants.CHAIN_ID.FANTOM
-        "
-        >Ethereum</span
-      >
+      Interest Expense
       <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'daily' }"
-      (click)="changePeriod('daily')"
+      [ngClass]="{ 'bg-secondary ': period === 1 }"
+      (click)="changePeriod(1)"
     >
       D
     </button>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'weekly' }"
-      (click)="changePeriod('weekly')"
+      [ngClass]="{ 'bg-secondary ': period === 7 }"
+      (click)="changePeriod(7)"
     >
       W
     </button>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'monthly' }"
-      (click)="changePeriod('monthly')"
+      [ngClass]="{ 'bg-secondary ': period === 30 }"
+      (click)="changePeriod(30)"
     >
       M
     </button>

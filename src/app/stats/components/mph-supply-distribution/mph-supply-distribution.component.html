@@ -2,44 +2,35 @@
   <div class="card-header">
     <h4
       class="card-title mb-0"
-      i18n="@@mphSupplyDistribution"
+      i18n=""
       placement="top"
-      i18n-ngbTooltip="@@mphSupplyDistributionText"
-      ngbTooltip="The amount of MPH held by specific address (e.g. 88mph's Governance Treasury)."
+      i18n-ngbTooltip=""
+      ngbTooltip="The amount of MPH held by specific addresses."
     >
       MPH Supply Distribution
-      <span
-        class="badge badge-soft-success ml-1"
-        *ngIf="
-          wallet.networkID === constants.CHAIN_ID.POLYGON ||
-          wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
-          wallet.networkID === constants.CHAIN_ID.FANTOM
-        "
-        >Ethereum</span
-      >
       <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'daily' }"
-      (click)="changePeriod('daily')"
+      [ngClass]="{ 'bg-secondary ': period === 1 }"
+      (click)="changePeriod(1)"
     >
       D
     </button>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'weekly' }"
-      (click)="changePeriod('weekly')"
+      [ngClass]="{ 'bg-secondary ': period === 7 }"
+      (click)="changePeriod(7)"
     >
       W
     </button>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'monthly' }"
-      (click)="changePeriod('monthly')"
+      [ngClass]="{ 'bg-secondary ': period === 30 }"
+      (click)="changePeriod(30)"
     >
       M
     </button>

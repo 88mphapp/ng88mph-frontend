@@ -2,35 +2,35 @@
   <div class="card-header">
     <h4
       class="card-title mb-0"
-      i18n="@@priceEarningsRatio"
+      i18n="@@assetTVL"
       placement="top"
-      i18n-ngbTooltip="@@priceEarningsRatioText"
-      ngbTooltip="A measurement of current market capitalization / annualized protocol earnings (based on the latest bi-weekly revenue distribution)."
+      i18n-ngbTooltip="@@assetTVLText"
+      ngbTooltip="The amount (USD) of interest owed to depositors plus fees owed to the protocol that has been funded by yield token holders."
     >
-      P/E Ratio
+      Funded Interest Expense
       <i class="fe fe-info ml-1 align-bottom"></i>
     </h4>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'daily' }"
-      (click)="changePeriod('daily')"
+      [ngClass]="{ 'bg-secondary ': period === 1 }"
+      (click)="changePeriod(1)"
     >
       D
     </button>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'weekly' }"
-      (click)="changePeriod('weekly')"
+      [ngClass]="{ 'bg-secondary ': period === 7 }"
+      (click)="changePeriod(7)"
     >
       W
     </button>
     <button
       type="button"
       class="btn btn-sm border-secondary py-0 px-2 m-1"
-      [ngClass]="{ 'bg-secondary ': PERIOD_NAME === 'monthly' }"
-      (click)="changePeriod('monthly')"
+      [ngClass]="{ 'bg-secondary ': period === 30 }"
+      (click)="changePeriod(30)"
     >
       M
     </button>
@@ -40,11 +40,11 @@
     <canvas
       *ngIf="!loading"
       baseChart
-      [datasets]="lineChartData"
-      [labels]="lineChartLabels"
-      [options]="lineChartOptions"
-      [legend]="lineChartLegend"
-      [chartType]="lineChartType"
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [legend]="barChartLegend"
+      [chartType]="barChartType"
     >
     </canvas>
   </div>
