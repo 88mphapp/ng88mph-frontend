@@ -260,9 +260,23 @@ export class ConstantsService {
     [this.CHAIN_ID.AVALANCHE]: '',
     [this.CHAIN_ID.FANTOM]: '',
   };
+  LIT_ADDRESS = {
+    [this.CHAIN_ID.MAINNET]: '0xfd0205066521550D7d7AB19DA8F72bb004b4C341',
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
   FEE_DISTRIBUTOR = {
     [this.CHAIN_ID.MAINNET]: '0xe336C2e48dBF83eD85Bd6591cE0a335bB5844385', // veMPH
     // [this.CHAIN_ID.MAINNET]: '0xD3cf852898b21fc233251427c2DC93d3d604F3BB', // veBAL
+    [this.CHAIN_ID.RINKEBY]: '',
+    [this.CHAIN_ID.POLYGON]: '',
+    [this.CHAIN_ID.AVALANCHE]: '',
+    [this.CHAIN_ID.FANTOM]: '',
+  };
+  YIELD_DISTRIBUTOR = {
+    [this.CHAIN_ID.MAINNET]: '0x7Bf66285d9C4Fc6C1f4BE3A26b13BA0e1d62428E',
     [this.CHAIN_ID.RINKEBY]: '',
     [this.CHAIN_ID.POLYGON]: '',
     [this.CHAIN_ID.AVALANCHE]: '',

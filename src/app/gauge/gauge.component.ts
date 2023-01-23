@@ -50,6 +50,9 @@ export class GaugeComponent implements OnInit {
   mphRewards: BigNumber; // mph rewards that can be claimed by the user
   balRewards: BigNumber; // bal rewards that can be claimed by the user
 
+  litRewards: BigNumber; // lit rewards that can be claimed by the user
+  litInitialized: boolean; // user has been initialized to receive lit rewards
+
   now: number; // current timestamp in seconds
   lockEnd: number; // timestamp when user's lock ends
   lockAmount: BigNumber; // amount of MPH to lock
@@ -71,6 +74,7 @@ export class GaugeComponent implements OnInit {
   bptAPR: BigNumber; // swap fee APR for veMPH holders
   mphAPR: BigNumber; // MPH reward APR for veMPH holders
   balAPR: BigNumber; // BAL reward APR for veMPH holders
+  litAPR: BigNumber; // LIT reward APR for veMPH holders
   veAPR: BigNumber; // bptAPR + mphAPR + balAPR for veMPH holders
 
   timeLeft: number;
@@ -165,6 +169,8 @@ export class GaugeComponent implements OnInit {
       this.veBalance = new BigNumber(0);
       this.mphRewards = new BigNumber(0);
       this.balRewards = new BigNumber(0);
+      this.litRewards = new BigNumber(0);
+      this.litInitialized = false;
       this.lockEnd = 0;
       this.lockAmount = new BigNumber(0);
       this.lockDuration = 7;
@@ -188,6 +194,7 @@ export class GaugeComponent implements OnInit {
       this.bptAPR = new BigNumber(0);
       this.mphAPR = new BigNumber(0);
       this.balAPR = new BigNumber(0);
+      this.litAPR = new BigNumber(0);
       this.veAPR = new BigNumber(0);
       this.totalMPHSupply = new BigNumber(0);
       this.circulatingMPHSupply = new BigNumber(0);
@@ -371,6 +378,19 @@ export class GaugeComponent implements OnInit {
           },
         ],
       },
+      {
+        reference: 'litAirdrop',
+        contractAddress:
+          this.constants.YIELD_DISTRIBUTOR[this.wallet.networkID],
+        abi: require(`src/assets/abis/YieldDistributor.json`),
+        calls: [
+          {
+            reference: 'yieldRate',
+            methodName: 'yieldRate',
+            methodParameters: [],
+          },
+        ],
+      },
     ];
 
     const globalResults: ContractCallResults = await multicall.call(
@@ -379,6 +399,7 @@ export class GaugeComponent implements OnInit {
     const balMPHResults = globalResults.results.BALMPH.callsReturnContext;
     const veResults = globalResults.results.veMPH.callsReturnContext;
     const veYield = globalResults.results.veYield.callsReturnContext;
+    const litAirdrop = globalResults.results.litAirdrop.callsReturnContext;
 
     // handle balMPH results
     const totalSupply = new BigNumber(balMPHResults[0].returnValues[0].hex);
@@ -430,8 +451,32 @@ export class GaugeComponent implements OnInit {
       this.balAPR = new BigNumber(0);
     }
 
-    this.veAPR = this.bptAPR.plus(this.mphAPR).plus(this.balAPR);
-    this.veYield = mphRewardUSD.plus(balRewardUSD).times(52).div(this.veTotal);
+    // handle litAirdrop
+    const litPriceUSD = await this.datas.getAssetPriceUSD(
+      this.constants.LIT_ADDRESS[this.wallet.networkID],
+      this.wallet.networkID
+    );
+    const litRewardUSD = new BigNumber(litAirdrop[0].returnValues[0].hex)
+      .div(this.constants.PRECISION)
+      .times(this.constants.WEEK_IN_SEC) // reward is in seconds, convert to weekly
+      .times(litPriceUSD);
+    this.litAPR = litRewardUSD
+      .times(52)
+      .div(bptPriceUSD.times(this.veTotal))
+      .times(100);
+    if (this.litAPR.isNaN()) {
+      this.litAPR = new BigNumber(0);
+    }
+
+    this.veAPR = this.bptAPR
+      .plus(this.mphAPR)
+      .plus(this.balAPR)
+      .plus(this.litAPR);
+    this.veYield = mphRewardUSD
+      .plus(balRewardUSD)
+      .plus(litRewardUSD)
+      .times(52)
+      .div(this.veTotal);
     if (this.veYield.isNaN()) {
       this.veYield = new BigNumber(0);
     }
@@ -606,6 +651,24 @@ export class GaugeComponent implements OnInit {
             },
           ],
         },
+        {
+          reference: 'yieldDistributor',
+          contractAddress:
+            this.constants.YIELD_DISTRIBUTOR[this.wallet.networkID],
+          abi: require(`src/assets/abis/YieldDistributor.json`),
+          calls: [
+            {
+              reference: 'userIsInitialized',
+              methodName: 'userIsInitialized',
+              methodParameters: [userAddress],
+            },
+            {
+              reference: 'earned',
+              methodName: 'earned',
+              methodParameters: [userAddress],
+            },
+          ],
+        },
       ];
 
       const userResults: ContractCallResults = await multicall.call(
@@ -654,6 +717,12 @@ export class GaugeComponent implements OnInit {
         mphRewards = new BigNumber(userRewards[1].returnValues[0].hex);
       }
       this.balRewards = balRewards.div(this.constants.PRECISION);
+
+      const yieldDistributor =
+        userResults.results.yieldDistributor.callsReturnContext;
+      const litRewards = new BigNumber(yieldDistributor[1].returnValues[0].hex);
+      this.litInitialized = yieldDistributor[0].returnValues[0];
+      this.litRewards = litRewards.div(1e18);
     }
   }
 
@@ -1085,6 +1154,50 @@ export class GaugeComponent implements OnInit {
       () => {},
       () => {},
       () => {}, // @todo update token balance
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
+  }
+
+  initializeLIT(): void {
+    const web3 = this.wallet.web3;
+    const contract = this.contract.getContract(
+      this.constants.YIELD_DISTRIBUTOR[this.wallet.networkID],
+      'YieldDistributor',
+      web3
+    );
+    const func = contract.methods.checkpoint();
+
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      () => {
+        this.litInitialized = true;
+      },
+      (error) => {
+        this.wallet.displayGenericError(error);
+      }
+    );
+  }
+
+  claimLIT(): void {
+    const web3 = this.wallet.web3;
+    const contract = this.contract.getContract(
+      this.constants.YIELD_DISTRIBUTOR[this.wallet.networkID],
+      'YieldDistributor',
+      web3
+    );
+    const func = contract.methods.getYield();
+
+    this.wallet.sendTx(
+      func,
+      () => {},
+      () => {},
+      () => {
+        this.litRewards = new BigNumber(0);
+      },
       (error) => {
         this.wallet.displayGenericError(error);
       }

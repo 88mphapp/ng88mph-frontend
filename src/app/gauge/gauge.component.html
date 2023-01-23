@@ -130,12 +130,12 @@
             </span>
           </div>
         </div>
-        <!-- <div class="card mb-5 mb-lg-0">
+        <div class="card mb-5 mb-lg-0">
           <div class="card-body">
             <span
               class="d-flex justify-content-between align-items-center mb-2"
             >
-              <h5 class="" i18n="@@">BAL Rewards</h5>
+              <h5 class="" i18n="@@">LIT Airdrop</h5>
               <span
                 class="
                   badge badge-xl badge-soft-success
@@ -144,24 +144,39 @@
                   ng-star-inserted
                 "
               >
-                {{ balAPR.toFormat(2) }}% APR
+                {{ litAPR.toFormat(2) }}% APR
               </span>
             </span>
             <span class="d-flex justify-content-between align-items-center">
-              <span class="h2 mb-0 glowing">
-                {{ balRewards.toFormat(6) }}
-              </span>
-              <button
-                type="button"
-                class="btn btn-sm btn-bg-gradient"
-                (click)="claim(constants.BAL[wallet.networkID])"
-                *ngIf="balRewards.gt(0)"
-              >
-                <ng-container i18n="@@">Claim</ng-container>
-              </button>
+              <ng-container *ngIf="!litInitialized">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-bg-gradient w-100"
+                  (click)="initializeLIT()"
+                >
+                  Initialize Airdrop
+                  <i
+                    class="fe fe-info ml-1 align-bottom"
+                    ngbTooltip="To receive the LIT aridrop, you must first checkpoint your address."
+                  ></i>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="litInitialized">
+                <span class="h2 mb-0 glowing">
+                  {{ litRewards.toFormat(6) }}
+                </span>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-bg-gradient"
+                  (click)="claimLIT()"
+                  *ngIf="litRewards.gt(0)"
+                >
+                  <ng-container i18n="@@">Claim</ng-container>
+                </button>
+              </ng-container>
             </span>
           </div>
-        </div> -->
+        </div>
       </div>
 
       <!--mobile user's data-->
