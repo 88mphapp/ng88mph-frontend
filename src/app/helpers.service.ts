@@ -407,7 +407,12 @@ export class HelpersService {
         readonlyWeb3
       );
       const tokenPriceUSD =
-        (await oracleContract.methods.latestAnswer().call()) / 1e8;
+        (await oracleContract.methods
+          .latestAnswer()
+          .call()
+          .catch((e) => {
+            return new BigNumber(0);
+          })) / 1e8;
       return tokenPriceUSD;
     } else {
       console.log(symbol + '/USD price feed does not exist.');
