@@ -339,7 +339,6 @@
         [ngIf]="
           wallet.networkID === constants.CHAIN_ID.POLYGON ||
           wallet.networkID === constants.CHAIN_ID.MAINNET ||
-          wallet.networkID === constants.CHAIN_ID.RINKEBY ||
           wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
           wallet.networkID === constants.CHAIN_ID.FANTOM
         "
@@ -415,19 +414,6 @@
               </div>
               <ng-container i18n="@@fantom">Fantom</ng-container>
             </ng-container>
-            <ng-container
-              *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY"
-            >
-              <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
-                <img
-                  class="avatar-img rounded-circle"
-                  src="./assets/img/ethereum-icon.png"
-                  alt="logo eth-diamond-purple-white"
-                  width="16px"
-                />
-              </div>
-              <ng-container i18n="@@rinkeby">Rinkeby</ng-container>
-            </ng-container>
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
             <h6 class="dropdown-header" i18n="@@selectNetworkV3">
@@ -492,23 +478,6 @@
                 />
               </div>
               <ng-container i18n="@@fantom">Fantom</ng-container>
-            </button>
-            <button
-              class="dropdown-item d-flex align-items-center mr-2"
-              type="button"
-              (click)="wallet.changeChain(4)"
-            >
-              <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
-                <img
-                  class="avatar-img rounded-circle"
-                  src="./assets/img/ethereum-icon.png"
-                  alt="logo eth-diamond-purple-white"
-                  width="16px"
-                />
-              </div>
-              <ng-container i18n="@@ethereumRinkeby"
-                >Ethereum Rinkeby</ng-container
-              >
             </button>
             <div class="dropdown-divider"></div>
             <h6 class="dropdown-header" i18n="@@selectLegacyVersion">
@@ -706,7 +675,6 @@
       [ngIf]="
         wallet.networkID === constants.CHAIN_ID.POLYGON ||
         wallet.networkID === constants.CHAIN_ID.MAINNET ||
-        wallet.networkID === constants.CHAIN_ID.RINKEBY ||
         wallet.networkID === constants.CHAIN_ID.AVALANCHE ||
         wallet.networkID === constants.CHAIN_ID.FANTOM
       "
@@ -773,17 +741,6 @@
             </div>
             <ng-container i18n="@@fantom">v3 - Fantom</ng-container>
           </ng-container>
-          <ng-container *ngIf="wallet.networkID === constants.CHAIN_ID.RINKEBY">
-            <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="20px"
-              />
-            </div>
-            <ng-container i18n="@@rinkeby">v3 - Rinkeby</ng-container>
-          </ng-container>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownNetwork">
           <h6 class="dropdown-header" i18n="@@selectNetworkV3">
@@ -848,23 +805,6 @@
               />
             </div>
             <ng-container i18n="@@fantom">Fantom</ng-container>
-          </button>
-          <button
-            class="dropdown-item d-flex align-items-center mr-2"
-            type="button"
-            (click)="wallet.changeChain(4)"
-          >
-            <div class="avatar avatar-xxxs avatar-online rinkeby mr-2">
-              <img
-                class="avatar-img rounded-circle"
-                src="./assets/img/ethereum-icon.png"
-                alt="logo eth-diamond-purple-white"
-                width="24px"
-              />
-            </div>
-            <ng-container i18n="@@ethereumRinkeby"
-              >Ethereum Rinkeby</ng-container
-            >
           </button>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header" i18n="@@selectLegacyVersion">

@@ -81,11 +81,6 @@ export class ModalNftComponent implements OnInit {
     this.nftPlatformURL = `https://${
       this.wallet.networkID == this.constants.CHAIN_ID.MAINNET ? '' : ''
     }${
-      this.wallet.networkID == this.constants.CHAIN_ID.RINKEBY
-        ? 'testnets.'
-        : ''
-    }${
-      this.wallet.networkID == this.constants.CHAIN_ID.RINKEBY ||
       this.wallet.networkID == this.constants.CHAIN_ID.MAINNET ||
       this.wallet.networkID == this.constants.CHAIN_ID.POLYGON
         ? 'opensea.io/assets/'
