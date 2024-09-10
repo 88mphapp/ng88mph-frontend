@@ -81,11 +81,11 @@ export class ConstantsService {
       // 'https://api.studio.thegraph.com/query/23186/88mph/0.0.1', // test studio (rate limited)
       'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/Ep6qPG4Pscywwdr2NbSBKJu7RrN4pqie5RGPGHKXMviN', // production studio
     [this.CHAIN_ID.POLYGON]:
-      'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-polygon',
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/92yHvcMKVpYRFFEBE7KkF3suGBCJfNb9UF6oWuX3tAhp',
     [this.CHAIN_ID.AVALANCHE]:
-      'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-avalanche',
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/2qp1tQKYhin58Yj4hzVePL6fqiJXoKqBAmGpW46bxj8m',
     [this.CHAIN_ID.FANTOM]:
-      'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-fantom',
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/6hWF33MyteykzogR8erDpkeLfiN3XtsVk4GGMK9gxWhX',
   };
   GRAPHQL_ENDPOINT_V2 = {
     [this.CHAIN_ID.MAINNET]:
