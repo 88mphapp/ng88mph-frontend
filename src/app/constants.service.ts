@@ -77,9 +77,7 @@ export class ConstantsService {
   // GRAPHQL ENDPOINTS //
   GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
-      // 'https://api.thegraph.com/subgraphs/name/88mphapp/88mph-mainnet', // hosted
-      // 'https://api.studio.thegraph.com/query/23186/88mph/0.0.1', // test studio (rate limited)
-      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/Ep6qPG4Pscywwdr2NbSBKJu7RrN4pqie5RGPGHKXMviN', // production studio
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/FxioQ3794eoHhWQWAUYC917eBj1oKzV2jjyx2jNN4jkP',
     [this.CHAIN_ID.POLYGON]:
       'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/92yHvcMKVpYRFFEBE7KkF3suGBCJfNb9UF6oWuX3tAhp',
     [this.CHAIN_ID.AVALANCHE]:
@@ -142,19 +140,23 @@ export class ConstantsService {
   // RPC ENDPOINTS //
   RPC = {
     [this.CHAIN_ID.MAINNET]:
-      'https://eth-mainnet.g.alchemy.com/v2/M5ORUVTDLo2uYvf2izA9UEyryO-GVH5d',
+      'https://eth-mainnet.g.alchemy.com/v2/dIFbE_0OzW7bcT300crEykbOX8WphyqT',
     [this.CHAIN_ID.POLYGON]:
-      'https://polygon-mainnet.g.alchemy.com/v2/HsROWWL4rFsydRg5KWBtXkwm_1ToLapF',
-    [this.CHAIN_ID.AVALANCHE]: 'https://api.avax.network/ext/bc/C/rpc',
-    [this.CHAIN_ID.FANTOM]: 'https://rpc.ftm.tools',
+      'https://polygon-mainnet.g.alchemy.com/v2/dIFbE_0OzW7bcT300crEykbOX8WphyqT',
+    [this.CHAIN_ID.AVALANCHE]:
+      'https://avax-mainnet.g.alchemy.com/v2/dIFbE_0OzW7bcT300crEykbOX8WphyqT',
+    [this.CHAIN_ID.FANTOM]:
+      'https://fantom-mainnet.g.alchemy.com/v2/dIFbE_0OzW7bcT300crEykbOX8WphyqT',
   };
   RPC_WS = {
     [this.CHAIN_ID.MAINNET]:
-      'wss://eth-mainnet.g.alchemy.com/v2/M5ORUVTDLo2uYvf2izA9UEyryO-GVH5d',
+      'wss://eth-mainnet.g.alchemy.com/v2/dIFbE_0OzW7bcT300crEykbOX8WphyqT',
     [this.CHAIN_ID.POLYGON]:
-      'wss://polygon-mainnet.g.alchemy.com/v2/HsROWWL4rFsydRg5KWBtXkwm_1ToLapF',
-    [this.CHAIN_ID.AVALANCHE]: 'wss://api.avax.network/ext/bc/C/ws',
-    [this.CHAIN_ID.FANTOM]: 'wss://wsapi.fantom.network',
+      'wss://polygon-mainnet.g.alchemy.com/v2/dIFbE_0OzW7bcT300crEykbOX8WphyqT',
+    [this.CHAIN_ID.AVALANCHE]:
+      'https://avax-mainnet.g.alchemy.com/v2/dIFbE_0OzW7bcT300crEykbOX8WphyqT',
+    [this.CHAIN_ID.FANTOM]:
+      'https://fantom-mainnet.g.alchemy.com/v2/dIFbE_0OzW7bcT300crEykbOX8WphyqT',
   };
 
   // API KEYS //
