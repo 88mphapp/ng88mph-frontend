@@ -113,15 +113,15 @@ export class ConstantsService {
   };
   BLOCKS_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
-      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/AdEcbPZ354Gb8hg1MQFoSzE2ZXrDKRaJG4egRQAdnSeJ',
     [this.CHAIN_ID.POLYGON]:
-      'https://api.thegraph.com/subgraphs/name/elkfinance/matic-blocks',
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/DMnXZnphMTkcFiK5NHm6LzwhJ7yUy7seVnZuNkNsXLHp',
     [this.CHAIN_ID.AVALANCHE]:
-      'https://api.thegraph.com/subgraphs/name/elkfinance/avax-blocks',
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/JCkkWC1dNbFQffRBkXCz6MEC5Hi7gT6MijeQFvuwhiBe',
     [this.CHAIN_ID.FANTOM]:
-      'https://api.thegraph.com/subgraphs/name/elkfinance/ftm-blocks',
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/3drjZDpA9hAuYGA19ttEkhW432mVe2XHy5YarBDVYHbz',
     [this.CHAIN_ID.V2]:
-      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+      'https://gateway.thegraph.com/api/139def8df5f457fb12dc3ddddb1e2043/subgraphs/id/AdEcbPZ354Gb8hg1MQFoSzE2ZXrDKRaJG4egRQAdnSeJ',
   };
   CHAINLINK_GRAPHQL_ENDPOINT = {
     [this.CHAIN_ID.MAINNET]:
