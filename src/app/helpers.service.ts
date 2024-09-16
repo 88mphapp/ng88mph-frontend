@@ -411,7 +411,7 @@ export class HelpersService {
           .latestAnswer()
           .call()
           .catch((e) => {
-            return new BigNumber(0);
+            return 0;
           })) / 1e8;
       return tokenPriceUSD;
     } else {
@@ -434,7 +434,13 @@ export class HelpersService {
         readonlyWeb3
       );
       const tokenPriceETH =
-        (await oracleContract.methods.latestAnswer().call()) / 1e18;
+        (await oracleContract.methods
+          .latestAnswer()
+          .call()
+          .catch((e) => {
+            return 0;
+          })) / 1e8;
+
       return tokenPriceETH * ethPriceUSD;
     } else {
       console.log(symbol + '/ETH price feed does not exist.');
